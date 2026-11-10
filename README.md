@@ -28,6 +28,26 @@ code **123456** to try registration. Switch demo accounts from **Profile**.
 Demo data resets on every app restart; the last selected child/sport/group is
 stored on the device and restored on reopen.
 
+## iPad and adaptive layouts
+
+Layouts follow the **window width** (so Split View, Slide Over and Stage Manager work), see `lib/core/layout/responsive.dart`:
+
+| Width | Class | Navigation | Content |
+|---|---|---|---|
+| < 600 | compact (iPhone, Slide Over, 1/3 Split View) | bottom bar | original phone layouts |
+| 600–839 | medium (iPad mini portrait, 1/2 Split View, phone landscape) | navigation rail | width-capped single column, sheets become dialogs |
+| 840–1199 | expanded (iPad portrait, iPad mini landscape) | navigation rail | two-column dashboards, chat master-detail, calendar beside lists, two-column forms/profile, roster grid, map side panel |
+| ≥ 1200 | large (iPad Air/Pro landscape) | sidebar (extended rail) | + coach group list as master pane, calendar with training-detail pane |
+
+## Android APK (demo mode)
+
+```bash
+flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true
+```
+
+Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
+build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
 ## Running against Firebase
 
 1. Create a Firebase project, enable Phone Auth, Firestore, Storage, Functions (Blaze), FCM.
@@ -72,7 +92,7 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 99 tests
+flutter test                                   # 130 tests (incl. 31 responsive)
 cd functions && npm install && npm run build && npm test      # 68 tests
 cd rules-tests && npm install && npm run test:emulator        # 52 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 12 end-to-end steps

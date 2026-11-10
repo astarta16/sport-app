@@ -65,6 +65,16 @@ Legend: ✅ implemented and verified (tests and/or run) · 🟡 implemented, not
 - ⛔ Release / signed builds not attempted (no signing identity / keystore)
 - 🟡 Known cosmetic: on the map, club pins can sit under venue pins at the same address
 
+## Responsive / iPad (2026-11-10)
+- ✅ Width-based breakpoints, `ConstrainedContent`, `ResponsiveGrid`, `MasterDetailLayout`, `showAdaptiveSheet`, `ScrollableFill`
+- ✅ Adaptive shell: bottom bar → rail (≥ 600) → sidebar (≥ 1200); GoRouter branches, deep links and role guards unchanged
+- ✅ Tablet parent dashboard (side column: payments/certificates, upcoming list, notifications) and coach dashboard (two columns, quick actions, group master list ≥ 1200)
+- ✅ Master-detail chat, calendar (training detail pane on wide panes), map side panel, roster grid, two-column training form and profile, width-capped detail screens
+- ✅ Overflow fixes found by the sweep (map attribution, roster rows, payment rows, onboarding/pending in landscape, text scale 1.4, hero card badges)
+- ✅ 31 responsive widget tests: 9 window sizes × parent + coach screens, onboarding, sign-in, live resize, navigation, master-detail, back navigation
+- 🟡 Not visually checked on an iPad simulator — iPad mini / iPad Pro 13 simulators were created but simulator access was not granted in this session
+- ✅ Release APK (demo) built, copied to `~/Desktop/SportParentApp-release.apk`, installed and launched on the Pixel_6_API_33 emulator; demo parent dashboard loads
+
 ## Not done / follow-ups
 - ⛔ Real Firebase project, `flutterfire configure`, APNs, deploy — needs your accounts
 - ⛔ Attendance tracking, progress/evaluations, club admin web panel (spec Phase 3 items beyond payments)
