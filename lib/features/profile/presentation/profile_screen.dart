@@ -10,6 +10,11 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/user_avatar.dart';
+import '../../../core/services/network_status.dart';
+import '../../media/domain/media_post.dart';
+import '../../media/presentation/media_providers.dart';
+import '../../media/presentation/media_screens.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
@@ -43,7 +48,7 @@ class ProfileScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
-                  InitialsAvatar(name: user.fullName, size: 64),
+                  UserAvatar(name: user.fullName, photoPath: user.photoPath, size: 64),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
@@ -118,7 +123,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ],
             if (user.isCoach) ...[
-              SectionHeader(l.groupsLabel),
+              SectionHeader(l.groupsLabel, actionLabel: l.newGroup, onAction: () => context.push(Routes.newGroup)),
               AppCard(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 child: Column(
@@ -134,6 +139,8 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              SectionHeader(l.mediaTitle, actionLabel: l.addMedia, onAction: () => context.push(Routes.newMedia)),
+              _CoachMedia(coachId: user.id),
             ],
           ];
           final right = <Widget>[
@@ -156,9 +163,24 @@ class ProfileScreen extends ConsumerWidget {
                     onTap: () => context.push(Routes.settings),
                   ),
                   ListTile(
+                    key: const Key('open-privacy'),
                     leading: const Icon(Icons.shield_outlined),
                     title: Text(l.privacyTitle),
-                    subtitle: Text(l.privacyBody),
+                    subtitle: Text(l.privacyBody, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(Routes.privacy),
+                  ),
+                  ListTile(
+                    key: const Key('open-account'),
+                    leading: const Icon(Icons.manage_accounts_rounded),
+                    title: Text(l.accountTitle),
+                    subtitle: Text(
+                      '${l.consentsTitle} · ${l.dataExport} · ${l.deleteAccount}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(Routes.account),
                   ),
                 ],
               ),
@@ -176,23 +198,7 @@ class ProfileScreen extends ConsumerWidget {
               label: Text(l.signOut),
             ),
             const SizedBox(height: AppSpacing.sm),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-              onPressed: () async {
-                final ok = await confirmDialog(
-                  context,
-                  title: l.deleteAccount,
-                  message: l.deleteAccountConfirm,
-                  confirmLabel: l.delete,
-                  destructive: true,
-                );
-                if (ok && context.mounted) {
-                  await runGuarded(context, () => ref.read(authRepositoryProvider).deleteAccount());
-                }
-              },
-              child: Text(l.deleteAccount),
-            ),
-            Center(child: Text(l.appVersion(AppConfig.version), style: t.labelSmall)),
+            Center(child: Text(l.aboutVersion(AppConfig.version, AppConfig.environment.name), style: t.labelSmall)),
           ];
           const pad = EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl);
           if (c.maxWidth < Breakpoints.expanded) {
@@ -287,6 +293,15 @@ class _DemoSwitcher extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
+          if (ref.watch(demoBackendProvider) case final db?)
+            SwitchListTile(
+              key: const Key('demo-offline'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(l.demoOffline),
+              subtitle: Text(l.demoOfflineHint),
+              value: ref.watch(networkOnlineProvider).value == false,
+              onChanged: db.setOffline,
+            ),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -307,6 +322,32 @@ class _DemoSwitcher extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CoachMedia extends ConsumerWidget {
+  const _CoachMedia({required this.coachId});
+
+  final String coachId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final posts = ref.watch(coachMediaProvider(coachId)).value ?? const <MediaPost>[];
+    if (posts.isEmpty) {
+      return AppCard(
+        child: EmptyState(compact: true, icon: Icons.photo_library_outlined, title: l.mediaEmpty),
+      );
+    }
+    return GridView.count(
+      key: const Key('coach-media-grid'),
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
+      children: [for (final p in posts.take(9)) MediaPostTile(post: p)],
     );
   }
 }

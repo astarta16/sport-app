@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/account/presentation/account_screens.dart';
+import '../features/attendance/presentation/attendance_screen.dart';
+import '../features/attendance/presentation/progress_screen.dart';
+import '../features/coach/presentation/group_management.dart';
+import '../features/groups/presentation/invites_screen.dart';
+import '../features/matches/presentation/match_screens.dart';
+import '../features/media/presentation/media_screens.dart';
+import '../features/trainings/presentation/series_form_screen.dart';
 import '../features/authentication/domain/app_user.dart';
 import '../features/authentication/presentation/coach_pending_screen.dart';
 import '../features/authentication/presentation/otp_screen.dart';
@@ -57,12 +65,28 @@ String? resolveRedirect({
   if (user.role == UserRole.child) return location == Routes.childUnsupported ? null : Routes.childUnsupported;
   if (user.isCoach && !user.isApprovedCoach) return location == Routes.coachPending ? null : Routes.coachPending;
 
+  // Admins use the separate web dashboard (lib/main_admin.dart).
+  if (user.isAdmin) return location == Routes.adminOnly ? null : Routes.adminOnly;
   final home = user.isCoach ? Routes.coachHome : Routes.parentHome;
+  if (location == Routes.calendar) return user.isCoach ? Routes.coachCalendar : Routes.parentCalendar;
   if (location == Routes.splash || location.startsWith('/auth') || location == Routes.onboarding) return home;
   if (location == Routes.explore) return user.isCoach ? Routes.coachMap : Routes.parentMap;
   if (user.isParent && location.startsWith('/coach')) return home;
   if (user.isCoach &&
-      (location.startsWith('/parent') || location == Routes.payments || location.startsWith('/children'))) {
+      (location.startsWith('/parent') ||
+          location == Routes.payments ||
+          location == Routes.invites ||
+          (location.startsWith('/children') && !location.endsWith('/progress')))) {
+    return home;
+  }
+  if (user.isParent &&
+      (location.startsWith('/group/') ||
+          location.startsWith('/series/') ||
+          location == Routes.newMedia ||
+          location.startsWith('/media/new') ||
+          location.endsWith('/attendance') ||
+          location.startsWith('/match/new') ||
+          location.endsWith('/edit'))) {
     return home;
   }
   return null;
@@ -109,7 +133,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           branch(Routes.parentHome, const ParentHomeScreen()),
           branch(Routes.parentCalendar, const CalendarScreen()),
-          branch(Routes.parentChat, const ChatListScreen()),
           branch(Routes.parentMap, const MapScreen()),
           branch(Routes.parentProfile, const ProfileScreen()),
         ],
@@ -119,10 +142,55 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           branch(Routes.coachHome, const CoachHomeScreen()),
           branch(Routes.coachCalendar, const CalendarScreen()),
-          branch(Routes.coachChat, const ChatListScreen()),
           branch(Routes.coachMap, const MapScreen()),
           branch(Routes.coachProfile, const ProfileScreen()),
         ],
+      ),
+      GoRoute(path: Routes.adminOnly, builder: (_, _) => const AdminUseWebScreen()),
+      GoRoute(path: Routes.calendar, redirect: (_, _) => null, builder: (_, _) => const SizedBox.shrink()),
+      GoRoute(path: Routes.invites, builder: (_, _) => const InvitesScreen()),
+      GoRoute(path: Routes.account, builder: (_, _) => const AccountScreen()),
+      GoRoute(path: Routes.privacy, builder: (_, _) => const PrivacyScreen()),
+      GoRoute(
+        path: '/match/new',
+        builder: (_, s) => MatchFormScreen(groupId: s.uri.queryParameters['groupId']),
+      ),
+      GoRoute(
+        path: '/match/:id',
+        builder: (_, s) => MatchDetailScreen(matchId: s.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/match/:id/edit',
+        builder: (_, s) => MatchFormScreen(matchId: s.pathParameters['id']),
+      ),
+      GoRoute(
+        path: '/series/new',
+        builder: (_, s) => SeriesFormScreen(groupId: s.uri.queryParameters['groupId']),
+      ),
+      GoRoute(
+        path: '/series/:id/edit',
+        builder: (_, s) => SeriesFormScreen(seriesId: s.pathParameters['id'], fromDate: s.uri.queryParameters['from']),
+      ),
+      GoRoute(
+        path: '/media/new',
+        builder: (_, s) => MediaPublishScreen(groupId: s.uri.queryParameters['groupId']),
+      ),
+      GoRoute(
+        path: '/media/:id',
+        builder: (_, s) => MediaViewerScreen(postId: s.pathParameters['id']!),
+      ),
+      GoRoute(path: Routes.newGroup, builder: (_, _) => const CreateGroupScreen()),
+      GoRoute(
+        path: '/training/:id/attendance',
+        builder: (_, s) => AttendanceScreen(trainingId: s.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/children/:id/progress',
+        builder: (_, s) => ProgressScreen(childId: s.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/group/:groupId/invite',
+        builder: (_, s) => InviteChildScreen(groupId: s.pathParameters['groupId']!),
       ),
       GoRoute(
         path: '/training/new',
@@ -165,6 +233,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/club/:id',
         builder: (_, s) => ClubScreen(clubId: s.pathParameters['id']!),
       ),
+      GoRoute(path: Routes.chats, builder: (_, _) => const ChatListScreen()),
+      GoRoute(path: Routes.parentChat, redirect: (_, _) => Routes.chats),
+      GoRoute(path: Routes.coachChat, redirect: (_, _) => Routes.chats),
       GoRoute(path: Routes.notifications, builder: (_, _) => const InboxScreen()),
       GoRoute(path: Routes.notificationSettings, builder: (_, _) => const NotificationSettingsScreen()),
       GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),

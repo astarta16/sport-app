@@ -21,17 +21,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     if (user == null) return const Scaffold(body: SkeletonList());
     final prefs = user.notificationPrefs;
-    final types = [
-      NotificationType.newTraining,
-      NotificationType.trainingChanged,
-      NotificationType.trainingReminder,
-      NotificationType.chatMessage,
-      NotificationType.newPhotos,
+    final categories = [
+      NotificationCategory.trainings,
+      NotificationCategory.matches,
+      NotificationCategory.chat,
+      NotificationCategory.announcements,
       if (user.isParent) ...[
-        NotificationType.certificateExpiry,
-        NotificationType.paymentReminder,
-        NotificationType.paymentSms,
+        NotificationCategory.invitations,
+        NotificationCategory.attendance,
+        NotificationCategory.certificates,
       ],
+      if (user.isCoach) NotificationCategory.invitations,
+    ];
+    final paymentTypes = [
+      if (user.isParent) ...[NotificationType.paymentReminder, NotificationType.paymentSms],
     ];
     return Scaffold(
       appBar: AppBar(title: Text(l.notificationSettings)),
@@ -46,7 +49,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Column(
                 children: [
-                  for (final t in types)
+                  for (final c in categories)
+                    SwitchListTile(
+                      key: Key('pref-cat-${c.name}'),
+                      secondary: Icon(notificationCategoryIcon(c)),
+                      title: Text(notificationCategoryLabel(context, c)),
+                      value: prefs.isCategoryEnabled(c),
+                      onChanged: (v) => runGuarded(
+                        context,
+                        () => ref.read(authRepositoryProvider).updateNotificationPrefs(prefs.toggleCategory(c, v)),
+                      ),
+                    ),
+                  for (final t in paymentTypes)
                     SwitchListTile(
                       key: Key('pref-${t.name}'),
                       secondary: Icon(notificationIcon(t)),

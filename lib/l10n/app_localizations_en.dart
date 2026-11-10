@@ -1564,7 +1564,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attendanceMarkAllPresent => 'Mark the rest present';
 
   @override
-  String attendanceSummary(String present, String absent, String excused, String unmarked) {
+  String attendanceSummary(int present, int absent, int excused, int unmarked) {
     return '$present present · $absent absent · $excused excused · $unmarked not marked';
   }
 
@@ -1606,7 +1606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get responsesTitle => 'Parent responses';
 
   @override
-  String responsesCount(String yes, String no, String maybe) {
+  String responsesCount(int yes, int no, int maybe) {
     return '$yes yes · $no no · $maybe unsure';
   }
 
@@ -1819,7 +1819,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invitesSent => 'Sent invitations';
 
   @override
-  String birthYearShort(String year) {
+  String birthYearShort(int year) {
     return 'born $year';
   }
 
@@ -2254,7 +2254,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sportCategoryOther => 'Other';
 
   @override
-  String sportAgeMin(String age) {
+  String sportAgeMin(int age) {
     return 'Min. age: $age';
   }
 

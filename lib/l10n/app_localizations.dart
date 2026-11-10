@@ -2910,7 +2910,7 @@ abstract class AppLocalizations {
   ///
   /// In ka, this message translates to:
   /// **'{present} მოვიდა · {absent} არა · {excused} საპატიო · {unmarked} მოუნიშნავი'**
-  String attendanceSummary(String present, String absent, String excused, String unmarked);
+  String attendanceSummary(int present, int absent, int excused, int unmarked);
 
   /// No description provided for @attendanceRecorded.
   ///
@@ -2982,7 +2982,7 @@ abstract class AppLocalizations {
   ///
   /// In ka, this message translates to:
   /// **'{yes} მოვა · {no} ვერ · {maybe} არ იცის'**
-  String responsesCount(String yes, String no, String maybe);
+  String responsesCount(int yes, int no, int maybe);
 
   /// No description provided for @progressTitle.
   ///
@@ -3372,7 +3372,7 @@ abstract class AppLocalizations {
   ///
   /// In ka, this message translates to:
   /// **'{year} წ.'**
-  String birthYearShort(String year);
+  String birthYearShort(int year);
 
   /// No description provided for @pendingParentBadge.
   ///
@@ -4170,7 +4170,7 @@ abstract class AppLocalizations {
   ///
   /// In ka, this message translates to:
   /// **'მინ. ასაკი: {age}'**
-  String sportAgeMin(String age);
+  String sportAgeMin(int age);
 
   /// No description provided for @sportRequiresCert.
   ///

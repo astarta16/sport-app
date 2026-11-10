@@ -832,16 +832,16 @@
   "@attendanceSummary": {
     "placeholders": {
       "present": {
-        "type": "String"
+        "type": "int"
       },
       "absent": {
-        "type": "String"
+        "type": "int"
       },
       "excused": {
-        "type": "String"
+        "type": "int"
       },
       "unmarked": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -874,13 +874,13 @@
   "@responsesCount": {
     "placeholders": {
       "yes": {
-        "type": "String"
+        "type": "int"
       },
       "no": {
-        "type": "String"
+        "type": "int"
       },
       "maybe": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1017,7 +1017,7 @@
   "@birthYearShort": {
     "placeholders": {
       "year": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1287,7 +1287,7 @@
   "@sportAgeMin": {
     "placeholders": {
       "age": {
-        "type": "String"
+        "type": "int"
       }
     }
   },

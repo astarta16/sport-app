@@ -80,7 +80,10 @@ void main() {
   testWidgets('parent demo: send a chat message', (tester) async {
     final db = await launch(tester);
     await tapAndPump(tester, find.byKey(const Key('demo-login-${DemoIds.parent}')));
-    await tapAndPump(tester, find.text('ჩატი').last);
+    // v1.1: chat lives behind the top-bar icon, with an unread badge.
+    expect(find.byKey(const Key('chat-unread-g-football-u10')), findsNothing);
+    await tapAndPump(tester, find.byKey(const Key('chat-button')).first);
+    expect(find.byKey(const Key('chat-unread-g-football-u10')), findsOneWidget);
     await tapAndPump(tester, find.byKey(const Key('chat-tile-g-football-u10')));
     await tester.enterText(find.byKey(const Key('chat-input')), 'ტესტური შეტყობინება');
     await tapAndPump(tester, find.byKey(const Key('chat-send')));
@@ -122,13 +125,15 @@ void main() {
     expect(db.messages['g-football-u10']!.last.type, ChatMessageType.system);
     await tester.drag(find.byType(ListView).first, const Offset(0, 2000));
     await pumpFor(tester);
-    expect(find.text('ეს ვარჯიში გაუქმდა'), findsOneWidget);
+    expect(find.byKey(const Key('training-cancel-reason')), findsOneWidget);
+    expect(find.textContaining('გაუქმდა: ამინდი'), findsOneWidget);
   });
 
   testWidgets('coach demo: training form shows validation errors', (tester) async {
     await launch(tester);
     await tapAndPump(tester, find.byKey(const Key('demo-login-${DemoIds.coach}')));
     await tapAndPump(tester, find.byKey(const Key('new-training-fab')));
+    await tapAndPump(tester, find.byKey(const Key('add-training')));
     expect(find.text('ახალი ვარჯიში'), findsWidgets);
     await tapAndPump(tester, find.byKey(const Key('save-training')));
     expect(find.text('აირჩიეთ ადგილი'), findsWidgets);

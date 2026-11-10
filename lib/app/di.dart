@@ -6,6 +6,7 @@ import '../features/admin/domain/admin_models.dart';
 import '../features/attendance/domain/attendance.dart';
 import '../features/authentication/domain/auth_repository.dart';
 import '../features/chat/domain/chat_repository.dart';
+import '../features/demo/data/demo_backend.dart';
 import '../features/children/domain/children_repository.dart';
 import '../features/clubs/domain/clubs_repository.dart';
 import '../features/groups/domain/groups_repository.dart';
@@ -50,3 +51,6 @@ final mediaPostsRepositoryProvider = Provider<MediaPostsRepository>((_) => _unbo
 final moderationRepositoryProvider = Provider<ModerationRepository>((_) => _unbound('ModerationRepository'));
 final adminRepositoryProvider = Provider<AdminRepository>((_) => _unbound('AdminRepository'));
 final accountRepositoryProvider = Provider<AccountRepository>((_) => _unbound('AccountRepository'));
+
+/// The in-memory backend in demo mode, null in Firebase mode.
+final demoBackendProvider = Provider<DemoBackend?>((_) => null);

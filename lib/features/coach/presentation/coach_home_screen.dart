@@ -8,6 +8,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/top_bar_actions.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../calendar/domain/calendar_logic.dart';
@@ -19,7 +20,6 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../medical_certificates/presentation/certificates_providers.dart';
-import '../../notifications/presentation/notifications_providers.dart';
 import '../../parent/presentation/parent_context.dart';
 import '../../trainings/domain/training.dart';
 import '../../trainings/presentation/training_widgets.dart';
@@ -37,7 +37,6 @@ class CoachHomeScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     final groups = ref.watch(myGroupsProvider);
     final selected = ref.watch(coachSelectedGroupProvider);
-    final unread = ref.watch(unreadCountProvider);
     final group = selected.value;
     final showGroupPanel = context.windowSize == WindowSize.large && (groups.value?.length ?? 0) > 1;
     return Scaffold(
@@ -45,9 +44,9 @@ class CoachHomeScreen extends ConsumerWidget {
           ? null
           : FloatingActionButton.extended(
               key: const Key('new-training-fab'),
-              onPressed: () => context.push(Routes.newTraining(group.id)),
+              onPressed: () => showCoachAddSheet(context, group.id),
               icon: const Icon(Icons.add_rounded),
-              label: Text(l.newTraining),
+              label: Text(l.coachFab),
             ),
       body: SafeArea(
         bottom: false,
@@ -89,15 +88,7 @@ class CoachHomeScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          IconButton(
-                            tooltip: l.notificationsTitle,
-                            onPressed: () => context.push(Routes.notifications),
-                            icon: Badge(
-                              isLabelVisible: unread > 0,
-                              label: Text('$unread'),
-                              child: const Icon(Icons.notifications_none_rounded, size: 28),
-                            ),
-                          ),
+                          const TopBarActions(),
                         ],
                       ),
                     ),
@@ -279,6 +270,8 @@ class _QuickActions extends StatelessWidget {
     final actions = [
       (Icons.add_circle_rounded, l.newTraining, Routes.newTraining(group.id), const Key('qa-new-training')),
       (Icons.chat_bubble_rounded, l.navChat, Routes.chat(group.id), const Key('qa-chat')),
+      (Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(group.id), const Key('qa-series')),
+      (Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(group.id), const Key('qa-match')),
       (Icons.groups_rounded, l.roster, Routes.roster(group.id), const Key('qa-roster')),
       (Icons.payments_rounded, l.paymentsTitle, Routes.groupPayments(group.id), const Key('qa-payments')),
     ];
@@ -568,4 +561,31 @@ class RosterRow extends StatelessWidget {
       trailing: trailing ?? StatusPill.of(v, dense: true),
     );
   }
+}
+
+/// v1.1 §10 "+" button: one-off training, recurring schedule, match, media,
+/// invite a child.
+Future<void> showCoachAddSheet(BuildContext context, String groupId) async {
+  final l = context.l10n;
+  final options = <(Key, IconData, String, String)>[
+    (const Key('add-training'), Icons.event_rounded, l.addTrainingOne, Routes.newTraining(groupId)),
+    (const Key('add-series'), Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(groupId)),
+    (const Key('add-match'), Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(groupId)),
+    (const Key('add-media'), Icons.photo_camera_rounded, l.addMedia, Routes.newMediaFor(groupId)),
+    (const Key('add-child'), Icons.person_add_alt_1_rounded, l.addChildToGroup, Routes.inviteChild(groupId)),
+  ];
+  final route = await showAdaptiveSheet<String>(
+    context: context,
+    builder: (context) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (key, icon, label, route) in options)
+            ListTile(key: key, leading: Icon(icon), title: Text(label), onTap: () => Navigator.pop(context, route)),
+          const SizedBox(height: AppSpacing.sm),
+        ],
+      ),
+    ),
+  );
+  if (route != null && context.mounted) context.push(route);
 }

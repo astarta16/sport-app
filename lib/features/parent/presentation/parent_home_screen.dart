@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../attendance/presentation/attendance_providers.dart';
+import '../../attendance/presentation/attendance_widgets.dart';
+import '../../matches/domain/match.dart';
+import '../../matches/presentation/match_screens.dart';
+import '../../matches/presentation/matches_providers.dart';
+import '../../media/presentation/media_screens.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
@@ -9,17 +15,16 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/top_bar_actions.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../calendar/domain/calendar_logic.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../authentication/presentation/session_providers.dart';
-import '../../chat/presentation/chat_providers.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../children/domain/child.dart';
 import '../../clubs/presentation/clubs_providers.dart';
 import '../../groups/domain/group.dart';
-import '../../media/presentation/media_providers.dart';
 import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../medical_certificates/presentation/certificates_providers.dart';
 import '../../notifications/presentation/notifications_providers.dart';
@@ -140,19 +145,23 @@ class ParentHomeScreen extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const _InvitesBanner(),
                     const SizedBox(height: AppSpacing.md),
                     if (group == null) noGroup else _NextTrainingSection(group: group),
+                    if (group != null) _NextMatch(groupIds: {group.id}),
                     const SizedBox(height: AppSpacing.md),
                     tiles,
+                    const SizedBox(height: AppSpacing.sm),
+                    _AttendanceCard(child: child),
                     if (group != null) ...[
                       SectionHeader(
-                        l.coachMessages,
-                        actionLabel: l.openChat,
-                        onAction: () => context.push(Routes.chat(group.id)),
+                        l.weekSchedule,
+                        actionLabel: l.seeAll,
+                        onAction: () => context.go(Routes.parentCalendar),
                       ),
-                      _CoachMessages(group: group),
-                      SectionHeader(l.recentPhotos),
-                      _RecentPhotos(group: group),
+                      _WeekStrip(groupIds: child.groupIds.toSet()),
+                      SectionHeader(l.mediaRecent),
+                      MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
                     ],
                   ],
                 );
@@ -169,16 +178,14 @@ class ParentHomeScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          const _InvitesBanner(),
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
-                            SectionHeader(
-                              l.coachMessages,
-                              actionLabel: l.openChat,
-                              onAction: () => context.push(Routes.chat(group.id)),
-                            ),
-                            _CoachMessages(group: group),
-                            SectionHeader(l.recentPhotos),
-                            _RecentPhotos(group: group),
+                            _NextMatch(groupIds: {group.id}),
+                            SectionHeader(l.weekSchedule),
+                            _WeekStrip(groupIds: child.groupIds.toSet()),
+                            SectionHeader(l.mediaRecent),
+                            MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
                           ],
                         ],
                       ),
@@ -191,6 +198,8 @@ class ParentHomeScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           tiles,
+                          const SizedBox(height: AppSpacing.sm),
+                          _AttendanceCard(child: child),
                           if (group != null) ...[
                             SectionHeader(
                               l.upcoming,
@@ -230,7 +239,6 @@ class _Header extends ConsumerWidget {
     final hour = ref.watch(clockProvider)().hour;
     final name = user?.firstName ?? '';
     final greeting = hour < 12 ? l.greetingMorning(name) : (hour < 18 ? l.greetingDay(name) : l.greetingEvening(name));
-    final unread = ref.watch(unreadCountProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.sm, 0),
       child: Row(
@@ -257,16 +265,7 @@ class _Header extends ConsumerWidget {
               ],
             ),
           ),
-          IconButton(
-            key: const Key('notifications-button'),
-            tooltip: l.notificationsTitle,
-            onPressed: () => context.push(Routes.notifications),
-            icon: Badge(
-              isLabelVisible: unread > 0,
-              label: Text('$unread'),
-              child: const Icon(Icons.notifications_none_rounded, size: 28),
-            ),
-          ),
+          const TopBarActions(),
         ],
       ),
     );
@@ -515,93 +514,6 @@ class _PaymentTile extends ConsumerWidget {
   }
 }
 
-class _CoachMessages extends ConsumerWidget {
-  const _CoachMessages({required this.group});
-
-  final Group group;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final f = Fmt.of(context);
-    final messages = ref.watch(chatMessagesProvider(group.id));
-    return AsyncView(
-      value: messages,
-      compact: true,
-      loading: const Skeleton(height: 90, radius: AppSpacing.radius),
-      data: (list) {
-        final fromCoach = list.where((m) => m.senderRole == UserRole.coach).toList().reversed.take(3).toList();
-        if (fromCoach.isEmpty) {
-          return AppCard(
-            child: EmptyState(compact: true, icon: Icons.chat_bubble_outline_rounded, title: l.noMessages),
-          );
-        }
-        return AppCard(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-          onTap: () => context.push(Routes.chat(group.id)),
-          child: Column(
-            children: [
-              for (final m in fromCoach)
-                ListTile(
-                  leading: InitialsAvatar(name: m.senderName, size: 38),
-                  title: Text(
-                    m.text,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  subtitle: Text(
-                    '${m.senderName} · ${f.dateTime(m.createdAt)}',
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _RecentPhotos extends ConsumerWidget {
-  const _RecentPhotos({required this.group});
-
-  final Group group;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final trainings = ref.watch(myTrainingsProvider).value ?? const <Training>[];
-    final withPhotos = trainings.where((t) => t.groupId == group.id && t.photoUrls.isNotEmpty).toList()
-      ..sort((a, b) => b.startAt.compareTo(a.startAt));
-    final photos = [
-      for (final t in withPhotos.take(4))
-        for (final p in t.photoUrls) (t, p),
-    ].take(10).toList();
-    if (photos.isEmpty) {
-      return AppCard(
-        child: EmptyState(compact: true, icon: Icons.photo_library_outlined, title: l.noPhotos),
-      );
-    }
-    return SizedBox(
-      height: 120,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: photos.length,
-        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.xs),
-        itemBuilder: (context, i) {
-          final (t, p) = photos[i];
-          return GestureDetector(
-            onTap: () => context.push(Routes.training(t.id)),
-            child: MediaPhoto(refPath: p, sportKey: group.sportId, size: 120),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// Caps header rows to the dashboard width on large windows.
 class _Bounded extends StatelessWidget {
   const _Bounded({required this.child});
 
@@ -668,6 +580,155 @@ class _NotificationsPreview extends ConsumerWidget {
               },
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Open group invitations for this parent (v1.1 §2).
+class _InvitesBanner extends ConsumerWidget {
+  const _InvitesBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final open = ref.watch(openInvitesProvider);
+    if (open.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: AppCard(
+        key: const Key('invites-banner'),
+        color: AppColors.volt.withValues(alpha: 0.25),
+        onTap: () => context.push(Routes.invites),
+        child: Row(
+          children: [
+            const Icon(Icons.group_add_rounded),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(context.l10n.inviteBanner(open.length), style: Theme.of(context).textTheme.titleSmall),
+            ),
+            const Icon(Icons.chevron_right_rounded),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NextMatch extends ConsumerWidget {
+  const _NextMatch({required this.groupIds});
+
+  final Set<String> groupIds;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final m = nextMatch(ref.watch(myMatchesProvider).value ?? const [], groupIds, ref.watch(clockProvider)());
+    if (m == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: NextMatchCard(match: m),
+    );
+  }
+}
+
+/// Recorded attendance this month (coach-recorded only).
+class _AttendanceCard extends ConsumerWidget {
+  const _AttendanceCard({required this.child});
+
+  final Child child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final stats = ref.watch(childStatsProvider(child.id)).value;
+    final month = stats?.monthOf(ref.watch(clockProvider)());
+    return AppCard(
+      key: const Key('attendance-tile'),
+      onTap: () => context.push(Routes.progress(child.id)),
+      child: Row(
+        children: [
+          const Icon(Icons.fact_check_rounded, color: AppColors.success),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l.attendanceTile, style: Theme.of(context).textTheme.labelMedium),
+                Text(
+                  month?.rate == null ? l.attendanceNoData : l.attendanceTileValue((month!.rate! * 100).round()),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                if (month?.rate != null) ...[const SizedBox(height: 6), AttendanceRateBar(rate: month!.rate)],
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            l.progressShort,
+            style: const TextStyle(color: AppColors.blue, fontWeight: FontWeight.w700),
+          ),
+          const Icon(Icons.chevron_right_rounded),
+        ],
+      ),
+    );
+  }
+}
+
+/// Trainings and matches of the next 7 days, one chip per day.
+class _WeekStrip extends ConsumerWidget {
+  const _WeekStrip({required this.groupIds});
+
+  final Set<String> groupIds;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final f = Fmt.of(context);
+    final now = ref.watch(clockProvider)();
+    final end = DateUtils.dateOnly(now).add(const Duration(days: 7));
+    final trainings = (ref.watch(myTrainingsProvider).value ?? const <Training>[])
+        .where((t) => groupIds.contains(t.groupId) && t.endAt.isAfter(now) && t.startAt.isBefore(end))
+        .toList();
+    final matches = (ref.watch(myMatchesProvider).value ?? const <SportMatch>[])
+        .where((m) => groupIds.contains(m.groupId) && m.endAt.isAfter(now) && m.startAt.isBefore(end))
+        .toList();
+    final items = <(DateTime, String, bool, bool, String)>[
+      for (final t in trainings)
+        (t.startAt, Routes.training(t.id), false, t.status == TrainingStatus.cancelled, f.time(t.startAt)),
+      for (final m in matches)
+        (m.startAt, Routes.match(m.id), true, m.status == MatchStatus.cancelled, f.time(m.startAt)),
+    ]..sort((a, b) => a.$1.compareTo(b.$1));
+    if (items.isEmpty) {
+      return AppCard(
+        child: EmptyState(compact: true, icon: Icons.event_available_rounded, title: l.weekEmpty),
+      );
+    }
+    return SizedBox(
+      height: 84,
+      child: ListView.separated(
+        key: const Key('week-strip'),
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.xs),
+        itemBuilder: (context, i) {
+          final (at, route, isMatch, cancelled, time) = items[i];
+          return AppCard(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            color: isMatch ? AppColors.volt.withValues(alpha: 0.25) : null,
+            onTap: () => context.push(route),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(f.weekdayShort(at), style: Theme.of(context).textTheme.labelSmall),
+                Text(
+                  time,
+                  style: Theme.of(context).textTheme.titleSmall
+                      ?.copyWith(decoration: cancelled ? TextDecoration.lineThrough : null),
+                ),
+                Icon(isMatch ? Icons.emoji_events_rounded : Icons.sports_rounded, size: 16),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -1532,7 +1532,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get attendanceMarkAllPresent => 'დანარჩენები — მოვიდა';
 
   @override
-  String attendanceSummary(String present, String absent, String excused, String unmarked) {
+  String attendanceSummary(int present, int absent, int excused, int unmarked) {
     return '$present მოვიდა · $absent არა · $excused საპატიო · $unmarked მოუნიშნავი';
   }
 
@@ -1574,7 +1574,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get responsesTitle => 'მშობლების პასუხები';
 
   @override
-  String responsesCount(String yes, String no, String maybe) {
+  String responsesCount(int yes, int no, int maybe) {
     return '$yes მოვა · $no ვერ · $maybe არ იცის';
   }
 
@@ -1787,7 +1787,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get invitesSent => 'გაგზავნილი მოწვევები';
 
   @override
-  String birthYearShort(String year) {
+  String birthYearShort(int year) {
     return '$year წ.';
   }
 
@@ -2222,7 +2222,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get sportCategoryOther => 'სხვა';
 
   @override
-  String sportAgeMin(String age) {
+  String sportAgeMin(int age) {
     return 'მინ. ასაკი: $age';
   }
 

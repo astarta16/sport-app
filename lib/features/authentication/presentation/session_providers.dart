@@ -14,3 +14,5 @@ final publicProfileProvider = FutureProvider.autoDispose.family<PublicProfile?, 
   ref.watch(currentUidProvider);
   return ref.watch(userDirectoryRepositoryProvider).profile(uid);
 });
+
+final sessionRoleProvider = Provider<UserRole?>((ref) => ref.watch(currentUserProvider.select((u) => u?.role)));

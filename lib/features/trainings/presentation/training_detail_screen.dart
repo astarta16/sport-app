@@ -14,6 +14,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/cancel_reason_dialog.dart';
 import '../../../core/widgets/visuals.dart';
+import '../../attendance/presentation/attendance_widgets.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../clubs/domain/club.dart';
@@ -114,7 +115,17 @@ class _Body extends ConsumerWidget {
                 '${f.time(training.startAt)} – ${f.time(training.endAt)}',
                 style: t.displaySmall?.copyWith(color: Colors.white),
               ),
-              Text(l.durationMinutes(training.durationMin), style: t.bodyMedium?.copyWith(color: Colors.white70)),
+              Row(
+                children: [
+                  Text(l.durationMinutes(training.durationMin), style: t.bodyMedium?.copyWith(color: Colors.white70)),
+                  if (training.isRecurring && !training.detached) ...[
+                    const SizedBox(width: AppSpacing.xs),
+                    const Icon(Icons.event_repeat_rounded, size: 16, color: Colors.white70),
+                    const SizedBox(width: 2),
+                    Text(l.seriesRecurringBadge, style: t.bodySmall?.copyWith(color: Colors.white70)),
+                  ],
+                ],
+              ),
               if (training.previousStartAt != null && training.status == TrainingStatus.moved)
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
@@ -128,9 +139,16 @@ class _Body extends ConsumerWidget {
         ),
         if (cancelled) ...[
           const SizedBox(height: AppSpacing.sm),
-          _Banner(icon: Icons.event_busy_rounded, color: AppColors.danger, text: l.cancelledBanner),
+          _Banner(
+            key: const Key('training-cancel-reason'),
+            icon: Icons.event_busy_rounded,
+            color: AppColors.danger,
+            text: training.cancelReason == null ? l.cancelledBanner : l.cancelledWithReason(training.cancelReason!),
+          ),
         ],
         if (canManage) _CoachActions(training: training, group: group!),
+        if (canManage) CoachAttendanceSummary(training: training, group: group!),
+        if (user != null && user.isParent && group != null) RsvpSection(training: training, group: group!),
         SectionHeader(l.venueLabel),
         if (venue != null) _VenueCard(venue: venue, sport: sport) else const Text('—'),
         SectionHeader(l.coachLabel),
@@ -182,7 +200,7 @@ class _Body extends ConsumerWidget {
 }
 
 class _Banner extends StatelessWidget {
-  const _Banner({required this.icon, required this.color, required this.text});
+  const _Banner({super.key, required this.icon, required this.color, required this.text});
 
   final IconData icon;
   final Color color;
@@ -275,6 +293,41 @@ class _CoachActions extends ConsumerWidget {
   final Training training;
   final Group group;
 
+  /// Recurring occurrences ask whether to edit only this one (detaches it)
+  /// or this and all following ones (splits the series).
+  Future<void> _edit(BuildContext context) async {
+    final l = context.l10n;
+    if (!training.isRecurring || training.detached || training.occurrenceDate == null) {
+      context.push(Routes.editTraining(training.id));
+      return;
+    }
+    final scope = await showDialog<String>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        key: const Key('edit-scope-dialog'),
+        title: Text(l.editScopeTitle),
+        children: [
+          SimpleDialogOption(
+            key: const Key('edit-scope-this'),
+            onPressed: () => Navigator.pop(context, 'this'),
+            child: ListTile(leading: const Icon(Icons.event_rounded), title: Text(l.editScopeThis)),
+          ),
+          SimpleDialogOption(
+            key: const Key('edit-scope-future'),
+            onPressed: () => Navigator.pop(context, 'future'),
+            child: ListTile(leading: const Icon(Icons.event_repeat_rounded), title: Text(l.editScopeFuture)),
+          ),
+        ],
+      ),
+    );
+    if (!context.mounted || scope == null) return;
+    if (scope == 'this') {
+      context.push(Routes.editTraining(training.id));
+    } else {
+      context.push(Routes.editSeries(training.seriesId!, training.occurrenceDate!));
+    }
+  }
+
   Future<void> _reschedule(BuildContext context, WidgetRef ref) async {
     final l = context.l10n;
     final now = ref.read(clockProvider)();
@@ -340,7 +393,7 @@ class _CoachActions extends ConsumerWidget {
               key: const Key('edit-training'),
               avatar: const Icon(Icons.edit_rounded, size: 18),
               label: Text(l.edit),
-              onPressed: () => context.push(Routes.editTraining(training.id)),
+              onPressed: () => _edit(context),
             ),
           if (active)
             ActionChip(

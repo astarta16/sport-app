@@ -102,7 +102,9 @@ void main() {
   testWidgets('chat master-detail on iPad: conversation opens beside the list', (tester) async {
     final db = await boot(tester, const Size(1032, 1376));
     await signInAs(tester, db, DemoIds.parent);
+    // Legacy tab path redirects to the top-bar chat list (v1.1 §4).
     await visit(tester, 'chat', ['/parent/chat']);
+    expect(routerOf(tester).routerDelegate.currentConfiguration.uri.path, '/chats');
     expect(find.byKey(const Key('chat-input')), findsOneWidget);
     await tester.tap(find.byKey(const Key('chat-tile-g-basket-u13')));
     await pumpFrames(tester);
@@ -110,8 +112,8 @@ void main() {
     await tester.tap(find.byKey(const Key('chat-send')));
     await pumpFrames(tester);
     expect(db.messages['g-basket-u13']!.last.text, 'iPad message');
-    // Still on the tab route — nothing was pushed.
-    expect(routerOf(tester).routerDelegate.currentConfiguration.uri.path, '/parent/chat');
+    // Still on the chat list — the room opened in the detail pane.
+    expect(routerOf(tester).routerDelegate.currentConfiguration.uri.path, '/chats');
     expectNoLayoutErrors();
   });
 

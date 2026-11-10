@@ -18,6 +18,7 @@ import '../../groups/presentation/groups_providers.dart';
 import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../medical_certificates/presentation/certificates_providers.dart';
 import 'coach_home_screen.dart';
+import 'group_management.dart';
 
 /// Group roster with certificate status, parents (phone visible to the
 /// group's coach only) and member management.
@@ -40,7 +41,16 @@ class GroupRosterScreen extends ConsumerWidget {
         value: members,
         onRetry: () => ref.invalidate(groupMembersProvider(groupId)),
         data: (list) {
-          if (list.isEmpty) return EmptyState(icon: Icons.group_off_rounded, title: l.roster, body: l.noGroupsInClub);
+          final header = GroupManagementHeader(groupId: groupId);
+          if (list.isEmpty) {
+            return ListView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              children: [
+                header,
+                EmptyState(icon: Icons.group_off_rounded, title: l.roster, body: l.noGroupsInClub),
+              ],
+            );
+          }
           Widget card(int i) {
             final c = list[i];
             final mine = certs.where((x) => x.childId == c.id).toList();
@@ -85,28 +95,38 @@ class GroupRosterScreen extends ConsumerWidget {
                         ),
                       ),
                     _ParentsList(parentIds: c.parentIds),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-                        onPressed: () async {
-                          final ok = await confirmDialog(
-                            context,
-                            title: l.removeFromGroup,
-                            message: l.removeFromGroupConfirm(c.fullName),
-                            confirmLabel: l.removeFromGroup,
-                            destructive: true,
-                          );
-                          if (ok && context.mounted) {
-                            await runGuarded(
+                    Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: AppSpacing.xs,
+                      children: [
+                        TextButton.icon(
+                          key: Key('roster-progress-${c.id}'),
+                          onPressed: () => context.push(Routes.progress(c.id)),
+                          icon: const Icon(Icons.insights_rounded),
+                          label: Text(l.progressShort),
+                        ),
+                        TextButton.icon(
+                          key: Key('roster-remove-${c.id}'),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+                          onPressed: () async {
+                            final ok = await confirmDialog(
                               context,
-                              () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
+                              title: l.removeFromGroup,
+                              message: l.removeFromGroupConfirm(c.fullName),
+                              confirmLabel: l.removeFromGroup,
+                              destructive: true,
                             );
-                          }
-                        },
-                        icon: const Icon(Icons.person_remove_rounded),
-                        label: Text(l.removeFromGroup),
-                      ),
+                            if (ok && context.mounted) {
+                              await runGuarded(
+                                context,
+                                () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.person_remove_rounded),
+                          label: Text(l.removeFromGroup),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -120,9 +140,9 @@ class GroupRosterScreen extends ConsumerWidget {
               if (c.maxWidth < Breakpoints.medium) {
                 return ListView.separated(
                   padding: const EdgeInsets.all(AppSpacing.lg),
-                  itemCount: list.length,
+                  itemCount: list.length + 1,
                   separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
-                  itemBuilder: (context, i) => card(i),
+                  itemBuilder: (context, i) => i == 0 ? header : card(i - 1),
                 );
               }
               return SingleChildScrollView(
@@ -130,12 +150,19 @@ class GroupRosterScreen extends ConsumerWidget {
                 padding: EdgeInsets.all(context.pagePadding),
                 child: ConstrainedContent(
                   maxWidth: Breakpoints.dashboard,
-                  child: ResponsiveGrid(
-                    minItemWidth: 340,
-                    maxColumns: 3,
-                    spacing: AppSpacing.sm,
-                    runSpacing: AppSpacing.sm,
-                    children: [for (var i = 0; i < list.length; i++) card(i)],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      header,
+                      const SizedBox(height: AppSpacing.sm),
+                      ResponsiveGrid(
+                        minItemWidth: 340,
+                        maxColumns: 3,
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.sm,
+                        children: [for (var i = 0; i < list.length; i++) card(i)],
+                      ),
+                    ],
                   ),
                 ),
               );

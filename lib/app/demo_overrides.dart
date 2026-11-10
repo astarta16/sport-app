@@ -24,6 +24,7 @@ import 'di.dart';
 /// Binds every repository to the in-memory demo backend.
 List<Override> demoOverrides(DemoBackend db) => [
   appModeProvider.overrideWithValue(AppMode.demo),
+  demoBackendProvider.overrideWithValue(db),
   clockProvider.overrideWithValue(db.clock),
   authRepositoryProvider.overrideWithValue(DemoAuthRepository(db)),
   userDirectoryRepositoryProvider.overrideWithValue(DemoUserDirectoryRepository(db)),

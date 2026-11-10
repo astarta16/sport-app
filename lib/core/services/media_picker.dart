@@ -25,6 +25,33 @@ class MediaPicker {
     return f == null ? null : _toUpload(f);
   }
 
+  /// Video from camera or gallery, capped at 60 s by the picker (v1.1 §5).
+  /// Transcoding to H.264/720p happens server-side in production (see
+  /// docs/firebase-setup.md); size and length are validated before upload.
+  static Future<PhotoUpload?> pickVideo({required bool camera}) async {
+    final f = await _picker.pickVideo(
+      source: camera ? ImageSource.camera : ImageSource.gallery,
+      maxDuration: const Duration(seconds: 60),
+    );
+    if (f == null) return null;
+    final bytes = await f.readAsBytes();
+    final name = f.name.toLowerCase();
+    final mime = name.endsWith('.mov') ? 'video/quicktime' : 'video/mp4';
+    return PhotoUpload(bytes: bytes, fileName: f.name, mimeType: mime);
+  }
+
+  /// Square avatar, compressed to ≤ 512 px JPEG (v1.1 §3: ≤ 1 MB).
+  static Future<PhotoUpload?> pickAvatar({required bool camera}) async {
+    final f = await _picker.pickImage(
+      source: camera ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 80,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+    if (f == null) return null;
+    return PhotoUpload(bytes: await f.readAsBytes(), fileName: 'avatar.jpg', mimeType: 'image/jpeg');
+  }
+
   /// PDF/JPG/PNG document from the file system (no recompression).
   static Future<PhotoUpload?> pickDocument() async {
     final files = await FilePicker.pickFiles(

@@ -27,6 +27,7 @@ class Fmt {
   String fullDate(DateTime d) => DateFormat('d MMMM y', locale).format(d);
   String numericDate(DateTime d) => DateFormat('dd.MM.y', locale).format(d);
   String monthYear(DateTime d) => DateFormat('LLLL y', locale).format(d);
+  String monthShort(DateTime d) => DateFormat('LLL', locale).format(d);
   String dateTime(DateTime d) => '${dayMonth(d)}, ${time(d)}';
   String money(num amount) =>
       '${NumberFormat.decimalPatternDigits(locale: locale, decimalDigits: amount % 1 == 0 ? 0 : 2).format(amount)} ₾';

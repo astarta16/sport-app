@@ -9,6 +9,7 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
+import '../../attendance/presentation/attendance_providers.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../clubs/domain/club.dart';
@@ -93,6 +94,7 @@ class _Body extends ConsumerWidget {
             ],
           ),
         ),
+        if (canEdit) ...[const SizedBox(height: AppSpacing.sm), _ProgressTile(childId: child.id)],
         SectionHeader(l.sportsLabel),
         Wrap(
           spacing: 8,
@@ -126,9 +128,42 @@ class _Body extends ConsumerWidget {
                   leading: SportBadge(sportKey: groups[gid]!.sportId, size: 40),
                   title: Text(groups[gid]!.name),
                   subtitle: Text(clubs[groups[gid]!.clubId]?.name ?? ''),
+                  trailing: canEdit
+                      ? IconButton(
+                          key: Key('leave-$gid'),
+                          tooltip: l.leaveGroup,
+                          icon: const Icon(Icons.logout_rounded),
+                          onPressed: () async {
+                            final ok = await confirmDialog(
+                              context,
+                              title: l.leaveGroup,
+                              message: l.leaveGroupConfirm(child.firstName, groups[gid]!.name),
+                              confirmLabel: l.leaveGroup,
+                              destructive: true,
+                            );
+                            if (ok && context.mounted) {
+                              await runGuarded(
+                                context,
+                                () => ref.read(groupsRepositoryProvider).leaveGroup(groupId: gid, childId: child.id),
+                                success: l.leftGroup,
+                              );
+                            }
+                          },
+                        )
+                      : null,
                 ),
               ),
             ),
+        if (canEdit)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const Key('join-by-code'),
+              onPressed: () => showJoinByCodeDialog(context, ref, child),
+              icon: const Icon(Icons.vpn_key_rounded),
+              label: Text(l.joinGroup),
+            ),
+          ),
         for (final r in requests)
           AppCard(
             padding: const EdgeInsets.symmetric(vertical: 2),
@@ -158,13 +193,16 @@ class _Body extends ConsumerWidget {
             child: Column(
               children: [
                 SwitchListTile(
+                  key: const Key('media-consent'),
                   value: child.photoConsent,
                   title: Text(l.photoConsentLabel),
-                  subtitle: Text(l.photoConsentHelp),
-                  onChanged: (v) => runGuarded(
-                    context,
-                    () => ref.read(childrenRepositoryProvider).updateChild(child.copyWith(photoConsent: v)),
+                  subtitle: Text(
+                    child.mediaConsentAt == null
+                        ? l.photoConsentHelp
+                        : '${l.photoConsentHelp}\n${Fmt.of(context).fullDate(child.mediaConsentAt!)}',
                   ),
+                  onChanged: (v) =>
+                      runGuarded(context, () => ref.read(childrenRepositoryProvider).setMediaConsent(child.id, v)),
                 ),
                 ListTile(
                   enabled: false,
@@ -214,5 +252,81 @@ class _Body extends ConsumerWidget {
         ],
       ],
     );
+  }
+}
+
+class _ProgressTile extends ConsumerWidget {
+  const _ProgressTile({required this.childId});
+
+  final String childId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final stats = ref.watch(childStatsProvider(childId)).value;
+    final month = stats?.monthOf(ref.watch(clockProvider)());
+    return AppCard(
+      key: const Key('child-progress-tile'),
+      onTap: () => context.push(Routes.progress(childId)),
+      child: Row(
+        children: [
+          const Icon(Icons.insights_rounded, color: AppColors.blue),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l.progressTitle, style: Theme.of(context).textTheme.titleSmall),
+                Text(
+                  [
+                    if (stats != null) '${l.progressTrainings}: ${stats.totalPresent}',
+                    if (month?.rate != null) l.attendanceTileValue((month!.rate! * 100).round()),
+                  ].join(' · '),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right_rounded),
+        ],
+      ),
+    );
+  }
+}
+
+/// Parent enters a group code for this child → request the coach approves.
+Future<void> showJoinByCodeDialog(BuildContext context, WidgetRef ref, Child child) async {
+  final l = context.l10n;
+  final code = TextEditingController();
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(l.joinGroup),
+      content: TextField(
+        key: const Key('join-code-field'),
+        controller: code,
+        autofocus: true,
+        maxLength: 6,
+        textCapitalization: TextCapitalization.characters,
+        decoration: InputDecoration(labelText: l.joinGroupCodeLabel),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l.cancel)),
+        FilledButton(
+          key: const Key('join-code-submit'),
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(l.send),
+        ),
+      ],
+    ),
+  );
+  final text = code.text;
+  code.dispose();
+  if (ok != true || !context.mounted) return;
+  try {
+    final name = await ref.read(groupsRepositoryProvider).joinByCode(code: text, childId: child.id);
+    if (context.mounted) showAppSnack(context, l.joinGroupSent(name));
+  } catch (e) {
+    if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
   }
 }

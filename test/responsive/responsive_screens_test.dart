@@ -120,6 +120,15 @@ void main() {
         '/notifications/settings',
         '/settings',
         '/club/club-1',
+        // v1.1 / v1.2
+        '/chats',
+        '/invites',
+        '/children/child-1/progress',
+        '/match/match-1',
+        '/match/match-4',
+        '/media/post-1',
+        '/account',
+        '/account/privacy',
       ]);
       expectNoLayoutErrors();
     });
@@ -142,6 +151,18 @@ void main() {
         '/group/g-football-u10',
         '/group/g-football-u10/payments',
         '/certificates/child-1',
+        // v1.1 / v1.2
+        '/chats',
+        '/training/${upcoming.id}/attendance',
+        '/series/new?groupId=g-football-u10',
+        '/series/ser-u12/edit?from=${testNow.year}-${testNow.month.toString().padLeft(2, '0')}-${testNow.day.toString().padLeft(2, '0')}',
+        '/match/new?groupId=g-football-u10',
+        '/match/match-1',
+        '/media/new?groupId=g-football-u10',
+        '/group/new',
+        '/group/g-football-u10/invite',
+        '/children/child-1/progress',
+        '/account',
       ]);
       expectNoLayoutErrors();
     });

@@ -44,7 +44,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
       value: groups,
       onRetry: () => ref.invalidate(myGroupsProvider),
       data: (list) {
-        if (list.isEmpty) return EmptyState(icon: Icons.forum_outlined, title: l.noChats);
+        if (list.isEmpty) return EmptyState(icon: Icons.forum_outlined, title: l.chatsEmpty);
         return ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
@@ -65,7 +65,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.chatGroups)),
+      appBar: AppBar(title: Text(l.chatsTitle)),
       body: MasterDetailLayout(
         master: master,
         detail: selected == null
@@ -88,9 +88,19 @@ class _ChatTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(chatMessagesProvider(group.id)).value ?? const [];
-    final last = messages.isEmpty ? null : messages.last;
+    final summary = (ref.watch(chatSummariesProvider).value ?? const [])
+        .where((s) => s.groupId == group.id)
+        .firstOrNull;
+    final last = summary?.lastMessage;
+    final unread = summary?.unread ?? 0;
     final f = Fmt.of(context);
+    final l = context.l10n;
+    final preview = switch (last) {
+      null => l.chatEmpty,
+      final m when m.hidden => l.messageHidden,
+      final m when m.isSystem => m.text,
+      final m => '${m.senderName.split(' ').first}: ${m.text.isEmpty ? '📷' : m.text}',
+    };
     return AppCard(
       key: Key('chat-tile-${group.id}'),
       padding: const EdgeInsets.all(AppSpacing.sm),
@@ -107,17 +117,27 @@ class _ChatTile extends ConsumerWidget {
                 Text(group.name, style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 2),
                 Text(
-                  last == null
-                      ? context.l10n.chatEmpty
-                      : '${last.senderName.split(' ').first}: ${last.text.isEmpty ? '📷' : last.text}',
+                  preview,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: unread > 0 ? FontWeight.w700 : null,
+                    color: unread > 0 ? Theme.of(context).colorScheme.onSurface : null,
+                  ),
                 ),
               ],
             ),
           ),
-          if (last != null) Text(f.time(last.createdAt), style: Theme.of(context).textTheme.labelSmall),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (last != null) Text(f.time(last.createdAt), style: Theme.of(context).textTheme.labelSmall),
+              if (unread > 0) ...[
+                const SizedBox(height: 4),
+                Badge(key: Key('chat-unread-${group.id}'), label: Text('$unread'), largeSize: 20),
+              ],
+            ],
+          ),
         ],
       ),
     );

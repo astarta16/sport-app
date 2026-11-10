@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/widgets/top_bar_actions.dart';
 import '../core/l10n/l10n.dart';
 import '../core/layout/responsive.dart';
 import '../core/theme/app_theme.dart';
 import '../features/authentication/presentation/splash_screen.dart';
-import '../features/notifications/presentation/notifications_providers.dart';
-import 'routes.dart';
 
-/// Home · Calendar · Chat · Map · Profile (spec §6.1).
+/// Home · Calendar · Map · Profile (v1.1 §10 — chat moved to the top bar).
 ///
 /// * compact (< 600): bottom [NavigationBar] — the original phone design.
 /// * medium / expanded (600–1199): [NavigationRail] with labels.
@@ -30,7 +29,6 @@ class AppShell extends ConsumerWidget {
     final items = [
       (Icons.home_outlined, Icons.home_rounded, l.navHome),
       (Icons.calendar_month_outlined, Icons.calendar_month_rounded, l.navCalendar),
-      (Icons.chat_bubble_outline_rounded, Icons.chat_bubble_rounded, l.navChat),
       (Icons.map_outlined, Icons.map_rounded, l.navMap),
       (Icons.person_outline_rounded, Icons.person_rounded, l.navProfile),
     ];
@@ -58,7 +56,6 @@ class AppShell extends ConsumerWidget {
     }
 
     final extended = size == WindowSize.large;
-    final unread = ref.watch(unreadCountProvider);
     return Scaffold(
       body: Row(
         children: [
@@ -96,18 +93,9 @@ class AppShell extends ConsumerWidget {
                                 )
                               : const BrandMark(size: 40),
                         ),
-                        trailing: Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.lg),
-                          child: IconButton(
-                            key: const Key('rail-notifications'),
-                            tooltip: l.notificationsTitle,
-                            onPressed: () => context.push(Routes.notifications),
-                            icon: Badge(
-                              isLabelVisible: unread > 0,
-                              label: Text('$unread'),
-                              child: const Icon(Icons.notifications_none_rounded),
-                            ),
-                          ),
+                        trailing: const Padding(
+                          padding: EdgeInsets.only(top: AppSpacing.lg),
+                          child: TopBarActions(key: Key('rail-actions'), iconSize: 24, vertical: true),
                         ),
                         destinations: [
                           for (final (icon, selected, label) in items)

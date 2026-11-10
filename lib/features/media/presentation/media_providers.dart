@@ -5,8 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../authentication/presentation/session_providers.dart';
+import '../../groups/presentation/groups_providers.dart';
+import '../domain/media_post.dart';
 
-final mediaBytesProvider = FutureProvider.family<Uint8List?, String>((ref, refPath) {
+/// Private bytes, re-fetched per signed-in user; access is re-checked by
+/// the backend (membership-based), so a revoked parent gets an error.
+final mediaBytesProvider = FutureProvider.autoDispose.family<Uint8List?, String>((ref, refPath) {
+  ref.watch(currentUidProvider);
   if (refPath.startsWith('demo://')) return Future.value(null);
   return ref.watch(mediaRepositoryProvider).load(refPath);
 });
@@ -25,3 +31,19 @@ class MediaPhoto extends ConsumerWidget {
     return TrainingPhoto(url: refPath, bytes: bytes, sportKey: sportKey, size: size);
   }
 }
+
+/// Coach media posts visible to the user (their groups).
+final mediaFeedProvider = StreamProvider<List<MediaPost>>((ref) async* {
+  if (ref.watch(currentUidProvider) == null) {
+    yield const [];
+    return;
+  }
+  final groups = await ref.watch(myGroupsProvider.future);
+  final ids = groups.map((g) => g.id).toList()..sort();
+  yield* ref.watch(mediaPostsRepositoryProvider).watchForGroups(ids);
+});
+
+final coachMediaProvider = StreamProvider.autoDispose.family<List<MediaPost>, String>((ref, coachId) {
+  ref.watch(currentUidProvider);
+  return ref.watch(mediaPostsRepositoryProvider).watchByCoach(coachId);
+});

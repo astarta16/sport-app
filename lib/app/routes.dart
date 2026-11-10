@@ -13,6 +13,8 @@ class Routes {
 
   static const parentHome = '/parent/home';
   static const parentCalendar = '/parent/calendar';
+
+  /// Legacy v1.0 tab paths; redirect to [chats] (chat moved to the top bar in v1.1).
   static const parentChat = '/parent/chat';
   static const parentMap = '/parent/map';
   static const parentProfile = '/parent/profile';
@@ -23,6 +25,14 @@ class Routes {
   static const coachMap = '/coach/map';
   static const coachProfile = '/coach/profile';
 
+  static const chats = '/chats';
+  static const calendar = '/calendar';
+  static const adminOnly = '/admin-only';
+  static const invites = '/invites';
+  static const account = '/account';
+  static const privacy = '/account/privacy';
+  static const newGroup = '/group/new';
+  static const newMedia = '/media/new';
   static const notifications = '/notifications';
   static const notificationSettings = '/notifications/settings';
   static const settings = '/settings';
@@ -39,4 +49,14 @@ class Routes {
   static String roster(String groupId) => '/group/$groupId';
   static String groupPayments(String groupId) => '/group/$groupId/payments';
   static String club(String id) => '/club/$id';
+  static String match(String id) => '/match/$id';
+  static String newMatch(String groupId) => '/match/new?groupId=$groupId';
+  static String editMatch(String id) => '/match/$id/edit';
+  static String newSeries(String groupId) => '/series/new?groupId=$groupId';
+  static String editSeries(String id, String from) => '/series/$id/edit?from=$from';
+  static String attendance(String trainingId) => '/training/$trainingId/attendance';
+  static String progress(String childId) => '/children/$childId/progress';
+  static String media(String id) => '/media/$id';
+  static String newMediaFor(String groupId) => '/media/new?groupId=$groupId';
+  static String inviteChild(String groupId) => '/group/$groupId/invite';
 }
