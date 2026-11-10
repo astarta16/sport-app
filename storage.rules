@@ -68,5 +68,15 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
       allow delete: if isGroupCoach(groupId);
     }
+
+    // Chat photo attachments: group parents and approved coaches only
+    // (child accounts are never group parents, so they have no access).
+    match /chatAttachments/{groupId}/{allPaths=**} {
+      allow read: if isGroupParent(groupId) || isGroupCoach(groupId);
+      allow create: if (isGroupParent(groupId) || isGroupCoach(groupId))
+        && under10MB()
+        && request.resource.contentType.matches('image/.*');
+      allow update, delete: if false;
+    }
   }
 }

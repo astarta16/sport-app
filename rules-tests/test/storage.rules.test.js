@@ -65,3 +65,14 @@ describe('storage: training photos', () => {
     await assertFails(uploadBytes(ref(as(UID.parentA), 'trainingPhotos/g1/p6.jpg'), bytes(), { contentType: 'image/jpeg' }));
   });
 });
+
+describe('storage: chat attachments', () => {
+  it('group parents and coaches upload/read images; outsiders and child accounts cannot', async () => {
+    await assertSucceeds(uploadBytes(ref(as(UID.parentA), 'chatAttachments/g1/m1/a.jpg'), bytes(), { contentType: 'image/jpeg' }));
+    await assertSucceeds(getBytes(ref(as(UID.coach), 'chatAttachments/g1/m1/a.jpg')));
+    await assertFails(getBytes(ref(as(UID.coachOther), 'chatAttachments/g1/m1/a.jpg')));
+    await assertFails(getBytes(ref(as(UID.childUser), 'chatAttachments/g1/m1/a.jpg')));
+    await assertFails(uploadBytes(ref(as(UID.childUser), 'chatAttachments/g1/m2/b.jpg'), bytes(), { contentType: 'image/jpeg' }));
+    await assertFails(uploadBytes(ref(as(UID.parentA), 'chatAttachments/g1/m3/c.pdf'), bytes(), { contentType: 'application/pdf' }));
+  });
+});

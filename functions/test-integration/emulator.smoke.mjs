@@ -103,6 +103,10 @@ await step('group trigger maintains parentIds, child coachIds/groupIds and audit
   assert.deepEqual(c1.sportIds, ['football']);
   const audit = await db.collection('groupAuditLog').where('groupId', '==', 'g1').get();
   assert.ok(audit.size >= 1);
+  const pub = await waitFor(async () => (await db.doc('clubs/club1/publicGroups/g1').get()).data() ?? null, 'publicGroups projection');
+  assert.equal(pub.name, 'U12');
+  assert.equal(pub.ageMin, 10);
+  for (const k of ['memberChildIds', 'parentIds', 'coachIds']) assert.ok(!(k in pub), `publicGroups leaks ${k}`);
 });
 
 await step('approved membership request adds child; parentIds updated', async () => {
