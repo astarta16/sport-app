@@ -22,8 +22,10 @@ import '../features/media/data/firebase_media_repository.dart';
 import '../features/medical_certificates/data/firebase_certificates_repository.dart';
 import '../features/moderation/data/firebase_moderation_repository.dart';
 import '../features/notifications/data/firebase_notifications_repository.dart';
+import '../features/payments/data/firebase_payment_proofs_repository.dart';
 import '../features/payments/data/firebase_payments_repository.dart';
 import '../features/sports/data/firebase_sports_repository.dart';
+import '../features/training_plans/data/firebase_training_plans_repository.dart';
 import '../features/trainings/data/firebase_trainings_repository.dart';
 import 'config.dart';
 import 'di.dart';
@@ -73,5 +75,7 @@ Future<List<Override>> firebaseOverrides() async {
     moderationRepositoryProvider.overrideWithValue(FirebaseModerationRepository(functions)),
     adminRepositoryProvider.overrideWithValue(FirebaseAdminRepository(auth, db, functions)),
     accountRepositoryProvider.overrideWithValue(FirebaseAccountRepository(auth, db, functions)),
+    paymentProofsRepositoryProvider.overrideWithValue(FirebasePaymentProofsRepository(auth, db, storage, functions)),
+    trainingPlansRepositoryProvider.overrideWithValue(FirebaseTrainingPlansRepository(auth, db, storage, functions)),
   ];
 }

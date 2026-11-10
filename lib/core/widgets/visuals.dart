@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../features/chat/domain/chat_message.dart';
+
 import '../../features/sports/domain/sport.dart';
 
 import '../../features/moderation/domain/report.dart';
@@ -147,6 +149,10 @@ String notificationTitle(BuildContext context, NotificationType t) {
     NotificationType.announcement => l.notifAnnouncement,
     NotificationType.newMedia => l.notifNewMedia,
     NotificationType.scheduleChanged => l.notifScheduleChanged,
+    NotificationType.paymentProofSubmitted => l.notifPaymentProofSubmitted,
+    NotificationType.paymentProofApproved => l.notifPaymentProofApproved,
+    NotificationType.paymentProofRejected => l.notifPaymentProofRejected,
+    NotificationType.trainingPlanPublished => l.notifTrainingPlanPublished,
   };
 }
 
@@ -168,6 +174,10 @@ IconData notificationIcon(NotificationType t) => switch (t) {
   NotificationType.announcement => Icons.campaign_rounded,
   NotificationType.newMedia => Icons.video_library_rounded,
   NotificationType.scheduleChanged => Icons.event_repeat_rounded,
+  NotificationType.paymentProofSubmitted => Icons.receipt_long_rounded,
+  NotificationType.paymentProofApproved => Icons.verified_rounded,
+  NotificationType.paymentProofRejected => Icons.report_gmailerrorred_rounded,
+  NotificationType.trainingPlanPublished => Icons.assignment_rounded,
 };
 
 String notificationBody(BuildContext context, AppNotification n) {
@@ -176,7 +186,12 @@ String notificationBody(BuildContext context, AppNotification n) {
   if (n.body.isNotEmpty && a.isEmpty) return n.body;
   return switch (n.type) {
     NotificationType.chatMessage => l.notifBodyChat(a['sender'] ?? '', a['group'] ?? ''),
-    NotificationType.certificateExpiry => l.notifBodyCert(a['child'] ?? '', a['days'] ?? ''),
+    NotificationType.certificateExpiry when a['days'] == '0' => l.notifBodyCertExpired(a['child'] ?? ''),
+    NotificationType.certificateExpiry => l.notifBodyCertDays(a['child'] ?? '', a['days'] ?? ''),
+    NotificationType.paymentProofRejected => l.notifBodyProofRejected(a['child'] ?? '', a['reason'] ?? ''),
+    NotificationType.paymentProofSubmitted ||
+    NotificationType.paymentProofApproved => l.notifBodyProof(a['child'] ?? '', a['amount'] ?? ''),
+    NotificationType.trainingPlanPublished => l.notifBodyPlan(a['title'] ?? '', a['group'] ?? ''),
     NotificationType.paymentReminder ||
     NotificationType.paymentSms => l.notifBodyPayment(a['child'] ?? '', a['amount'] ?? ''),
     NotificationType.trainingChanged || NotificationType.matchChanged when a['reason'] != null => l.notifBodyCancelled(
@@ -333,3 +348,20 @@ String sportCategoryLabel(BuildContext context, SportCategory c) {
 /// Short Georgian/English weekday names for 1 (Mon) … 7 (Sun).
 String weekdayShortName(BuildContext context, int weekday) =>
     Fmt.of(context).weekdayShort(DateTime.utc(2024, 1, weekday)); // 2024-01-01 is a Monday
+
+/// System chat line in the reader's language (server/demo store a key + args).
+String systemMessageText(BuildContext context, ChatMessage m) {
+  final l = context.l10n;
+  final a = m.systemArgs;
+  return switch (m.systemKey) {
+    'trainingCancelled' => l.sysTrainingCancelled(a['when'] ?? '', a['reason'] ?? ''),
+    'trainingMoved' => l.sysTrainingMoved(a['from'] ?? '', a['to'] ?? ''),
+    'matchCreated' => l.sysMatchCreated(a['opponent'] ?? '', a['when'] ?? ''),
+    'matchMoved' => l.sysMatchMoved(a['from'] ?? '', a['to'] ?? ''),
+    'matchCancelled' => l.sysMatchCancelled(a['opponent'] ?? '', a['reason'] ?? ''),
+    'scheduleCreated' => l.sysScheduleCreated,
+    'scheduleChanged' => l.sysScheduleChanged(a['from'] ?? ''),
+    'planPublished' => l.sysPlanPublished(a['title'] ?? ''),
+    _ => m.text,
+  };
+}

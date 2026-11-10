@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_ka.dart';
+import 'app_localizations_ru.dart';
 
 // ignore_for_file: type=lint
 
@@ -62,8 +63,7 @@ import 'app_localizations_ka.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,19 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -4807,10 +4802,1323 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ჩანაწერები არ არის'**
   String get adminEmpty;
+
+  /// No description provided for @languageRussian.
+  ///
+  /// In ka, this message translates to:
+  /// **'Русский'**
+  String get languageRussian;
+
+  /// No description provided for @languageGeorgian.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქართული'**
+  String get languageGeorgian;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In ka, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageChanged.
+  ///
+  /// In ka, this message translates to:
+  /// **'ენა შეიცვალა'**
+  String get languageChanged;
+
+  /// No description provided for @languageHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ენა არ არის დამოკიდებული ტელეფონის ენაზე. ტრენერის მიერ დაწერილი ტექსტი არ ითარგმნება.'**
+  String get languageHint;
+
+  /// No description provided for @certCurrent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოქმედი ცნობა'**
+  String get certCurrent;
+
+  /// No description provided for @certReplace.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობის შეცვლა'**
+  String get certReplace;
+
+  /// No description provided for @certReplaced.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეცვლილია ახლით'**
+  String get certReplaced;
+
+  /// No description provided for @certPreview.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნახვა'**
+  String get certPreview;
+
+  /// No description provided for @certDownload.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა'**
+  String get certDownload;
+
+  /// No description provided for @certExpiresOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა: {date}'**
+  String certExpiresOn(String date);
+
+  /// No description provided for @certAppliesTo.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეხება: {sport}'**
+  String certAppliesTo(String sport);
+
+  /// No description provided for @certAllSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა სპორტი'**
+  String get certAllSports;
+
+  /// No description provided for @certSportLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'რომელ სპორტს ეხება'**
+  String get certSportLabel;
+
+  /// No description provided for @certTakePhoto.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფოტოს გადაღება'**
+  String get certTakePhoto;
+
+  /// No description provided for @certChooseFile.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილის არჩევა'**
+  String get certChooseFile;
+
+  /// No description provided for @certSensitiveWarning.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამედიცინო დოკუმენტი მგრძნობიარე ინფორმაციაა. ნუ გაუზიარებთ მას სხვებს და წაშალეთ, როცა აღარ დაგჭირდებათ.'**
+  String get certSensitiveWarning;
+
+  /// No description provided for @certDownloadConfirm.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა'**
+  String get certDownloadConfirm;
+
+  /// No description provided for @certAccessLogged.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნახვა აღრიცხულია უსაფრთხოების ჟურნალში'**
+  String get certAccessLogged;
+
+  /// No description provided for @certAccessHistory.
+  ///
+  /// In ka, this message translates to:
+  /// **'წვდომის ისტორია'**
+  String get certAccessHistory;
+
+  /// No description provided for @certAccessView.
+  ///
+  /// In ka, this message translates to:
+  /// **'{who} — ნახვა, {when}'**
+  String certAccessView(String who, String when);
+
+  /// No description provided for @certAccessDownload.
+  ///
+  /// In ka, this message translates to:
+  /// **'{who} — ჩამოტვირთვა, {when}'**
+  String certAccessDownload(String who, String when);
+
+  /// No description provided for @certPdfPreview.
+  ///
+  /// In ka, this message translates to:
+  /// **'PDF დოკუმენტი'**
+  String get certPdfPreview;
+
+  /// No description provided for @certSavedTemp.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილი დროებით შენახულია. გაზიარების შემდეგ ის აპიდან წაიშლება.'**
+  String get certSavedTemp;
+
+  /// No description provided for @certNoAdminAccess.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორები სამედიცინო დოკუმენტებს ვერ ხედავენ — მხოლოდ სტატუსებს.'**
+  String get certNoAdminAccess;
+
+  /// No description provided for @rosterTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეები'**
+  String get rosterTitle;
+
+  /// No description provided for @rosterSearch.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლის ძიება'**
+  String get rosterSearch;
+
+  /// No description provided for @rosterSortName.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელით'**
+  String get rosterSortName;
+
+  /// No description provided for @rosterSortAge.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკით'**
+  String get rosterSortAge;
+
+  /// No description provided for @rosterSortAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრებით'**
+  String get rosterSortAttendance;
+
+  /// No description provided for @rosterSortCert.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობის სტატუსით'**
+  String get rosterSortCert;
+
+  /// No description provided for @rosterFilterAll.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა'**
+  String get rosterFilterAll;
+
+  /// No description provided for @rosterFilterCertIssues.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობის პრობლემა'**
+  String get rosterFilterCertIssues;
+
+  /// No description provided for @rosterFilterLowAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაბალი დასწრება'**
+  String get rosterFilterLowAttendance;
+
+  /// No description provided for @rosterEmptyFilter.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ფილტრით მოსწავლე არ მოიძებნა'**
+  String get rosterEmptyFilter;
+
+  /// No description provided for @rosterStudentDetail.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლე'**
+  String get rosterStudentDetail;
+
+  /// No description provided for @rosterAttendanceRate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება {percent}%'**
+  String rosterAttendanceRate(int percent);
+
+  /// No description provided for @rosterNoAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება ჯერ არ არის'**
+  String get rosterNoAttendance;
+
+  /// No description provided for @rosterCount.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count} მოსწავლე'**
+  String rosterCount(int count);
+
+  /// No description provided for @attendanceSave.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენახვა'**
+  String get attendanceSave;
+
+  /// No description provided for @attendanceSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება შენახულია'**
+  String get attendanceSaved;
+
+  /// No description provided for @attendanceUnsaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count} შეუნახავი ცვლილება'**
+  String attendanceUnsaved(int count);
+
+  /// No description provided for @attendanceDiscard.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმება'**
+  String get attendanceDiscard;
+
+  /// No description provided for @attendanceEditNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'უკვე აღრიცხული დასწრება შეგიძლიათ შეცვალოთ — ყოველი ცვლილება ინახება.'**
+  String get attendanceEditNote;
+
+  /// No description provided for @attendanceByStudent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეების მიხედვით'**
+  String get attendanceByStudent;
+
+  /// No description provided for @attendanceByGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფის მიხედვით'**
+  String get attendanceByGroup;
+
+  /// No description provided for @attendanceReportTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრების ანგარიში'**
+  String get attendanceReportTitle;
+
+  /// No description provided for @attendanceSessions.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count} ვარჯიში'**
+  String attendanceSessions(int count);
+
+  /// No description provided for @attendanceMarkAll.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა'**
+  String get attendanceMarkAll;
+
+  /// No description provided for @exportTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ექსპორტი'**
+  String get exportTitle;
+
+  /// No description provided for @exportRoster.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეთა სია'**
+  String get exportRoster;
+
+  /// No description provided for @exportTrainingSheet.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშის დასწრების ფურცელი'**
+  String get exportTrainingSheet;
+
+  /// No description provided for @exportMonthly.
+  ///
+  /// In ka, this message translates to:
+  /// **'თვიური დასწრების ანგარიში'**
+  String get exportMonthly;
+
+  /// No description provided for @exportFormat.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფორმატი'**
+  String get exportFormat;
+
+  /// No description provided for @exportIncludeCompliance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობის სტატუსის ჩართვა (მხოლოდ საჭიროების შემთხვევაში)'**
+  String get exportIncludeCompliance;
+
+  /// No description provided for @exportWarning.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილი შეიცავს ბავშვების პერსონალურ მონაცემებს. გაუზიარეთ მხოლოდ იმას, ვისაც ნამდვილად სჭირდება, და წაშალეთ გამოყენების შემდეგ.'**
+  String get exportWarning;
+
+  /// No description provided for @exportConfirm.
+  ///
+  /// In ka, this message translates to:
+  /// **'გასაგებია, ექსპორტი'**
+  String get exportConfirm;
+
+  /// No description provided for @exportReady.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილი მზადაა: {name}'**
+  String exportReady(String name);
+
+  /// No description provided for @exportChooseTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ ვარჯიში'**
+  String get exportChooseTraining;
+
+  /// No description provided for @exportChooseMonth.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ თვე'**
+  String get exportChooseMonth;
+
+  /// No description provided for @exportColStudent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლე'**
+  String get exportColStudent;
+
+  /// No description provided for @exportColGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი'**
+  String get exportColGroup;
+
+  /// No description provided for @exportColDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'თარიღი'**
+  String get exportColDate;
+
+  /// No description provided for @exportColStatus.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get exportColStatus;
+
+  /// No description provided for @exportColAge.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკი'**
+  String get exportColAge;
+
+  /// No description provided for @exportColCert.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობა'**
+  String get exportColCert;
+
+  /// No description provided for @exportColRate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება %'**
+  String get exportColRate;
+
+  /// No description provided for @exportGenerated.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმნილია: {date}'**
+  String exportGenerated(String date);
+
+  /// No description provided for @exportConfidential.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონფიდენციალური — მხოლოდ შიდა გამოყენებისთვის'**
+  String get exportConfidential;
+
+  /// No description provided for @exportPage.
+  ///
+  /// In ka, this message translates to:
+  /// **'გვ. {n}'**
+  String exportPage(int n);
+
+  /// No description provided for @plansTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშო გეგმები'**
+  String get plansTitle;
+
+  /// No description provided for @plansEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმები ჯერ არ არის'**
+  String get plansEmpty;
+
+  /// No description provided for @planNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი გეგმა'**
+  String get planNew;
+
+  /// No description provided for @planEdit.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმის რედაქტირება'**
+  String get planEdit;
+
+  /// No description provided for @planTitleLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'სათაური'**
+  String get planTitleLabel;
+
+  /// No description provided for @planDescription.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღწერა'**
+  String get planDescription;
+
+  /// No description provided for @planType.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმის ტიპი'**
+  String get planType;
+
+  /// No description provided for @planTypeSeasonal.
+  ///
+  /// In ka, this message translates to:
+  /// **'სეზონური'**
+  String get planTypeSeasonal;
+
+  /// No description provided for @planTypeMonthly.
+  ///
+  /// In ka, this message translates to:
+  /// **'თვიური'**
+  String get planTypeMonthly;
+
+  /// No description provided for @planTypeWeekly.
+  ///
+  /// In ka, this message translates to:
+  /// **'კვირის'**
+  String get planTypeWeekly;
+
+  /// No description provided for @planTypeExercise.
+  ///
+  /// In ka, this message translates to:
+  /// **'ინდივიდუალური სავარჯიშო'**
+  String get planTypeExercise;
+
+  /// No description provided for @planTypeHomework.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშინაო დავალება'**
+  String get planTypeHomework;
+
+  /// No description provided for @planGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები'**
+  String get planGroups;
+
+  /// No description provided for @planStart.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაწყება'**
+  String get planStart;
+
+  /// No description provided for @planEnd.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულება'**
+  String get planEnd;
+
+  /// No description provided for @planStatusDraft.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონახაზი'**
+  String get planStatusDraft;
+
+  /// No description provided for @planStatusPublished.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოქვეყნებული'**
+  String get planStatusPublished;
+
+  /// No description provided for @planStatusArchived.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივებული'**
+  String get planStatusArchived;
+
+  /// No description provided for @planSaveDraft.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონახაზის შენახვა'**
+  String get planSaveDraft;
+
+  /// No description provided for @planPublish.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოქვეყნება'**
+  String get planPublish;
+
+  /// No description provided for @planArchive.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივება'**
+  String get planArchive;
+
+  /// No description provided for @planUnpublish.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონახაზად დაბრუნება'**
+  String get planUnpublish;
+
+  /// No description provided for @planPublished.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმა გამოქვეყნდა — მშობლებს ეცნობათ'**
+  String get planPublished;
+
+  /// No description provided for @planSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმა შენახულია'**
+  String get planSaved;
+
+  /// No description provided for @planArchived.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმა დაარქივდა'**
+  String get planArchived;
+
+  /// No description provided for @planExercises.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშოები'**
+  String get planExercises;
+
+  /// No description provided for @planAddExercise.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშოს დამატება'**
+  String get planAddExercise;
+
+  /// No description provided for @planNoExercises.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაამატეთ მინიმუმ ერთი სავარჯიშო'**
+  String get planNoExercises;
+
+  /// No description provided for @planViews.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნახა {count} მშობელმა'**
+  String planViews(int count);
+
+  /// No description provided for @planCompletion.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებული: {done} / {total}'**
+  String planCompletion(String done, int total);
+
+  /// No description provided for @planSelfReported.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებას მშობელი აღნიშნავს — მწვრთნელი არ ამოწმებს.'**
+  String get planSelfReported;
+
+  /// No description provided for @planPeriod.
+  ///
+  /// In ka, this message translates to:
+  /// **'{start} – {end}'**
+  String planPeriod(String start, String end);
+
+  /// No description provided for @planOpenEnded.
+  ///
+  /// In ka, this message translates to:
+  /// **'{start}-დან'**
+  String planOpenEnded(String start);
+
+  /// No description provided for @planHomeworkDue.
+  ///
+  /// In ka, this message translates to:
+  /// **'დავალება შემდეგ ვარჯიშამდე'**
+  String get planHomeworkDue;
+
+  /// No description provided for @planActive.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური გეგმები'**
+  String get planActive;
+
+  /// No description provided for @planDraftsOnlyCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონახაზები მშობლებს არ უჩანთ'**
+  String get planDraftsOnlyCoach;
+
+  /// No description provided for @exerciseName.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშოს სახელი'**
+  String get exerciseName;
+
+  /// No description provided for @exerciseDescription.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღწერა'**
+  String get exerciseDescription;
+
+  /// No description provided for @exerciseInstructions.
+  ///
+  /// In ka, this message translates to:
+  /// **'ინსტრუქცია'**
+  String get exerciseInstructions;
+
+  /// No description provided for @exerciseDuration.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხანგრძლივობა (წთ)'**
+  String get exerciseDuration;
+
+  /// No description provided for @exerciseReps.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამეორებები'**
+  String get exerciseReps;
+
+  /// No description provided for @exerciseSets.
+  ///
+  /// In ka, this message translates to:
+  /// **'სეტები'**
+  String get exerciseSets;
+
+  /// No description provided for @exerciseRest.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასვენება (წმ)'**
+  String get exerciseRest;
+
+  /// No description provided for @exerciseMedia.
+  ///
+  /// In ka, this message translates to:
+  /// **'მასალები'**
+  String get exerciseMedia;
+
+  /// No description provided for @exerciseAddLink.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმულის დამატება'**
+  String get exerciseAddLink;
+
+  /// No description provided for @exerciseLinkHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'https://…'**
+  String get exerciseLinkHint;
+
+  /// No description provided for @exerciseLinkInvalid.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმული უნდა იწყებოდეს https://-ით'**
+  String get exerciseLinkInvalid;
+
+  /// No description provided for @exerciseOpenLink.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმულის გახსნა'**
+  String get exerciseOpenLink;
+
+  /// No description provided for @exerciseExternalWarning.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმული გაიხსნება ბრაუზერში. აპი მას თქვენს მონაცემებს არ უზიარებს.'**
+  String get exerciseExternalWarning;
+
+  /// No description provided for @exerciseMoveUp.
+  ///
+  /// In ka, this message translates to:
+  /// **'ზემოთ'**
+  String get exerciseMoveUp;
+
+  /// No description provided for @exerciseMoveDown.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვემოთ'**
+  String get exerciseMoveDown;
+
+  /// No description provided for @exerciseRemove.
+  ///
+  /// In ka, this message translates to:
+  /// **'წაშლა'**
+  String get exerciseRemove;
+
+  /// No description provided for @exerciseSummary.
+  ///
+  /// In ka, this message translates to:
+  /// **'{sets} × {reps}'**
+  String exerciseSummary(String sets, String reps);
+
+  /// No description provided for @exerciseMinutes.
+  ///
+  /// In ka, this message translates to:
+  /// **'{n} წთ'**
+  String exerciseMinutes(int n);
+
+  /// No description provided for @exerciseRestSec.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასვენება {n} წმ'**
+  String exerciseRestSec(int n);
+
+  /// No description provided for @progressNotStarted.
+  ///
+  /// In ka, this message translates to:
+  /// **'არ დაწყებულა'**
+  String get progressNotStarted;
+
+  /// No description provided for @progressInProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმდინარე'**
+  String get progressInProgress;
+
+  /// No description provided for @progressCompleted.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებულია'**
+  String get progressCompleted;
+
+  /// No description provided for @progressFor.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child}-ის პროგრესი'**
+  String progressFor(String child);
+
+  /// No description provided for @validationPlanTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ სათაური'**
+  String get validationPlanTitle;
+
+  /// No description provided for @validationPlanGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ მინიმუმ ერთი ჯგუფი'**
+  String get validationPlanGroups;
+
+  /// No description provided for @validationPlanExercises.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაამატეთ მინიმუმ ერთი სავარჯიშო'**
+  String get validationPlanExercises;
+
+  /// No description provided for @validationPlanDates.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულება დაწყებამდეა'**
+  String get validationPlanDates;
+
+  /// No description provided for @validationExerciseName.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ სავარჯიშოს სახელი'**
+  String get validationExerciseName;
+
+  /// No description provided for @validationLink.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმული არასწორია (მხოლოდ https://)'**
+  String get validationLink;
+
+  /// No description provided for @validationTooManyExercises.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაქსიმუმ 50 სავარჯიშო'**
+  String get validationTooManyExercises;
+
+  /// No description provided for @validationTooManyMedia.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაქსიმუმ 10 მასალა სავარჯიშოზე'**
+  String get validationTooManyMedia;
+
+  /// No description provided for @validationPlanNotDraft.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ მონახაზის რედაქტირებაა შესაძლებელი გამოქვეყნებამდე'**
+  String get validationPlanNotDraft;
+
+  /// No description provided for @payProofAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის დადასტურება'**
+  String get payProofAction;
+
+  /// No description provided for @payProofTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის დადასტურება'**
+  String get payProofTitle;
+
+  /// No description provided for @payProofDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის თარიღი'**
+  String get payProofDate;
+
+  /// No description provided for @payProofReference.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტრანზაქციის / საიდენტიფიკაციო ნომერი'**
+  String get payProofReference;
+
+  /// No description provided for @payProofNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენიშვნა'**
+  String get payProofNote;
+
+  /// No description provided for @payProofReceipt.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვითარი (JPG, PNG ან PDF, მაქს. 10 MB)'**
+  String get payProofReceipt;
+
+  /// No description provided for @payProofSubmit.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგზავნა შესამოწმებლად'**
+  String get payProofSubmit;
+
+  /// No description provided for @payProofSubmitted.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგზავნილია — მწვრთნელი შეამოწმებს'**
+  String get payProofSubmitted;
+
+  /// No description provided for @payProofUploading.
+  ///
+  /// In ka, this message translates to:
+  /// **'იტვირთება… {percent}%'**
+  String payProofUploading(int percent);
+
+  /// No description provided for @payProofHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'თქვენი დადასტურება გადახდას ავტომატურად გადახდილად არ აქცევს — მას ამოწმებს უფლებამოსილი მწვრთნელი ან კლუბის ადმინი.'**
+  String get payProofHint;
+
+  /// No description provided for @payStateAwaiting.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურების მოლოდინში'**
+  String get payStateAwaiting;
+
+  /// No description provided for @payStateUnderReview.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწმდება'**
+  String get payStateUnderReview;
+
+  /// No description provided for @payStateRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფილია'**
+  String get payStateRejected;
+
+  /// No description provided for @payStatePaid.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდილია'**
+  String get payStatePaid;
+
+  /// No description provided for @payRejectedReason.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფის მიზეზი: {reason}'**
+  String payRejectedReason(String reason);
+
+  /// No description provided for @payResubmit.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხელახლა გაგზავნა'**
+  String get payResubmit;
+
+  /// No description provided for @paySubmittedOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგზავნილია {date}'**
+  String paySubmittedOn(String date);
+
+  /// No description provided for @payViewReceipt.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვითრის ნახვა'**
+  String get payViewReceipt;
+
+  /// No description provided for @payVerifiedBy.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაადასტურა {name}, {date}'**
+  String payVerifiedBy(String name, String date);
+
+  /// No description provided for @payReviewQueue.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდების დადასტურება'**
+  String get payReviewQueue;
+
+  /// No description provided for @payReviewEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასადასტურებელი გადახდა არ არის'**
+  String get payReviewEmpty;
+
+  /// No description provided for @payApprove.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურება'**
+  String get payApprove;
+
+  /// No description provided for @payReject.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფა'**
+  String get payReject;
+
+  /// No description provided for @payApproved.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდა დადასტურდა — მშობელს ეცნობა'**
+  String get payApproved;
+
+  /// No description provided for @payRejectedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფილია — მშობელს ეცნობა მიზეზი'**
+  String get payRejectedSnack;
+
+  /// No description provided for @payRejectReasonTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფის მიზეზი'**
+  String get payRejectReasonTitle;
+
+  /// No description provided for @payNotReviewer.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდების დადასტურების უფლება მხოლოდ დანიშნულ მწვრთნელებსა და კლუბის ადმინისტრატორებს აქვთ.'**
+  String get payNotReviewer;
+
+  /// No description provided for @payHistory.
+  ///
+  /// In ka, this message translates to:
+  /// **'ისტორია'**
+  String get payHistory;
+
+  /// No description provided for @payEventSubmitted.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგზავნა'**
+  String get payEventSubmitted;
+
+  /// No description provided for @payEventResubmitted.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხელახლა გაგზავნა'**
+  String get payEventResubmitted;
+
+  /// No description provided for @payEventReviewStarted.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემოწმება დაიწყო'**
+  String get payEventReviewStarted;
+
+  /// No description provided for @payEventApproved.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურდა'**
+  String get payEventApproved;
+
+  /// No description provided for @payEventRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფილია'**
+  String get payEventRejected;
+
+  /// No description provided for @payEventViewed.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვითარი ნახეს'**
+  String get payEventViewed;
+
+  /// No description provided for @payPaymentManagers.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდების დამდასტურებლები'**
+  String get payPaymentManagers;
+
+  /// No description provided for @payProofFor.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} · {amount} · {due}'**
+  String payProofFor(String child, String amount, String due);
+
+  /// No description provided for @validationProofExists.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ გადახდაზე დადასტურება უკვე მოწმდება'**
+  String get validationProofExists;
+
+  /// No description provided for @validationProofClosed.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს დადასტურება უკვე განხილულია'**
+  String get validationProofClosed;
+
+  /// No description provided for @validationPaymentClosed.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდა უკვე დახურულია'**
+  String get validationPaymentClosed;
+
+  /// No description provided for @validationReceiptRequired.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაურთეთ ქვითარი'**
+  String get validationReceiptRequired;
+
+  /// No description provided for @validationDateFuture.
+  ///
+  /// In ka, this message translates to:
+  /// **'თარიღი მომავალშია'**
+  String get validationDateFuture;
+
+  /// No description provided for @notifPaymentProofSubmitted.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის დადასტურება შემოწმებისთვის'**
+  String get notifPaymentProofSubmitted;
+
+  /// No description provided for @notifPaymentProofApproved.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდა დადასტურდა'**
+  String get notifPaymentProofApproved;
+
+  /// No description provided for @notifPaymentProofRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის დადასტურება უარყოფილია'**
+  String get notifPaymentProofRejected;
+
+  /// No description provided for @notifTrainingPlanPublished.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი სავარჯიშო გეგმა'**
+  String get notifTrainingPlanPublished;
+
+  /// No description provided for @notifBodyPlan.
+  ///
+  /// In ka, this message translates to:
+  /// **'{title} · {group}'**
+  String notifBodyPlan(String title, String group);
+
+  /// No description provided for @notifBodyProof.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} · {amount}'**
+  String notifBodyProof(String child, String amount);
+
+  /// No description provided for @notifBodyProofRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} · {reason}'**
+  String notifBodyProofRejected(String child, String reason);
+
+  /// No description provided for @notifBodyCertDays.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} — {days} დღე დარჩა'**
+  String notifBodyCertDays(String child, String days);
+
+  /// No description provided for @notifBodyCertExpired.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} — ცნობას ვადა გაუვიდა'**
+  String notifBodyCertExpired(String child);
+
+  /// No description provided for @sysTrainingCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიში გაუქმდა ({when}). მიზეზი: {reason}'**
+  String sysTrainingCancelled(String when, String reason);
+
+  /// No description provided for @sysTrainingMoved.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიში გადაიდო: {from} → {to}'**
+  String sysTrainingMoved(String from, String to);
+
+  /// No description provided for @sysMatchCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაემატა თამაში: {opponent}, {when}'**
+  String sysMatchCreated(String opponent, String when);
+
+  /// No description provided for @sysMatchMoved.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში გადაიდო: {from} → {to}'**
+  String sysMatchMoved(String from, String to);
+
+  /// No description provided for @sysMatchCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში ({opponent}) გაუქმდა. მიზეზი: {reason}'**
+  String sysMatchCancelled(String opponent, String reason);
+
+  /// No description provided for @sysScheduleCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაემატა ვარჯიშების განრიგი'**
+  String get sysScheduleCreated;
+
+  /// No description provided for @sysScheduleChanged.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშების განრიგი შეიცვალა {from}-დან'**
+  String sysScheduleChanged(String from);
+
+  /// No description provided for @sysPlanPublished.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოქვეყნდა სავარჯიშო გეგმა: {title}'**
+  String sysPlanPublished(String title);
+
+  /// No description provided for @sysScheduleReason.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი შეიცვალა'**
+  String get sysScheduleReason;
+
+  /// No description provided for @adminNavCompliance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობები'**
+  String get adminNavCompliance;
+
+  /// No description provided for @adminNavAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get adminNavAttendance;
+
+  /// No description provided for @adminNavPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშო გეგმები'**
+  String get adminNavPlans;
+
+  /// No description provided for @adminNavPayments.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდები'**
+  String get adminNavPayments;
+
+  /// No description provided for @adminNavSettings.
+  ///
+  /// In ka, this message translates to:
+  /// **'პარამეტრები'**
+  String get adminNavSettings;
+
+  /// No description provided for @adminComplianceNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ სტატუსების რაოდენობა — დოკუმენტები და ბავშვების სახელები არ ჩანს.'**
+  String get adminComplianceNote;
+
+  /// No description provided for @adminColValid.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოქმედი'**
+  String get adminColValid;
+
+  /// No description provided for @adminColExpiring.
+  ///
+  /// In ka, this message translates to:
+  /// **'იწურება'**
+  String get adminColExpiring;
+
+  /// No description provided for @adminColExpired.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადაგასული'**
+  String get adminColExpired;
+
+  /// No description provided for @adminColMissing.
+  ///
+  /// In ka, this message translates to:
+  /// **'არ არის'**
+  String get adminColMissing;
+
+  /// No description provided for @adminColRate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get adminColRate;
+
+  /// No description provided for @adminColSessions.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშები'**
+  String get adminColSessions;
+
+  /// No description provided for @adminColPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმები'**
+  String get adminColPlans;
+
+  /// No description provided for @adminColPlanType.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტიპი'**
+  String get adminColPlanType;
+
+  /// No description provided for @adminColAmount.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანხა'**
+  String get adminColAmount;
+
+  /// No description provided for @adminColSubmitted.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგზავნილია'**
+  String get adminColSubmitted;
+
+  /// No description provided for @adminColReviewers.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამდასტურებლები'**
+  String get adminColReviewers;
+
+  /// No description provided for @adminPaymentQueueNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვითარი იხსნება დროებითი ბმულით და მისი ნახვა აღირიცხება.'**
+  String get adminPaymentQueueNote;
+
+  /// No description provided for @adminSetReviewers.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამდასტურებლების მინიჭება'**
+  String get adminSetReviewers;
+
+  /// No description provided for @adminLanguage.
+  ///
+  /// In ka, this message translates to:
+  /// **'ინტერფეისის ენა'**
+  String get adminLanguage;
+
+  /// No description provided for @adminRosterNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეთა რაოდენობა ჯგუფების მიხედვით — სახელების გარეშე.'**
+  String get adminRosterNote;
+
+  /// No description provided for @adminMonth.
+  ///
+  /// In ka, this message translates to:
+  /// **'თვე'**
+  String get adminMonth;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -4819,8 +6127,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -4833,6 +6140,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'ka':
       return AppLocalizationsKa();
+    case 'ru':
+      return AppLocalizationsRu();
   }
 
   throw FlutterError(

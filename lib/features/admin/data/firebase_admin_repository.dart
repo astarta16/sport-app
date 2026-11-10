@@ -8,6 +8,7 @@ import '../../clubs/domain/club.dart';
 import '../../groups/domain/group.dart';
 import '../../moderation/domain/report.dart';
 import '../../sports/domain/sport.dart';
+import '../../training_plans/domain/training_plan.dart';
 import '../domain/admin_models.dart';
 
 /// Admin dashboard backed by Firestore reads (rules scope them by the
@@ -160,4 +161,66 @@ class FirebaseAdminRepository implements AdminRepository {
   @override
   Future<void> setAdminRole(String uid, AdminRole? role, {List<String> clubIds = const []}) =>
       callFunction(functions, 'setAdminRole', {'uid': uid, 'role': role?.name, 'clubIds': clubIds});
+
+  @override
+  Future<List<GroupCompliance>> compliance() async {
+    final r = await callFunction(functions, 'adminCompliance');
+    return [for (final m in (r['groups'] as List? ?? const [])) GroupCompliance.fromMap(m as Map)];
+  }
+
+  /// Aggregated client-side from attendance the admin may read (club scope).
+  @override
+  Future<List<GroupAttendanceRow>> attendanceReport({required int year, required int month}) => guardFirebase(() async {
+    final s = await _scope();
+    final groups = s.platform
+        ? await db.collection('groups').get()
+        : await db
+              .collection('groups')
+              .where('clubId', whereIn: s.clubs.isEmpty ? ['-'] : s.clubs.take(30).toList())
+              .get();
+    final from = DateTime(year, month), to = DateTime(year, month + 1);
+    final rows = <GroupAttendanceRow>[];
+    for (final g in groups.docs) {
+      final trainings = await db
+          .collection('trainings')
+          .where('groupId', isEqualTo: g.id)
+          .where('startAt', isGreaterThanOrEqualTo: from)
+          .where('startAt', isLessThan: to)
+          .get();
+      final ids = trainings.docs.where((d) => d['status'] != 'cancelled').map((d) => d.id).toSet();
+      final att = await db.collection('attendance').where('groupId', isEqualTo: g.id).get();
+      final recs = att.docs.where((d) => ids.contains(d['trainingId'])).toList();
+      rows.add(
+        GroupAttendanceRow(
+          groupId: g.id,
+          groupName: g['name'] as String? ?? '',
+          clubId: g['clubId'] as String? ?? '',
+          sessions: recs.map((d) => d['trainingId']).toSet().length,
+          present: recs.where((d) => d['status'] == 'present').length,
+          recorded: recs.length,
+          members: (g.data()['memberChildIds'] as List? ?? const []).length,
+        ),
+      );
+    }
+    return rows;
+  });
+
+  @override
+  Stream<List<PlanOverview>> watchPlans() => _scoped('trainingPlans', (id, m) {
+    final p = TrainingPlan.fromMap(id, m);
+    return PlanOverview(
+      planId: id,
+      title: p.title,
+      typeName: p.type.name,
+      statusName: p.status.name,
+      groupNames: p.groupIds,
+      coachName: p.coachName,
+      exercises: p.exercises.length,
+      startDate: p.startDate.toDateTime(),
+    );
+  });
+
+  @override
+  Future<void> setPaymentManagers(String groupId, List<String> coachIds) =>
+      callFunction(functions, 'updateGroup', {'groupId': groupId, 'paymentManagerIds': coachIds});
 }

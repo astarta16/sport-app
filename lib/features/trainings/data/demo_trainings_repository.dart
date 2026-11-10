@@ -130,7 +130,12 @@ class DemoTrainingsRepository implements TrainingsRepository {
       args: {'kind': 'cancelled', 'reason': reason.text.trim()},
       dedupeKey: 'cancel:$id',
     );
-    db.systemMessage(t.groupId, 'ვარჯიში გაუქმდა (${_fmt(t.startAt)}). მიზეზი: ${reason.text.trim()}');
+    db.systemMessage(
+      t.groupId,
+      'ვარჯიში გაუქმდა (${_fmt(t.startAt)}). მიზეზი: ${reason.text.trim()}',
+      key: 'trainingCancelled',
+      args: {'when': _fmt(t.startAt), 'reason': reason.text.trim()},
+    );
     db.commit();
   }
 
@@ -150,7 +155,12 @@ class DemoTrainingsRepository implements TrainingsRepository {
       updatedAt: db.clock(),
       detached: t.isRecurring ? true : null,
     );
-    db.systemMessage(t.groupId, 'ვარჯიში გადაიდო: ${_fmt(t.startAt)} → ${_fmt(newStart)}');
+    db.systemMessage(
+      t.groupId,
+      'ვარჯიში გადაიდო: ${_fmt(t.startAt)} → ${_fmt(newStart)}',
+      key: 'trainingMoved',
+      args: {'from': _fmt(t.startAt), 'to': _fmt(newStart)},
+    );
     db.dispatch(
       NotificationType.trainingChanged,
       db.groups[t.groupId]!,
@@ -273,7 +283,7 @@ class DemoTrainingsRepository implements TrainingsRepository {
       args: {'kind': 'created'},
       dedupeKey: 'series:${s.id}:created',
     );
-    db.systemMessage(g.id, 'დაემატა ვარჯიშების განრიგი');
+    db.systemMessage(g.id, 'დაემატა ვარჯიშების განრიგი', key: 'scheduleCreated');
     db.commit();
     return s;
   }
@@ -329,9 +339,12 @@ class DemoTrainingsRepository implements TrainingsRepository {
       args: {'kind': 'changed'},
       dedupeKey: 'series:${next.id}:changed',
     );
+    final fromLabel = '${start.day.toString().padLeft(2, '0')}.${start.month.toString().padLeft(2, '0')}';
     db.systemMessage(
       g.id,
-      'ვარჯიშების განრიგი შეიცვალა ${start.day.toString().padLeft(2, '0')}.${start.month.toString().padLeft(2, '0')}-დან',
+      'ვარჯიშების განრიგი შეიცვალა $fromLabel-დან',
+      key: 'scheduleChanged',
+      args: {'from': fromLabel},
     );
     db.commit();
     return next;

@@ -7,6 +7,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/language_selector.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -46,14 +47,7 @@ class SettingsScreen extends ConsumerWidget {
               onSelectionChanged: (v) => ctrl.setThemeMode(v.first),
             ),
             SectionHeader(l.languageLabel),
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'ka', label: Text('ქართული')),
-                ButtonSegment(value: 'en', label: Text('English')),
-              ],
-              selected: {s.locale.languageCode},
-              onSelectionChanged: (v) => ctrl.setLocale(Locale(v.first)),
-            ),
+            const LanguageSelector(),
             const SizedBox(height: AppSpacing.xl),
             AppCard(
               child: ListTile(

@@ -1425,5 +1425,527 @@
   "adminNotAdminTitle": "ადმინისტრატორის უფლება არ გაქვთ",
   "adminNotAdminBody": "ეს ანგარიში ვერ გამოიყენებს ადმინისტრატორის პანელს. გამოიყენეთ მობილური აპი.",
   "adminChildDataNote": "ბავშვების სახელები და სამედიცინო მონაცემები ადმინისტრატორებს არ უჩანთ — მხოლოდ რაოდენობები.",
-  "adminEmpty": "ჩანაწერები არ არის"
+  "adminEmpty": "ჩანაწერები არ არის",
+  "languageRussian": "Русский",
+  "languageGeorgian": "ქართული",
+  "languageEnglish": "English",
+  "languageChanged": "ენა შეიცვალა",
+  "languageHint": "ენა არ არის დამოკიდებული ტელეფონის ენაზე. ტრენერის მიერ დაწერილი ტექსტი არ ითარგმნება.",
+  "certCurrent": "მოქმედი ცნობა",
+  "certReplace": "ცნობის შეცვლა",
+  "certReplaced": "შეცვლილია ახლით",
+  "certPreview": "ნახვა",
+  "certDownload": "ჩამოტვირთვა",
+  "certExpiresOn": "ვადა: {date}",
+  "@certExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "certAppliesTo": "ეხება: {sport}",
+  "@certAppliesTo": {
+    "placeholders": {
+      "sport": {
+        "type": "String"
+      }
+    }
+  },
+  "certAllSports": "ყველა სპორტი",
+  "certSportLabel": "რომელ სპორტს ეხება",
+  "certTakePhoto": "ფოტოს გადაღება",
+  "certChooseFile": "ფაილის არჩევა",
+  "certSensitiveWarning": "სამედიცინო დოკუმენტი მგრძნობიარე ინფორმაციაა. ნუ გაუზიარებთ მას სხვებს და წაშალეთ, როცა აღარ დაგჭირდებათ.",
+  "certDownloadConfirm": "ჩამოტვირთვა",
+  "certAccessLogged": "ნახვა აღრიცხულია უსაფრთხოების ჟურნალში",
+  "certAccessHistory": "წვდომის ისტორია",
+  "certAccessView": "{who} — ნახვა, {when}",
+  "@certAccessView": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "certAccessDownload": "{who} — ჩამოტვირთვა, {when}",
+  "@certAccessDownload": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "certPdfPreview": "PDF დოკუმენტი",
+  "certSavedTemp": "ფაილი დროებით შენახულია. გაზიარების შემდეგ ის აპიდან წაიშლება.",
+  "certNoAdminAccess": "ადმინისტრატორები სამედიცინო დოკუმენტებს ვერ ხედავენ — მხოლოდ სტატუსებს.",
+  "rosterTitle": "მოსწავლეები",
+  "rosterSearch": "მოსწავლის ძიება",
+  "rosterSortName": "სახელით",
+  "rosterSortAge": "ასაკით",
+  "rosterSortAttendance": "დასწრებით",
+  "rosterSortCert": "ცნობის სტატუსით",
+  "rosterFilterAll": "ყველა",
+  "rosterFilterCertIssues": "ცნობის პრობლემა",
+  "rosterFilterLowAttendance": "დაბალი დასწრება",
+  "rosterEmptyFilter": "ამ ფილტრით მოსწავლე არ მოიძებნა",
+  "rosterStudentDetail": "მოსწავლე",
+  "rosterAttendanceRate": "დასწრება {percent}%",
+  "@rosterAttendanceRate": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "rosterNoAttendance": "დასწრება ჯერ არ არის",
+  "rosterCount": "{count} მოსწავლე",
+  "@rosterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attendanceSave": "შენახვა",
+  "attendanceSaved": "დასწრება შენახულია",
+  "attendanceUnsaved": "{count} შეუნახავი ცვლილება",
+  "@attendanceUnsaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attendanceDiscard": "გაუქმება",
+  "attendanceEditNote": "უკვე აღრიცხული დასწრება შეგიძლიათ შეცვალოთ — ყოველი ცვლილება ინახება.",
+  "attendanceByStudent": "მოსწავლეების მიხედვით",
+  "attendanceByGroup": "ჯგუფის მიხედვით",
+  "attendanceReportTitle": "დასწრების ანგარიში",
+  "attendanceSessions": "{count} ვარჯიში",
+  "@attendanceSessions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attendanceMarkAll": "ყველა",
+  "exportTitle": "ექსპორტი",
+  "exportRoster": "მოსწავლეთა სია",
+  "exportTrainingSheet": "ვარჯიშის დასწრების ფურცელი",
+  "exportMonthly": "თვიური დასწრების ანგარიში",
+  "exportFormat": "ფორმატი",
+  "exportIncludeCompliance": "ცნობის სტატუსის ჩართვა (მხოლოდ საჭიროების შემთხვევაში)",
+  "exportWarning": "ფაილი შეიცავს ბავშვების პერსონალურ მონაცემებს. გაუზიარეთ მხოლოდ იმას, ვისაც ნამდვილად სჭირდება, და წაშალეთ გამოყენების შემდეგ.",
+  "exportConfirm": "გასაგებია, ექსპორტი",
+  "exportReady": "ფაილი მზადაა: {name}",
+  "@exportReady": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exportChooseTraining": "აირჩიეთ ვარჯიში",
+  "exportChooseMonth": "აირჩიეთ თვე",
+  "exportColStudent": "მოსწავლე",
+  "exportColGroup": "ჯგუფი",
+  "exportColDate": "თარიღი",
+  "exportColStatus": "დასწრება",
+  "exportColAge": "ასაკი",
+  "exportColCert": "ცნობა",
+  "exportColRate": "დასწრება %",
+  "exportGenerated": "შექმნილია: {date}",
+  "@exportGenerated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportConfidential": "კონფიდენციალური — მხოლოდ შიდა გამოყენებისთვის",
+  "exportPage": "გვ. {n}",
+  "@exportPage": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "plansTitle": "სავარჯიშო გეგმები",
+  "plansEmpty": "გეგმები ჯერ არ არის",
+  "planNew": "ახალი გეგმა",
+  "planEdit": "გეგმის რედაქტირება",
+  "planTitleLabel": "სათაური",
+  "planDescription": "აღწერა",
+  "planType": "გეგმის ტიპი",
+  "planTypeSeasonal": "სეზონური",
+  "planTypeMonthly": "თვიური",
+  "planTypeWeekly": "კვირის",
+  "planTypeExercise": "ინდივიდუალური სავარჯიშო",
+  "planTypeHomework": "საშინაო დავალება",
+  "planGroups": "ჯგუფები",
+  "planStart": "დაწყება",
+  "planEnd": "დასრულება",
+  "planStatusDraft": "მონახაზი",
+  "planStatusPublished": "გამოქვეყნებული",
+  "planStatusArchived": "დაარქივებული",
+  "planSaveDraft": "მონახაზის შენახვა",
+  "planPublish": "გამოქვეყნება",
+  "planArchive": "დაარქივება",
+  "planUnpublish": "მონახაზად დაბრუნება",
+  "planPublished": "გეგმა გამოქვეყნდა — მშობლებს ეცნობათ",
+  "planSaved": "გეგმა შენახულია",
+  "planArchived": "გეგმა დაარქივდა",
+  "planExercises": "სავარჯიშოები",
+  "planAddExercise": "სავარჯიშოს დამატება",
+  "planNoExercises": "დაამატეთ მინიმუმ ერთი სავარჯიშო",
+  "planViews": "ნახა {count} მშობელმა",
+  "@planViews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "planCompletion": "შესრულებული: {done} / {total}",
+  "@planCompletion": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "planSelfReported": "შესრულებას მშობელი აღნიშნავს — მწვრთნელი არ ამოწმებს.",
+  "planPeriod": "{start} – {end}",
+  "@planPeriod": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "planOpenEnded": "{start}-დან",
+  "@planOpenEnded": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
+  },
+  "planHomeworkDue": "დავალება შემდეგ ვარჯიშამდე",
+  "planActive": "აქტიური გეგმები",
+  "planDraftsOnlyCoach": "მონახაზები მშობლებს არ უჩანთ",
+  "exerciseName": "სავარჯიშოს სახელი",
+  "exerciseDescription": "აღწერა",
+  "exerciseInstructions": "ინსტრუქცია",
+  "exerciseDuration": "ხანგრძლივობა (წთ)",
+  "exerciseReps": "გამეორებები",
+  "exerciseSets": "სეტები",
+  "exerciseRest": "დასვენება (წმ)",
+  "exerciseMedia": "მასალები",
+  "exerciseAddLink": "ბმულის დამატება",
+  "exerciseLinkHint": "https://…",
+  "exerciseLinkInvalid": "ბმული უნდა იწყებოდეს https://-ით",
+  "exerciseOpenLink": "ბმულის გახსნა",
+  "exerciseExternalWarning": "ბმული გაიხსნება ბრაუზერში. აპი მას თქვენს მონაცემებს არ უზიარებს.",
+  "exerciseMoveUp": "ზემოთ",
+  "exerciseMoveDown": "ქვემოთ",
+  "exerciseRemove": "წაშლა",
+  "exerciseSummary": "{sets} × {reps}",
+  "@exerciseSummary": {
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseMinutes": "{n} წთ",
+  "@exerciseMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseRestSec": "დასვენება {n} წმ",
+  "@exerciseRestSec": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "progressNotStarted": "არ დაწყებულა",
+  "progressInProgress": "მიმდინარე",
+  "progressCompleted": "შესრულებულია",
+  "progressFor": "{child}-ის პროგრესი",
+  "@progressFor": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "validationPlanTitle": "მიუთითეთ სათაური",
+  "validationPlanGroups": "აირჩიეთ მინიმუმ ერთი ჯგუფი",
+  "validationPlanExercises": "დაამატეთ მინიმუმ ერთი სავარჯიშო",
+  "validationPlanDates": "დასრულება დაწყებამდეა",
+  "validationExerciseName": "მიუთითეთ სავარჯიშოს სახელი",
+  "validationLink": "ბმული არასწორია (მხოლოდ https://)",
+  "validationTooManyExercises": "მაქსიმუმ 50 სავარჯიშო",
+  "validationTooManyMedia": "მაქსიმუმ 10 მასალა სავარჯიშოზე",
+  "validationPlanNotDraft": "მხოლოდ მონახაზის რედაქტირებაა შესაძლებელი გამოქვეყნებამდე",
+  "payProofAction": "გადახდის დადასტურება",
+  "payProofTitle": "გადახდის დადასტურება",
+  "payProofDate": "გადახდის თარიღი",
+  "payProofReference": "ტრანზაქციის / საიდენტიფიკაციო ნომერი",
+  "payProofNote": "შენიშვნა",
+  "payProofReceipt": "ქვითარი (JPG, PNG ან PDF, მაქს. 10 MB)",
+  "payProofSubmit": "გაგზავნა შესამოწმებლად",
+  "payProofSubmitted": "გაგზავნილია — მწვრთნელი შეამოწმებს",
+  "payProofUploading": "იტვირთება… {percent}%",
+  "@payProofUploading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "payProofHint": "თქვენი დადასტურება გადახდას ავტომატურად გადახდილად არ აქცევს — მას ამოწმებს უფლებამოსილი მწვრთნელი ან კლუბის ადმინი.",
+  "payStateAwaiting": "დადასტურების მოლოდინში",
+  "payStateUnderReview": "მოწმდება",
+  "payStateRejected": "უარყოფილია",
+  "payStatePaid": "გადახდილია",
+  "payRejectedReason": "უარყოფის მიზეზი: {reason}",
+  "@payRejectedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "payResubmit": "ხელახლა გაგზავნა",
+  "paySubmittedOn": "გაგზავნილია {date}",
+  "@paySubmittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "payViewReceipt": "ქვითრის ნახვა",
+  "payVerifiedBy": "დაადასტურა {name}, {date}",
+  "@payVerifiedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "payReviewQueue": "გადახდების დადასტურება",
+  "payReviewEmpty": "დასადასტურებელი გადახდა არ არის",
+  "payApprove": "დადასტურება",
+  "payReject": "უარყოფა",
+  "payApproved": "გადახდა დადასტურდა — მშობელს ეცნობა",
+  "payRejectedSnack": "უარყოფილია — მშობელს ეცნობა მიზეზი",
+  "payRejectReasonTitle": "უარყოფის მიზეზი",
+  "payNotReviewer": "გადახდების დადასტურების უფლება მხოლოდ დანიშნულ მწვრთნელებსა და კლუბის ადმინისტრატორებს აქვთ.",
+  "payHistory": "ისტორია",
+  "payEventSubmitted": "გაგზავნა",
+  "payEventResubmitted": "ხელახლა გაგზავნა",
+  "payEventReviewStarted": "შემოწმება დაიწყო",
+  "payEventApproved": "დადასტურდა",
+  "payEventRejected": "უარყოფილია",
+  "payEventViewed": "ქვითარი ნახეს",
+  "payPaymentManagers": "გადახდების დამდასტურებლები",
+  "payProofFor": "{child} · {amount} · {due}",
+  "@payProofFor": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "due": {
+        "type": "String"
+      }
+    }
+  },
+  "validationProofExists": "ამ გადახდაზე დადასტურება უკვე მოწმდება",
+  "validationProofClosed": "ეს დადასტურება უკვე განხილულია",
+  "validationPaymentClosed": "გადახდა უკვე დახურულია",
+  "validationReceiptRequired": "დაურთეთ ქვითარი",
+  "validationDateFuture": "თარიღი მომავალშია",
+  "notifPaymentProofSubmitted": "გადახდის დადასტურება შემოწმებისთვის",
+  "notifPaymentProofApproved": "გადახდა დადასტურდა",
+  "notifPaymentProofRejected": "გადახდის დადასტურება უარყოფილია",
+  "notifTrainingPlanPublished": "ახალი სავარჯიშო გეგმა",
+  "notifBodyPlan": "{title} · {group}",
+  "@notifBodyPlan": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyProof": "{child} · {amount}",
+  "@notifBodyProof": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyProofRejected": "{child} · {reason}",
+  "@notifBodyProofRejected": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyCertDays": "{child} — {days} დღე დარჩა",
+  "@notifBodyCertDays": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyCertExpired": "{child} — ცნობას ვადა გაუვიდა",
+  "@notifBodyCertExpired": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "sysTrainingCancelled": "ვარჯიში გაუქმდა ({when}). მიზეზი: {reason}",
+  "@sysTrainingCancelled": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "sysTrainingMoved": "ვარჯიში გადაიდო: {from} → {to}",
+  "@sysTrainingMoved": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "sysMatchCreated": "დაემატა თამაში: {opponent}, {when}",
+  "@sysMatchCreated": {
+    "placeholders": {
+      "opponent": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sysMatchMoved": "თამაში გადაიდო: {from} → {to}",
+  "@sysMatchMoved": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "sysMatchCancelled": "თამაში ({opponent}) გაუქმდა. მიზეზი: {reason}",
+  "@sysMatchCancelled": {
+    "placeholders": {
+      "opponent": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "sysScheduleCreated": "დაემატა ვარჯიშების განრიგი",
+  "sysScheduleChanged": "ვარჯიშების განრიგი შეიცვალა {from}-დან",
+  "@sysScheduleChanged": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "sysPlanPublished": "გამოქვეყნდა სავარჯიშო გეგმა: {title}",
+  "@sysPlanPublished": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "sysScheduleReason": "განრიგი შეიცვალა",
+  "adminNavCompliance": "ცნობები",
+  "adminNavAttendance": "დასწრება",
+  "adminNavPlans": "სავარჯიშო გეგმები",
+  "adminNavPayments": "გადახდები",
+  "adminNavSettings": "პარამეტრები",
+  "adminComplianceNote": "მხოლოდ სტატუსების რაოდენობა — დოკუმენტები და ბავშვების სახელები არ ჩანს.",
+  "adminColValid": "მოქმედი",
+  "adminColExpiring": "იწურება",
+  "adminColExpired": "ვადაგასული",
+  "adminColMissing": "არ არის",
+  "adminColRate": "დასწრება",
+  "adminColSessions": "ვარჯიშები",
+  "adminColPlans": "გეგმები",
+  "adminColPlanType": "ტიპი",
+  "adminColAmount": "თანხა",
+  "adminColSubmitted": "გაგზავნილია",
+  "adminColReviewers": "დამდასტურებლები",
+  "adminPaymentQueueNote": "ქვითარი იხსნება დროებითი ბმულით და მისი ნახვა აღირიცხება.",
+  "adminSetReviewers": "დამდასტურებლების მინიჭება",
+  "adminLanguage": "ინტერფეისის ენა",
+  "adminRosterNote": "მოსწავლეთა რაოდენობა ჯგუფების მიხედვით — სახელების გარეშე.",
+  "adminMonth": "თვე"
 }

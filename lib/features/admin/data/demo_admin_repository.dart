@@ -8,6 +8,9 @@ import '../../groups/domain/group.dart';
 import '../../moderation/data/demo_moderation_repository.dart';
 import '../../moderation/domain/report.dart';
 import '../../sports/domain/sport.dart';
+import '../../attendance/domain/attendance.dart';
+import '../../medical_certificates/domain/medical_certificate.dart';
+import '../../trainings/domain/training.dart';
 import '../../trainings/domain/series.dart';
 import '../domain/admin_models.dart';
 
@@ -296,6 +299,103 @@ class DemoAdminRepository implements AdminRepository {
       'coachStatusReason': u.coachStatusReason,
     });
     db.auditLog('role.set', 'user', uid, details: {'role': role?.name ?? 'none', 'clubs': clubIds.join(',')});
+    db.commit();
+  }
+
+  // ── v1.3 ─────────────────────────────────────────────────────────────
+
+  /// Mirrors `adminCompliance`: counts only (no names, no documents).
+  @override
+  Future<List<GroupCompliance>> compliance() async {
+    final me = _admin();
+    final now = db.clock();
+    return [
+      for (final g in _groups(me).where((g) => g.isActive))
+        () {
+          var v = 0, e = 0, x = 0, m = 0;
+          for (final cid in g.memberChildIds) {
+            final certs = db.certificates.values.where((c) => c.childId == cid);
+            switch (CertificatePolicy.childStatus(certs, now, sportId: g.sportId)) {
+              case CertificateStatus.valid:
+                v++;
+              case CertificateStatus.expiring:
+                e++;
+              case CertificateStatus.expired:
+                x++;
+              case CertificateStatus.missing:
+                m++;
+            }
+          }
+          return GroupCompliance(
+            groupId: g.id,
+            groupName: g.name,
+            clubId: g.clubId,
+            valid: v,
+            expiring: e,
+            expired: x,
+            missing: m,
+          );
+        }(),
+    ];
+  }
+
+  @override
+  Future<List<GroupAttendanceRow>> attendanceReport({required int year, required int month}) async {
+    final me = _admin();
+    final rows = <GroupAttendanceRow>[];
+    for (final g in _groups(me)) {
+      final ids = db.trainings.values
+          .where(
+            (t) =>
+                t.groupId == g.id &&
+                t.startAt.year == year &&
+                t.startAt.month == month &&
+                t.status != TrainingStatus.cancelled,
+          )
+          .map((t) => t.id)
+          .toSet();
+      final recs = db.attendance.values.where((a) => ids.contains(a.trainingId)).toList();
+      rows.add(
+        GroupAttendanceRow(
+          groupId: g.id,
+          groupName: g.name,
+          clubId: g.clubId,
+          sessions: recs.map((r) => r.trainingId).toSet().length,
+          present: recs.where((r) => r.status == AttendanceStatus.present).length,
+          recorded: recs.length,
+          members: g.memberChildIds.length,
+        ),
+      );
+    }
+    return rows;
+  }
+
+  @override
+  Stream<List<PlanOverview>> watchPlans() => db.watch(() {
+    final me = _admin();
+    return db.trainingPlans.values.where((p) => _inScope(me, p.clubId)).map((p) {
+      return PlanOverview(
+        planId: p.id,
+        title: p.title,
+        typeName: p.type.name,
+        statusName: p.status.name,
+        groupNames: p.groupIds.map((id) => db.groups[id]?.name ?? id).toList(),
+        coachName: p.coachName,
+        exercises: p.exercises.length,
+        startDate: p.startDate.toDateTime(),
+      );
+    }).toList()..sort((a, b) => b.startDate.compareTo(a.startDate));
+  });
+
+  @override
+  Future<void> setPaymentManagers(String groupId, List<String> coachIds) async {
+    db.requireOnline();
+    final me = _admin();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManageClub(me, g.clubId)) throw const PermissionDeniedException('club scope');
+    final valid = coachIds.where(g.coachIds.contains).toList();
+    db.groups[groupId] = g.copyWith(paymentManagerIds: valid);
+    db.auditLog('group.paymentManagers', 'group', groupId, clubId: g.clubId, details: {'coaches': valid.join(',')});
     db.commit();
   }
 }

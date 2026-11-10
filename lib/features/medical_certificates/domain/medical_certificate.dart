@@ -15,6 +15,10 @@ class MedicalCertificate {
     this.mimeType = '',
     this.sizeBytes = 0,
     this.createdAt,
+    this.sportId,
+    this.groupId,
+    this.replacedBy,
+    this.replacedAt,
   });
 
   final String id;
@@ -31,6 +35,34 @@ class MedicalCertificate {
   final int sizeBytes;
   final DateTime? createdAt;
 
+  /// Sport/group the certificate applies to (v1.3); null = general.
+  final String? sportId;
+  final String? groupId;
+
+  /// Set when the parent uploaded a newer certificate replacing this one.
+  final String? replacedBy;
+  final DateTime? replacedAt;
+
+  bool get isReplaced => replacedBy != null;
+
+  MedicalCertificate markReplaced(String byId, DateTime at) => MedicalCertificate(
+    id: id,
+    childId: childId,
+    uploadedBy: uploadedBy,
+    storagePath: storagePath,
+    issuedAt: issuedAt,
+    validUntil: validUntil,
+    consentAt: consentAt,
+    fileName: fileName,
+    mimeType: mimeType,
+    sizeBytes: sizeBytes,
+    createdAt: createdAt,
+    sportId: sportId,
+    groupId: groupId,
+    replacedBy: byId,
+    replacedAt: at,
+  );
+
   CertificateStatus statusOn(DateTime now) => CertificatePolicy.statusFor(validUntil, now);
 
   Map<String, dynamic> toMap({DateTime? now}) => {
@@ -45,6 +77,10 @@ class MedicalCertificate {
     'sizeBytes': sizeBytes,
     'createdAt': createdAt,
     'status': statusOn(now ?? DateTime.now()).name,
+    'sportId': sportId,
+    'groupId': groupId,
+    'replacedBy': replacedBy,
+    'replacedAt': replacedAt,
   };
 
   factory MedicalCertificate.fromMap(String id, Map<String, dynamic> m) => MedicalCertificate(
@@ -59,6 +95,10 @@ class MedicalCertificate {
     mimeType: m['mimeType'] as String? ?? '',
     sizeBytes: (m['sizeBytes'] as num?)?.toInt() ?? 0,
     createdAt: readDateOrNull(m['createdAt']),
+    sportId: m['sportId'] as String?,
+    groupId: m['groupId'] as String?,
+    replacedBy: m['replacedBy'] as String?,
+    replacedAt: readDateOrNull(m['replacedAt']),
   );
 }
 
@@ -72,9 +112,15 @@ class CertificateUpload {
     required this.issuedAt,
     required this.validUntil,
     required this.consentGiven,
+    this.sportId,
+    this.replacesCertId,
   });
 
   final String childId;
+  final String? sportId;
+
+  /// Replace flow: the older certificate is marked `replacedBy` the new one.
+  final String? replacesCertId;
   final List<int> bytes;
   final String fileName;
   final String mimeType;
@@ -91,17 +137,21 @@ class CertificateAccessEntry {
     required this.userName,
     required this.at,
     required this.action,
+    this.viewerRole = '',
   });
 
   final String certId;
+  final String viewerRole;
   final String childId;
   final String userId;
   final String userName;
   final DateTime at;
 
-  /// `open` | `denied` | `delete`
+  /// `open` (view) | `download` | `denied` | `delete`
   final String action;
 }
+
+enum CertificateAccessPurpose { view, download }
 
 /// Short-lived access grant to a private file.
 class CertificateAccessGrant {
@@ -132,11 +182,25 @@ class CertificatePolicy {
     return CertificateStatus.valid;
   }
 
-  /// Overall status of a child from all their certificates (best one wins).
-  static CertificateStatus childStatus(Iterable<MedicalCertificate> certs, DateTime now) {
-    if (certs.isEmpty) return CertificateStatus.missing;
-    final latest = certs.reduce((a, b) => a.validUntil.isAfter(b.validUntil) ? a : b);
-    return latest.statusOn(now);
+  /// The certificate that currently applies for [sportId]: not replaced,
+  /// matching the sport (or general), latest expiry wins. Mirrors
+  /// `functions/src/lib/certificates.ts`.
+  static MedicalCertificate? current(Iterable<MedicalCertificate> certs, {String? sportId}) {
+    final candidates = certs.where(
+      (c) => !c.isReplaced && (c.sportId == null || sportId == null || c.sportId == sportId),
+    );
+    if (candidates.isEmpty) return null;
+    return candidates.reduce((a, b) {
+      if (a.validUntil != b.validUntil) return a.validUntil.isAfter(b.validUntil) ? a : b;
+      // Same expiry: a sport-specific certificate beats a general one.
+      return (b.sportId != null && a.sportId == null) ? b : a;
+    });
+  }
+
+  /// Overall status of a child (for a sport when given).
+  static CertificateStatus childStatus(Iterable<MedicalCertificate> certs, DateTime now, {String? sportId}) {
+    final c = current(certs, sportId: sportId);
+    return c == null ? CertificateStatus.missing : c.statusOn(now);
   }
 
   static String? mimeFromFileName(String name) {

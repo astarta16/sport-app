@@ -17,8 +17,10 @@ import '../features/media/domain/media_repository.dart';
 import '../features/medical_certificates/domain/certificates_repository.dart';
 import '../features/moderation/domain/report.dart';
 import '../features/notifications/domain/notifications_repository.dart';
+import '../features/payments/domain/payment_proof.dart';
 import '../features/payments/domain/payments_repository.dart';
 import '../features/sports/domain/sports_repository.dart';
+import '../features/training_plans/domain/training_plan.dart';
 import '../features/trainings/domain/trainings_repository.dart';
 import 'config.dart';
 
@@ -54,3 +56,7 @@ final accountRepositoryProvider = Provider<AccountRepository>((_) => _unbound('A
 
 /// The in-memory backend in demo mode, null in Firebase mode.
 final demoBackendProvider = Provider<DemoBackend?>((_) => null);
+
+// v1.3
+final paymentProofsRepositoryProvider = Provider<PaymentProofsRepository>((_) => _unbound('PaymentProofsRepository'));
+final trainingPlansRepositoryProvider = Provider<TrainingPlansRepository>((_) => _unbound('TrainingPlansRepository'));

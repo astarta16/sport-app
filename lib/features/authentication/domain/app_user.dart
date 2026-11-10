@@ -127,6 +127,7 @@ class AppUser {
     this.adminClubIds = const [],
     this.coachStatusReason,
     this.privacy = const PrivacySettings(),
+    this.locale = 'ka',
   });
 
   final String id;
@@ -156,6 +157,9 @@ class AppUser {
   /// Reason given by an admin when rejecting / suspending a coach.
   final String? coachStatusReason;
   final PrivacySettings privacy;
+
+  /// ka | en | ru — language for server-generated text.
+  final String locale;
 
   String get fullName => '$firstName $lastName';
   String get initials =>
@@ -192,6 +196,7 @@ class AppUser {
     PrivacySettings? privacy,
     AdminRole? adminRole,
     List<String>? adminClubIds,
+    String? locale,
   }) => AppUser(
     id: id,
     role: role,
@@ -212,6 +217,7 @@ class AppUser {
     adminClubIds: adminClubIds ?? this.adminClubIds,
     coachStatusReason: coachStatusReason ?? this.coachStatusReason,
     privacy: privacy ?? this.privacy,
+    locale: locale ?? this.locale,
   );
 
   Map<String, dynamic> toMap() => {
@@ -230,6 +236,7 @@ class AppUser {
     'notificationPrefs': notificationPrefs.toMap(),
     'photoPath': photoPath,
     'privacy': privacy.toMap(),
+    'locale': locale,
   };
 
   factory AppUser.fromMap(String id, Map<String, dynamic> m) => AppUser(
@@ -252,6 +259,7 @@ class AppUser {
     adminClubIds: readStringList(m['adminClubIds']),
     coachStatusReason: m['coachStatusReason'] as String?,
     privacy: PrivacySettings.fromMap(m['privacy']),
+    locale: const ['ka', 'en', 'ru'].contains(m['locale']) ? m['locale'] as String : 'ka',
   );
 }
 

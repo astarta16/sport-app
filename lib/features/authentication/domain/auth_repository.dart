@@ -30,6 +30,9 @@ abstract interface class AuthRepository {
 
   /// Withdraws or gives SMS consent (payments reminders).
   Future<void> updateSmsConsent(bool consent);
+
+  /// Server-side text (push, SMS, inbox) language: ka | en | ru.
+  Future<void> updateLocale(String languageCode);
   Future<void> signOut();
 
   /// Deletes the account; all medical certificates of solely-owned children

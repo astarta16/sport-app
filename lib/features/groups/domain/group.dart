@@ -22,6 +22,7 @@ class Group {
     this.inviteCode = '',
     this.createdBy,
     this.status = GroupStatus.active,
+    this.paymentManagerIds = const [],
   });
 
   final String id;
@@ -42,6 +43,9 @@ class Group {
   final String? createdBy;
   final GroupStatus status;
 
+  /// Coaches explicitly allowed to verify payments (v1.3). Set by admins only.
+  final List<String> paymentManagerIds;
+
   bool hasCoach(String uid) => coachIds.contains(uid);
   bool hasParent(String uid) => parentIds.contains(uid);
   bool hasChild(String childId) => memberChildIds.contains(childId);
@@ -57,6 +61,7 @@ class Group {
     String? scheduleNote,
     String? inviteCode,
     GroupStatus? status,
+    List<String>? paymentManagerIds,
   }) => Group(
     id: id,
     clubId: clubId,
@@ -71,6 +76,7 @@ class Group {
     inviteCode: inviteCode ?? this.inviteCode,
     createdBy: createdBy,
     status: status ?? this.status,
+    paymentManagerIds: paymentManagerIds ?? this.paymentManagerIds,
   );
 
   Map<String, dynamic> toMap() => {
@@ -86,6 +92,7 @@ class Group {
     'inviteCode': inviteCode,
     'createdBy': createdBy,
     'status': status.name,
+    'paymentManagerIds': paymentManagerIds,
   };
 
   factory Group.fromMap(String id, Map<String, dynamic> m) => Group(
@@ -102,6 +109,7 @@ class Group {
     inviteCode: m['inviteCode'] as String? ?? '',
     createdBy: m['createdBy'] as String?,
     status: GroupStatus.fromName(m['status'] as String?),
+    paymentManagerIds: readStringList(m['paymentManagerIds']),
   );
 }
 

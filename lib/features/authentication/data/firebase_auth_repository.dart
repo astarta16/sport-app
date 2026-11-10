@@ -137,6 +137,10 @@ class FirebaseAuthRepository implements AuthRepository {
   );
 
   @override
+  Future<void> updateLocale(String languageCode) =>
+      guardFirebase(() => _doc(requireUid(auth)).update({'locale': languageCode}));
+
+  @override
   Future<void> signOut() => auth.signOut();
 
   /// Server-side: deletes solely-owned children with all certificates.

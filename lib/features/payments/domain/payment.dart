@@ -1,4 +1,5 @@
 import '../../../core/utils/dates.dart';
+import 'payment_proof.dart';
 
 enum PaymentStatus {
   pending,
@@ -40,6 +41,9 @@ class Payment {
     this.planId,
     this.cancelledReason,
     this.title,
+    this.verification = const PaymentVerification(),
+    this.verifiedBy,
+    this.verifiedAt,
   });
 
   final String id;
@@ -60,6 +64,11 @@ class Payment {
   /// Optional label for one-off charges (e.g. "ტურნირის საფასური").
   final String? title;
 
+  /// Proof-review workflow (server-managed, v1.3).
+  final PaymentVerification verification;
+  final String? verifiedBy;
+  final DateTime? verifiedAt;
+
   /// `YYYY-MM` billing month of the due date (Tbilisi).
   String get period {
     final w = TbilisiTime.wallClock(dueDate);
@@ -74,6 +83,9 @@ class Payment {
     DateTime? paidAt,
     bool clearPaidAt = false,
     String? cancelledReason,
+    PaymentVerification? verification,
+    String? verifiedBy,
+    DateTime? verifiedAt,
   }) => Payment(
     id: id,
     childId: childId,
@@ -90,6 +102,9 @@ class Payment {
     planId: planId,
     cancelledReason: cancelledReason ?? this.cancelledReason,
     title: title,
+    verification: verification ?? this.verification,
+    verifiedBy: verifiedBy ?? this.verifiedBy,
+    verifiedAt: verifiedAt ?? this.verifiedAt,
   );
 
   Map<String, dynamic> toMap() => {
@@ -108,6 +123,9 @@ class Payment {
     'period': period,
     'cancelledReason': cancelledReason,
     'title': title,
+    'verification': verification.toMap(),
+    'verifiedBy': verifiedBy,
+    'verifiedAt': verifiedAt,
   };
 
   factory Payment.fromMap(String id, Map<String, dynamic> m) => Payment(
@@ -126,6 +144,9 @@ class Payment {
     planId: m['planId'] as String?,
     cancelledReason: m['cancelledReason'] as String?,
     title: m['title'] as String?,
+    verification: PaymentVerification.fromMap(m['verification']),
+    verifiedBy: m['verifiedBy'] as String?,
+    verifiedAt: readDateOrNull(m['verifiedAt']),
   );
 }
 

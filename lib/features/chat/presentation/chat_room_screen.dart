@@ -7,6 +7,7 @@ import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/visuals.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
@@ -510,7 +511,7 @@ class _SystemLine extends StatelessWidget {
           const SizedBox(width: 6),
           Flexible(
             child: Text(
-              message.text,
+              systemMessageText(context, message),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),

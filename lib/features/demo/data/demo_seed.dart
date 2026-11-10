@@ -14,6 +14,7 @@ import '../../sports/domain/sport.dart';
 import '../../trainings/domain/training.dart';
 import 'demo_backend.dart';
 import 'demo_seed_v12.dart';
+import 'demo_seed_v13.dart';
 
 /// Demo identities. All names, numbers and places are fictional.
 class DemoIds {
@@ -747,5 +748,6 @@ class DemoSeed {
       childName: 'ელენე',
     );
     DemoSeedV12.seed(db);
+    DemoSeedV13.seed(db);
   }
 }

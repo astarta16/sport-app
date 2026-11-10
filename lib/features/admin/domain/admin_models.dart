@@ -190,7 +190,90 @@ class AdminPage<T> {
   final int total;
 }
 
+/// Certificate compliance per group — counts only, no names or documents.
+class GroupCompliance {
+  const GroupCompliance({
+    required this.groupId,
+    required this.groupName,
+    required this.clubId,
+    this.valid = 0,
+    this.expiring = 0,
+    this.expired = 0,
+    this.missing = 0,
+  });
+
+  final String groupId;
+  final String groupName;
+  final String clubId;
+  final int valid;
+  final int expiring;
+  final int expired;
+  final int missing;
+
+  factory GroupCompliance.fromMap(Map m) => GroupCompliance(
+    groupId: m['groupId'] as String? ?? '',
+    groupName: m['groupName'] as String? ?? '',
+    clubId: m['clubId'] as String? ?? '',
+    valid: (m['valid'] as num?)?.toInt() ?? 0,
+    expiring: (m['expiring'] as num?)?.toInt() ?? 0,
+    expired: (m['expired'] as num?)?.toInt() ?? 0,
+    missing: (m['missing'] as num?)?.toInt() ?? 0,
+  );
+}
+
+/// Attendance per group for one month (aggregates only).
+class GroupAttendanceRow {
+  const GroupAttendanceRow({
+    required this.groupId,
+    required this.groupName,
+    required this.clubId,
+    required this.sessions,
+    required this.present,
+    required this.recorded,
+    required this.members,
+  });
+
+  final String groupId;
+  final String groupName;
+  final String clubId;
+  final int sessions;
+  final int present;
+  final int recorded;
+  final int members;
+
+  double? get rate => recorded == 0 ? null : present / recorded;
+}
+
+class PlanOverview {
+  const PlanOverview({
+    required this.planId,
+    required this.title,
+    required this.typeName,
+    required this.statusName,
+    required this.groupNames,
+    required this.coachName,
+    required this.exercises,
+    required this.startDate,
+  });
+
+  final String planId;
+  final String title;
+  final String typeName;
+  final String statusName;
+  final List<String> groupNames;
+  final String coachName;
+  final int exercises;
+  final DateTime startDate;
+}
+
 abstract interface class AdminRepository {
+  Future<List<GroupCompliance>> compliance();
+  Future<List<GroupAttendanceRow>> attendanceReport({required int year, required int month});
+  Stream<List<PlanOverview>> watchPlans();
+
+  /// Club admin of the group's club / platform admin (financial permissions).
+  Future<void> setPaymentManagers(String groupId, List<String> coachIds);
+
   Future<AdminStats> stats();
 
   Stream<List<CoachSummary>> watchCoaches();

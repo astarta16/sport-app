@@ -141,6 +141,14 @@ class DemoAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> updateLocale(String languageCode) async {
+    final me = db.currentUser;
+    if (me == null) return;
+    db.users[me.id] = me.copyWith(locale: languageCode);
+    db.commit();
+  }
+
+  @override
   Future<void> signOut() async {
     db.session = null;
     db.commit();

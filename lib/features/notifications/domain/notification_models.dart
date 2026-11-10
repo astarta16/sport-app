@@ -22,17 +22,29 @@ enum NotificationType {
   feedbackAdded,
   announcement,
   newMedia,
-  scheduleChanged;
+  scheduleChanged,
+  paymentProofSubmitted,
+  paymentProofApproved,
+  paymentProofRejected,
+  trainingPlanPublished;
 
   static NotificationType fromName(String name) =>
       NotificationType.values.firstWhere((t) => t.name == name, orElse: () => NotificationType.newTraining);
 
   NotificationCategory get category => switch (this) {
-    newTraining || trainingChanged || trainingReminder || scheduleChanged => NotificationCategory.trainings,
+    newTraining ||
+    trainingChanged ||
+    trainingReminder ||
+    scheduleChanged ||
+    trainingPlanPublished => NotificationCategory.trainings,
     newMatch || matchChanged || matchReminder => NotificationCategory.matches,
     groupInvite || inviteAnswered => NotificationCategory.invitations,
     attendanceRecorded || feedbackAdded => NotificationCategory.attendance,
-    paymentReminder || paymentSms => NotificationCategory.payments,
+    paymentReminder ||
+    paymentSms ||
+    paymentProofSubmitted ||
+    paymentProofApproved ||
+    paymentProofRejected => NotificationCategory.payments,
     chatMessage => NotificationCategory.chat,
     certificateExpiry => NotificationCategory.certificates,
     announcement || newPhotos || newMedia => NotificationCategory.announcements,

@@ -67,7 +67,12 @@ class DemoMatchesRepository implements MatchesRepository {
       args: {'opponent': m.opponentName},
       dedupeKey: 'match:${m.id}:created',
     );
-    db.systemMessage(g.id, 'დაემატა თამაში: ${m.opponentName}, ${_fmt(m.startAt)}');
+    db.systemMessage(
+      g.id,
+      'დაემატა თამაში: ${m.opponentName}, ${_fmt(m.startAt)}',
+      key: 'matchCreated',
+      args: {'opponent': m.opponentName, 'when': _fmt(m.startAt)},
+    );
     db.commit();
     return m;
   }
@@ -102,7 +107,14 @@ class DemoMatchesRepository implements MatchesRepository {
         args: {'opponent': m.opponentName, 'kind': 'moved'},
         dedupeKey: 'match:$id:moved:${d.startAt.millisecondsSinceEpoch}:${d.venueId}',
       );
-      if (moved) db.systemMessage(g.id, 'თამაში გადაიდო: ${_fmt(old.startAt)} → ${_fmt(m.startAt)}');
+      if (moved) {
+        db.systemMessage(
+          g.id,
+          'თამაში გადაიდო: ${_fmt(old.startAt)} → ${_fmt(m.startAt)}',
+          key: 'matchMoved',
+          args: {'from': _fmt(old.startAt), 'to': _fmt(m.startAt)},
+        );
+      }
     }
     db.commit();
     return m;
@@ -132,7 +144,12 @@ class DemoMatchesRepository implements MatchesRepository {
       args: {'opponent': m.opponentName, 'kind': 'cancelled', 'reason': reason.text.trim()},
       dedupeKey: 'match:$id:cancelled',
     );
-    db.systemMessage(g.id, 'თამაში (${m.opponentName}) გაუქმდა. მიზეზი: ${reason.text.trim()}');
+    db.systemMessage(
+      g.id,
+      'თამაში (${m.opponentName}) გაუქმდა. მიზეზი: ${reason.text.trim()}',
+      key: 'matchCancelled',
+      args: {'opponent': m.opponentName, 'reason': reason.text.trim()},
+    );
     db.commit();
   }
 

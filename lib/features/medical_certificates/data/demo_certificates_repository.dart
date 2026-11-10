@@ -36,6 +36,7 @@ class DemoCertificatesRepository implements CertificatesRepository {
 
   @override
   Future<MedicalCertificate> upload(CertificateUpload u) async {
+    db.requireOnline();
     final child = db.requireChild(u.childId);
     if (!AccessPolicy.canUploadCertificate(db.me, child)) throw const PermissionDeniedException();
     final errors = CertificatePolicy.validateUpload(u);
@@ -54,9 +55,13 @@ class DemoCertificatesRepository implements CertificatesRepository {
       mimeType: u.mimeType,
       sizeBytes: u.bytes.length,
       createdAt: now,
+      sportId: u.sportId,
     );
+    final old = u.replacesCertId == null ? null : db.certificates[u.replacesCertId];
+    if (u.replacesCertId != null && (old == null || old.childId != u.childId)) throw const NotFoundException('replace');
     db.certificateFiles[cert.storagePath] = Uint8List.fromList(u.bytes);
     db.certificates[id] = cert;
+    if (old != null) db.certificates[old.id] = old.markReplaced(id, now);
     db.commit();
     return cert;
   }
@@ -72,28 +77,45 @@ class DemoCertificatesRepository implements CertificatesRepository {
     db.commit();
   }
 
-  void _audit(MedicalCertificate cert, String action) => db.accessLog.add(
-    CertificateAccessEntry(
-      certId: cert.id,
-      childId: cert.childId,
-      userId: db.me.id,
-      userName: db.me.fullName,
-      at: db.clock(),
-      action: action,
-    ),
-  );
+  void _audit(MedicalCertificate cert, String action) {
+    final me = db.me;
+    final role = me.isAdmin && !me.isCoach && !me.isParent ? 'admin' : me.role.name;
+    db.accessLog.add(
+      CertificateAccessEntry(
+        certId: cert.id,
+        childId: cert.childId,
+        userId: me.id,
+        userName: me.fullName,
+        at: db.clock(),
+        action: action,
+        viewerRole: role,
+      ),
+    );
+    if (action == 'open' || action == 'download') {
+      db.auditLog(
+        action == 'open' ? 'certificate.view' : 'certificate.download',
+        'certificate',
+        cert.id,
+        details: {'role': role},
+      );
+    }
+  }
 
   /// Mirrors the `getCertificateUrl` Cloud Function: membership check,
   /// audit entry, 5-minute grant.
   @override
-  Future<CertificateAccessGrant> requestAccess(String certId) async {
+  Future<CertificateAccessGrant> requestAccess(
+    String certId, {
+    CertificateAccessPurpose purpose = CertificateAccessPurpose.view,
+  }) async {
     final cert = db.certificates[certId] ?? (throw const NotFoundException());
+    // Admins never receive medical documents (compliance counts only).
     if (!_canView(cert.childId)) {
       _audit(cert, 'denied');
       db.commit();
       throw const PermissionDeniedException('certificate');
     }
-    _audit(cert, 'open');
+    _audit(cert, purpose == CertificateAccessPurpose.download ? 'download' : 'open');
     db.commit();
     final expires = db.clock().add(CertificatePolicy.signedUrlTtl);
     return CertificateAccessGrant(

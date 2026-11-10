@@ -17,6 +17,8 @@ import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../moderation/domain/report.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../../payments/domain/payment.dart';
+import '../../payments/domain/payment_proof.dart';
+import '../../training_plans/domain/training_plan.dart';
 import '../../sports/domain/sport.dart';
 import '../../trainings/domain/series.dart';
 import '../../trainings/domain/training.dart';
@@ -60,6 +62,14 @@ class DemoBackend {
   final audit = <AuditEntry>[];
   final paymentAudit = <PaymentAuditEntry>[];
   final accountRequests = <String, AccountRequest>{};
+
+  // v1.3
+  final paymentProofs = <String, PaymentProof>{};
+  final paymentEvents = <PaymentVerificationEvent>[];
+  final receiptFiles = <String, Uint8List>{};
+  final trainingPlans = <String, TrainingPlan>{};
+  final exerciseProgress = <String, ExerciseProgress>{};
+  final planViews = <String, PlanView>{};
 
   /// groupId → uid → lastReadAt (`chats/{groupId}/members/{uid}`).
   final chatReads = <String, Map<String, DateTime>>{};
@@ -223,7 +233,7 @@ class DemoBackend {
   }
 
   /// Server-written chat line (`type: system`), e.g. on cancellation.
-  void systemMessage(String groupId, String text) {
+  void systemMessage(String groupId, String text, {String? key, Map<String, String> args = const {}}) {
     (messages[groupId] ??= []).add(
       ChatMessage(
         id: newId('msg'),
@@ -234,6 +244,8 @@ class DemoBackend {
         text: text,
         createdAt: clock(),
         type: ChatMessageType.system,
+        systemKey: key,
+        systemArgs: args,
       ),
     );
   }

@@ -26,6 +26,8 @@ class ChatMessage {
     this.type = ChatMessageType.text,
     this.pinned = false,
     this.hidden = false,
+    this.systemKey,
+    this.systemArgs = const {},
   });
 
   final String id;
@@ -42,6 +44,11 @@ class ChatMessage {
   /// Hidden by moderation: rendered as a placeholder, content not shown.
   final bool hidden;
 
+  /// Localized system messages: the reader's app renders [systemKey] with
+  /// [systemArgs]; [text] is the Georgian fallback.
+  final String? systemKey;
+  final Map<String, String> systemArgs;
+
   bool get isSystem => type == ChatMessageType.system;
   bool get isAnnouncement => type == ChatMessageType.announcement;
 
@@ -57,6 +64,8 @@ class ChatMessage {
     type: type,
     pinned: pinned ?? this.pinned,
     hidden: hidden ?? this.hidden,
+    systemKey: systemKey,
+    systemArgs: systemArgs,
   );
 
   Map<String, dynamic> toMap() => {
@@ -82,6 +91,8 @@ class ChatMessage {
     type: ChatMessageType.fromName(m['type'] as String?),
     pinned: m['pinned'] as bool? ?? false,
     hidden: m['hidden'] as bool? ?? false,
+    systemKey: m['systemKey'] as String?,
+    systemArgs: (m['systemArgs'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? const {},
   );
 }
 

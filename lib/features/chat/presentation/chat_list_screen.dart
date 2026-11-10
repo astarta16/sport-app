@@ -7,6 +7,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
@@ -98,7 +99,7 @@ class _ChatTile extends ConsumerWidget {
     final preview = switch (last) {
       null => l.chatEmpty,
       final m when m.hidden => l.messageHidden,
-      final m when m.isSystem => m.text,
+      final m when m.isSystem => systemMessageText(context, m),
       final m => '${m.senderName.split(' ').first}: ${m.text.isEmpty ? '📷' : m.text}',
     };
     return AppCard(

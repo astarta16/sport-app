@@ -66,7 +66,12 @@ class FirebaseCertificatesRepository implements CertificatesRepository {
       'validUntil': cert.validUntil,
       'consentAt': cert.consentAt,
       'status': cert.statusOn(now).name,
+      if (u.sportId != null) 'sportId': u.sportId,
     });
+    if (u.replacesCertId != null) {
+      // Rules allow the parent to set only replacedBy/replacedAt on the old one.
+      await _col.doc(u.replacesCertId).update({'replacedBy': ref.id, 'replacedAt': now});
+    }
     return cert;
   });
 
@@ -75,8 +80,14 @@ class FirebaseCertificatesRepository implements CertificatesRepository {
       guardFirebase(() => functions.httpsCallable('deleteCertificate').call<void>({'certId': certId}));
 
   @override
-  Future<CertificateAccessGrant> requestAccess(String certId) => guardFirebase(() async {
-    final r = await functions.httpsCallable('getCertificateUrl').call<Map<String, dynamic>>({'certId': certId});
+  Future<CertificateAccessGrant> requestAccess(
+    String certId, {
+    CertificateAccessPurpose purpose = CertificateAccessPurpose.view,
+  }) => guardFirebase(() async {
+    final r = await functions.httpsCallable('getCertificateUrl').call<Map<String, dynamic>>({
+      'certId': certId,
+      'purpose': purpose.name,
+    });
     final cert = await _col.doc(certId).get();
     return CertificateAccessGrant(
       url: Uri.parse(r.data['url'] as String),

@@ -77,7 +77,18 @@ class AccessPolicy {
   static bool canViewPayment(AppUser u, Payment p, Group? g) =>
       (u.isParent && p.parentId == u.id) || (g != null && (isCoachOf(u, g) || u.administersClub(g.clubId)));
 
+  /// See group payments (coach of the group or club admin).
   static bool canManagePayments(AppUser u, Group g) => isCoachOf(u, g) || u.administersClub(g.clubId);
+
+  /// Change authoritative payment status / verify proofs (v1.3): only coaches
+  /// explicitly listed in `paymentManagerIds`, or admins of the club.
+  /// Financial rights are never granted to all coaches automatically.
+  static bool canVerifyPayments(AppUser u, Group g) =>
+      (isCoachOf(u, g) && g.paymentManagerIds.contains(u.id)) || u.administersClub(g.clubId);
+
+  /// Training plans (v1.3).
+  static bool canManagePlan(AppUser u, Iterable<Group> groups) =>
+      groups.isNotEmpty && groups.every((g) => isCoachOf(u, g));
 
   static bool canUploadTrainingPhotos(AppUser u, Group g) => isCoachOf(u, g);
 

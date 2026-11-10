@@ -68,7 +68,9 @@ class ErrorReporter {
 
   static Future<void> report(Object error, StackTrace? stack, {String context = '', bool fatal = false}) async {
     final category = categorize(error);
-    final reason = redact('${category.name} · ${AppConfig.environment.name} · ${AppConfig.version}+${AppConfig.buildNumber} · $context · ${error.runtimeType}${error is AppException ? '(${error.code})' : ''}');
+    final reason = redact(
+      '${category.name} · ${AppConfig.environment.name} · ${AppConfig.version}+${AppConfig.buildNumber} · $context · ${error.runtimeType}${error is AppException ? '(${error.code})' : ''}',
+    );
     if (category == ErrorCategory.unexpected || fatal) {
       await _sink.record(error, stack, reason: reason, fatal: fatal);
     } else {

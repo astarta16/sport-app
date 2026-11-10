@@ -8,6 +8,8 @@ abstract interface class CertificatesRepository {
 
   /// Short-lived (5 min) access after a backend authorization check. Every
   /// call is written to the access audit log.
-  Future<CertificateAccessGrant> requestAccess(String certId);
+  /// [purpose] `download` is recorded separately from `view`. Admins are
+  /// never granted access.
+  Future<CertificateAccessGrant> requestAccess(String certId, {CertificateAccessPurpose purpose});
   Stream<List<CertificateAccessEntry>> watchAccessLog(String childId);
 }

@@ -35,7 +35,8 @@ class DemoPaymentsRepository implements PaymentsRepository {
     db.requireOnline();
     final p = db.payments[paymentId] ?? (throw const NotFoundException());
     final g = db.requireGroup(p.groupId);
-    if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
+    // v1.3: changing the authoritative status needs payment-verification rights.
+    if (!AccessPolicy.canVerifyPayments(db.me, g)) throw const PermissionDeniedException('payments');
     if (p.status == status) return;
     final r = (reason ?? '').trim();
     if (status == PaymentStatus.cancelled && r.length < 3) throw const ValidationException('reasonRequired');
