@@ -48,7 +48,7 @@ v1.2 therefore covers v1.1 as well. A `pre-v1.2` git tag marks the baseline.
 | Offline: banner, cached reads, writes fail with a clear error, retry, 25 s timeouts | ✅ demo (tested) · 🟢 Firestore cache | |
 | Monitoring: redacted structured errors, categories, Crashlytics (opt-in), build/env reporting | ✅ redaction tests · 🔧 Crashlytics needs a Firebase project | |
 | Environments demo / dev / staging / prod (`APP_ENV`); demo never touches Firebase | ✅ | |
-| Responsive iPhone / iPad / Android, phone landscape, Split View | ✅ 9 sizes × all screens in tests; iPhone + iPad simulators checked | |
+| Responsive iPhone / iPad / Android, phone landscape, Split View | ✅ 9 sizes × all screens in tests; iPhone 17 Pro simulator checked by eye; iPad simulator access not granted (iPad layouts verified only by widget tests) | |
 
 ## Tests (run locally on 2026-11-10)
 

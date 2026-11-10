@@ -9,7 +9,7 @@
 - [x] Functions smoke test (emulators) — 22 steps passed
 - [x] Android release APK (demo) built, installed and launched on the Pixel 6 API 33 emulator
 - [x] Admin web built (`build/admin_web`) and checked in a browser (sign-in, dashboard, coaches)
-- [ ] iOS simulator build — see the final report for the result of this run
+- [x] iOS simulator build (demo) — built, launched on iPhone 17 Pro (iOS 26.1); sign-in and coach dashboard checked. iPad simulator not checked by eye (no access granted)
 
 ## Build commands
 

@@ -8,6 +8,7 @@ analyzer:
     - functions/**
     - rules-tests/**
     - lib/l10n/app_localizations*.dart
+    - web/**
 
 linter:
   rules:
