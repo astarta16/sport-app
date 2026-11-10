@@ -123,6 +123,21 @@ class DemoAttendanceRepository implements AttendanceRepository {
   }
 
   @override
+  Future<void> saveBatch({required String trainingId, required Map<String, AttendanceStatus?> marks}) async {
+    db.requireOnline();
+    final t = _training(trainingId);
+    final g = db.requireGroup(t.groupId);
+    if (!AccessPolicy.canMarkAttendance(db.me, g)) throw const PermissionDeniedException('attendance');
+    // Validate everything first so a batch is all-or-nothing.
+    for (final childId in marks.keys) {
+      if (!g.hasChild(childId)) throw const ValidationException('notMember');
+    }
+    for (final e in marks.entries) {
+      await mark(trainingId: trainingId, childId: e.key, status: e.value);
+    }
+  }
+
+  @override
   Stream<List<AttendanceRecord>> watchForTraining(String trainingId) => db.watch(() {
     final me = db.me;
     final t = _training(trainingId);

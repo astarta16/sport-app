@@ -26,3 +26,8 @@ final smsLogProvider = StreamProvider.autoDispose<List<SmsLogEntry>>(
 /// Sum of pending amounts.
 num pendingTotal(Iterable<Payment> ps) =>
     ps.where((p) => p.status == PaymentStatus.pending).fold<num>(0, (s, p) => s + p.amount);
+
+final paymentAuditProvider = StreamProvider.autoDispose.family<List<PaymentAuditEntry>, String>((ref, groupId) {
+  ref.watch(currentUidProvider);
+  return ref.watch(paymentsRepositoryProvider).watchAudit(groupId);
+});

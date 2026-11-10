@@ -8,6 +8,10 @@ import '../../matches/domain/match.dart';
 import '../../matches/presentation/match_screens.dart';
 import '../../matches/presentation/matches_providers.dart';
 import '../../media/presentation/media_screens.dart';
+import '../../trainings/domain/series.dart';
+import '../../training_plans/presentation/plans_screens.dart';
+import '../../training_plans/presentation/plans_providers.dart';
+import '../../training_plans/domain/training_plan.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
@@ -153,6 +157,7 @@ class ParentHomeScreen extends ConsumerWidget {
                     tiles,
                     const SizedBox(height: AppSpacing.sm),
                     _AttendanceCard(child: child),
+                    _PlansSection(child: child),
                     if (group != null) ...[
                       SectionHeader(
                         l.weekSchedule,
@@ -182,6 +187,7 @@ class ParentHomeScreen extends ConsumerWidget {
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
                             _NextMatch(groupIds: {group.id}),
+                            _PlansSection(child: child),
                             SectionHeader(l.weekSchedule),
                             _WeekStrip(groupIds: child.groupIds.toSet()),
                             SectionHeader(l.mediaRecent),
@@ -730,6 +736,41 @@ class _WeekStrip extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// Assigned training plans for the selected child; homework first (v1.3).
+class _PlansSection extends ConsumerWidget {
+  const _PlansSection({required this.child});
+
+  final Child child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final today = LocalDate.tbilisi(ref.watch(clockProvider)());
+    final plans =
+        (ref.watch(plansProvider).value ?? const <TrainingPlan>[])
+            .where((p) => p.activeOn(today) && p.groupIds.any(child.groupIds.contains))
+            .toList()
+          ..sort((a, b) => (a.type == PlanType.homework ? 0 : 1).compareTo(b.type == PlanType.homework ? 0 : 1));
+    if (plans.isEmpty) return const SizedBox.shrink();
+    return Column(
+      key: const Key('dashboard-plans'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionHeader(
+          l.plansTitle,
+          actionLabel: l.seeAll,
+          onAction: () => context.push('${Routes.plans}?childId=${child.id}'),
+        ),
+        for (final p in plans.take(2))
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: PlanCard(plan: p, groupNames: const []),
+          ),
+      ],
     );
   }
 }

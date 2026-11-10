@@ -10,6 +10,7 @@ import '../../features/clubs/presentation/clubs_providers.dart';
 import '../../features/groups/domain/group.dart';
 import '../widgets.dart';
 import 'admin_providers.dart';
+import 'v13_pages.dart';
 
 /// Group oversight: sizes, coaches, schedules, pending requests — never
 /// the identities of the children (data minimisation).
@@ -61,6 +62,16 @@ class GroupsPage extends ConsumerWidget {
               (g) => Row(
                 children: [
                   if (!g.group.isActive) StatusPill(label: l.adminArchived, color: AppColors.neutral, dense: true),
+                  IconButton(
+                    key: Key('reviewers-${g.group.id}'),
+                    tooltip: l.adminSetReviewers,
+                    onPressed: () => showReviewersDialog(context, ref, g),
+                    icon: Badge(
+                      isLabelVisible: g.group.paymentManagerIds.isNotEmpty,
+                      label: Text('${g.group.paymentManagerIds.length}'),
+                      child: const Icon(Icons.price_check_rounded),
+                    ),
+                  ),
                   IconButton(
                     key: Key('archive-group-${g.group.id}'),
                     tooltip: g.group.isActive ? l.adminArchive : l.adminRestore,

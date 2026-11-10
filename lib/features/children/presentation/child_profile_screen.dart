@@ -94,7 +94,21 @@ class _Body extends ConsumerWidget {
             ],
           ),
         ),
-        if (canEdit) ...[const SizedBox(height: AppSpacing.sm), _ProgressTile(childId: child.id)],
+        if (canEdit) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _ProgressTile(childId: child.id),
+          const SizedBox(height: AppSpacing.xs),
+          AppCard(
+            key: const Key('child-plans-tile'),
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            onTap: () => context.push('${Routes.plans}?childId=${child.id}'),
+            child: ListTile(
+              leading: const Icon(Icons.assignment_rounded, color: AppColors.blue),
+              title: Text(l.plansTitle),
+              trailing: const Icon(Icons.chevron_right_rounded),
+            ),
+          ),
+        ],
         SectionHeader(l.sportsLabel),
         Wrap(
           spacing: 8,

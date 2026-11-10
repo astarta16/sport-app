@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
+import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
@@ -10,15 +12,26 @@ import '../../../core/widgets/visuals.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../domain/payment.dart';
+import '../domain/payment_proof.dart';
 import 'payments_providers.dart';
 
-class ParentPaymentsScreen extends ConsumerWidget {
+class ParentPaymentsScreen extends ConsumerStatefulWidget {
   const ParentPaymentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ParentPaymentsScreen> createState() => _ParentPaymentsScreenState();
+}
+
+class _ParentPaymentsScreenState extends ConsumerState<ParentPaymentsScreen> {
+  String? _childId;
+  String? _sportId;
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
     final payments = ref.watch(myPaymentsProvider);
+    final kids = ref.watch(myChildrenProvider).value ?? const [];
+    final sports = ref.watch(sportsByIdProvider);
     final now = ref.watch(clockProvider)();
     return Scaffold(
       appBar: AppBar(title: Text(l.paymentsTitle)),
@@ -27,8 +40,14 @@ class ParentPaymentsScreen extends ConsumerWidget {
         child: AsyncView<List<Payment>>(
           value: payments,
           onRetry: () => ref.invalidate(myPaymentsProvider),
-          data: (list) {
-            if (list.isEmpty) return EmptyState(icon: Icons.receipt_long_rounded, title: l.noPayments);
+          data: (all) {
+            if (all.isEmpty) return EmptyState(icon: Icons.receipt_long_rounded, title: l.noPayments);
+            final sportIds = {for (final p in all) p.sportId}.toList();
+            final list = all
+                .where(
+                  (p) => (_childId == null || p.childId == _childId) && (_sportId == null || p.sportId == _sportId),
+                )
+                .toList();
             final pending = list.where((p) => p.status == PaymentStatus.pending).toList()
               ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
             final history = list.where((p) => p.status != PaymentStatus.pending).toList();
@@ -61,9 +80,54 @@ class ParentPaymentsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final c in kids)
+                      FilterChip(
+                        key: Key('pay-filter-child-${c.id}'),
+                        label: Text(c.firstName),
+                        selected: _childId == c.id,
+                        onSelected: (v) => setState(() => _childId = v ? c.id : null),
+                      ),
+                    for (final s in sportIds)
+                      FilterChip(
+                        key: Key('pay-filter-sport-$s'),
+                        avatar: Icon(SportVisuals.icon(s), size: 16),
+                        label: Text(sports[s]?.name ?? s),
+                        selected: _sportId == s,
+                        onSelected: (v) => setState(() => _sportId = v ? s : null),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                DemoBanner(text: l.paymentsNoOnline),
                 if (pending.isNotEmpty) ...[
                   SectionHeader(l.paymentPending),
-                  for (final p in pending) PaymentRow(payment: p, now: now),
+                  for (final p in pending)
+                    PaymentRow(
+                      payment: p,
+                      now: now,
+                      actions: Align(
+                        alignment: Alignment.centerRight,
+                        child: FilledButton.tonalIcon(
+                          key: Key('submit-proof-${p.id}'),
+                          onPressed: () => context.push(Routes.paymentProof(p.id)),
+                          icon: Icon(
+                            p.verification.state == VerificationState.none
+                                ? Icons.receipt_long_rounded
+                                : Icons.visibility_rounded,
+                          ),
+                          label: Text(switch (p.verification.state) {
+                            VerificationState.none => l.payProofAction,
+                            VerificationState.rejected => l.payResubmit,
+                            _ => l.payViewReceipt,
+                          }),
+                        ),
+                      ),
+                    ),
                 ],
                 if (history.isNotEmpty) ...[
                   SectionHeader(l.paymentHistory),
@@ -127,16 +191,58 @@ class PaymentRow extends ConsumerWidget {
                     children: [
                       Text(f.money(payment.amount), style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 2),
-                      StatusPill.of(v, dense: true),
+                      _StatePill(payment: payment, fallback: v),
                     ],
                   ),
                 ),
               ],
             ),
+            if (payment.status == PaymentStatus.pending && payment.verification.state == VerificationState.rejected)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  l.payRejectedReason(payment.verification.rejectionReason ?? ''),
+                  key: Key('rejected-reason-${payment.id}'),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.danger),
+                ),
+              ),
             if (actions != null) ...[const SizedBox(height: AppSpacing.xs), actions!],
           ],
         ),
       ),
     );
+  }
+}
+
+class _StatePill extends StatelessWidget {
+  const _StatePill({required this.payment, required this.fallback});
+
+  final Payment payment;
+  final StatusVisual fallback;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return switch (displayStateOf(payment)) {
+      PaymentDisplayState.proofSubmitted => StatusPill(
+        key: Key('state-${payment.id}'),
+        label: l.payStateAwaiting,
+        color: AppColors.blue,
+        dense: true,
+      ),
+      PaymentDisplayState.underReview => StatusPill(
+        key: Key('state-${payment.id}'),
+        label: l.payStateUnderReview,
+        color: AppColors.blue,
+        dense: true,
+      ),
+      PaymentDisplayState.rejected => StatusPill(
+        key: Key('state-${payment.id}'),
+        label: l.payStateRejected,
+        color: AppColors.danger,
+        dense: true,
+      ),
+      _ => StatusPill.of(fallback, dense: true),
+    };
   }
 }

@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
@@ -19,6 +17,8 @@ import '../../authentication/presentation/session_providers.dart';
 import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../domain/medical_certificate.dart';
+import '../../sports/presentation/sports_providers.dart';
+import 'certificate_actions.dart';
 import 'certificates_providers.dart';
 
 class CertificatesScreen extends ConsumerWidget {
@@ -54,7 +54,7 @@ class CertificatesScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 120),
               children: [
-                _StatusHero(child: child, status: status, latest: list.firstOrNull, now: now),
+                _StatusHero(child: child, status: status, latest: CertificatePolicy.current(list), now: now),
                 const SizedBox(height: AppSpacing.sm),
                 DemoBanner(text: l.certRemindersNote),
                 SectionHeader(l.certificatesTitle),
@@ -66,7 +66,12 @@ class CertificatesScreen extends ConsumerWidget {
                   for (final c in list)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                      child: _CertificateCard(cert: c, canDelete: isParent, now: now),
+                      child: _CertificateCard(
+                        cert: c,
+                        canDelete: isParent,
+                        now: now,
+                        isCurrent: CertificatePolicy.current(list, sportId: c.sportId)?.id == c.id,
+                      ),
                     ),
                 if (isParent) _AccessLog(childId: childId),
               ],
@@ -124,28 +129,12 @@ class _StatusHero extends StatelessWidget {
 }
 
 class _CertificateCard extends ConsumerWidget {
-  const _CertificateCard({required this.cert, required this.canDelete, required this.now});
+  const _CertificateCard({required this.cert, required this.canDelete, required this.now, required this.isCurrent});
 
   final MedicalCertificate cert;
   final bool canDelete;
   final DateTime now;
-
-  Future<void> _open(BuildContext context, WidgetRef ref) async {
-    try {
-      final grant = await ref.read(certificatesRepositoryProvider).requestAccess(cert.id);
-      if (!context.mounted) return;
-      if (grant.demoBytes != null || grant.url.scheme.startsWith('demo')) {
-        await showDialog<void>(
-          context: context,
-          builder: (_) => _DemoViewer(grant: grant),
-        );
-      } else {
-        await launchUrl(grant.url, mode: LaunchMode.inAppBrowserView);
-      }
-    } catch (e) {
-      if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
-    }
-  }
+  final bool isCurrent;
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l = context.l10n;
@@ -180,103 +169,66 @@ class _CertificateCard extends ConsumerWidget {
               Expanded(
                 child: Text(l.validUntil(f.fullDate(cert.validUntil)), style: Theme.of(context).textTheme.titleSmall),
               ),
-              StatusPill.of(v, dense: true),
+              if (cert.isReplaced)
+                StatusPill(label: l.certReplaced, color: AppColors.neutral, dense: true)
+              else
+                StatusPill.of(v, dense: true),
             ],
           ),
           const SizedBox(height: 4),
-          Text(l.issuedOn(f.fullDate(cert.issuedAt)), style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  key: Key('open-cert-${cert.id}'),
-                  onPressed: () => _open(context, ref),
-                  icon: const Icon(Icons.lock_open_rounded, size: 18),
-                  label: Text(l.openFile),
+              Text(l.issuedOn(f.fullDate(cert.issuedAt)), style: Theme.of(context).textTheme.bodySmall),
+              Text(
+                l.certAppliesTo(
+                  cert.sportId == null
+                      ? l.certAllSports
+                      : (ref.watch(sportsByIdProvider)[cert.sportId]?.name ?? cert.sportId!),
                 ),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              if (canDelete) ...[
-                const SizedBox(width: AppSpacing.sm),
+              if (isCurrent)
+                StatusPill(key: Key('current-${cert.id}'), label: l.certCurrent, color: AppColors.blue, dense: true),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
+            children: [
+              OutlinedButton.icon(
+                key: Key('open-cert-${cert.id}'),
+                onPressed: () => previewCertificate(context, ref, cert),
+                icon: const Icon(Icons.visibility_rounded, size: 18),
+                label: Text(l.certPreview),
+              ),
+              OutlinedButton.icon(
+                key: Key('download-cert-${cert.id}'),
+                onPressed: () => downloadCertificate(context, ref, cert),
+                icon: const Icon(Icons.download_rounded, size: 18),
+                label: Text(l.certDownload),
+              ),
+              if (canDelete && !cert.isReplaced)
+                OutlinedButton.icon(
+                  key: Key('replace-cert-${cert.id}'),
+                  onPressed: () => context.push('${Routes.uploadCertificate(cert.childId)}?replace=${cert.id}'),
+                  icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                  label: Text(l.certReplace),
+                ),
+              if (canDelete)
                 IconButton.outlined(
                   tooltip: l.deleteCertificate,
                   color: AppColors.danger,
                   onPressed: () => _delete(context, ref),
                   icon: const Icon(Icons.delete_outline_rounded),
                 ),
-              ],
             ],
           ),
         ],
       ),
-    );
-  }
-}
-
-/// Demo viewer: shows the 5-minute access countdown; never real content.
-class _DemoViewer extends StatefulWidget {
-  const _DemoViewer({required this.grant});
-
-  final CertificateAccessGrant grant;
-
-  @override
-  State<_DemoViewer> createState() => _DemoViewerState();
-}
-
-class _DemoViewerState extends State<_DemoViewer> {
-  late Timer _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final left = widget.grant.expiresAt.difference(DateTime.now());
-    final expired = left.isNegative;
-    final bytes = widget.grant.demoBytes;
-    final isImage = widget.grant.mimeType.startsWith('image/') && bytes != null && bytes.length > 100;
-    return AlertDialog(
-      title: Text(l.demoDocument),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 180,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-            ),
-            child: expired
-                ? Center(child: Text(l.accessExpired, textAlign: TextAlign.center))
-                : isImage
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.memory(Uint8List.fromList(bytes), fit: BoxFit.cover),
-                  )
-                : const Icon(Icons.description_rounded, size: 72),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(l.demoDocumentBody, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: AppSpacing.sm),
-          StatusPill(
-            label: expired ? l.accessExpired : l.accessExpiresIn(left.inMinutes + 1),
-            color: expired ? AppColors.danger : AppColors.warning,
-            icon: Icons.timer_rounded,
-          ),
-        ],
-      ),
-      actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(l.close))],
     );
   }
 }
@@ -305,11 +257,13 @@ class _AccessLog extends ConsumerWidget {
                   dense: true,
                   leading: Icon(switch (e.action) {
                     'open' => Icons.visibility_rounded,
+                    'download' => Icons.download_rounded,
                     'denied' => Icons.block_rounded,
                     _ => Icons.delete_outline_rounded,
                   }),
                   title: Text(switch (e.action) {
-                    'open' => l.accessLogOpen(e.userName),
+                    'open' => l.certAccessView(e.userName, f.dateTime(e.at)),
+                    'download' => l.certAccessDownload(e.userName, f.dateTime(e.at)),
                     'denied' => l.accessLogDenied(e.userName),
                     _ => l.accessLogDelete(e.userName),
                   }),

@@ -66,9 +66,20 @@ void main() {
     db.trainings[t.id] = t.copyWith(startAt: DateTime(2026, 11, 10, 9, 30));
     await signInAs(tester, db, DemoIds.coach);
     await visit(tester, 'attendance', ['/training/${t.id}/attendance']);
+    await tester.scrollUntilVisible(find.textContaining('ავადაა'), 200, scrollable: find.byType(Scrollable).first);
     expect(find.textContaining('ავადაა'), findsOneWidget, reason: 'RSVP reason shown to the coach');
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 3000));
+    await pumpFrames(tester);
     await tapKey(tester, 'attendance-mark-all');
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('att-child-1-excused')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tapKey(tester, 'att-child-1-excused');
+    // v1.3: marks are a local draft until Save.
+    expect(db.attendance[AttendanceRecord.docId(t.id, 'child-1')], isNull);
+    await tapKey(tester, 'attendance-save');
     expect(db.attendance[AttendanceRecord.docId(t.id, 'child-1')]!.status, AttendanceStatus.excused);
     expect(db.attendance[AttendanceRecord.docId(t.id, 'child-4')]!.status, AttendanceStatus.present);
     expectNoLayoutErrors();

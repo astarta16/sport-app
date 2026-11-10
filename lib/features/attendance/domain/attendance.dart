@@ -316,6 +316,9 @@ abstract interface class AttendanceRepository {
   /// Coach of the training's group. `status == null` clears the mark.
   Future<void> mark({required String trainingId, required String childId, AttendanceStatus? status, String? note});
   Future<void> markAll({required String trainingId, required AttendanceStatus status, bool onlyUnmarked = true});
+
+  /// Saves several marks at once (null = clear). One batch in production.
+  Future<void> saveBatch({required String trainingId, required Map<String, AttendanceStatus?> marks});
   Stream<List<AttendanceRecord>> watchForTraining(String trainingId);
   Stream<List<AttendanceRecord>> watchForChild(String childId);
   Stream<List<AttendanceRecord>> watchForGroup(String groupId);

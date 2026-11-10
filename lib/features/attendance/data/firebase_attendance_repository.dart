@@ -98,6 +98,29 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
         await batch.commit();
       });
 
+  @override
+  Future<void> saveBatch({required String trainingId, required Map<String, AttendanceStatus?> marks}) =>
+      guardFirebase(() async {
+        final t = (await db.collection('trainings').doc(trainingId).get()).data() ?? (throw const NotFoundException());
+        final batch = db.batch();
+        for (final e in marks.entries) {
+          final ref = _att.doc(AttendanceRecord.docId(trainingId, e.key));
+          if (e.value == null) {
+            batch.delete(ref);
+          } else {
+            batch.set(ref, {
+              'trainingId': trainingId,
+              'groupId': t['groupId'],
+              'childId': e.key,
+              'status': e.value!.name,
+              'markedBy': requireUid(auth),
+              'markedAt': FieldValue.serverTimestamp(),
+            });
+          }
+        }
+        await batch.commit();
+      });
+
   Stream<List<AttendanceRecord>> _attQuery(Query<Map<String, dynamic>> q) => q
       .snapshots()
       .map(

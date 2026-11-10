@@ -1,22 +1,29 @@
-import '../../../app/routes.dart';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di.dart';
+import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../children/presentation/children_providers.dart';
+import '../../sports/presentation/sports_providers.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/medical_certificate.dart';
+import 'certificates_providers.dart';
 
 /// Two steps (spec §7.1): consent screen first, then file + dates.
 class UploadCertificateScreen extends ConsumerStatefulWidget {
-  const UploadCertificateScreen({super.key, required this.childId});
+  const UploadCertificateScreen({super.key, required this.childId, this.replaceCertId});
 
   final String childId;
+
+  /// Replace flow: the new certificate supersedes this one.
+  final String? replaceCertId;
 
   @override
   ConsumerState<UploadCertificateScreen> createState() => _UploadCertificateScreenState();
@@ -28,6 +35,8 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
   PhotoUpload? _file;
   DateTime? _issued;
   DateTime? _validUntil;
+  String? _sportId;
+  bool _sportInit = false;
   bool _saving = false;
   List<String> _errors = const [];
 
@@ -49,6 +58,8 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
       issuedAt: _issued ?? DateTime.now(),
       validUntil: _validUntil ?? DateTime.fromMillisecondsSinceEpoch(0),
       consentGiven: _consent,
+      sportId: _sportId,
+      replacesCertId: widget.replaceCertId,
     );
     final errors = [
       if (_file == null) 'fileEmpty',
@@ -150,10 +161,22 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
       if (d != null) setState(() => issued ? _issued = d : _validUntil = d);
     }
 
+    final child = ref.watch(childProvider(widget.childId)).value;
+    final sports = ref.watch(sportsByIdProvider);
+    if (!_sportInit && widget.replaceCertId != null) {
+      final old = (ref.watch(childCertificatesProvider(widget.childId)).value ?? const <MedicalCertificate>[])
+          .where((c) => c.id == widget.replaceCertId)
+          .firstOrNull;
+      if (old != null) {
+        _sportInit = true;
+        _sportId = old.sportId;
+      }
+    }
     return ListView(
       key: const ValueKey('form'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
+        if (widget.replaceCertId != null) ...[DemoBanner(text: l.certReplace), const SizedBox(height: AppSpacing.sm)],
         AppCard(
           child: Column(
             children: [
@@ -212,6 +235,28 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
           subtitle: Text(_validUntil == null ? '—' : f.fullDate(_validUntil!)),
           onTap: () => pickDate(false),
         ),
+        if ((child?.sportIds.length ?? 0) > 1) ...[
+          const SizedBox(height: AppSpacing.sm),
+          DropdownButtonFormField<String?>(
+            key: const Key('cert-sport'),
+            initialValue: _sportId,
+            isExpanded: true,
+            decoration: InputDecoration(labelText: l.certSportLabel),
+            items: [
+              DropdownMenuItem(value: null, child: Text(l.certAllSports)),
+              for (final s in child!.sportIds) DropdownMenuItem(value: s, child: Text(sports[s]?.name ?? s)),
+            ],
+            onChanged: (v) => setState(() => _sportId = v),
+          ),
+        ],
+        if (_file != null && _file!.mimeType.startsWith('image/') && _file!.bytes.length > 100) ...[
+          const SizedBox(height: AppSpacing.sm),
+          ClipRRect(
+            key: const Key('cert-file-preview'),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            child: Image.memory(Uint8List.fromList(_file!.bytes), height: 160, fit: BoxFit.cover),
+          ),
+        ],
         for (final e in _errors.toSet())
           Padding(
             padding: const EdgeInsets.only(top: 6),

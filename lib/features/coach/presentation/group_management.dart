@@ -90,6 +90,17 @@ class GroupManagementHeader extends ConsumerWidget {
                     label: Text(l.addMatch),
                   ),
                   OutlinedButton.icon(
+                    key: const Key('group-students'),
+                    onPressed: () => context.push(Routes.students(groupId)),
+                    icon: const Icon(Icons.badge_rounded),
+                    label: Text(l.rosterTitle),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => context.push(Routes.newPlan(groupId)),
+                    icon: const Icon(Icons.assignment_rounded),
+                    label: Text(l.planNew),
+                  ),
+                  OutlinedButton.icon(
                     onPressed: () => context.push(Routes.groupPayments(groupId)),
                     icon: const Icon(Icons.payments_rounded),
                     label: Text(l.paymentsTitle),

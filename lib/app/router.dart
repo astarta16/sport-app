@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/account/presentation/account_screens.dart';
+import '../features/payments/presentation/payment_proof_screens.dart';
+import '../features/roster/presentation/student_roster_screen.dart';
+import '../features/training_plans/presentation/plan_editor_screen.dart';
+import '../features/training_plans/presentation/plans_screens.dart';
 import '../features/attendance/presentation/attendance_screen.dart';
 import '../features/attendance/presentation/progress_screen.dart';
 import '../features/coach/presentation/group_management.dart';
@@ -86,9 +90,13 @@ String? resolveRedirect({
           location.startsWith('/media/new') ||
           location.endsWith('/attendance') ||
           location.startsWith('/match/new') ||
+          location.startsWith('/students') ||
+          location.startsWith('/plans/new') ||
+          location == Routes.paymentReview ||
           location.endsWith('/edit'))) {
     return home;
   }
+  if (user.isCoach && location.startsWith('/payments/') && location.endsWith('/proof')) return home;
   return null;
 }
 
@@ -149,6 +157,31 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.adminOnly, builder: (_, _) => const AdminUseWebScreen()),
       GoRoute(path: Routes.calendar, redirect: (_, _) => null, builder: (_, _) => const SizedBox.shrink()),
       GoRoute(path: Routes.invites, builder: (_, _) => const InvitesScreen()),
+      GoRoute(
+        path: '/students',
+        builder: (_, s) => StudentRosterScreen(groupId: s.uri.queryParameters['groupId']),
+      ),
+      GoRoute(
+        path: Routes.plans,
+        builder: (_, s) => PlansListScreen(childId: s.uri.queryParameters['childId']),
+      ),
+      GoRoute(
+        path: '/plans/new',
+        builder: (_, s) => PlanEditorScreen(groupId: s.uri.queryParameters['groupId']),
+      ),
+      GoRoute(
+        path: '/plans/:id',
+        builder: (_, s) => PlanDetailScreen(planId: s.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/plans/:id/edit',
+        builder: (_, s) => PlanEditorScreen(planId: s.pathParameters['id']),
+      ),
+      GoRoute(path: Routes.paymentReview, builder: (_, _) => const PaymentReviewScreen()),
+      GoRoute(
+        path: '/payments/:id/proof',
+        builder: (_, s) => PaymentProofScreen(paymentId: s.pathParameters['id']!),
+      ),
       GoRoute(path: Routes.account, builder: (_, _) => const AccountScreen()),
       GoRoute(path: Routes.privacy, builder: (_, _) => const PrivacyScreen()),
       GoRoute(
@@ -219,7 +252,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/certificates/:childId/upload',
-        builder: (_, s) => UploadCertificateScreen(childId: s.pathParameters['childId']!),
+        builder: (_, s) => UploadCertificateScreen(
+          childId: s.pathParameters['childId']!,
+          replaceCertId: s.uri.queryParameters['replace'],
+        ),
       ),
       GoRoute(
         path: '/group/:groupId',

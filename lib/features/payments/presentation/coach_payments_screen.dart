@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/config.dart';
 import '../../../app/di.dart';
+import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
@@ -12,6 +14,9 @@ import '../../groups/presentation/groups_providers.dart';
 import '../domain/payment.dart';
 import 'parent_payments_screen.dart';
 import 'payments_providers.dart';
+import 'payment_proof_screens.dart';
+import '../../authentication/presentation/session_providers.dart';
+import '../../authentication/domain/access_policy.dart';
 
 /// Coach/admin payment management for a group (spec §14): manual status,
 /// one-off charges, recurring plans, reminder job and SMS log.
@@ -30,6 +35,23 @@ class CoachPaymentsScreen extends ConsumerWidget {
     final demo = ref.watch(appModeProvider) == AppMode.demo;
     final repo = ref.read(paymentsRepositoryProvider);
     final f = Fmt.of(context);
+    final me = ref.watch(currentUserProvider);
+    // v1.3: only explicitly assigned payment reviewers / club admins change status.
+    final canVerify = me != null && group != null && AccessPolicy.canVerifyPayments(me, group);
+    final queue = (ref.watch(reviewQueueProvider).value ?? const []).where((p) => p.groupId == groupId).length;
+    final audit = canVerify
+        ? (ref.watch(paymentAuditProvider(groupId)).value ?? const <PaymentAuditEntry>[])
+        : const <PaymentAuditEntry>[];
+    Future<void> cancelWithReason(Payment p) async {
+      final reason = await askPaymentCancelReason(context);
+      if (reason == null || !context.mounted) return;
+      await runGuarded(
+        context,
+        () => repo.setStatus(p.id, PaymentStatus.cancelled, reason: reason),
+        success: l.paymentUpdated,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text('${l.paymentsTitle} · ${group?.name ?? ''}')),
       body: ConstrainedContent(
@@ -41,9 +63,42 @@ class CoachPaymentsScreen extends ConsumerWidget {
             final pending = list.where((p) => p.status == PaymentStatus.pending).toList()
               ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
             final rest = list.where((p) => p.status != PaymentStatus.pending).toList();
+            final summary = PaymentSummary.of(list, now);
             return ListView(
               padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
               children: [
+                AppCard(
+                  key: const Key('payment-summary'),
+                  child: Wrap(
+                    spacing: AppSpacing.lg,
+                    runSpacing: AppSpacing.xs,
+                    children: [
+                      Text('${l.paymentsPaidTotal}: ${f.money(summary.paid)}'),
+                      Text('${l.paymentsOutstanding}: ${f.money(summary.outstanding)}'),
+                      Text(
+                        '${l.paymentsOverdueTotal}: ${f.money(summary.overdue)}',
+                        style: const TextStyle(color: AppColors.danger),
+                      ),
+                      Text(l.paymentChildren(summary.children)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                if (!canVerify) ...[DemoBanner(text: l.payNotReviewer), const SizedBox(height: AppSpacing.sm)],
+                if (canVerify)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: FilledButton.icon(
+                      key: const Key('open-review-queue'),
+                      onPressed: () => context.push(Routes.paymentReview),
+                      icon: Badge(
+                        isLabelVisible: queue > 0,
+                        label: Text('$queue'),
+                        child: const Icon(Icons.fact_check_rounded),
+                      ),
+                      label: Text(l.payReviewQueue),
+                    ),
+                  ),
                 Wrap(
                   spacing: AppSpacing.sm,
                   runSpacing: AppSpacing.sm,
@@ -92,32 +147,31 @@ class CoachPaymentsScreen extends ConsumerWidget {
                   PaymentRow(
                     payment: p,
                     now: now,
-                    actions: Row(
-                      children: [
-                        Expanded(
-                          child: FilledButton.tonalIcon(
-                            key: Key('mark-paid-${p.id}'),
-                            style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
-                            onPressed: () => runGuarded(
-                              context,
-                              () => repo.setStatus(p.id, PaymentStatus.paid),
-                              success: l.paymentUpdated,
-                            ),
-                            icon: const Icon(Icons.check_rounded, size: 18),
-                            label: Text(l.markPaid),
+                    actions: !canVerify
+                        ? null
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: FilledButton.tonalIcon(
+                                  key: Key('mark-paid-${p.id}'),
+                                  style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+                                  onPressed: () => runGuarded(
+                                    context,
+                                    () => repo.setStatus(p.id, PaymentStatus.paid),
+                                    success: l.paymentUpdated,
+                                  ),
+                                  icon: const Icon(Icons.check_rounded, size: 18),
+                                  label: Text(l.markPaid),
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.xs),
+                              TextButton(
+                                key: Key('cancel-payment-${p.id}'),
+                                onPressed: () => cancelWithReason(p),
+                                child: Text(l.cancelPayment),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        TextButton(
-                          onPressed: () => runGuarded(
-                            context,
-                            () => repo.setStatus(p.id, PaymentStatus.cancelled),
-                            success: l.paymentUpdated,
-                          ),
-                          child: Text(l.cancelPayment),
-                        ),
-                      ],
-                    ),
                   ),
                 if (rest.isNotEmpty) ...[
                   SectionHeader(l.paymentHistory),
@@ -125,18 +179,37 @@ class CoachPaymentsScreen extends ConsumerWidget {
                     PaymentRow(
                       payment: p,
                       now: now,
-                      actions: Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => runGuarded(
-                            context,
-                            () => repo.setStatus(p.id, PaymentStatus.pending),
-                            success: l.paymentUpdated,
-                          ),
-                          child: Text(l.markPending),
-                        ),
-                      ),
+                      actions: !canVerify
+                          ? null
+                          : Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () => runGuarded(
+                                  context,
+                                  () => repo.setStatus(p.id, PaymentStatus.pending),
+                                  success: l.paymentUpdated,
+                                ),
+                                child: Text(l.markPending),
+                              ),
+                            ),
                     ),
+                ],
+                if (audit.isNotEmpty) ...[
+                  SectionHeader(l.paymentAudit),
+                  AppCard(
+                    key: const Key('payment-audit'),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                    child: Column(
+                      children: [
+                        for (final a in audit.take(20))
+                          ListTile(
+                            dense: true,
+                            title: Text(l.paymentAuditLine(a.actorName, a.from.name, a.to.name)),
+                            subtitle: Text([f.dateTime(a.at), if (a.reason != null) a.reason!].join(' · ')),
+                          ),
+                      ],
+                    ),
+                  ),
                 ],
                 if (demo) ...[
                   SectionHeader(l.smsLog),
@@ -307,4 +380,26 @@ class _SmsLog extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Cancelling a payment requires a reason (audited).
+Future<String?> askPaymentCancelReason(BuildContext context) async {
+  final l = context.l10n;
+  final c = TextEditingController();
+  final r = await showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(l.paymentCancelReason),
+      content: TextField(key: const Key('payment-cancel-reason'), controller: c, autofocus: true, maxLength: 200),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
+        FilledButton(
+          key: const Key('payment-cancel-ok'),
+          onPressed: () => Navigator.pop(context, c.text.trim()),
+          child: Text(l.cancelPayment),
+        ),
+      ],
+    ),
+  );
+  return r == null || r.isEmpty ? null : r;
 }

@@ -62,6 +62,13 @@ class Routes {
   static String media(String id) => '/media/$id';
   static String newMediaFor(String groupId) => '/media/new?groupId=$groupId';
   static String inviteChild(String groupId) => '/group/$groupId/invite';
+  static const plans = '/plans';
+  static const paymentReview = '/payments/review';
+  static String students([String? groupId]) => groupId == null ? '/students' : '/students?groupId=$groupId';
+  static String plan(String id) => '/plans/$id';
+  static String editPlan(String id) => '/plans/$id/edit';
+  static String newPlan([String? groupId]) => groupId == null ? '/plans/new' : '/plans/new?groupId=$groupId';
+  static String paymentProof(String paymentId) => '/payments/$paymentId/proof';
 }
 
 /// Pops when there is a page to return to; otherwise (opened by a deep link

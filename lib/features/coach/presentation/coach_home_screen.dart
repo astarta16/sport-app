@@ -271,6 +271,9 @@ class _QuickActions extends StatelessWidget {
       (Icons.add_circle_rounded, l.newTraining, Routes.newTraining(group.id), const Key('qa-new-training')),
       (Icons.chat_bubble_rounded, l.navChat, Routes.chat(group.id), const Key('qa-chat')),
       (Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(group.id), const Key('qa-series')),
+      (Icons.badge_rounded, l.rosterTitle, Routes.students(group.id), const Key('qa-students')),
+      (Icons.assignment_rounded, l.plansTitle, Routes.plans, const Key('qa-plans')),
+      (Icons.fact_check_rounded, l.payReviewQueue, Routes.paymentReview, const Key('qa-review')),
       (Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(group.id), const Key('qa-match')),
       (Icons.groups_rounded, l.roster, Routes.roster(group.id), const Key('qa-roster')),
       (Icons.payments_rounded, l.paymentsTitle, Routes.groupPayments(group.id), const Key('qa-payments')),
@@ -572,6 +575,7 @@ Future<void> showCoachAddSheet(BuildContext context, String groupId) async {
     (const Key('add-series'), Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(groupId)),
     (const Key('add-match'), Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(groupId)),
     (const Key('add-media'), Icons.photo_camera_rounded, l.addMedia, Routes.newMediaFor(groupId)),
+    (const Key('add-plan'), Icons.assignment_rounded, l.planNew, Routes.newPlan(groupId)),
     (const Key('add-child'), Icons.person_add_alt_1_rounded, l.addChildToGroup, Routes.inviteChild(groupId)),
   ];
   final route = await showAdaptiveSheet<String>(

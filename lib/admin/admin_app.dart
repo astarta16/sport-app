@@ -18,6 +18,7 @@ import 'pages/groups_page.dart';
 import 'pages/moderation_page.dart';
 import 'pages/admins_page.dart';
 import 'pages/sports_page.dart';
+import 'pages/v13_pages.dart';
 
 class AdminRoutes {
   AdminRoutes._();
@@ -32,6 +33,11 @@ class AdminRoutes {
   static const moderation = '/moderation';
   static const audit = '/audit';
   static const admins = '/admins';
+  static const compliance = '/compliance';
+  static const attendance = '/attendance';
+  static const plans = '/plans';
+  static const payments = '/payments';
+  static const settings = '/settings';
 
   /// Pages a club admin may not open (platform scope only).
   static const platformOnly = {admins};
@@ -73,6 +79,11 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.moderation, pageBuilder: (_, _) => page(const ModerationPage())),
           GoRoute(path: AdminRoutes.audit, pageBuilder: (_, _) => page(const AuditPage())),
           GoRoute(path: AdminRoutes.admins, pageBuilder: (_, _) => page(const AdminsPage())),
+          GoRoute(path: AdminRoutes.compliance, pageBuilder: (_, _) => page(const CompliancePage())),
+          GoRoute(path: AdminRoutes.attendance, pageBuilder: (_, _) => page(const AttendanceReportPage())),
+          GoRoute(path: AdminRoutes.plans, pageBuilder: (_, _) => page(const PlansOversightPage())),
+          GoRoute(path: AdminRoutes.payments, pageBuilder: (_, _) => page(const PaymentQueuePage())),
+          GoRoute(path: AdminRoutes.settings, pageBuilder: (_, _) => page(const AdminSettingsPage())),
         ],
       ),
     ],

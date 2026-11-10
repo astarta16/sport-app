@@ -30,9 +30,14 @@ class AdminShell extends ConsumerWidget {
       (AdminRoutes.clubs, Icons.apartment_rounded, l.adminNavClubs),
       (AdminRoutes.sports, Icons.category_rounded, l.adminNavSports),
       (AdminRoutes.groups, Icons.groups_rounded, l.adminNavGroups),
+      (AdminRoutes.compliance, Icons.health_and_safety_rounded, l.adminNavCompliance),
+      (AdminRoutes.attendance, Icons.fact_check_rounded, l.adminNavAttendance),
+      (AdminRoutes.plans, Icons.assignment_rounded, l.adminNavPlans),
+      (AdminRoutes.payments, Icons.receipt_long_rounded, l.adminNavPayments),
       (AdminRoutes.moderation, Icons.flag_rounded, l.adminNavModeration),
       (AdminRoutes.audit, Icons.history_edu_rounded, l.adminNavAudit),
       if (user.isPlatformAdmin) (AdminRoutes.admins, Icons.admin_panel_settings_rounded, l.adminNavAdmins),
+      (AdminRoutes.settings, Icons.settings_rounded, l.adminNavSettings),
     ];
     final selected = items.indexWhere((i) => i.$1 == location).clamp(0, items.length - 1);
     final scope = user.isPlatformAdmin
@@ -61,19 +66,30 @@ class AdminShell extends ConsumerWidget {
                   ],
                 ),
               ),
-              for (var i = 0; i < items.length; i++)
-                ListTile(
-                  key: Key('admin-nav-${items[i].$1}'),
-                  selected: i == selected,
-                  selectedTileColor: Colors.white.withValues(alpha: 0.08),
-                  leading: Icon(items[i].$2, color: i == selected ? AppColors.volt : Colors.white70),
-                  title: Text(items[i].$3, style: TextStyle(color: i == selected ? Colors.white : Colors.white70)),
-                  onTap: () {
-                    if (drawer) Navigator.of(context).pop();
-                    context.go(items[i].$1);
-                  },
+              Expanded(
+                child: ListView(
+                  key: const Key('admin-nav-list'),
+                  padding: EdgeInsets.zero,
+                  children: [
+                    for (var i = 0; i < items.length; i++)
+                      ListTile(
+                        dense: true,
+                        key: Key('admin-nav-${items[i].$1}'),
+                        selected: i == selected,
+                        selectedTileColor: Colors.white.withValues(alpha: 0.08),
+                        leading: Icon(items[i].$2, color: i == selected ? AppColors.volt : Colors.white70),
+                        title: Text(
+                          items[i].$3,
+                          style: TextStyle(color: i == selected ? Colors.white : Colors.white70),
+                        ),
+                        onTap: () {
+                          if (drawer) Navigator.of(context).pop();
+                          context.go(items[i].$1);
+                        },
+                      ),
+                  ],
                 ),
-              const Spacer(),
+              ),
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(

@@ -139,6 +139,17 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.sm),
+              AppCard(
+                key: const Key('profile-plans'),
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                onTap: () => context.push(Routes.plans),
+                child: ListTile(
+                  leading: const Icon(Icons.assignment_rounded),
+                  title: Text(l.plansTitle),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                ),
+              ),
               SectionHeader(l.mediaTitle, actionLabel: l.addMedia, onAction: () => context.push(Routes.newMedia)),
               _CoachMedia(coachId: user.id),
             ],
