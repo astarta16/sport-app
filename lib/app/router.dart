@@ -66,7 +66,7 @@ String? resolveRedirect({
   if (user.isCoach && !user.isApprovedCoach) return location == Routes.coachPending ? null : Routes.coachPending;
 
   // Admins use the separate web dashboard (lib/main_admin.dart).
-  if (user.isAdmin) return location == Routes.adminOnly ? null : Routes.adminOnly;
+  if (user.role == UserRole.admin) return location == Routes.adminOnly ? null : Routes.adminOnly;
   final home = user.isCoach ? Routes.coachHome : Routes.parentHome;
   if (location == Routes.calendar) return user.isCoach ? Routes.coachCalendar : Routes.parentCalendar;
   if (location == Routes.splash || location.startsWith('/auth') || location == Routes.onboarding) return home;

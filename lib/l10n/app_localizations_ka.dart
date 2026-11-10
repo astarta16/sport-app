@@ -2242,4 +2242,312 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get adminUseWeb => 'ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში.';
+
+  @override
+  String get adminTitle => 'გუნდი · ადმინისტრირება';
+
+  @override
+  String get adminSignInTitle => 'ადმინისტრატორის პანელი';
+
+  @override
+  String get adminSignInBody => 'შესვლა მხოლოდ ადმინისტრატორებისთვის. უფლებები მოწმდება სერვერზე.';
+
+  @override
+  String get adminDemoAccounts => 'დემო ანგარიშები';
+
+  @override
+  String get adminDemoTryParent => 'შემოწმება: მშობლის ანგარიში (წვდომა აკრძალულია)';
+
+  @override
+  String get adminPhoneSignIn => 'შესვლა ტელეფონით';
+
+  @override
+  String get adminFirebaseLoginNote =>
+      'ვებ-ზე ტელეფონით შესვლას სჭირდება Firebase-ის reCAPTCHA კონფიგურაცია (იხ. docs/firebase-setup.md).';
+
+  @override
+  String get adminRolePlatform => 'პლატფორმის ადმინი';
+
+  @override
+  String get adminRoleClub => 'კლუბის ადმინი';
+
+  @override
+  String adminScopeClubs(String clubs) {
+    return 'კლუბები: $clubs';
+  }
+
+  @override
+  String get adminNavDashboard => 'მიმოხილვა';
+
+  @override
+  String get adminNavCoaches => 'მწვრთნელები';
+
+  @override
+  String get adminNavClubs => 'კლუბები';
+
+  @override
+  String get adminNavSports => 'სპორტები';
+
+  @override
+  String get adminNavGroups => 'ჯგუფები';
+
+  @override
+  String get adminNavModeration => 'მოდერაცია';
+
+  @override
+  String get adminNavAudit => 'აუდიტი';
+
+  @override
+  String get adminNavAdmins => 'ადმინისტრატორები';
+
+  @override
+  String get adminStatParents => 'მშობლები';
+
+  @override
+  String get adminStatChildren => 'ბავშვები';
+
+  @override
+  String get adminStatCoaches => 'მწვრთნელები';
+
+  @override
+  String get adminStatClubs => 'კლუბები';
+
+  @override
+  String get adminStatGroups => 'აქტიური ჯგუფები';
+
+  @override
+  String get adminStatTrainings => 'ვარჯიშები (7 დღე)';
+
+  @override
+  String get adminStatMatches => 'მომავალი თამაშები';
+
+  @override
+  String get adminStatPendingCoaches => 'მწვრთნელის განაცხადები';
+
+  @override
+  String get adminStatPendingRequests => 'გაწევრების მოთხოვნები';
+
+  @override
+  String get adminStatReports => 'საჩივრები';
+
+  @override
+  String get adminNeedsAttention => 'ყურადღებას საჭიროებს';
+
+  @override
+  String get adminSearch => 'ძიება…';
+
+  @override
+  String get adminFilterAll => 'ყველა';
+
+  @override
+  String get adminColName => 'სახელი';
+
+  @override
+  String get adminColStatus => 'სტატუსი';
+
+  @override
+  String get adminColClubs => 'კლუბები';
+
+  @override
+  String get adminColSports => 'სპორტი';
+
+  @override
+  String get adminColGroups => 'ჯგუფები';
+
+  @override
+  String get adminColApplied => 'განაცხადი';
+
+  @override
+  String get adminColActions => 'მოქმედებები';
+
+  @override
+  String get adminColAddress => 'მისამართი';
+
+  @override
+  String get adminColMembers => 'წევრები';
+
+  @override
+  String get adminColCoach => 'მწვრთნელი';
+
+  @override
+  String get adminColSchedule => 'განრიგი';
+
+  @override
+  String get adminColRequests => 'მოთხოვნები';
+
+  @override
+  String get adminColUpcoming => 'მომავალი ვარჯიშები';
+
+  @override
+  String get adminColCategory => 'კატეგორია';
+
+  @override
+  String get adminColAgeMin => 'მინ. ასაკი';
+
+  @override
+  String get adminColCert => 'ცნობა';
+
+  @override
+  String get adminColActive => 'აქტიური';
+
+  @override
+  String get adminColWhen => 'დრო';
+
+  @override
+  String get adminColActor => 'ვინ';
+
+  @override
+  String get adminColAction => 'მოქმედება';
+
+  @override
+  String get adminColTarget => 'ობიექტი';
+
+  @override
+  String get adminColDetails => 'დეტალები';
+
+  @override
+  String get adminColReason => 'მიზეზი';
+
+  @override
+  String get adminColContent => 'კონტენტი';
+
+  @override
+  String adminPageOf(int pageStart, int pageEnd, int total) {
+    return '$pageStart–$pageEnd / $total';
+  }
+
+  @override
+  String get adminApprove => 'დადასტურება';
+
+  @override
+  String get adminReject => 'უარყოფა';
+
+  @override
+  String get adminSuspend => 'შეჩერება';
+
+  @override
+  String get adminRevoke => 'წვდომის გაუქმება';
+
+  @override
+  String get adminReinstate => 'აღდგენა';
+
+  @override
+  String get adminReasonTitle => 'მიზეზი (სავალდებულო)';
+
+  @override
+  String get adminCoachStatusPending => 'მოლოდინში';
+
+  @override
+  String get adminCoachStatusApproved => 'დადასტურებული';
+
+  @override
+  String get adminCoachStatusRejected => 'უარყოფილი';
+
+  @override
+  String get adminCoachStatusSuspended => 'შეჩერებული';
+
+  @override
+  String get adminCoachStatusRevoked => 'გაუქმებული';
+
+  @override
+  String get adminCoachUpdated => 'მწვრთნელის სტატუსი განახლდა';
+
+  @override
+  String get adminAssignClub => 'კლუბზე მიმაგრება';
+
+  @override
+  String get adminUnassignClub => 'კლუბიდან მოხსნა';
+
+  @override
+  String get adminNewClub => 'ახალი კლუბი';
+
+  @override
+  String get adminEditClub => 'კლუბის რედაქტირება';
+
+  @override
+  String get adminArchive => 'დაარქივება';
+
+  @override
+  String get adminRestore => 'აღდგენა';
+
+  @override
+  String get adminArchived => 'დაარქივებული';
+
+  @override
+  String get adminLat => 'განედი';
+
+  @override
+  String get adminLng => 'გრძედი';
+
+  @override
+  String get adminPhone => 'ტელეფონი';
+
+  @override
+  String get adminDescription => 'აღწერა';
+
+  @override
+  String get adminSaved => 'შენახულია';
+
+  @override
+  String get adminNewSport => 'ახალი სპორტი';
+
+  @override
+  String get adminEditSport => 'სპორტის რედაქტირება';
+
+  @override
+  String get adminSportId => 'იდენტიფიკატორი (ლათინური)';
+
+  @override
+  String get adminSportOrder => 'რიგი';
+
+  @override
+  String get adminReadOnly => 'მხოლოდ ნახვა — რედაქტირება პლატფორმის ადმინისტრატორს შეუძლია.';
+
+  @override
+  String get adminHide => 'დამალვა';
+
+  @override
+  String get adminKeep => 'დატოვება';
+
+  @override
+  String get adminReportOpen => 'ღია';
+
+  @override
+  String get adminReportResolved => 'დამალულია';
+
+  @override
+  String get adminReportDismissed => 'დატოვებულია';
+
+  @override
+  String get adminModerationEmpty => 'საჩივრები არ არის';
+
+  @override
+  String get adminModerationNote =>
+      'მედიის ნახვა ხდება მხოლოდ დროებითი ხელმოწერილი ბმულით. ბავშვების პერსონალური მონაცემები აქ არ ჩანს.';
+
+  @override
+  String get adminMakeClubAdmin => 'კლუბის ადმინად დანიშვნა';
+
+  @override
+  String get adminRemoveAdmin => 'ადმინის უფლების მოხსნა';
+
+  @override
+  String get adminRoleUpdated => 'როლი განახლდა';
+
+  @override
+  String get adminGrantHint =>
+      'პირველი პლატფორმის ადმინი ინიშნება მხოლოდ სერვერის სკრიპტით (functions/scripts/grant-platform-admin.mjs).';
+
+  @override
+  String get adminNotAdminTitle => 'ადმინისტრატორის უფლება არ გაქვთ';
+
+  @override
+  String get adminNotAdminBody => 'ეს ანგარიში ვერ გამოიყენებს ადმინისტრატორის პანელს. გამოიყენეთ მობილური აპი.';
+
+  @override
+  String get adminChildDataNote =>
+      'ბავშვების სახელები და სამედიცინო მონაცემები ადმინისტრატორებს არ უჩანთ — მხოლოდ რაოდენობები.';
+
+  @override
+  String get adminEmpty => 'ჩანაწერები არ არის';
 }

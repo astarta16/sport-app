@@ -102,7 +102,7 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
     );
     if (!mounted) return;
     setState(() => _saving = false);
-    if (ok) context.pop();
+    if (ok) context.popOrHome();
   }
 
   @override

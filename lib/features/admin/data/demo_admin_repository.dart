@@ -276,6 +276,12 @@ class DemoAdminRepository implements AdminRepository {
   });
 
   @override
+  Stream<List<AppUser>> watchAdmins() => db.watch(() {
+    _platform();
+    return db.users.values.where((u) => u.isAdmin).toList()..sort((a, b) => a.fullName.compareTo(b.fullName));
+  });
+
+  @override
   Future<void> setAdminRole(String uid, AdminRole? role, {List<String> clubIds = const []}) async {
     db.requireOnline();
     final me = _platform();
@@ -283,7 +289,8 @@ class DemoAdminRepository implements AdminRepository {
     final u = db.users[uid] ?? (throw const NotFoundException('user'));
     db.users[uid] = AppUser.fromMap(uid, {
       ...u.toMap(),
-      'role': role == null ? (u.role == UserRole.admin ? 'parent' : u.role.name) : 'admin',
+      // A coach/parent keeps their role; admin rights live in the claims.
+      'role': u.role.name,
       'adminRole': role?.name,
       'adminClubIds': role == AdminRole.club ? clubIds : const <String>[],
       'coachStatusReason': u.coachStatusReason,

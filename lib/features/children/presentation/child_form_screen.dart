@@ -1,6 +1,7 @@
+import '../../../app/routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
@@ -62,7 +63,7 @@ class _ChildFormScreenState extends ConsumerState<ChildFormScreen> {
       await ref.read(selectionContextProvider.notifier).selectChild(child.id);
       if (mounted) {
         showAppSnack(context, l.childSaved);
-        context.pop();
+        context.popOrHome();
       }
     } catch (e) {
       if (mounted) setState(() => _error = errorText(context, e));

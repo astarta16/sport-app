@@ -150,6 +150,14 @@ class FirebaseAdminRepository implements AdminRepository {
   }
 
   @override
+  Stream<List<AppUser>> watchAdmins() => db
+      .collection('users')
+      .where('role', isEqualTo: 'admin')
+      .snapshots()
+      .map((s) => s.docs.map((d) => AppUser.fromMap(d.id, d.data())).toList())
+      .mapFirebaseErrors();
+
+  @override
   Future<void> setAdminRole(String uid, AdminRole? role, {List<String> clubIds = const []}) =>
       callFunction(functions, 'setAdminRole', {'uid': uid, 'role': role?.name, 'clubIds': clubIds});
 }

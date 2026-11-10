@@ -358,5 +358,6 @@ Future<void> showFeedbackSheet(
       ),
     ),
   );
-  comment.dispose();
+  // Controllers of dialogs are left to GC: disposing right after pop races
+  // the exit animation, which still builds the TextField.
 }

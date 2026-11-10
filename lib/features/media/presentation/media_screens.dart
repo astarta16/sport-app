@@ -86,7 +86,7 @@ class _MediaPublishScreenState extends ConsumerState<MediaPublishScreen> {
     );
     if (!mounted) return;
     setState(() => _saving = false);
-    if (ok) context.pop();
+    if (ok) context.popOrHome();
   }
 
   /// Demo helper: a generated image so the flow works without a camera.
@@ -306,7 +306,7 @@ class MediaViewerScreen extends ConsumerWidget {
                 );
                 if (!ok || !context.mounted) return;
                 final done = await runGuarded(context, () => ref.read(mediaPostsRepositoryProvider).delete(post.id));
-                if (done && context.mounted) context.pop();
+                if (done && context.mounted) context.popOrHome();
               },
               icon: const Icon(Icons.delete_outline_rounded),
             ),

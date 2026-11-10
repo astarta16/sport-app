@@ -243,7 +243,7 @@ class _Body extends ConsumerWidget {
                   context,
                   () => ref.read(childrenRepositoryProvider).removeChild(child.id),
                 );
-                if (done && context.mounted) context.pop();
+                if (done && context.mounted) context.popOrHome();
               }
             },
             icon: const Icon(Icons.delete_outline_rounded),
@@ -321,7 +321,8 @@ Future<void> showJoinByCodeDialog(BuildContext context, WidgetRef ref, Child chi
     ),
   );
   final text = code.text;
-  code.dispose();
+  // Controllers of dialogs are left to GC: disposing right after pop races
+  // the exit animation, which still builds the TextField.
   if (ok != true || !context.mounted) return;
   try {
     final name = await ref.read(groupsRepositoryProvider).joinByCode(code: text, childId: child.id);

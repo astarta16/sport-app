@@ -4201,6 +4201,606 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში.'**
   String get adminUseWeb;
+
+  /// No description provided for @adminTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გუნდი · ადმინისტრირება'**
+  String get adminTitle;
+
+  /// No description provided for @adminSignInTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის პანელი'**
+  String get adminSignInTitle;
+
+  /// No description provided for @adminSignInBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესვლა მხოლოდ ადმინისტრატორებისთვის. უფლებები მოწმდება სერვერზე.'**
+  String get adminSignInBody;
+
+  /// No description provided for @adminDemoAccounts.
+  ///
+  /// In ka, this message translates to:
+  /// **'დემო ანგარიშები'**
+  String get adminDemoAccounts;
+
+  /// No description provided for @adminDemoTryParent.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემოწმება: მშობლის ანგარიში (წვდომა აკრძალულია)'**
+  String get adminDemoTryParent;
+
+  /// No description provided for @adminPhoneSignIn.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესვლა ტელეფონით'**
+  String get adminPhoneSignIn;
+
+  /// No description provided for @adminFirebaseLoginNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვებ-ზე ტელეფონით შესვლას სჭირდება Firebase-ის reCAPTCHA კონფიგურაცია (იხ. docs/firebase-setup.md).'**
+  String get adminFirebaseLoginNote;
+
+  /// No description provided for @adminRolePlatform.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმის ადმინი'**
+  String get adminRolePlatform;
+
+  /// No description provided for @adminRoleClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბის ადმინი'**
+  String get adminRoleClub;
+
+  /// No description provided for @adminScopeClubs.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბები: {clubs}'**
+  String adminScopeClubs(String clubs);
+
+  /// No description provided for @adminNavDashboard.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმოხილვა'**
+  String get adminNavDashboard;
+
+  /// No description provided for @adminNavCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get adminNavCoaches;
+
+  /// No description provided for @adminNavClubs.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბები'**
+  String get adminNavClubs;
+
+  /// No description provided for @adminNavSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტები'**
+  String get adminNavSports;
+
+  /// No description provided for @adminNavGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები'**
+  String get adminNavGroups;
+
+  /// No description provided for @adminNavModeration.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოდერაცია'**
+  String get adminNavModeration;
+
+  /// No description provided for @adminNavAudit.
+  ///
+  /// In ka, this message translates to:
+  /// **'აუდიტი'**
+  String get adminNavAudit;
+
+  /// No description provided for @adminNavAdmins.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორები'**
+  String get adminNavAdmins;
+
+  /// No description provided for @adminStatParents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლები'**
+  String get adminStatParents;
+
+  /// No description provided for @adminStatChildren.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვები'**
+  String get adminStatChildren;
+
+  /// No description provided for @adminStatCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get adminStatCoaches;
+
+  /// No description provided for @adminStatClubs.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბები'**
+  String get adminStatClubs;
+
+  /// No description provided for @adminStatGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური ჯგუფები'**
+  String get adminStatGroups;
+
+  /// No description provided for @adminStatTrainings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშები (7 დღე)'**
+  String get adminStatTrainings;
+
+  /// No description provided for @adminStatMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი თამაშები'**
+  String get adminStatMatches;
+
+  /// No description provided for @adminStatPendingCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის განაცხადები'**
+  String get adminStatPendingCoaches;
+
+  /// No description provided for @adminStatPendingRequests.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაწევრების მოთხოვნები'**
+  String get adminStatPendingRequests;
+
+  /// No description provided for @adminStatReports.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჩივრები'**
+  String get adminStatReports;
+
+  /// No description provided for @adminNeedsAttention.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყურადღებას საჭიროებს'**
+  String get adminNeedsAttention;
+
+  /// No description provided for @adminSearch.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიება…'**
+  String get adminSearch;
+
+  /// No description provided for @adminFilterAll.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა'**
+  String get adminFilterAll;
+
+  /// No description provided for @adminColName.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი'**
+  String get adminColName;
+
+  /// No description provided for @adminColStatus.
+  ///
+  /// In ka, this message translates to:
+  /// **'სტატუსი'**
+  String get adminColStatus;
+
+  /// No description provided for @adminColClubs.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბები'**
+  String get adminColClubs;
+
+  /// No description provided for @adminColSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტი'**
+  String get adminColSports;
+
+  /// No description provided for @adminColGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები'**
+  String get adminColGroups;
+
+  /// No description provided for @adminColApplied.
+  ///
+  /// In ka, this message translates to:
+  /// **'განაცხადი'**
+  String get adminColApplied;
+
+  /// No description provided for @adminColActions.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოქმედებები'**
+  String get adminColActions;
+
+  /// No description provided for @adminColAddress.
+  ///
+  /// In ka, this message translates to:
+  /// **'მისამართი'**
+  String get adminColAddress;
+
+  /// No description provided for @adminColMembers.
+  ///
+  /// In ka, this message translates to:
+  /// **'წევრები'**
+  String get adminColMembers;
+
+  /// No description provided for @adminColCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი'**
+  String get adminColCoach;
+
+  /// No description provided for @adminColSchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი'**
+  String get adminColSchedule;
+
+  /// No description provided for @adminColRequests.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოთხოვნები'**
+  String get adminColRequests;
+
+  /// No description provided for @adminColUpcoming.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი ვარჯიშები'**
+  String get adminColUpcoming;
+
+  /// No description provided for @adminColCategory.
+  ///
+  /// In ka, this message translates to:
+  /// **'კატეგორია'**
+  String get adminColCategory;
+
+  /// No description provided for @adminColAgeMin.
+  ///
+  /// In ka, this message translates to:
+  /// **'მინ. ასაკი'**
+  String get adminColAgeMin;
+
+  /// No description provided for @adminColCert.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცნობა'**
+  String get adminColCert;
+
+  /// No description provided for @adminColActive.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური'**
+  String get adminColActive;
+
+  /// No description provided for @adminColWhen.
+  ///
+  /// In ka, this message translates to:
+  /// **'დრო'**
+  String get adminColWhen;
+
+  /// No description provided for @adminColActor.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვინ'**
+  String get adminColActor;
+
+  /// No description provided for @adminColAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოქმედება'**
+  String get adminColAction;
+
+  /// No description provided for @adminColTarget.
+  ///
+  /// In ka, this message translates to:
+  /// **'ობიექტი'**
+  String get adminColTarget;
+
+  /// No description provided for @adminColDetails.
+  ///
+  /// In ka, this message translates to:
+  /// **'დეტალები'**
+  String get adminColDetails;
+
+  /// No description provided for @adminColReason.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზეზი'**
+  String get adminColReason;
+
+  /// No description provided for @adminColContent.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონტენტი'**
+  String get adminColContent;
+
+  /// No description provided for @adminPageOf.
+  ///
+  /// In ka, this message translates to:
+  /// **'{pageStart}–{pageEnd} / {total}'**
+  String adminPageOf(int pageStart, int pageEnd, int total);
+
+  /// No description provided for @adminApprove.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურება'**
+  String get adminApprove;
+
+  /// No description provided for @adminReject.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფა'**
+  String get adminReject;
+
+  /// No description provided for @adminSuspend.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერება'**
+  String get adminSuspend;
+
+  /// No description provided for @adminRevoke.
+  ///
+  /// In ka, this message translates to:
+  /// **'წვდომის გაუქმება'**
+  String get adminRevoke;
+
+  /// No description provided for @adminReinstate.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღდგენა'**
+  String get adminReinstate;
+
+  /// No description provided for @adminReasonTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზეზი (სავალდებულო)'**
+  String get adminReasonTitle;
+
+  /// No description provided for @adminCoachStatusPending.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოლოდინში'**
+  String get adminCoachStatusPending;
+
+  /// No description provided for @adminCoachStatusApproved.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურებული'**
+  String get adminCoachStatusApproved;
+
+  /// No description provided for @adminCoachStatusRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფილი'**
+  String get adminCoachStatusRejected;
+
+  /// No description provided for @adminCoachStatusSuspended.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერებული'**
+  String get adminCoachStatusSuspended;
+
+  /// No description provided for @adminCoachStatusRevoked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმებული'**
+  String get adminCoachStatusRevoked;
+
+  /// No description provided for @adminCoachUpdated.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის სტატუსი განახლდა'**
+  String get adminCoachUpdated;
+
+  /// No description provided for @adminAssignClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბზე მიმაგრება'**
+  String get adminAssignClub;
+
+  /// No description provided for @adminUnassignClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბიდან მოხსნა'**
+  String get adminUnassignClub;
+
+  /// No description provided for @adminNewClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი კლუბი'**
+  String get adminNewClub;
+
+  /// No description provided for @adminEditClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბის რედაქტირება'**
+  String get adminEditClub;
+
+  /// No description provided for @adminArchive.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივება'**
+  String get adminArchive;
+
+  /// No description provided for @adminRestore.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღდგენა'**
+  String get adminRestore;
+
+  /// No description provided for @adminArchived.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივებული'**
+  String get adminArchived;
+
+  /// No description provided for @adminLat.
+  ///
+  /// In ka, this message translates to:
+  /// **'განედი'**
+  String get adminLat;
+
+  /// No description provided for @adminLng.
+  ///
+  /// In ka, this message translates to:
+  /// **'გრძედი'**
+  String get adminLng;
+
+  /// No description provided for @adminPhone.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტელეფონი'**
+  String get adminPhone;
+
+  /// No description provided for @adminDescription.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღწერა'**
+  String get adminDescription;
+
+  /// No description provided for @adminSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენახულია'**
+  String get adminSaved;
+
+  /// No description provided for @adminNewSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი სპორტი'**
+  String get adminNewSport;
+
+  /// No description provided for @adminEditSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტის რედაქტირება'**
+  String get adminEditSport;
+
+  /// No description provided for @adminSportId.
+  ///
+  /// In ka, this message translates to:
+  /// **'იდენტიფიკატორი (ლათინური)'**
+  String get adminSportId;
+
+  /// No description provided for @adminSportOrder.
+  ///
+  /// In ka, this message translates to:
+  /// **'რიგი'**
+  String get adminSportOrder;
+
+  /// No description provided for @adminReadOnly.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ნახვა — რედაქტირება პლატფორმის ადმინისტრატორს შეუძლია.'**
+  String get adminReadOnly;
+
+  /// No description provided for @adminHide.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამალვა'**
+  String get adminHide;
+
+  /// No description provided for @adminKeep.
+  ///
+  /// In ka, this message translates to:
+  /// **'დატოვება'**
+  String get adminKeep;
+
+  /// No description provided for @adminReportOpen.
+  ///
+  /// In ka, this message translates to:
+  /// **'ღია'**
+  String get adminReportOpen;
+
+  /// No description provided for @adminReportResolved.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამალულია'**
+  String get adminReportResolved;
+
+  /// No description provided for @adminReportDismissed.
+  ///
+  /// In ka, this message translates to:
+  /// **'დატოვებულია'**
+  String get adminReportDismissed;
+
+  /// No description provided for @adminModerationEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჩივრები არ არის'**
+  String get adminModerationEmpty;
+
+  /// No description provided for @adminModerationNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მედიის ნახვა ხდება მხოლოდ დროებითი ხელმოწერილი ბმულით. ბავშვების პერსონალური მონაცემები აქ არ ჩანს.'**
+  String get adminModerationNote;
+
+  /// No description provided for @adminMakeClubAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბის ადმინად დანიშვნა'**
+  String get adminMakeClubAdmin;
+
+  /// No description provided for @adminRemoveAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინის უფლების მოხსნა'**
+  String get adminRemoveAdmin;
+
+  /// No description provided for @adminRoleUpdated.
+  ///
+  /// In ka, this message translates to:
+  /// **'როლი განახლდა'**
+  String get adminRoleUpdated;
+
+  /// No description provided for @adminGrantHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'პირველი პლატფორმის ადმინი ინიშნება მხოლოდ სერვერის სკრიპტით (functions/scripts/grant-platform-admin.mjs).'**
+  String get adminGrantHint;
+
+  /// No description provided for @adminNotAdminTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის უფლება არ გაქვთ'**
+  String get adminNotAdminTitle;
+
+  /// No description provided for @adminNotAdminBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს ანგარიში ვერ გამოიყენებს ადმინისტრატორის პანელს. გამოიყენეთ მობილური აპი.'**
+  String get adminNotAdminBody;
+
+  /// No description provided for @adminChildDataNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვების სახელები და სამედიცინო მონაცემები ადმინისტრატორებს არ უჩანთ — მხოლოდ რაოდენობები.'**
+  String get adminChildDataNote;
+
+  /// No description provided for @adminEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩანაწერები არ არის'**
+  String get adminEmpty;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

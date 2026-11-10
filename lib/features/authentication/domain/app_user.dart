@@ -164,7 +164,10 @@ class AppUser {
   bool get isParent => role == UserRole.parent;
   bool get isCoach => role == UserRole.coach;
   bool get isApprovedCoach => role == UserRole.coach && coachStatus == CoachStatus.approved;
-  bool get isAdmin => role == UserRole.admin;
+
+  /// Admin rights come from the server-set claims (mirrored in [adminRole]);
+  /// a coach can also be the admin of their club.
+  bool get isAdmin => adminRole != null;
   bool get isPlatformAdmin => isAdmin && adminRole == AdminRole.platform;
 
   /// Club admin of [clubId] (platform admins manage every club).

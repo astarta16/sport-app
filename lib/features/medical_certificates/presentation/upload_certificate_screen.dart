@@ -1,6 +1,7 @@
+import '../../../app/routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
@@ -64,7 +65,7 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
     );
     if (!mounted) return;
     setState(() => _saving = false);
-    if (ok) context.pop();
+    if (ok) context.popOrHome();
   }
 
   @override

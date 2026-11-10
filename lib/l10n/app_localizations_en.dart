@@ -2274,4 +2274,311 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminUseWeb => 'The admin panel is available on the web.';
+
+  @override
+  String get adminTitle => 'Gundi · Admin';
+
+  @override
+  String get adminSignInTitle => 'Admin dashboard';
+
+  @override
+  String get adminSignInBody => 'Administrators only. Permissions are checked on the server.';
+
+  @override
+  String get adminDemoAccounts => 'Demo accounts';
+
+  @override
+  String get adminDemoTryParent => 'Check: parent account (access denied)';
+
+  @override
+  String get adminPhoneSignIn => 'Sign in with phone';
+
+  @override
+  String get adminFirebaseLoginNote =>
+      'Phone sign-in on the web needs Firebase reCAPTCHA configuration (see docs/firebase-setup.md).';
+
+  @override
+  String get adminRolePlatform => 'Platform admin';
+
+  @override
+  String get adminRoleClub => 'Club admin';
+
+  @override
+  String adminScopeClubs(String clubs) {
+    return 'Clubs: $clubs';
+  }
+
+  @override
+  String get adminNavDashboard => 'Overview';
+
+  @override
+  String get adminNavCoaches => 'Coaches';
+
+  @override
+  String get adminNavClubs => 'Clubs';
+
+  @override
+  String get adminNavSports => 'Sports';
+
+  @override
+  String get adminNavGroups => 'Groups';
+
+  @override
+  String get adminNavModeration => 'Moderation';
+
+  @override
+  String get adminNavAudit => 'Audit log';
+
+  @override
+  String get adminNavAdmins => 'Administrators';
+
+  @override
+  String get adminStatParents => 'Parents';
+
+  @override
+  String get adminStatChildren => 'Children';
+
+  @override
+  String get adminStatCoaches => 'Coaches';
+
+  @override
+  String get adminStatClubs => 'Clubs';
+
+  @override
+  String get adminStatGroups => 'Active groups';
+
+  @override
+  String get adminStatTrainings => 'Trainings (7 days)';
+
+  @override
+  String get adminStatMatches => 'Upcoming matches';
+
+  @override
+  String get adminStatPendingCoaches => 'Coach applications';
+
+  @override
+  String get adminStatPendingRequests => 'Membership requests';
+
+  @override
+  String get adminStatReports => 'Open reports';
+
+  @override
+  String get adminNeedsAttention => 'Needs attention';
+
+  @override
+  String get adminSearch => 'Search…';
+
+  @override
+  String get adminFilterAll => 'All';
+
+  @override
+  String get adminColName => 'Name';
+
+  @override
+  String get adminColStatus => 'Status';
+
+  @override
+  String get adminColClubs => 'Clubs';
+
+  @override
+  String get adminColSports => 'Sports';
+
+  @override
+  String get adminColGroups => 'Groups';
+
+  @override
+  String get adminColApplied => 'Applied';
+
+  @override
+  String get adminColActions => 'Actions';
+
+  @override
+  String get adminColAddress => 'Address';
+
+  @override
+  String get adminColMembers => 'Members';
+
+  @override
+  String get adminColCoach => 'Coach';
+
+  @override
+  String get adminColSchedule => 'Schedule';
+
+  @override
+  String get adminColRequests => 'Requests';
+
+  @override
+  String get adminColUpcoming => 'Upcoming trainings';
+
+  @override
+  String get adminColCategory => 'Category';
+
+  @override
+  String get adminColAgeMin => 'Min. age';
+
+  @override
+  String get adminColCert => 'Certificate';
+
+  @override
+  String get adminColActive => 'Active';
+
+  @override
+  String get adminColWhen => 'When';
+
+  @override
+  String get adminColActor => 'Actor';
+
+  @override
+  String get adminColAction => 'Action';
+
+  @override
+  String get adminColTarget => 'Target';
+
+  @override
+  String get adminColDetails => 'Details';
+
+  @override
+  String get adminColReason => 'Reason';
+
+  @override
+  String get adminColContent => 'Content';
+
+  @override
+  String adminPageOf(int pageStart, int pageEnd, int total) {
+    return '$pageStart–$pageEnd of $total';
+  }
+
+  @override
+  String get adminApprove => 'Approve';
+
+  @override
+  String get adminReject => 'Reject';
+
+  @override
+  String get adminSuspend => 'Suspend';
+
+  @override
+  String get adminRevoke => 'Revoke access';
+
+  @override
+  String get adminReinstate => 'Reinstate';
+
+  @override
+  String get adminReasonTitle => 'Reason (required)';
+
+  @override
+  String get adminCoachStatusPending => 'Pending';
+
+  @override
+  String get adminCoachStatusApproved => 'Approved';
+
+  @override
+  String get adminCoachStatusRejected => 'Rejected';
+
+  @override
+  String get adminCoachStatusSuspended => 'Suspended';
+
+  @override
+  String get adminCoachStatusRevoked => 'Revoked';
+
+  @override
+  String get adminCoachUpdated => 'Coach status updated';
+
+  @override
+  String get adminAssignClub => 'Assign to club';
+
+  @override
+  String get adminUnassignClub => 'Remove from club';
+
+  @override
+  String get adminNewClub => 'New club';
+
+  @override
+  String get adminEditClub => 'Edit club';
+
+  @override
+  String get adminArchive => 'Archive';
+
+  @override
+  String get adminRestore => 'Restore';
+
+  @override
+  String get adminArchived => 'Archived';
+
+  @override
+  String get adminLat => 'Latitude';
+
+  @override
+  String get adminLng => 'Longitude';
+
+  @override
+  String get adminPhone => 'Phone';
+
+  @override
+  String get adminDescription => 'Description';
+
+  @override
+  String get adminSaved => 'Saved';
+
+  @override
+  String get adminNewSport => 'New sport';
+
+  @override
+  String get adminEditSport => 'Edit sport';
+
+  @override
+  String get adminSportId => 'Identifier (latin)';
+
+  @override
+  String get adminSportOrder => 'Order';
+
+  @override
+  String get adminReadOnly => 'Read-only — only platform admins can edit.';
+
+  @override
+  String get adminHide => 'Hide';
+
+  @override
+  String get adminKeep => 'Keep';
+
+  @override
+  String get adminReportOpen => 'Open';
+
+  @override
+  String get adminReportResolved => 'Hidden';
+
+  @override
+  String get adminReportDismissed => 'Kept';
+
+  @override
+  String get adminModerationEmpty => 'No reports';
+
+  @override
+  String get adminModerationNote =>
+      'Media opens only through short-lived signed links. Children\'s personal data isn\'t shown here.';
+
+  @override
+  String get adminMakeClubAdmin => 'Make club admin';
+
+  @override
+  String get adminRemoveAdmin => 'Remove admin rights';
+
+  @override
+  String get adminRoleUpdated => 'Role updated';
+
+  @override
+  String get adminGrantHint =>
+      'The first platform admin is granted only via the server script (functions/scripts/grant-platform-admin.mjs).';
+
+  @override
+  String get adminNotAdminTitle => 'You are not an administrator';
+
+  @override
+  String get adminNotAdminBody => 'This account can\'t use the admin dashboard. Please use the mobile app.';
+
+  @override
+  String get adminChildDataNote => 'Admins don\'t see children\'s names or medical data — only counts.';
+
+  @override
+  String get adminEmpty => 'No records';
 }

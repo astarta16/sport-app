@@ -14,7 +14,7 @@ for extra in (_S2, _S3):
 
 root = os.path.join(os.path.dirname(__file__), '..', 'lib', 'l10n')
 
-INT_NAMES = {'count', 'seconds', 'current', 'total', 'min', 'max', 'day', 'sent', 'skipped', 'minutes', 'percent', 'n', 'present', 'absent', 'excused', 'unmarked', 'yes', 'no', 'maybe', 'year', 'age'}
+INT_NAMES = {'count', 'seconds', 'current', 'total', 'min', 'max', 'day', 'sent', 'skipped', 'minutes', 'percent', 'n', 'present', 'absent', 'excused', 'unmarked', 'yes', 'no', 'maybe', 'year', 'age', 'pageStart', 'pageEnd'}
 
 def placeholders(text):
     names = {}

@@ -27,7 +27,8 @@ class AccessPolicy {
 
   static bool isParentInGroup(AppUser u, Group g) => u.isParent && g.parentIds.contains(u.id);
 
-  static bool canViewGroup(AppUser u, Group g) => u.isAdmin || isCoachOf(u, g) || isParentInGroup(u, g);
+  static bool canViewGroup(AppUser u, Group g) =>
+      u.administersClub(g.clubId) || isCoachOf(u, g) || isParentInGroup(u, g);
 
   /// Parents and coaches of the child's current groups. Admins are
   /// deliberately excluded: admin screens never need a child's profile
@@ -63,7 +64,7 @@ class AccessPolicy {
   /// Phone visibility: coach ↔ parents of the same group only; parents
   /// never see each other's numbers.
   static bool canSeePhone(AppUser viewer, AppUser target, Iterable<Group> groups) {
-    if (viewer.id == target.id || viewer.isAdmin) return true;
+    if (viewer.id == target.id || viewer.isPlatformAdmin) return true;
     if (viewer.isApprovedCoach && target.isParent) {
       return groups.any((g) => g.hasCoach(viewer.id) && g.hasParent(target.id));
     }

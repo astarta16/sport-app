@@ -212,6 +212,9 @@ abstract interface class AdminRepository {
 
   Stream<List<AuditEntry>> watchAudit();
 
+  /// Platform admins only: current admins (platform + club).
+  Stream<List<AppUser>> watchAdmins();
+
   /// Platform admins only.
   Future<void> setAdminRole(String uid, AdminRole? role, {List<String> clubIds});
 }

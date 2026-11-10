@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+
 /// Route paths in one place.
 class Routes {
   Routes._();
@@ -59,4 +62,16 @@ class Routes {
   static String media(String id) => '/media/$id';
   static String newMediaFor(String groupId) => '/media/new?groupId=$groupId';
   static String inviteChild(String groupId) => '/group/$groupId/invite';
+}
+
+/// Pops when there is a page to return to; otherwise (opened by a deep link
+/// or notification) goes to the user's home instead of crashing.
+extension SafePop on BuildContext {
+  void popOrHome() {
+    if (canPop()) {
+      pop();
+    } else {
+      go(Routes.splash);
+    }
+  }
 }

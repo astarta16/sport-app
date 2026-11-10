@@ -260,7 +260,7 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
     );
     if (!mounted) return;
     setState(() => _saving = false);
-    if (ok) context.pop();
+    if (ok) context.popOrHome();
   }
 
   @override
@@ -317,7 +317,7 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
                                 .inviteExistingChild(groupId: widget.groupId, childId: r.childId),
                             success: l.inviteSent,
                           );
-                          if (ok && context.mounted) context.pop();
+                          if (ok && context.mounted) context.popOrHome();
                         },
                         child: Text(l.send),
                       ),

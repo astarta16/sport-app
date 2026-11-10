@@ -68,7 +68,8 @@ Future<void> showReportDialog(
     ),
   );
   final text = note.text;
-  note.dispose();
+  // Controllers of dialogs are left to GC: disposing right after pop races
+  // the exit animation, which still builds the TextField.
   if (ok != true || !context.mounted) return;
   await runGuarded(
     context,
