@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/l10n.dart';
+import '../layout/responsive.dart';
 import '../utils/geo.dart';
 
 /// Builds direction URLs for installed map apps (universal links open the
@@ -24,7 +25,7 @@ Future<void> openDirections(BuildContext context, GeoCoord to, String label) asy
     if (Platform.isIOS) ('Apple Maps', Icons.map_rounded, DirectionLinks.apple(to, label)),
     ('Google Maps', Icons.navigation_rounded, DirectionLinks.google(to)),
   ];
-  final uri = await showModalBottomSheet<Uri>(
+  final uri = await showAdaptiveSheet<Uri>(
     context: context,
     builder: (context) => SafeArea(
       child: Column(

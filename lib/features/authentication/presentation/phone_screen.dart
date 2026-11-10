@@ -7,6 +7,7 @@ import '../../../app/config.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -53,59 +54,62 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
     final repo = ref.watch(authRepositoryProvider);
     final demo = ref.watch(appModeProvider) == AppMode.demo;
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, AppSpacing.xl),
-          child: Form(
-            key: _form,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const BrandMark(size: 56),
-                const SizedBox(height: AppSpacing.xl),
-                Text(l.phoneTitle, style: t.headlineMedium),
-                const SizedBox(height: AppSpacing.xs),
-                Text(l.phoneSubtitle, style: t.bodyLarge?.copyWith(color: scheme.onSurfaceVariant)),
-                const SizedBox(height: AppSpacing.xl),
-                TextFormField(
-                  controller: _phone,
-                  keyboardType: TextInputType.phone,
-                  autofillHints: const [AutofillHints.telephoneNumber],
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9+ ]')),
-                    LengthLimitingTextInputFormatter(17),
-                  ],
-                  style: t.titleMedium,
-                  decoration: InputDecoration(
-                    labelText: l.phoneLabel,
-                    hintText: '5XX XX XX XX',
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 8),
-                      child: Text('🇬🇪  +995', style: t.titleMedium),
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, AppSpacing.xl),
+            child: Form(
+              key: _form,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const BrandMark(size: 56),
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(l.phoneTitle, style: t.headlineMedium),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(l.phoneSubtitle, style: t.bodyLarge?.copyWith(color: scheme.onSurfaceVariant)),
+                  const SizedBox(height: AppSpacing.xl),
+                  TextFormField(
+                    controller: _phone,
+                    keyboardType: TextInputType.phone,
+                    autofillHints: const [AutofillHints.telephoneNumber],
+                    textInputAction: TextInputAction.done,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9+ ]')),
+                      LengthLimitingTextInputFormatter(17),
+                    ],
+                    style: t.titleMedium,
+                    decoration: InputDecoration(
+                      labelText: l.phoneLabel,
+                      hintText: '5XX XX XX XX',
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: Text('🇬🇪  +995', style: t.titleMedium),
+                      ),
+                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
                     ),
-                    prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                    validator: (v) => validationText(context, Validators.phone(v)),
+                    onFieldSubmitted: (_) => _submit(),
                   ),
-                  validator: (v) => validationText(context, Validators.phone(v)),
-                  onFieldSubmitted: (_) => _submit(),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                LoadingButton(label: l.sendCode, loading: _loading, onPressed: _submit, icon: Icons.sms_rounded),
-                const SizedBox(height: AppSpacing.sm),
-                Center(
-                  child: TextButton.icon(
-                    onPressed: () => context.push(Routes.explore),
-                    icon: const Icon(Icons.map_outlined),
-                    label: Text(l.guestBrowse),
-                  ),
-                ),
-                if (demo) ...[
                   const SizedBox(height: AppSpacing.lg),
-                  _DemoAccounts(accounts: repo.demoAccounts.map((a) => (a.uid, a.label, a.role, a.phone)).toList()),
+                  LoadingButton(label: l.sendCode, loading: _loading, onPressed: _submit, icon: Icons.sms_rounded),
+                  const SizedBox(height: AppSpacing.sm),
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () => context.push(Routes.explore),
+                      icon: const Icon(Icons.map_outlined),
+                      label: Text(l.guestBrowse),
+                    ),
+                  ),
+                  if (demo) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    _DemoAccounts(accounts: repo.demoAccounts.map((a) => (a.uid, a.label, a.role, a.phone)).toList()),
+                  ],
+                  const SizedBox(height: AppSpacing.lg),
+                  Text(l.termsNote, style: t.bodySmall, textAlign: TextAlign.center),
                 ],
-                const SizedBox(height: AppSpacing.lg),
-                Text(l.termsNote, style: t.bodySmall, textAlign: TextAlign.center),
-              ],
+              ),
             ),
           ),
         ),

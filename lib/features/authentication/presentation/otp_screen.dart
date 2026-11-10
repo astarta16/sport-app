@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/config.dart';
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -88,45 +89,48 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     final demo = ref.watch(appModeProvider) == AppMode.demo;
     return Scaffold(
       appBar: AppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l.otpTitle, style: t.headlineMedium),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                l.otpSubtitle(Validators.formatPhone(widget.phone)),
-                style: t.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              TextField(
-                key: const Key('otp-field'),
-                controller: _code,
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                autofillHints: const [AutofillHints.oneTimeCode],
-                textAlign: TextAlign.center,
-                maxLength: 6,
-                style: t.headlineMedium?.copyWith(letterSpacing: 14),
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(counterText: '', hintText: '••••••', errorText: _error),
-                onChanged: (v) {
-                  if (v.length == 6) _verify();
-                },
-              ),
-              if (demo) ...[const SizedBox(height: AppSpacing.sm), DemoBanner(text: l.demoOtpHint)],
-              const SizedBox(height: AppSpacing.lg),
-              LoadingButton(label: l.verify, loading: _loading, onPressed: _verify),
-              const SizedBox(height: AppSpacing.sm),
-              Center(
-                child: TextButton(
-                  onPressed: _seconds > 0 ? null : _resend,
-                  child: Text(_seconds > 0 ? l.resendIn(_seconds) : l.resendCode),
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l.otpTitle, style: t.headlineMedium),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  l.otpSubtitle(Validators.formatPhone(widget.phone)),
+                  style: t.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.xl),
+                TextField(
+                  key: const Key('otp-field'),
+                  controller: _code,
+                  autofocus: true,
+                  keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.oneTimeCode],
+                  textAlign: TextAlign.center,
+                  maxLength: 6,
+                  style: t.headlineMedium?.copyWith(letterSpacing: 14),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(counterText: '', hintText: '••••••', errorText: _error),
+                  onChanged: (v) {
+                    if (v.length == 6) _verify();
+                  },
+                ),
+                if (demo) ...[const SizedBox(height: AppSpacing.sm), DemoBanner(text: l.demoOtpHint)],
+                const SizedBox(height: AppSpacing.lg),
+                LoadingButton(label: l.verify, loading: _loading, onPressed: _verify),
+                const SizedBox(height: AppSpacing.sm),
+                Center(
+                  child: TextButton(
+                    onPressed: _seconds > 0 ? null : _resend,
+                    child: Text(_seconds > 0 ? l.resendIn(_seconds) : l.resendCode),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

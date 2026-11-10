@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
@@ -34,30 +35,33 @@ class NotificationSettingsScreen extends ConsumerWidget {
     ];
     return Scaffold(
       appBar: AppBar(title: Text(l.notificationSettings)),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        children: [
-          Text(l.notificationSettingsHint, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Column(
-              children: [
-                for (final t in types)
-                  SwitchListTile(
-                    key: Key('pref-${t.name}'),
-                    secondary: Icon(notificationIcon(t)),
-                    title: Text(notificationTitle(context, t)),
-                    value: prefs.isEnabled(t),
-                    onChanged: (v) => runGuarded(
-                      context,
-                      () => ref.read(authRepositoryProvider).updateNotificationPrefs(prefs.toggle(t, v)),
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: ListView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          children: [
+            Text(l.notificationSettingsHint, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Column(
+                children: [
+                  for (final t in types)
+                    SwitchListTile(
+                      key: Key('pref-${t.name}'),
+                      secondary: Icon(notificationIcon(t)),
+                      title: Text(notificationTitle(context, t)),
+                      value: prefs.isEnabled(t),
+                      onChanged: (v) => runGuarded(
+                        context,
+                        () => ref.read(authRepositoryProvider).updateNotificationPrefs(prefs.toggle(t, v)),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -71,10 +72,13 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
     final l = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l.uploadCertificate)),
-      body: SafeArea(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
-          child: _consentStepDone ? _form(context) : _consentStep(context),
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: SafeArea(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: _consentStepDone ? _form(context) : _consentStep(context),
+          ),
         ),
       ),
     );

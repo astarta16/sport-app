@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
@@ -12,6 +13,7 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../parent/presentation/parent_context.dart';
 import '../../trainings/domain/training.dart';
+import '../../trainings/presentation/training_detail_screen.dart';
 import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/calendar_logic.dart';
@@ -28,6 +30,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime? _selected;
   CalendarFormat _format = CalendarFormat.month;
   bool _allChildren = false;
+
+  /// Training shown in the detail pane on large windows.
+  String? _detailId;
 
   @override
   Widget build(BuildContext context) {
@@ -72,98 +77,147 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final selected = _selected ?? DateUtils.dateOnly(now);
           final dayList = CalendarLogic.onDay(byDay, selected);
           final upcoming = CalendarLogic.upcoming(visible, now, limit: 8);
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.xxl),
-            children: [
-              AppCard(
-                padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
-                child: TableCalendar<Training>(
-                  locale: context.localeName,
-                  firstDay: now.subtract(const Duration(days: 365)),
-                  lastDay: now.add(const Duration(days: 365)),
-                  focusedDay: _focused,
-                  calendarFormat: _format,
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  availableCalendarFormats: {
-                    CalendarFormat.month: l.navCalendar,
-                    CalendarFormat.twoWeeks: '2w',
-                    CalendarFormat.week: '1w',
-                  },
-                  onFormatChanged: (f) => setState(() => _format = f),
-                  selectedDayPredicate: (d) => isSameDay(d, selected),
-                  onDaySelected: (s, f) => setState(() {
-                    _selected = s;
-                    _focused = f;
-                  }),
-                  onPageChanged: (f) => _focused = f,
-                  eventLoader: (d) => CalendarLogic.onDay(byDay, d),
-                  headerStyle: HeaderStyle(
-                    titleCentered: true,
-                    formatButtonVisible: false,
-                    titleTextStyle: Theme.of(context).textTheme.titleMedium!,
-                  ),
-                  calendarStyle: CalendarStyle(
-                    outsideDaysVisible: false,
-                    todayDecoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
-                    todayTextStyle: TextStyle(color: scheme.onPrimaryContainer, fontWeight: FontWeight.w800),
-                    selectedDecoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
-                    weekendTextStyle: TextStyle(color: scheme.onSurfaceVariant),
-                  ),
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, day, events) {
-                      if (events.isEmpty) return null;
-                      return Positioned(
-                        bottom: 4,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (final e in events.take(3))
-                              Container(
-                                width: 6,
-                                height: 6,
-                                margin: const EdgeInsets.symmetric(horizontal: 1),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: e.status == TrainingStatus.cancelled
-                                      ? AppColors.danger
-                                      : (e.status == TrainingStatus.moved
-                                            ? AppColors.warning
-                                            : SportVisuals.color(groups[e.groupId]?.sportId ?? '')),
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
+          final calendarCard = AppCard(
+            padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
+            child: TableCalendar<Training>(
+              locale: context.localeName,
+              firstDay: now.subtract(const Duration(days: 365)),
+              lastDay: now.add(const Duration(days: 365)),
+              focusedDay: _focused,
+              calendarFormat: _format,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              availableCalendarFormats: {
+                CalendarFormat.month: l.navCalendar,
+                CalendarFormat.twoWeeks: '2w',
+                CalendarFormat.week: '1w',
+              },
+              onFormatChanged: (f) => setState(() => _format = f),
+              selectedDayPredicate: (d) => isSameDay(d, selected),
+              onDaySelected: (s, f) => setState(() {
+                _selected = s;
+                _focused = f;
+              }),
+              onPageChanged: (f) => _focused = f,
+              eventLoader: (d) => CalendarLogic.onDay(byDay, d),
+              headerStyle: HeaderStyle(
+                titleCentered: true,
+                formatButtonVisible: false,
+                titleTextStyle: Theme.of(context).textTheme.titleMedium!,
               ),
-              SectionHeader(Fmt.of(context).weekdayDayMonth(selected)),
-              if (dayList.isEmpty)
-                AppCard(
-                  child: EmptyState(compact: true, icon: Icons.event_available_rounded, title: l.noTrainingsDay),
-                )
-              else
-                ..._tiles(dayList, groups, showDate: false),
-              SectionHeader(l.upcoming),
-              if (upcoming.isEmpty)
-                AppCard(
-                  child: EmptyState(compact: true, icon: Icons.event_busy_rounded, title: l.noUpcomingTrainings),
-                )
-              else
-                ..._tiles(upcoming, groups),
-            ],
+              calendarStyle: CalendarStyle(
+                outsideDaysVisible: false,
+                todayDecoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
+                todayTextStyle: TextStyle(color: scheme.onPrimaryContainer, fontWeight: FontWeight.w800),
+                selectedDecoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
+                weekendTextStyle: TextStyle(color: scheme.onSurfaceVariant),
+              ),
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, day, events) {
+                  if (events.isEmpty) return null;
+                  return Positioned(
+                    bottom: 4,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final e in events.take(3))
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.symmetric(horizontal: 1),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: e.status == TrainingStatus.cancelled
+                                  ? AppColors.danger
+                                  : (e.status == TrainingStatus.moved
+                                        ? AppColors.warning
+                                        : SportVisuals.color(groups[e.groupId]?.sportId ?? '')),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+          List<Widget> lists({bool selectable = false}) => [
+            SectionHeader(Fmt.of(context).weekdayDayMonth(selected)),
+            if (dayList.isEmpty)
+              AppCard(
+                child: EmptyState(compact: true, icon: Icons.event_available_rounded, title: l.noTrainingsDay),
+              )
+            else
+              ..._tiles(dayList, groups, showDate: false, selectable: selectable),
+            SectionHeader(l.upcoming),
+            if (upcoming.isEmpty)
+              AppCard(
+                child: EmptyState(compact: true, icon: Icons.event_busy_rounded, title: l.noUpcomingTrainings),
+              )
+            else
+              ..._tiles(upcoming, groups, selectable: selectable),
+          ];
+          return LayoutBuilder(
+            builder: (context, c) {
+              const pad = EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.xxl);
+              // Phone / narrow: single scrolling column (original design).
+              if (c.maxWidth < Breakpoints.expanded) {
+                return ListView(padding: pad, children: [calendarCard, ...lists()]);
+              }
+              // Large pane (e.g. iPad Pro landscape beside the sidebar):
+              // calendar + lists on the left, training detail on the right.
+              if (c.maxWidth >= 1080) {
+                final detailId = _detailId ?? (dayList.isNotEmpty ? dayList.first.id : upcoming.firstOrNull?.id);
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      width: 440,
+                      child: ListView(padding: pad, children: [calendarCard, ...lists(selectable: true)]),
+                    ),
+                    VerticalDivider(width: 1, color: Theme.of(context).colorScheme.outline),
+                    Expanded(
+                      child: detailId == null
+                          ? EmptyState(icon: Icons.event_note_rounded, title: l.noUpcomingTrainings)
+                          : TrainingDetailScreen(key: ValueKey(detailId), trainingId: detailId, embedded: true),
+                    ),
+                  ],
+                );
+              }
+              // Expanded: calendar beside the lists.
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ListView(padding: pad, children: [calendarCard]),
+                  ),
+                  Expanded(
+                    child: ListView(padding: pad, children: lists()),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
     );
   }
 
-  List<Widget> _tiles(List<Training> list, Map<String, Group> groups, {bool showDate = true}) => [
+  List<Widget> _tiles(
+    List<Training> list,
+    Map<String, Group> groups, {
+    bool showDate = true,
+    bool selectable = false,
+  }) => [
     for (final t in list)
       Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-        child: TrainingTile(training: t, group: groups[t.groupId], showDate: showDate),
+        child: TrainingTile(
+          training: t,
+          group: groups[t.groupId],
+          showDate: showDate,
+          selected: selectable && t.id == _detailId,
+          onTap: selectable ? () => setState(() => _detailId = t.id) : null,
+        ),
       ),
   ];
 }

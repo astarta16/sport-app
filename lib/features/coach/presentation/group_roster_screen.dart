@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
@@ -40,79 +41,101 @@ class GroupRosterScreen extends ConsumerWidget {
         onRetry: () => ref.invalidate(groupMembersProvider(groupId)),
         data: (list) {
           if (list.isEmpty) return EmptyState(icon: Icons.group_off_rounded, title: l.roster, body: l.noGroupsInClub);
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            itemCount: list.length,
-            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
-            itemBuilder: (context, i) {
-              final c = list[i];
-              final mine = certs.where((x) => x.childId == c.id).toList();
-              final status = CertificatePolicy.childStatus(mine, now);
-              return AppCard(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                child: Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    key: Key('roster-${c.id}'),
-                    leading: InitialsAvatar(name: c.fullName, size: 40),
-                    title: Text(c.fullName, style: Theme.of(context).textTheme.titleSmall),
-                    subtitle: Wrap(
-                      spacing: 8,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(l.yearsOld(c.ageOn(now))),
-                        if (!c.photoConsent)
-                          const Icon(Icons.no_photography_rounded, size: 16, color: AppColors.warning),
-                      ],
-                    ),
-                    trailing: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 120),
-                      child: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
-                    ),
-                    childrenPadding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+          Widget card(int i) {
+            final c = list[i];
+            final mine = certs.where((x) => x.childId == c.id).toList();
+            final status = CertificatePolicy.childStatus(mine, now);
+            return AppCard(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  key: Key('roster-${c.id}'),
+                  leading: InitialsAvatar(name: c.fullName, size: 40),
+                  title: Text(c.fullName, style: Theme.of(context).textTheme.titleSmall),
+                  subtitle: Wrap(
+                    spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      if (mine.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                          child: Wrap(
-                            spacing: AppSpacing.sm,
-                            runSpacing: 4,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              const Icon(Icons.description_rounded),
-                              Text(l.validUntil(Fmt.of(context).numericDate(mine.first.validUntil))),
-                              TextButton(
-                                onPressed: () => context.push(Routes.certificates(c.id)),
-                                child: Text(l.viewCertificate),
-                              ),
-                            ],
-                          ),
-                        ),
-                      _ParentsList(parentIds: c.parentIds),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-                          onPressed: () async {
-                            final ok = await confirmDialog(
-                              context,
-                              title: l.removeFromGroup,
-                              message: l.removeFromGroupConfirm(c.fullName),
-                              confirmLabel: l.removeFromGroup,
-                              destructive: true,
-                            );
-                            if (ok && context.mounted) {
-                              await runGuarded(
-                                context,
-                                () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.person_remove_rounded),
-                          label: Text(l.removeFromGroup),
+                      Text(l.yearsOld(c.ageOn(now))),
+                      if (!c.photoConsent) const Icon(Icons.no_photography_rounded, size: 16, color: AppColors.warning),
+                    ],
+                  ),
+                  trailing: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 120),
+                    child: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                  ),
+                  childrenPadding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+                  children: [
+                    if (mine.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                        child: Wrap(
+                          spacing: AppSpacing.sm,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Icon(Icons.description_rounded),
+                            Text(l.validUntil(Fmt.of(context).numericDate(mine.first.validUntil))),
+                            TextButton(
+                              onPressed: () => context.push(Routes.certificates(c.id)),
+                              child: Text(l.viewCertificate),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    _ParentsList(parentIds: c.parentIds),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+                        onPressed: () async {
+                          final ok = await confirmDialog(
+                            context,
+                            title: l.removeFromGroup,
+                            message: l.removeFromGroupConfirm(c.fullName),
+                            confirmLabel: l.removeFromGroup,
+                            destructive: true,
+                          );
+                          if (ok && context.mounted) {
+                            await runGuarded(
+                              context,
+                              () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.person_remove_rounded),
+                        label: Text(l.removeFromGroup),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // Phone: one column. Tablet: cards in a responsive grid.
+          return LayoutBuilder(
+            builder: (context, c) {
+              if (c.maxWidth < Breakpoints.medium) {
+                return ListView.separated(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  itemCount: list.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
+                  itemBuilder: (context, i) => card(i),
+                );
+              }
+              return SingleChildScrollView(
+                key: const Key('roster-grid'),
+                padding: EdgeInsets.all(context.pagePadding),
+                child: ConstrainedContent(
+                  maxWidth: Breakpoints.dashboard,
+                  child: ResponsiveGrid(
+                    minItemWidth: 340,
+                    maxColumns: 3,
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [for (var i = 0; i < list.length; i++) card(i)],
                   ),
                 ),
               );

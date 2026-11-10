@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
@@ -33,9 +34,12 @@ class ChildProfileScreen extends ConsumerWidget {
     final child = ref.watch(childProvider(childId));
     return Scaffold(
       appBar: AppBar(title: Text(l.childProfile)),
-      body: AsyncView<Child?>(
-        value: child,
-        data: (c) => c == null ? EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound) : _Body(child: c),
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: AsyncView<Child?>(
+          value: child,
+          data: (c) => c == null ? EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound) : _Body(child: c),
+        ),
       ),
     );
   }

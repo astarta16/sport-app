@@ -6,6 +6,7 @@ import '../../../app/config.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -34,163 +35,194 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l.navProfile)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
-        children: [
-          AppCard(
-            gradient: AppColors.nightGradient,
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
-              children: [
-                InitialsAvatar(name: user.fullName, size: 64),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(user.fullName, style: t.titleLarge?.copyWith(color: Colors.white)),
-                      Text(Validators.formatPhone(user.phone), style: t.bodyMedium?.copyWith(color: Colors.white70)),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        children: [
-                          StatusPill(
-                            label: user.isCoach ? l.roleCoach : l.roleParent,
-                            color: AppColors.volt,
-                            dense: true,
-                          ),
-                          if (user.isApprovedCoach)
+      body: LayoutBuilder(
+        builder: (context, c) {
+          final left = <Widget>[
+            AppCard(
+              gradient: AppColors.nightGradient,
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Row(
+                children: [
+                  InitialsAvatar(name: user.fullName, size: 64),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(user.fullName, style: t.titleLarge?.copyWith(color: Colors.white)),
+                        Text(Validators.formatPhone(user.phone), style: t.bodyMedium?.copyWith(color: Colors.white70)),
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 6,
+                          children: [
                             StatusPill(
-                              label: l.approvedCoach,
+                              label: user.isCoach ? l.roleCoach : l.roleParent,
                               color: AppColors.volt,
-                              icon: Icons.verified_rounded,
                               dense: true,
                             ),
-                          if (demo) StatusPill(label: l.modeDemo, color: Colors.white, dense: true),
-                        ],
-                      ),
+                            if (user.isApprovedCoach)
+                              StatusPill(
+                                label: l.approvedCoach,
+                                color: AppColors.volt,
+                                icon: Icons.verified_rounded,
+                                dense: true,
+                              ),
+                            if (demo) StatusPill(label: l.modeDemo, color: Colors.white, dense: true),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: l.editProfile,
+                    onPressed: () => _editProfile(context, ref, user.firstName, user.lastName),
+                    icon: const Icon(Icons.edit_rounded, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            if (user.isParent) ...[
+              SectionHeader(l.myChildren, actionLabel: l.addChild, onAction: () => context.push(Routes.newChild)),
+              if (children.isEmpty)
+                AppCard(
+                  child: EmptyState(compact: true, icon: Icons.child_care_rounded, title: l.noChildrenTitle),
+                )
+              else
+                AppCard(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                  child: Column(
+                    children: [
+                      for (final c in children)
+                        ListTile(
+                          key: Key('profile-child-${c.id}'),
+                          leading: InitialsAvatar(name: c.fullName, size: 42),
+                          title: Text(c.fullName, style: t.titleSmall),
+                          subtitle: Text(
+                            '${l.yearsOld(c.ageOn(now))} · ${c.sportIds.map((s) => sports[s]?.name ?? s).join(', ')}',
+                          ),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () => context.push(Routes.child(c.id)),
+                        ),
                     ],
                   ),
                 ),
-                IconButton(
-                  tooltip: l.editProfile,
-                  onPressed: () => _editProfile(context, ref, user.firstName, user.lastName),
-                  icon: const Icon(Icons.edit_rounded, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          if (user.isParent) ...[
-            SectionHeader(l.myChildren, actionLabel: l.addChild, onAction: () => context.push(Routes.newChild)),
-            if (children.isEmpty)
+              const SizedBox(height: AppSpacing.sm),
               AppCard(
-                child: EmptyState(compact: true, icon: Icons.child_care_rounded, title: l.noChildrenTitle),
-              )
-            else
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: ListTile(
+                  leading: const Icon(Icons.account_balance_wallet_rounded),
+                  title: Text(l.paymentsTitle),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => context.push(Routes.payments),
+                ),
+              ),
+            ],
+            if (user.isCoach) ...[
+              SectionHeader(l.groupsLabel),
               AppCard(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 child: Column(
                   children: [
-                    for (final c in children)
+                    for (final g in groups)
                       ListTile(
-                        key: Key('profile-child-${c.id}'),
-                        leading: InitialsAvatar(name: c.fullName, size: 42),
-                        title: Text(c.fullName, style: t.titleSmall),
-                        subtitle: Text(
-                          '${l.yearsOld(c.ageOn(now))} · ${c.sportIds.map((s) => sports[s]?.name ?? s).join(', ')}',
-                        ),
+                        leading: SportBadge(sportKey: g.sportId, size: 40),
+                        title: Text(g.name),
+                        subtitle: Text('${clubs[g.clubId]?.name ?? ''} · ${l.groupMembers(g.memberChildIds.length)}'),
                         trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () => context.push(Routes.child(c.id)),
+                        onTap: () => context.push(Routes.roster(g.id)),
                       ),
                   ],
                 ),
               ),
-            const SizedBox(height: AppSpacing.sm),
-            AppCard(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: ListTile(
-                leading: const Icon(Icons.account_balance_wallet_rounded),
-                title: Text(l.paymentsTitle),
-                trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () => context.push(Routes.payments),
-              ),
-            ),
-          ],
-          if (user.isCoach) ...[
-            SectionHeader(l.groupsLabel),
+            ],
+          ];
+          final right = <Widget>[
+            SectionHeader(l.settingsTitle),
             AppCard(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Column(
                 children: [
-                  for (final g in groups)
-                    ListTile(
-                      leading: SportBadge(sportKey: g.sportId, size: 40),
-                      title: Text(g.name),
-                      subtitle: Text('${clubs[g.clubId]?.name ?? ''} · ${l.groupMembers(g.memberChildIds.length)}'),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () => context.push(Routes.roster(g.id)),
-                    ),
+                  ListTile(
+                    leading: const Icon(Icons.notifications_active_outlined),
+                    title: Text(l.notificationSettings),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(Routes.notificationSettings),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.palette_outlined),
+                    title: Text(l.settingsTitle),
+                    subtitle: Text('${l.themeLabel} · ${l.languageLabel}'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(Routes.settings),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.shield_outlined),
+                    title: Text(l.privacyTitle),
+                    subtitle: Text(l.privacyBody),
+                  ),
                 ],
               ),
             ),
-          ],
-          SectionHeader(l.settingsTitle),
-          AppCard(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.notifications_active_outlined),
-                  title: Text(l.notificationSettings),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => context.push(Routes.notificationSettings),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.palette_outlined),
-                  title: Text(l.settingsTitle),
-                  subtitle: Text('${l.themeLabel} · ${l.languageLabel}'),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => context.push(Routes.settings),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.shield_outlined),
-                  title: Text(l.privacyTitle),
-                  subtitle: Text(l.privacyBody),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.md),
+            if (demo)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _DemoSwitcher(currentUid: user.id),
+              ),
+            OutlinedButton.icon(
+              key: const Key('sign-out'),
+              onPressed: () => ref.read(authRepositoryProvider).signOut(),
+              icon: const Icon(Icons.logout_rounded),
+              label: Text(l.signOut),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          if (demo)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: _DemoSwitcher(currentUid: user.id),
+            const SizedBox(height: AppSpacing.sm),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+              onPressed: () async {
+                final ok = await confirmDialog(
+                  context,
+                  title: l.deleteAccount,
+                  message: l.deleteAccountConfirm,
+                  confirmLabel: l.delete,
+                  destructive: true,
+                );
+                if (ok && context.mounted) {
+                  await runGuarded(context, () => ref.read(authRepositoryProvider).deleteAccount());
+                }
+              },
+              child: Text(l.deleteAccount),
             ),
-          OutlinedButton.icon(
-            key: const Key('sign-out'),
-            onPressed: () => ref.read(authRepositoryProvider).signOut(),
-            icon: const Icon(Icons.logout_rounded),
-            label: Text(l.signOut),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            onPressed: () async {
-              final ok = await confirmDialog(
-                context,
-                title: l.deleteAccount,
-                message: l.deleteAccountConfirm,
-                confirmLabel: l.delete,
-                destructive: true,
-              );
-              if (ok && context.mounted) {
-                await runGuarded(context, () => ref.read(authRepositoryProvider).deleteAccount());
-              }
-            },
-            child: Text(l.deleteAccount),
-          ),
-          Center(child: Text(l.appVersion(AppConfig.version), style: t.labelSmall)),
-        ],
+            Center(child: Text(l.appVersion(AppConfig.version), style: t.labelSmall)),
+          ];
+          const pad = EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl);
+          if (c.maxWidth < Breakpoints.expanded) {
+            return ConstrainedContent(
+              child: ListView(padding: pad, children: [...left, ...right]),
+            );
+          }
+          return SingleChildScrollView(
+            padding: pad,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: Breakpoints.dashboard),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: left),
+                    ),
+                    const SizedBox(width: AppSpacing.xl),
+                    Expanded(
+                      flex: 2,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: right),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -251,7 +283,7 @@ class _DemoSwitcher extends ConsumerWidget {
             children: [
               const Icon(Icons.swap_horiz_rounded),
               const SizedBox(width: AppSpacing.xs),
-              Text(l.switchDemoAccount, style: Theme.of(context).textTheme.titleSmall),
+              Expanded(child: Text(l.switchDemoAccount, style: Theme.of(context).textTheme.titleSmall)),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),

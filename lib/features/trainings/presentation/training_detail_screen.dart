@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
@@ -23,25 +24,36 @@ import '../domain/training.dart';
 import 'trainings_providers.dart';
 
 class TrainingDetailScreen extends ConsumerWidget {
-  const TrainingDetailScreen({super.key, required this.trainingId});
+  const TrainingDetailScreen({super.key, required this.trainingId, this.embedded = false});
 
   final String trainingId;
+
+  /// Detail pane of the tablet calendar (no app bar / back button).
+  final bool embedded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final training = ref.watch(trainingProvider(trainingId));
+    final body = AsyncView<Training?>(
+      value: training,
+      onRetry: () => ref.invalidate(trainingProvider(trainingId)),
+      data: (t) {
+        if (t == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
+        final group = ref.watch(groupsByIdProvider)[t.groupId];
+        return _Body(training: t, group: group);
+      },
+    );
+    if (embedded) {
+      return Material(
+        key: const Key('training-detail-pane'),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: SafeArea(left: false, child: body),
+      );
+    }
     return Scaffold(
       appBar: AppBar(title: Text(l.trainingTitle)),
-      body: AsyncView<Training?>(
-        value: training,
-        onRetry: () => ref.invalidate(trainingProvider(trainingId)),
-        data: (t) {
-          if (t == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
-          final group = ref.watch(groupsByIdProvider)[t.groupId];
-          return _Body(training: t, group: group);
-        },
-      ),
+      body: ConstrainedContent(maxWidth: Breakpoints.readable, child: body),
     );
   }
 }

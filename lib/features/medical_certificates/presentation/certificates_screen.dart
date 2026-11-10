@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -43,32 +44,35 @@ class CertificatesScreen extends ConsumerWidget {
               label: Text(l.uploadCertificate),
             )
           : null,
-      body: AsyncView<List<MedicalCertificate>>(
-        value: certs,
-        onRetry: () => ref.invalidate(childCertificatesProvider(childId)),
-        data: (list) {
-          final status = CertificatePolicy.childStatus(list, now);
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 120),
-            children: [
-              _StatusHero(child: child, status: status, latest: list.firstOrNull, now: now),
-              const SizedBox(height: AppSpacing.sm),
-              DemoBanner(text: l.certRemindersNote),
-              SectionHeader(l.certificatesTitle),
-              if (list.isEmpty)
-                AppCard(
-                  child: EmptyState(compact: true, icon: Icons.description_outlined, title: l.noCertificates),
-                )
-              else
-                for (final c in list)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                    child: _CertificateCard(cert: c, canDelete: isParent, now: now),
-                  ),
-              if (isParent) _AccessLog(childId: childId),
-            ],
-          );
-        },
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: AsyncView<List<MedicalCertificate>>(
+          value: certs,
+          onRetry: () => ref.invalidate(childCertificatesProvider(childId)),
+          data: (list) {
+            final status = CertificatePolicy.childStatus(list, now);
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 120),
+              children: [
+                _StatusHero(child: child, status: status, latest: list.firstOrNull, now: now),
+                const SizedBox(height: AppSpacing.sm),
+                DemoBanner(text: l.certRemindersNote),
+                SectionHeader(l.certificatesTitle),
+                if (list.isEmpty)
+                  AppCard(
+                    child: EmptyState(compact: true, icon: Icons.description_outlined, title: l.noCertificates),
+                  )
+                else
+                  for (final c in list)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                      child: _CertificateCard(cert: c, canDelete: isParent, now: now),
+                    ),
+                if (isParent) _AccessLog(childId: childId),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

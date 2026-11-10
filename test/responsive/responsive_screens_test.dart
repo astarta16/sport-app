@@ -27,7 +27,6 @@ const sizes = <String, Size>{
 /// `lib/` source location found in the report.
 final collected = <String>[];
 String currentLabel = '';
-void Function(FlutterErrorDetails)? _previousHandler;
 
 void _collect(FlutterErrorDetails details) {
   final msg = details.exceptionAsString().split('\n').first;
@@ -41,31 +40,40 @@ void _collect(FlutterErrorDetails details) {
 /// Restores the framework handler first (expect() must not run while it is
 /// overridden), then asserts that no layout errors were collected.
 void expectNoLayoutErrors() {
-  if (FlutterError.onError == _collect) FlutterError.onError = _previousHandler;
   final errors = List.of(collected);
   collected.clear();
   expect(errors, isEmpty, reason: errors.join('\n'));
 }
 
-Future<void> pumpFrames(WidgetTester tester, [int n = 8]) async {
-  for (var i = 0; i < n; i++) {
-    await tester.pump(const Duration(milliseconds: 100));
+/// Runs [body] with the error collector installed, restoring the framework
+/// handler afterwards so expect() never runs while it is overridden.
+Future<T> collecting<T>(Future<T> Function() body) async {
+  final previous = FlutterError.onError;
+  FlutterError.onError = _collect;
+  try {
+    return await body();
+  } finally {
+    FlutterError.onError = previous;
   }
 }
 
+Future<void> pumpFrames(WidgetTester tester, [int n = 8]) => collecting(() async {
+  for (var i = 0; i < n; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+});
+
 Future<DemoBackend> boot(WidgetTester tester, Size size, {double textScale = 1, bool onboarded = true}) async {
   currentLabel = '${size.width.toInt()}x${size.height.toInt()} boot';
-  if (FlutterError.onError != _collect) {
-    _previousHandler = FlutterError.onError;
-    FlutterError.onError = _collect;
-  }
   tester.view.physicalSize = size * 2;
   tester.view.devicePixelRatio = 2;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   final (db, overrides) = await demoSetup(prefs: {'settings.onboardingSeen': onboarded});
-  await tester.pumpWidget(ProviderScope(overrides: overrides, retry: (_, _) => null, child: const SportParentApp()));
+  await collecting(
+    () => tester.pumpWidget(ProviderScope(overrides: overrides, retry: (_, _) => null, child: const SportParentApp())),
+  );
   await pumpFrames(tester);
   return db;
 }
@@ -89,9 +97,6 @@ Future<void> visit(WidgetTester tester, String label, List<String> routes) async
 void main() {
   setUpAll(() => initializeDateFormatting());
   setUp(collected.clear);
-  tearDown(() {
-    if (FlutterError.onError == _collect) FlutterError.onError = _previousHandler;
-  });
 
   for (final entry in sizes.entries) {
     testWidgets('parent screens render without layout errors — ${entry.key}', (tester) async {

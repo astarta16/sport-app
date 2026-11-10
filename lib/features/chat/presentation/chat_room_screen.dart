@@ -15,9 +15,13 @@ import '../domain/chat_message.dart';
 import 'chat_providers.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
-  const ChatRoomScreen({super.key, required this.groupId});
+  const ChatRoomScreen({super.key, required this.groupId, this.embedded = false});
 
   final String groupId;
+
+  /// Rendered as the detail pane of the tablet master-detail chat layout
+  /// (no route, no back button).
+  final bool embedded;
 
   @override
   ConsumerState<ChatRoomScreen> createState() => _ChatRoomScreenState();
@@ -55,95 +59,116 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final group = ref.watch(groupsByIdProvider)[widget.groupId];
     final messages = ref.watch(chatMessagesProvider(widget.groupId));
     final me = ref.watch(currentUserProvider);
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            if (group != null) SportBadge(sportKey: group.sportId, size: 36),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(child: Text(group?.name ?? l.navChat, overflow: TextOverflow.ellipsis)),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: AsyncView<List<ChatMessage>>(
-              value: messages,
-              onRetry: () => ref.invalidate(chatMessagesProvider(widget.groupId)),
-              data: (list) {
-                if (list.isEmpty) {
-                  return EmptyState(icon: Icons.waving_hand_rounded, title: l.chatEmpty, body: l.chatPrivacyNote);
-                }
-                final reversed = list.reversed.toList();
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                  itemCount: reversed.length,
-                  itemBuilder: (context, i) {
-                    final m = reversed[i];
-                    final older = i + 1 < reversed.length ? reversed[i + 1] : null;
-                    final showDay = older == null || !isSameDay(older.createdAt, m.createdAt);
-                    final showName = older == null || older.senderId != m.senderId || showDay;
-                    return Column(
-                      children: [
-                        if (showDay) _DayDivider(date: m.createdAt),
-                        _Bubble(
-                          message: m,
-                          mine: m.senderId == me?.id,
-                          showName: showName,
-                          sportKey: group?.sportId ?? '',
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xs, AppSpacing.sm, AppSpacing.xs),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outline)),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton(
-                    tooltip: l.photoAttachment,
-                    onPressed: _sendPhoto,
-                    icon: const Icon(Icons.add_photo_alternate_rounded),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      key: const Key('chat-input'),
-                      controller: _text,
-                      minLines: 1,
-                      maxLines: 5,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        hintText: l.typeMessage,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    final title = Row(
+      children: [
+        if (group != null) SportBadge(sportKey: group.sportId, size: 36),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(group?.name ?? l.navChat, overflow: TextOverflow.ellipsis)),
+      ],
+    );
+    final body = Column(
+      children: [
+        Expanded(
+          child: AsyncView<List<ChatMessage>>(
+            value: messages,
+            onRetry: () => ref.invalidate(chatMessagesProvider(widget.groupId)),
+            data: (list) {
+              if (list.isEmpty) {
+                return EmptyState(icon: Icons.waving_hand_rounded, title: l.chatEmpty, body: l.chatPrivacyNote);
+              }
+              final reversed = list.reversed.toList();
+              return ListView.builder(
+                reverse: true,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                itemCount: reversed.length,
+                itemBuilder: (context, i) {
+                  final m = reversed[i];
+                  final older = i + 1 < reversed.length ? reversed[i + 1] : null;
+                  final showDay = older == null || !isSameDay(older.createdAt, m.createdAt);
+                  final showName = older == null || older.senderId != m.senderId || showDay;
+                  return Column(
+                    children: [
+                      if (showDay) _DayDivider(date: m.createdAt),
+                      _Bubble(
+                        message: m,
+                        mine: m.senderId == me?.id,
+                        showName: showName,
+                        sportKey: group?.sportId ?? '',
                       ),
-                      onSubmitted: (_) => _send(),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        SafeArea(
+          top: false,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xs, AppSpacing.sm, AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outline)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: l.photoAttachment,
+                  onPressed: _sendPhoto,
+                  icon: const Icon(Icons.add_photo_alternate_rounded),
+                ),
+                Expanded(
+                  child: TextField(
+                    key: const Key('chat-input'),
+                    controller: _text,
+                    minLines: 1,
+                    maxLines: 5,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      hintText: l.typeMessage,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
+                    onSubmitted: (_) => _send(),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
-                  IconButton.filled(
-                    key: const Key('chat-send'),
-                    onPressed: _sending ? null : _send,
-                    icon: const Icon(Icons.send_rounded),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                IconButton.filled(
+                  key: const Key('chat-send'),
+                  onPressed: _sending ? null : _send,
+                  icon: const Icon(Icons.send_rounded),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+    if (widget.embedded) {
+      return Material(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: SafeArea(
+          left: false,
+          child: Column(
+            children: [
+              Container(
+                height: 64,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outline)),
+                ),
+                child: DefaultTextStyle.merge(style: Theme.of(context).textTheme.titleMedium, child: title),
+              ),
+              Expanded(child: body),
+            ],
+          ),
+        ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(titleSpacing: 0, title: title),
+      body: body,
     );
   }
 }

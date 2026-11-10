@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/config.dart';
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../groups/presentation/groups_providers.dart';
@@ -31,133 +32,136 @@ class CoachPaymentsScreen extends ConsumerWidget {
     final f = Fmt.of(context);
     return Scaffold(
       appBar: AppBar(title: Text('${l.paymentsTitle} · ${group?.name ?? ''}')),
-      body: AsyncView<List<Payment>>(
-        value: payments,
-        onRetry: () => ref.invalidate(groupPaymentsProvider(groupId)),
-        data: (list) {
-          final pending = list.where((p) => p.status == PaymentStatus.pending).toList()
-            ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
-          final rest = list.where((p) => p.status != PaymentStatus.pending).toList();
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
-            children: [
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: [
-                  OutlinedButton.icon(
-                    key: const Key('charge-group'),
-                    onPressed: () => _charge(context, ref),
-                    icon: const Icon(Icons.add_card_rounded),
-                    label: Text(l.chargeGroup),
-                  ),
-                  OutlinedButton.icon(
-                    onPressed: () => _plan(context, ref),
-                    icon: const Icon(Icons.autorenew_rounded),
-                    label: Text(l.createPlan),
-                  ),
-                ],
-              ),
-              if (plans.isNotEmpty) ...[
-                SectionHeader(l.recurringPlans),
-                for (final p in plans)
-                  AppCard(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: ListTile(
-                      leading: const Icon(Icons.event_repeat_rounded),
-                      title: Text(l.everyMonthOn(f.money(p.amount).replaceAll(' ₾', ''), p.dayOfMonth)),
-                      subtitle: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: TextButton(
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                          onPressed: () async {
-                            final n = await repo.generateRecurring(p.id, year: now.year, month: now.month);
-                            if (context.mounted) showAppSnack(context, l.generated(n));
-                          },
-                          child: Text(l.generateThisMonth),
+      body: ConstrainedContent(
+        maxWidth: 960,
+        child: AsyncView<List<Payment>>(
+          value: payments,
+          onRetry: () => ref.invalidate(groupPaymentsProvider(groupId)),
+          data: (list) {
+            final pending = list.where((p) => p.status == PaymentStatus.pending).toList()
+              ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
+            final rest = list.where((p) => p.status != PaymentStatus.pending).toList();
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
+              children: [
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    OutlinedButton.icon(
+                      key: const Key('charge-group'),
+                      onPressed: () => _charge(context, ref),
+                      icon: const Icon(Icons.add_card_rounded),
+                      label: Text(l.chargeGroup),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _plan(context, ref),
+                      icon: const Icon(Icons.autorenew_rounded),
+                      label: Text(l.createPlan),
+                    ),
+                  ],
+                ),
+                if (plans.isNotEmpty) ...[
+                  SectionHeader(l.recurringPlans),
+                  for (final p in plans)
+                    AppCard(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: ListTile(
+                        leading: const Icon(Icons.event_repeat_rounded),
+                        title: Text(l.everyMonthOn(f.money(p.amount).replaceAll(' ₾', ''), p.dayOfMonth)),
+                        subtitle: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: TextButton(
+                            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                            onPressed: () async {
+                              final n = await repo.generateRecurring(p.id, year: now.year, month: now.month);
+                              if (context.mounted) showAppSnack(context, l.generated(n));
+                            },
+                            child: Text(l.generateThisMonth),
+                          ),
                         ),
                       ),
                     ),
+                ],
+                SectionHeader(l.paymentPending),
+                if (pending.isEmpty)
+                  AppCard(
+                    child: EmptyState(compact: true, icon: Icons.check_circle_outline_rounded, title: l.allPaid),
                   ),
-              ],
-              SectionHeader(l.paymentPending),
-              if (pending.isEmpty)
-                AppCard(
-                  child: EmptyState(compact: true, icon: Icons.check_circle_outline_rounded, title: l.allPaid),
-                ),
-              for (final p in pending)
-                PaymentRow(
-                  payment: p,
-                  now: now,
-                  actions: Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton.tonalIcon(
-                          key: Key('mark-paid-${p.id}'),
-                          style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
-                          onPressed: () => runGuarded(
-                            context,
-                            () => repo.setStatus(p.id, PaymentStatus.paid),
-                            success: l.paymentUpdated,
-                          ),
-                          icon: const Icon(Icons.check_rounded, size: 18),
-                          label: Text(l.markPaid),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      TextButton(
-                        onPressed: () => runGuarded(
-                          context,
-                          () => repo.setStatus(p.id, PaymentStatus.cancelled),
-                          success: l.paymentUpdated,
-                        ),
-                        child: Text(l.cancelPayment),
-                      ),
-                    ],
-                  ),
-                ),
-              if (rest.isNotEmpty) ...[
-                SectionHeader(l.paymentHistory),
-                for (final p in rest)
+                for (final p in pending)
                   PaymentRow(
                     payment: p,
                     now: now,
-                    actions: Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () => runGuarded(
-                          context,
-                          () => repo.setStatus(p.id, PaymentStatus.pending),
-                          success: l.paymentUpdated,
+                    actions: Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton.tonalIcon(
+                            key: Key('mark-paid-${p.id}'),
+                            style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+                            onPressed: () => runGuarded(
+                              context,
+                              () => repo.setStatus(p.id, PaymentStatus.paid),
+                              success: l.paymentUpdated,
+                            ),
+                            icon: const Icon(Icons.check_rounded, size: 18),
+                            label: Text(l.markPaid),
+                          ),
                         ),
-                        child: Text(l.markPending),
-                      ),
+                        const SizedBox(width: AppSpacing.xs),
+                        TextButton(
+                          onPressed: () => runGuarded(
+                            context,
+                            () => repo.setStatus(p.id, PaymentStatus.cancelled),
+                            success: l.paymentUpdated,
+                          ),
+                          child: Text(l.cancelPayment),
+                        ),
+                      ],
                     ),
                   ),
+                if (rest.isNotEmpty) ...[
+                  SectionHeader(l.paymentHistory),
+                  for (final p in rest)
+                    PaymentRow(
+                      payment: p,
+                      now: now,
+                      actions: Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => runGuarded(
+                            context,
+                            () => repo.setStatus(p.id, PaymentStatus.pending),
+                            success: l.paymentUpdated,
+                          ),
+                          child: Text(l.markPending),
+                        ),
+                      ),
+                    ),
+                ],
+                if (demo) ...[
+                  SectionHeader(l.smsLog),
+                  DemoBanner(text: l.smsMockNote),
+                  const SizedBox(height: AppSpacing.sm),
+                  LoadingButton(
+                    key: const Key('run-reminders'),
+                    label: l.runReminders,
+                    icon: Icons.sms_rounded,
+                    onPressed: () async {
+                      try {
+                        final r = await repo.runReminderJob(ref.read(clockProvider)());
+                        if (context.mounted) showAppSnack(context, l.remindersReport(r.sent, r.skipped));
+                      } catch (e) {
+                        if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  const _SmsLog(),
+                ],
               ],
-              if (demo) ...[
-                SectionHeader(l.smsLog),
-                DemoBanner(text: l.smsMockNote),
-                const SizedBox(height: AppSpacing.sm),
-                LoadingButton(
-                  key: const Key('run-reminders'),
-                  label: l.runReminders,
-                  icon: Icons.sms_rounded,
-                  onPressed: () async {
-                    try {
-                      final r = await repo.runReminderJob(ref.read(clockProvider)());
-                      if (context.mounted) showAppSnack(context, l.remindersReport(r.sent, r.skipped));
-                    } catch (e) {
-                      if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
-                    }
-                  },
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                const _SmsLog(),
-              ],
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -166,7 +170,7 @@ class CoachPaymentsScreen extends ConsumerWidget {
     final l = context.l10n;
     final amount = TextEditingController(text: '80');
     DateTime due = ref.read(clockProvider)().add(const Duration(days: 10));
-    final ok = await showModalBottomSheet<bool>(
+    final ok = await showAdaptiveSheet<bool>(
       context: context,
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
@@ -227,7 +231,7 @@ class CoachPaymentsScreen extends ConsumerWidget {
     final l = context.l10n;
     final amount = TextEditingController(text: '80');
     final day = TextEditingController(text: '1');
-    final ok = await showModalBottomSheet<bool>(
+    final ok = await showAdaptiveSheet<bool>(
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(

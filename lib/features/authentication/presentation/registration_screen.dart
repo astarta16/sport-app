@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -94,65 +95,68 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
           title: Text(l.registerTitle),
           actions: [TextButton(onPressed: () => ref.read(authRepositoryProvider).signOut(), child: Text(l.signOut))],
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: AppSpacing.page,
-                child: Row(
-                  children: [
-                    for (var i = 0; i < 3; i++)
-                      Expanded(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                          decoration: BoxDecoration(
-                            color: i <= _step
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.outline,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(l.stepOf(_step + 1, 3), style: t.bodySmall),
-                ),
-              ),
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: SingleChildScrollView(
-                    key: ValueKey(_step),
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: switch (_step) {
-                      0 => _roleStep(context),
-                      1 => _detailsStep(context),
-                      _ => _consentStep(context),
-                    },
-                  ),
-                ),
-              ),
-              if (_stepError != null)
+        body: ConstrainedContent(
+          maxWidth: Breakpoints.readable,
+          child: SafeArea(
+            child: Column(
+              children: [
                 Padding(
                   padding: AppSpacing.page,
-                  child: Text(_stepError!, style: t.bodyMedium?.copyWith(color: AppColors.danger)),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < 3; i++)
+                        Expanded(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: 5,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            decoration: BoxDecoration(
+                              color: i <= _step
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.outline,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: LoadingButton(
-                  label: _step == 2 ? l.finishRegistration : l.continueLabel,
-                  loading: _loading,
-                  onPressed: _step == 0 && _role == null ? null : _next,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l.stepOf(_step + 1, 3), style: t.bodySmall),
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: SingleChildScrollView(
+                      key: ValueKey(_step),
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: switch (_step) {
+                        0 => _roleStep(context),
+                        1 => _detailsStep(context),
+                        _ => _consentStep(context),
+                      },
+                    ),
+                  ),
+                ),
+                if (_stepError != null)
+                  Padding(
+                    padding: AppSpacing.page,
+                    child: Text(_stepError!, style: t.bodyMedium?.copyWith(color: AppColors.danger)),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: LoadingButton(
+                    label: _step == 2 ? l.finishRegistration : l.continueLabel,
+                    loading: _loading,
+                    onPressed: _step == 0 && _role == null ? null : _next,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

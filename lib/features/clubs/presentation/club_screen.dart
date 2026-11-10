@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
@@ -32,118 +33,121 @@ class ClubScreen extends ConsumerWidget {
     final sports = ref.watch(sportsByIdProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.clubDetails)),
-      body: AsyncView<List<Club>>(
-        value: clubs,
-        data: (list) {
-          final club = list.where((c) => c.id == clubId).firstOrNull;
-          if (club == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
-          final sport = club.sportIds.isEmpty ? '' : club.sportIds.first;
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
-            children: [
-              AppCard(
-                gradient: SportVisuals.gradient(sport),
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(16)),
-                          child: Icon(SportVisuals.icon(sport), color: Colors.white, size: 30),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(club.name, style: t.titleLarge?.copyWith(color: Colors.white)),
-                        ),
-                      ],
-                    ),
-                    if (club.description != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(club.description!, style: t.bodyMedium?.copyWith(color: Colors.white)),
-                    ],
-                    const SizedBox(height: AppSpacing.sm),
-                    Wrap(
-                      spacing: 6,
-                      children: [
-                        for (final s in club.sportIds)
-                          Chip(
-                            label: Text(sports[s]?.name ?? s),
-                            backgroundColor: Colors.white,
-                            side: BorderSide.none,
-                            visualDensity: VisualDensity.compact,
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              AppCard(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.place_rounded),
-                      title: Text(club.address),
-                      trailing: IconButton.filledTonal(
-                        tooltip: l.directions,
-                        onPressed: () => openDirections(context, club.location, club.name),
-                        icon: const Icon(Icons.directions_rounded),
-                      ),
-                    ),
-                    if (club.phone != null)
-                      ListTile(
-                        leading: const Icon(Icons.call_rounded),
-                        title: Text(club.phone!),
-                        onTap: () => callPhone(club.phone!),
-                      ),
-                  ],
-                ),
-              ),
-              if (venues.isNotEmpty) ...[
-                SectionHeader(l.venueLabel),
-                for (final v in venues)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                    child: AppCard(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: ListTile(
-                        leading: Icon(venueTypeIcon(v.type)),
-                        title: Text(v.name),
-                        subtitle: Text('${venueTypeLabel(context, v.type)} · ${v.address}'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.directions_rounded),
-                          onPressed: () => openDirections(context, v.location, v.name),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-              SectionHeader(l.groupsLabel),
-              AsyncView<List<Group>>(
-                value: groups,
-                compact: true,
-                loading: const SkeletonList(count: 2, padding: EdgeInsets.zero),
-                data: (gs) => gs.isEmpty
-                    ? AppCard(
-                        child: EmptyState(compact: true, icon: Icons.groups_outlined, title: l.noGroupsInClub),
-                      )
-                    : Column(
+      body: ConstrainedContent(
+        maxWidth: Breakpoints.readable,
+        child: AsyncView<List<Club>>(
+          value: clubs,
+          data: (list) {
+            final club = list.where((c) => c.id == clubId).firstOrNull;
+            if (club == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
+            final sport = club.sportIds.isEmpty ? '' : club.sportIds.first;
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
+              children: [
+                AppCard(
+                  gradient: SportVisuals.gradient(sport),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          for (final g in gs)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                              child: _GroupRow(club: club, group: g),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(16)),
+                            child: Icon(SportVisuals.icon(sport), color: Colors.white, size: 30),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(club.name, style: t.titleLarge?.copyWith(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      if (club.description != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(club.description!, style: t.bodyMedium?.copyWith(color: Colors.white)),
+                      ],
+                      const SizedBox(height: AppSpacing.sm),
+                      Wrap(
+                        spacing: 6,
+                        children: [
+                          for (final s in club.sportIds)
+                            Chip(
+                              label: Text(sports[s]?.name ?? s),
+                              backgroundColor: Colors.white,
+                              side: BorderSide.none,
+                              visualDensity: VisualDensity.compact,
                             ),
                         ],
                       ),
-              ),
-            ],
-          );
-        },
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                AppCard(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.place_rounded),
+                        title: Text(club.address),
+                        trailing: IconButton.filledTonal(
+                          tooltip: l.directions,
+                          onPressed: () => openDirections(context, club.location, club.name),
+                          icon: const Icon(Icons.directions_rounded),
+                        ),
+                      ),
+                      if (club.phone != null)
+                        ListTile(
+                          leading: const Icon(Icons.call_rounded),
+                          title: Text(club.phone!),
+                          onTap: () => callPhone(club.phone!),
+                        ),
+                    ],
+                  ),
+                ),
+                if (venues.isNotEmpty) ...[
+                  SectionHeader(l.venueLabel),
+                  for (final v in venues)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                      child: AppCard(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: ListTile(
+                          leading: Icon(venueTypeIcon(v.type)),
+                          title: Text(v.name),
+                          subtitle: Text('${venueTypeLabel(context, v.type)} · ${v.address}'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.directions_rounded),
+                            onPressed: () => openDirections(context, v.location, v.name),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+                SectionHeader(l.groupsLabel),
+                AsyncView<List<Group>>(
+                  value: groups,
+                  compact: true,
+                  loading: const SkeletonList(count: 2, padding: EdgeInsets.zero),
+                  data: (gs) => gs.isEmpty
+                      ? AppCard(
+                          child: EmptyState(compact: true, icon: Icons.groups_outlined, title: l.noGroupsInClub),
+                        )
+                      : Column(
+                          children: [
+                            for (final g in gs)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                                child: _GroupRow(club: club, group: g),
+                              ),
+                          ],
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -205,7 +209,7 @@ class _GroupRow extends ConsumerWidget {
       return;
     }
     final now = ref.read(clockProvider)();
-    final child = await showModalBottomSheet<Child>(
+    final child = await showAdaptiveSheet<Child>(
       context: context,
       builder: (context) => SafeArea(
         child: Column(

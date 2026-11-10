@@ -13,11 +13,22 @@ import '../domain/training.dart';
 
 /// Compact row used in calendars and lists.
 class TrainingTile extends ConsumerWidget {
-  const TrainingTile({super.key, required this.training, this.group, this.showDate = true});
+  const TrainingTile({
+    super.key,
+    required this.training,
+    this.group,
+    this.showDate = true,
+    this.selected = false,
+    this.onTap,
+  });
 
   final Training training;
   final Group? group;
   final bool showDate;
+  final bool selected;
+
+  /// Overrides navigation (tablet master-detail shows the detail in a pane).
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +41,8 @@ class TrainingTile extends ConsumerWidget {
     final sport = group?.sportId ?? 'generic';
     return AppCard(
       padding: const EdgeInsets.all(AppSpacing.sm + 2),
-      onTap: () => context.push(Routes.training(training.id)),
+      color: selected ? scheme.primaryContainer : null,
+      onTap: onTap ?? () => context.push(Routes.training(training.id)),
       child: Row(
         children: [
           Container(
