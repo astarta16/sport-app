@@ -77,8 +77,9 @@ class DemoAttendanceRepository implements AttendanceRepository {
     if (!AccessPolicy.canMarkAttendance(db.me, g)) throw const PermissionDeniedException('attendance');
     if (!g.hasChild(childId)) throw const ValidationException('notMember');
     if (t.status == TrainingStatus.cancelled) throw const ValidationException('trainingCancelled');
-    if (t.startAt.isAfter(db.clock().add(const Duration(hours: 1))))
+    if (t.startAt.isAfter(db.clock().add(const Duration(hours: 1)))) {
       throw const ValidationException('attendanceTooEarly');
+    }
     final id = AttendanceRecord.docId(trainingId, childId);
     if (status == null) {
       db.attendance.remove(id);

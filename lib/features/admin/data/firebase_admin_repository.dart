@@ -137,11 +137,12 @@ class FirebaseAdminRepository implements AdminRepository {
   Stream<List<AuditEntry>> watchAudit() async* {
     final s = await _scope();
     var q = db.collection('auditLog').orderBy('at', descending: true).limit(200);
-    if (!s.platform)
+    if (!s.platform) {
       q = db
           .collection('auditLog')
           .where('clubId', whereIn: s.clubs.isEmpty ? ['-'] : s.clubs.take(30).toList())
           .limit(200);
+    }
     yield* q
         .snapshots()
         .map((snap) => snap.docs.map((d) => AuditEntry.fromMap(d.id, d.data())).toList())

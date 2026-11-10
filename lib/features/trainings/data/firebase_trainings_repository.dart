@@ -168,8 +168,9 @@ class FirebaseTrainingsRepository implements TrainingsRepository {
     final existing = await _series.where('groupId', isEqualTo: d.groupId).where('status', isEqualTo: 'active').get();
     for (final doc in existing.docs) {
       if (doc.id == ignore) continue;
-      if (SeriesDraft.overlaps(d, TrainingSeries.fromMap(doc.id, doc.data())))
+      if (SeriesDraft.overlaps(d, TrainingSeries.fromMap(doc.id, doc.data()))) {
         throw const ValidationException('seriesOverlap');
+      }
     }
   }
 
