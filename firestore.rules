@@ -25,6 +25,56 @@ service cloud.firestore {
       return signedIn() && request.auth.token.get('admin', false) == true;
     }
 
+    // Platform admin = custom claim admin == true (alias of isAdmin()).
+    function isPlatformAdmin() {
+      return isAdmin();
+    }
+
+    // Club admin = custom claim clubAdmin: [clubId, …] (set only by setAdminRole).
+    function clubAdminIds() {
+      return request.auth.token.get('clubAdmin', []);
+    }
+
+    function isClubAdmin(clubId) {
+      return signedIn() && clubId is string && clubAdminIds() is list && clubId in clubAdminIds();
+    }
+
+    function isAdminOfClub(clubId) {
+      return isPlatformAdmin() || isClubAdmin(clubId);
+    }
+
+    function trainingDoc(trainingId) {
+      return get(/databases/$(database)/documents/trainings/$(trainingId)).data;
+    }
+
+    function optString(d, key, max) {
+      return !(key in d) || d[key] == null || (d[key] is string && d[key].size() <= max);
+    }
+
+    function optTimestamp(d, key) {
+      return !(key in d) || d[key] == null || d[key] is timestamp;
+    }
+
+    // Cancelling (status -> cancelled) requires a reason code, a 5–300 char
+    // reason and cancelledBy == caller. Applies to trainings and matches.
+    function validCancelTransition(before, after) {
+      return after.status != 'cancelled'
+        || (before != null && before.status == 'cancelled')
+        || (after.get('cancelReasonCode', null) in ['illness', 'weather', 'venueBusy', 'other']
+            && after.get('cancelReason', null) is string
+            && after.cancelReason.trim().size() >= 5
+            && after.cancelReason.size() <= 300
+            && after.get('cancelledBy', null) == uid());
+    }
+
+    function validCancelFields(d) {
+      return (!('cancelReasonCode' in d) || d.cancelReasonCode == null
+              || d.cancelReasonCode in ['illness', 'weather', 'venueBusy', 'other'])
+        && optString(d, 'cancelReason', 300)
+        && optTimestamp(d, 'cancelledAt')
+        && optString(d, 'cancelledBy', 128);
+    }
+
     function userPath(userId) {
       return /databases/$(database)/documents/users/$(userId);
     }
@@ -111,12 +161,16 @@ service cloud.firestore {
     // Guest mode: readable without authentication. Writes: admin only.
     match /sports/{sportId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isPlatformAdmin();
     }
 
+    // Club admins may edit their club's details, never adminIds/status
+    // (archiveClub / setAdminRole are platform-only callables).
     match /clubs/{clubId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, delete: if isPlatformAdmin();
+      allow update: if isPlatformAdmin()
+        || (isClubAdmin(clubId) && !changed(['adminIds', 'status', 'createdAt']));
 
       // Server-maintained public projection of the club's groups (no ids of
       // members, parents or coaches) for the guest map and join flow.
@@ -126,9 +180,27 @@ service cloud.firestore {
       }
     }
 
+    // Approved coaches may add UNVERIFIED venues; only a platform admin verifies.
     match /venues/{venueId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isPlatformAdmin()
+        || (isApprovedCoach()
+            && request.resource.data.keys().hasOnly([
+                 'clubId', 'name', 'address', 'location', 'geohash', 'sportIds', 'type',
+                 'verified', 'createdBy', 'createdAt'])
+            && request.resource.data.name is string
+            && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 200
+            && request.resource.data.verified == false
+            && request.resource.data.createdBy == uid());
+      allow update, delete: if isPlatformAdmin();
+    }
+
+    // Coach ↔ club assignments (assignCoach callable). Server only.
+    match /coachClubs/{id} {
+      allow read: if isPlatformAdmin()
+        || (signedIn() && resource.data.coachId == uid())
+        || isClubAdmin(resource.data.clubId);
+      allow write: if false;
     }
 
     // ------------------------------------------------------------------ users
@@ -141,7 +213,10 @@ service cloud.firestore {
               && d.notificationPrefs.keys().hasOnly([
                    'newTraining', 'trainingChanged', 'trainingReminder',
                    'chatMessage', 'certificateExpiry', 'newPhotos',
-                   'paymentReminder', 'paymentSms']));
+                   'paymentReminder', 'paymentSms',
+                   'newMatch', 'matchChanged', 'matchReminder', 'groupInvite',
+                   'inviteAnswered', 'attendanceRecorded', 'feedbackAdded',
+                   'announcement', 'newMedia', 'scheduleChanged']));
       }
 
       function validUserShape(d) {
@@ -149,7 +224,9 @@ service cloud.firestore {
                  'role', 'firstName', 'lastName', 'phone', 'createdAt',
                  'lastContext', 'fcmTokens', 'coachStatus', 'clubIds',
                  'sportIds', 'smsConsentAt', 'dataConsentAt',
-                 'notificationPrefs'])
+                 'notificationPrefs', 'photoPath', 'privacy',
+                 // server-managed (never client-set, see create/update):
+                 'coachStatusReason', 'adminRole', 'adminClubIds'])
           && d.firstName is string && d.firstName.size() > 0 && d.firstName.size() <= 100
           && d.lastName is string && d.lastName.size() <= 100
           && (!('phone' in d) || d.phone is string)
@@ -158,16 +235,26 @@ service cloud.firestore {
           && (!('sportIds' in d) || isStringList(d.sportIds))
           && (!('lastContext' in d) || d.lastContext is map)
           && (!('smsConsentAt' in d) || d.smsConsentAt == null || d.smsConsentAt is timestamp)
+          && (!('photoPath' in d) || d.photoPath == null
+              || d.photoPath == 'profiles/' + userId + '/avatar.jpg')
+          && (!('privacy' in d) || (d.privacy is map
+              && d.privacy.keys().hasOnly(['profilePhotoVisible', 'analyticsConsent'])))
           && validNotificationPrefs(d);
       }
 
-      allow read: if (signedIn() && uid() == userId) || isAdmin();
+      // Club admins read coach profiles of coaches assigned to their clubs.
+      allow read: if (signedIn() && uid() == userId) || isAdmin()
+        || (signedIn()
+            && resource.data.get('role', '') == 'coach'
+            && clubAdminIds() is list
+            && resource.data.get('clubIds', []).hasAny(clubAdminIds()));
 
       // Self-registration: only parent or coach; coaches always start pending.
       allow create: if signedIn()
         && uid() == userId
         && validUserShape(request.resource.data)
         && request.resource.data.dataConsentAt is timestamp
+        && !request.resource.data.keys().hasAny(['coachStatusReason', 'adminRole', 'adminClubIds'])
         && (
           (request.resource.data.role == 'parent'
             && !('coachStatus' in request.resource.data))
@@ -180,7 +267,8 @@ service cloud.firestore {
       allow update: if signedIn()
         && uid() == userId
         && validUserShape(request.resource.data)
-        && !changed(['role', 'coachStatus', 'createdAt', 'dataConsentAt'])
+        && !changed(['role', 'coachStatus', 'createdAt', 'dataConsentAt',
+                     'coachStatusReason', 'adminRole', 'adminClubIds'])
         && !(resource.data.get('coachStatus', '') == 'approved' && changed(['clubIds']));
 
       // Account deletion goes through the deleteAccount callable.
@@ -198,19 +286,31 @@ service cloud.firestore {
       function validChild(d) {
         return d.keys().hasOnly([
                  'firstName', 'lastName', 'birthDate', 'parentIds', 'userId',
-                 'sportIds', 'groupIds', 'photoConsent', 'coachIds'])
+                 'sportIds', 'groupIds', 'photoConsent', 'coachIds',
+                 'status', 'createdByCoachId', 'photoPath', 'mediaConsent', 'mediaConsentAt'])
           && d.firstName is string && d.firstName.size() > 0 && d.firstName.size() <= 100
           && d.lastName is string && d.lastName.size() <= 100
           && d.birthDate is timestamp
           && d.parentIds is list
           && (!('sportIds' in d) || d.sportIds is list)
-          && (!('photoConsent' in d) || d.photoConsent is bool);
+          && (!('photoConsent' in d) || d.photoConsent is bool)
+          && (!('mediaConsent' in d) || d.mediaConsent is bool)
+          && optTimestamp(d, 'mediaConsentAt')
+          && (!('status' in d) || d.status in ['active', 'pendingParent'])
+          && (!('photoPath' in d) || d.photoPath == null
+              || d.photoPath == 'childPhotos/' + childId + '/avatar.jpg');
       }
 
+      // Club admins have NO direct child access (only aggregate counts via
+      // adminStats). A coach sees a coach-created pending child (first/last
+      // name + birth date only) until a parent accepts the invite.
       allow read: if isAdmin()
         || (isParent() && uid() in resource.data.parentIds)
         || (isChildAccount() && resource.data.get('userId', '') == uid())
-        || (isApprovedCoach() && uid() in resource.data.get('coachIds', []));
+        || (isApprovedCoach() && uid() in resource.data.get('coachIds', []))
+        || (isApprovedCoach()
+            && resource.data.get('status', 'active') == 'pendingParent'
+            && resource.data.get('createdByCoachId', '') == uid());
 
       // The creating parent must list themself; group membership, coach
       // access and account links are server-managed.
@@ -220,12 +320,14 @@ service cloud.firestore {
         && request.resource.data.parentIds.size() <= 4
         && request.resource.data.get('groupIds', []).size() == 0
         && request.resource.data.get('coachIds', []).size() == 0
-        && !('userId' in request.resource.data);
+        && request.resource.data.get('userId', null) == null
+        && request.resource.data.get('status', 'active') == 'active'
+        && request.resource.data.get('createdByCoachId', null) == null;
 
       allow update: if isParent()
         && uid() in resource.data.parentIds
         && validChild(request.resource.data)
-        && !changed(['parentIds', 'groupIds', 'coachIds', 'userId']);
+        && !changed(['parentIds', 'groupIds', 'coachIds', 'userId', 'status', 'createdByCoachId']);
 
       allow delete: if isParent() && uid() in resource.data.parentIds;
     }
@@ -234,14 +336,38 @@ service cloud.firestore {
     match /groups/{groupId} {
       allow read: if isAdmin()
         || (isParent() && uid() in resource.data.get('parentIds', []))
-        || (isApprovedCoach() && uid() in resource.data.get('coachIds', []));
+        || (isApprovedCoach() && uid() in resource.data.get('coachIds', []))
+        || isClubAdmin(resource.data.get('clubId', ''));
 
-      allow create, delete: if isAdmin();
+      // An approved coach assigned to an active club may create a group in it
+      // (or use the createGroup callable). They must be its only coach; the
+      // invite code is assigned by the server (inviteCode absent or '').
+      allow create: if isAdmin() && request.resource.data.get('inviteCode', '') == ''
+        || (isApprovedCoach()
+            && request.resource.data.keys().hasOnly([
+                 'clubId', 'sportId', 'coachIds', 'name', 'ageMin', 'ageMax',
+                 'memberChildIds', 'parentIds', 'scheduleNote', 'inviteCode',
+                 'createdBy', 'status', 'createdAt'])
+            && request.resource.data.clubId is string
+            && request.resource.data.clubId in me().get('clubIds', [])
+            && get(/databases/$(database)/documents/clubs/$(request.resource.data.clubId))
+                 .data.get('status', 'active') == 'active'
+            && request.resource.data.coachIds == [uid()]
+            && request.resource.data.createdBy == uid()
+            && request.resource.data.status == 'active'
+            && request.resource.data.get('inviteCode', '') == ''
+            && request.resource.data.get('memberChildIds', []).size() == 0
+            && request.resource.data.get('parentIds', []).size() == 0
+            && request.resource.data.name is string
+            && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100);
 
-      // Admin: anything. Coach of the group: may only REMOVE members.
-      // Adding members happens server-side when a membership request is
-      // approved. parentIds is recomputed by the onGroupWritten trigger.
-      allow update: if isAdmin()
+      allow delete: if isAdmin();
+
+      // Admin: anything but the server-owned inviteCode. Coach of the group:
+      // may only REMOVE members. Adding members happens server-side (approved
+      // membership request / accepted invite). parentIds is recomputed by
+      // the onGroupWritten trigger.
+      allow update: if (isAdmin() && !changed(['inviteCode']))
         || (isApprovedCoach()
             && uid() in resource.data.get('coachIds', [])
             && changedOnly(['memberChildIds'])
@@ -257,7 +383,9 @@ service cloud.firestore {
         return d.keys().hasOnly([
                  'groupId', 'venueId', 'startAt', 'durationMin', 'focus',
                  'description', 'photoUrls', 'status', 'createdBy',
-                 'updatedAt', 'previousStartAt', 'reminderSentAt'])
+                 'updatedAt', 'previousStartAt', 'reminderSentAt',
+                 'cancelReasonCode', 'cancelReason', 'cancelledAt', 'cancelledBy',
+                 'seriesId', 'occurrenceDate', 'detached'])
           && d.groupId is string
           && d.venueId is string
           && d.startAt is timestamp
@@ -267,25 +395,35 @@ service cloud.firestore {
           && d.focus.hasOnly(['technique', 'speed', 'physical', 'ball'])
           && (!('description' in d) || (d.description is string && d.description.size() <= 2000))
           && (!('photoUrls' in d) || d.photoUrls is list)
-          && d.status in ['scheduled', 'cancelled', 'moved', 'done'];
+          && d.status in ['scheduled', 'cancelled', 'moved', 'done']
+          && validCancelFields(d)
+          && optString(d, 'seriesId', 200)
+          && optString(d, 'occurrenceDate', 10)
+          && (!('detached' in d) || d.detached is bool);
       }
 
       allow read: if isAdmin()
         || isGroupParent(resource.data.groupId)
         || isGroupCoach(resource.data.groupId)
-        || isChildAccountInGroup(resource.data.groupId);
+        || isChildAccountInGroup(resource.data.groupId)
+        || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
 
+      // Clients create one-off trainings only; series occurrences are
+      // generated by the server (onSeriesWritten / extendTrainingSeries).
       allow create: if isGroupCoach(request.resource.data.groupId)
         && validTraining(request.resource.data)
         && request.resource.data.createdBy == uid()
         && request.resource.data.status == 'scheduled'
-        && !('reminderSentAt' in request.resource.data);
+        && !('reminderSentAt' in request.resource.data)
+        && request.resource.data.get('seriesId', null) == null;
 
       // Any approved coach of the (unchanged) group may edit; createdBy,
-      // groupId and the reminder bookkeeping are immutable from clients.
+      // groupId, series linkage and the reminder bookkeeping are immutable
+      // from clients. Cancelling requires a reason (validCancelTransition).
       allow update: if isGroupCoach(resource.data.groupId)
         && validTraining(request.resource.data)
-        && !changed(['groupId', 'createdBy', 'reminderSentAt']);
+        && !changed(['groupId', 'createdBy', 'reminderSentAt', 'seriesId', 'occurrenceDate'])
+        && validCancelTransition(resource.data, request.resource.data);
 
       // Trainings are cancelled (status), not deleted.
       allow delete: if isAdmin();
@@ -304,10 +442,17 @@ service cloud.firestore {
 
         allow read: if isChatMember();
 
+        // type 'system' is server-only; announcements and pinning are for
+        // approved group coaches; hidden/reportCount are server-managed.
+        // Hidden messages stay readable by members — the app filters them.
         allow create: if isChatMember()
           && request.resource.data.keys().hasOnly([
                'senderId', 'senderName', 'senderRole', 'text',
-               'attachments', 'createdAt'])
+               'attachments', 'createdAt', 'type', 'pinned', 'hidden'])
+          && request.resource.data.get('type', 'text') in ['text', 'announcement']
+          && request.resource.data.get('hidden', false) == false
+          && (request.resource.data.get('pinned', false) == false || isGroupCoach(groupId))
+          && (request.resource.data.get('type', 'text') == 'text' || isGroupCoach(groupId))
           && request.resource.data.senderId == uid()
           && request.resource.data.senderRole == me().role
           && request.resource.data.senderName is string
@@ -320,10 +465,31 @@ service cloud.firestore {
                   && request.resource.data.attachments.size() <= 10))
           && request.resource.data.createdAt == request.time;
 
-        // Messages are immutable; the sender may delete their own.
-        allow update: if false;
+        // Messages are immutable except that an approved group coach may
+        // (un)pin. The sender may delete their own.
+        allow update: if isGroupCoach(groupId)
+          && changedOnly(['pinned'])
+          && request.resource.data.pinned is bool;
         allow delete: if signedIn() && resource.data.senderId == uid();
       }
+
+      // Read receipts: each chat member writes only their own lastReadAt.
+      match /members/{memberId} {
+        function isMember() {
+          return isGroupParent(groupId) || isGroupCoach(groupId);
+        }
+        allow read: if signedIn() && memberId == uid() && isMember();
+        allow create, update: if signedIn() && memberId == uid() && isMember()
+          && request.resource.data.keys().hasOnly(['lastReadAt'])
+          && request.resource.data.lastReadAt is timestamp;
+        allow delete: if false;
+      }
+    }
+
+    // Unread counters maintained by onChatMessageCreated / onChatMemberWritten.
+    match /userUnread/{userId} {
+      allow read: if signedIn() && uid() == userId;
+      allow write: if false;
     }
 
     // ---------------------------------------------------- medical certificates
@@ -368,11 +534,13 @@ service cloud.firestore {
 
       allow read: if isAdmin()
         || (isParent() && resource.data.parentId == uid())
-        || isClubCoach(resource.data.clubId);
+        || isClubCoach(resource.data.clubId)
+        || isClubAdmin(resource.data.clubId);
 
       allow create: if isParent()
         && request.resource.data.keys().hasOnly([
-             'parentId', 'childId', 'clubId', 'groupId', 'status', 'createdAt', 'childName'])
+             'parentId', 'childId', 'clubId', 'groupId', 'status', 'createdAt', 'childName', 'source'])
+        && request.resource.data.get('source', 'request') in ['request', 'code']
         // childName: denormalized first name so the coach can review the
         // request without reading a non-member child's profile.
         && (!('childName' in request.resource.data)
@@ -412,13 +580,27 @@ service cloud.firestore {
       // Payments are generated server-side (generateRecurringPayments) or by admins.
       allow create, delete: if isAdmin();
 
+      // Parents never write payments. The group coach may change only
+      // status/paidAt/cancelledReason (+ updatedBy/updatedAt bookkeeping).
+      // If updatedBy is present it must be the caller (paymentAudit actor).
       allow update: if isAdmin()
         || (isGroupCoach(resource.data.groupId)
-            && changedOnly(['status', 'paidAt'])
+            && changedOnly(['status', 'paidAt', 'cancelledReason', 'updatedBy', 'updatedAt'])
             && request.resource.data.status in ['pending', 'paid', 'cancelled']
             && (!('paidAt' in request.resource.data)
                 || request.resource.data.paidAt == null
-                || request.resource.data.paidAt is timestamp));
+                || request.resource.data.paidAt is timestamp)
+            && optString(request.resource.data, 'cancelledReason', 300)
+            && optTimestamp(request.resource.data, 'updatedAt')
+            && (!('updatedBy' in request.resource.data) || request.resource.data.updatedBy == uid()));
+    }
+
+    // Server-written (onPaymentWritten) status history.
+    match /paymentAudit/{entryId} {
+      allow read: if isAdmin()
+        || isClubAdmin(resource.data.get('clubId', ''))
+        || isGroupCoach(resource.data.groupId);
+      allow write: if false;
     }
 
     match /paymentPlans/{planId} {
@@ -447,6 +629,332 @@ service cloud.firestore {
             && changedOnly(['amount', 'dayOfMonth', 'active']));
 
       allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------- invites
+    // Created/answered only through callables (createInvite, respondInvite,
+    // revokeInvite). The addressed parent and the group's coaches read.
+    match /invites/{inviteId} {
+      allow read: if isAdmin()
+        || (isParent() && resource.data.get('parentId', '') == uid())
+        || isGroupCoach(resource.data.groupId);
+      allow write: if false;
+    }
+
+    match /groupCodes/{code} {
+      allow read, write: if false;
+    }
+
+    match /rateLimits/{id} {
+      allow read, write: if false;
+    }
+
+    // ---------------------------------------------------------------- matches
+    match /matches/{matchId} {
+      function validMatch(d) {
+        return d.keys().hasOnly([
+                 'groupId', 'clubId', 'venueId', 'startAt', 'durationMin', 'opponentName',
+                 'matchType', 'homeAway', 'description', 'status', 'cancelReasonCode',
+                 'cancelReason', 'cancelledAt', 'cancelledBy', 'previousStartAt',
+                 'createdBy', 'updatedAt', 'reminder1dSentAt', 'reminder2hSentAt'])
+          && d.groupId is string
+          && d.clubId is string
+          && d.venueId is string
+          && d.startAt is timestamp
+          && d.durationMin is int && d.durationMin >= 15 && d.durationMin <= 300
+          && d.opponentName is string && d.opponentName.size() > 0 && d.opponentName.size() <= 200
+          && d.matchType in ['friendly', 'league', 'tournament']
+          && d.homeAway in ['home', 'away', 'neutral']
+          && optString(d, 'description', 2000)
+          && d.status in ['scheduled', 'cancelled', 'moved', 'played']
+          && optTimestamp(d, 'previousStartAt')
+          && validCancelFields(d);
+      }
+
+      // Reminder flags are server-managed: a client may keep or drop them, never set them.
+      function remindersUntouched() {
+        return (request.resource.data.get('reminder1dSentAt', null) == null
+                || request.resource.data.reminder1dSentAt == resource.data.get('reminder1dSentAt', null))
+          && (request.resource.data.get('reminder2hSentAt', null) == null
+                || request.resource.data.reminder2hSentAt == resource.data.get('reminder2hSentAt', null));
+      }
+
+      allow read: if isAdmin()
+        || isGroupParent(resource.data.groupId)
+        || isGroupCoach(resource.data.groupId)
+        || isChildAccountInGroup(resource.data.groupId)
+        || isClubAdmin(resource.data.get('clubId', ''));
+
+      allow create: if isGroupCoach(request.resource.data.groupId)
+        && validMatch(request.resource.data)
+        && request.resource.data.clubId == groupDoc(request.resource.data.groupId).clubId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.status == 'scheduled'
+        && !('reminder1dSentAt' in request.resource.data)
+        && !('reminder2hSentAt' in request.resource.data);
+
+      allow update: if isGroupCoach(resource.data.groupId)
+        && validMatch(request.resource.data)
+        && !changed(['groupId', 'clubId', 'createdBy'])
+        && remindersUntouched()
+        && validCancelTransition(resource.data, request.resource.data);
+
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------- training series
+    match /trainingSeries/{seriesId} {
+      function validSeries(d) {
+        return d.keys().hasOnly([
+                 'groupId', 'clubId', 'venueId', 'weekdays', 'startTime', 'durationMin',
+                 'focus', 'description', 'startDate', 'endDate', 'status', 'createdBy',
+                 'createdAt', 'updatedAt', 'generatedUntil', 'parentSeriesId'])
+          && d.groupId is string
+          && d.venueId is string
+          && d.weekdays is list
+          && d.weekdays.size() >= 1 && d.weekdays.size() <= 7
+          && d.weekdays.hasOnly([1, 2, 3, 4, 5, 6, 7])
+          && d.startTime is string && d.startTime.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$')
+          && d.durationMin is int && d.durationMin >= 15 && d.durationMin <= 300
+          && d.focus is list && d.focus.hasOnly(['technique', 'speed', 'physical', 'ball'])
+          && (!('description' in d) || (d.description is string && d.description.size() <= 2000))
+          && d.startDate is string && d.startDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && (!('endDate' in d) || d.endDate == null
+              || (d.endDate is string && d.endDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')))
+          && d.status in ['active', 'ended']
+          && optString(d, 'parentSeriesId', 200)
+          && optString(d, 'generatedUntil', 10);
+      }
+
+      allow read: if isAdmin()
+        || isGroupCoach(resource.data.groupId)
+        || isGroupParent(resource.data.groupId)
+        || isClubAdmin(resource.data.get('clubId', ''));
+
+      // A split-off series ("edit this and future") names its parent, which
+      // must belong to the same group.
+      allow create: if isGroupCoach(request.resource.data.groupId)
+        && validSeries(request.resource.data)
+        && request.resource.data.clubId == groupDoc(request.resource.data.groupId).clubId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.status == 'active'
+        && (request.resource.data.get('parentSeriesId', null) == null
+            || get(/databases/$(database)/documents/trainingSeries/$(request.resource.data.parentSeriesId))
+                 .data.groupId == request.resource.data.groupId);
+
+      allow update: if isGroupCoach(resource.data.groupId)
+        && validSeries(request.resource.data)
+        && !changed(['groupId', 'clubId', 'createdBy', 'parentSeriesId']);
+
+      // Series are ended (status 'ended' / endDate), not deleted.
+      allow delete: if isAdmin();
+    }
+
+    // -------------------------------------------------------------- RSVPs
+    // Parent intent; id = {trainingId}_{childId}. Writable by a parent of a
+    // child who is a member of the training's group, until the training starts.
+    match /rsvps/{rsvpId} {
+      function validRsvp(d) {
+        return d.keys().hasOnly(['trainingId', 'groupId', 'childId', 'parentId', 'response', 'reason', 'updatedAt'])
+          && d.trainingId is string && d.childId is string && d.groupId is string
+          && rsvpId == d.trainingId + '_' + d.childId
+          && d.parentId == uid()
+          && d.response in ['yes', 'no', 'maybe']
+          && optString(d, 'reason', 200)
+          && d.updatedAt is timestamp;
+      }
+
+      function canRsvp(d) {
+        return isParentOfChild(d.childId)
+          && exists(/databases/$(database)/documents/trainings/$(d.trainingId))
+          && trainingDoc(d.trainingId).groupId == d.groupId
+          && trainingDoc(d.trainingId).status != 'cancelled'
+          && request.time < trainingDoc(d.trainingId).startAt
+          && d.childId in groupDoc(d.groupId).get('memberChildIds', []);
+      }
+
+      allow read: if isAdmin()
+        || isParentOfChild(resource.data.childId)
+        || isGroupCoach(resource.data.groupId)
+        || isGroupCoach(trainingDoc(resource.data.trainingId).groupId);
+
+      allow create, update: if validRsvp(request.resource.data) && canRsvp(request.resource.data);
+
+      allow delete: if isParentOfChild(resource.data.childId)
+        && request.time < trainingDoc(resource.data.trainingId).startAt;
+    }
+
+    // -------------------------------------------------------------- attendance
+    // Coach-recorded; id = {trainingId}_{childId}; "not marked" = no doc.
+    match /attendance/{attendanceId} {
+      function validAttendance(d) {
+        return d.keys().hasOnly(['trainingId', 'groupId', 'childId', 'status', 'markedBy', 'markedAt', 'note'])
+          && d.trainingId is string && d.childId is string && d.groupId is string
+          && attendanceId == d.trainingId + '_' + d.childId
+          && d.status in ['present', 'absent', 'excused']
+          && d.markedBy == uid()
+          && d.markedAt is timestamp
+          && optString(d, 'note', 500);
+      }
+
+      function canMark(d) {
+        return exists(/databases/$(database)/documents/trainings/$(d.trainingId))
+          && trainingDoc(d.trainingId).groupId == d.groupId
+          && isGroupCoach(d.groupId)
+          && d.childId in groupDoc(d.groupId).get('memberChildIds', []);
+      }
+
+      allow read: if isAdmin()
+        || isParentOfChild(resource.data.childId)
+        || isGroupCoach(resource.data.groupId)
+        || isGroupCoach(trainingDoc(resource.data.trainingId).groupId);
+
+      allow create, update: if validAttendance(request.resource.data) && canMark(request.resource.data);
+      allow delete: if isGroupCoach(resource.data.groupId);
+    }
+
+    // ---------------------------------------------------------------- feedback
+    match /feedback/{feedbackId} {
+      function validRating(r, k) {
+        return !(k in r) || (r[k] is int && r[k] >= 1 && r[k] <= 5);
+      }
+
+      function validRatings(r) {
+        return r is map
+          && r.keys().hasOnly(['technique', 'discipline', 'teamwork', 'effort', 'improvement'])
+          && validRating(r, 'technique') && validRating(r, 'discipline')
+          && validRating(r, 'teamwork') && validRating(r, 'effort')
+          && validRating(r, 'improvement');
+      }
+
+      function validFeedback(d) {
+        return d.keys().hasOnly([
+                 'childId', 'groupId', 'coachId', 'coachName', 'trainingId', 'createdAt',
+                 'ratings', 'comment', 'visibleToParent'])
+          && d.childId is string && d.groupId is string
+          && validRatings(d.ratings)
+          && optString(d, 'comment', 500)
+          && optString(d, 'coachName', 200)
+          && optString(d, 'trainingId', 200)
+          && d.createdAt is timestamp
+          && d.visibleToParent == true;
+      }
+
+      allow read: if isAdmin()
+        || isParentOfChild(resource.data.childId)
+        || isCoachOfChild(resource.data.childId);
+
+      allow create: if isGroupCoach(request.resource.data.groupId)
+        && validFeedback(request.resource.data)
+        && request.resource.data.coachId == uid()
+        && request.resource.data.childId in groupDoc(request.resource.data.groupId).get('memberChildIds', []);
+
+      // Only the author (still coach of the group) edits ratings/comment. Parents never write.
+      allow update: if resource.data.coachId == uid()
+        && isGroupCoach(resource.data.groupId)
+        && validFeedback(request.resource.data)
+        && changedOnly(['ratings', 'comment']);
+
+      allow delete: if signedIn() && resource.data.coachId == uid();
+    }
+
+    // ----------------------------------------------------------- notifications
+    // Server-written inbox (notify()); the owner may only flip read false -> true.
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && resource.data.userId == uid();
+      allow update: if signedIn()
+        && resource.data.userId == uid()
+        && changedOnly(['read'])
+        && resource.data.read == false
+        && request.resource.data.read == true;
+      allow create, delete: if false;
+    }
+
+    // ------------------------------------------------------------- media posts
+    // Created by an approved coach of EVERY listed group (≤ 5 groups) with
+    // consentConfirmed == true. readerIds / hidden / reportCount are
+    // server-managed; readerIds = coaches + parents of the listed groups,
+    // recomputed on every membership change (onGroupWritten).
+    match /mediaPosts/{postId} {
+      function coachOfAll(gs) {
+        return gs is list && gs.size() >= 1 && gs.size() <= 5
+          && isGroupCoach(gs[0])
+          && (gs.size() < 2 || isGroupCoach(gs[1]))
+          && (gs.size() < 3 || isGroupCoach(gs[2]))
+          && (gs.size() < 4 || isGroupCoach(gs[3]))
+          && (gs.size() < 5 || isGroupCoach(gs[4]));
+      }
+
+      function mediaPath(p) {
+        return p is string && p.matches('^media/' + uid() + '/' + postId + '/[^/]+$');
+      }
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.coachId == uid())
+        || ((isParent() || isApprovedCoach()) && uid() in resource.data.get('readerIds', []))
+        || isClubAdmin(resource.data.get('clubId', ''));
+
+      allow create: if isApprovedCoach()
+        && request.resource.data.keys().hasOnly([
+             'coachId', 'coachName', 'groupIds', 'clubId', 'type', 'storagePath', 'thumbPath',
+             'caption', 'durationSec', 'createdAt', 'consentConfirmed'])
+        && request.resource.data.coachId == uid()
+        && request.resource.data.consentConfirmed == true
+        && coachOfAll(request.resource.data.groupIds)
+        && request.resource.data.clubId == groupDoc(request.resource.data.groupIds[0]).clubId
+        && request.resource.data.type in ['photo', 'video']
+        && mediaPath(request.resource.data.storagePath)
+        && (request.resource.data.get('thumbPath', null) == null || mediaPath(request.resource.data.thumbPath))
+        && optString(request.resource.data, 'caption', 2000)
+        && optString(request.resource.data, 'coachName', 200)
+        && (request.resource.data.get('durationSec', null) == null || request.resource.data.durationSec is number)
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.coachId == uid();
+    }
+
+    // ------------------------------------------------------------- moderation
+    // Any group member may report content of their group (the createReport
+    // callable adds rate limiting and target checks). Decisions: moderate callable.
+    match /reports/{reportId} {
+      allow read: if isAdmin()
+        || isClubAdmin(resource.data.get('clubId', ''))
+        || (signedIn() && resource.data.reporterId == uid());
+
+      allow create: if (isGroupParent(request.resource.data.groupId) || isGroupCoach(request.resource.data.groupId))
+        && request.resource.data.keys().hasOnly([
+             'targetType', 'targetPath', 'groupId', 'clubId', 'reason', 'note', 'preview',
+             'reporterId', 'createdAt', 'status'])
+        && request.resource.data.reporterId == uid()
+        && request.resource.data.status == 'open'
+        && request.resource.data.clubId == groupDoc(request.resource.data.groupId).clubId
+        && request.resource.data.targetType in ['chatMessage', 'mediaPost', 'trainingPhoto']
+        && request.resource.data.targetPath is string && request.resource.data.targetPath.size() <= 500
+        && request.resource.data.reason in ['inappropriate', 'privacy', 'spam', 'other']
+        && optString(request.resource.data, 'note', 500)
+        && optString(request.resource.data, 'preview', 200)
+        && request.resource.data.createdAt == request.time;
+
+      allow update, delete: if false;
+    }
+
+    // Append-only; platform admins read all, club admins their clubs.
+    match /auditLog/{entryId} {
+      allow read: if isAdmin() || isClubAdmin(resource.data.get('clubId', ''));
+      allow write: if false;
+    }
+
+    // ------------------------------------------------------- account requests
+    match /accountRequests/{requestId} {
+      allow read: if isAdmin() || (signedIn() && resource.data.uid == uid());
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'type', 'status', 'createdAt'])
+        && request.resource.data.uid == uid()
+        && request.resource.data.type in ['delete', 'export']
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
     }
 
     // ---------------------------------------------------- server-only logs

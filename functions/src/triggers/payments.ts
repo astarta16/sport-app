@@ -1,5 +1,6 @@
 import { logger } from 'firebase-functions';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { SMS_SECRETS, TIMEZONE } from '../config';
@@ -7,12 +8,13 @@ import { loadChildren, loadUser, paymentFrom } from '../convert';
 import { renderPush } from '../i18n/ka';
 import { tbilisiLocalToUtc, tbilisiMonthKey, tbilisiParts } from '../lib/dates';
 import {
-  ClaimedReminder, decidePaymentReminder, decideReminderChannels, groupReminders,
+  ClaimedReminder, decidePaymentReminder, decideReminderChannels, groupReminders, paymentAuditEntry,
   recurringDueDate, recurringPaymentId, reminderField, renderReminderText, tbilisiYearMonth,
 } from '../lib/payments';
+import { writeAudit } from '../audit';
+import { notify } from '../notify';
 import { maskPhone, normalizeGeorgianPhone } from '../lib/phone';
 import { smsSegments } from '../lib/sms/provider';
-import { sendPushToUsers } from '../push';
 import { createSmsProvider } from '../sms';
 
 /**
@@ -115,9 +117,14 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
       });
     }
 
-    if (channels.push && parent) {
+    if (parent) {
+      // Inbox always; push only if paymentReminder != false (notify() applies prefs).
       const msg = renderPush('paymentReminder', { text });
-      await sendPushToUsers([parent], { ...msg, data: { type: 'paymentReminder', paymentIds: paymentIds.join(',') } });
+      await notify([parent], {
+        type: 'paymentReminder', ...msg, route: '/payments', args: { paymentIds: paymentIds.join(',') },
+        dedupeKey: `payment:${batch.kind}:${[...paymentIds].sort().join(',')}`,
+        data: { paymentIds: paymentIds.join(',') }, push: channels.push,
+      });
     }
   }
   logger.info('payment reminders sent', { claimed: claimed.length, batches: batches.length, provider: provider.name });
@@ -164,6 +171,7 @@ export async function runRecurringPayments(now: Date): Promise<{ created: number
           status: 'pending',
           reminders: {},
           planId: plan.id,
+          period: monthKey,
           createdAt: FieldValue.serverTimestamp(),
         });
         created++;
@@ -176,3 +184,28 @@ export async function runRecurringPayments(now: Date): Promise<{ created: number
   logger.info('recurring payments generated', { monthKey, created, skipped });
   return { created, skipped };
 }
+
+/**
+ * payments/{id} written: on a status change write paymentAudit/{auto}
+ * { paymentId, groupId, clubId, from, to, actorId, at } and an auditLog
+ * entry ('payment.status'). actorId = payments.updatedBy (rules force it to
+ * the caller when present) or 'unknown'.
+ */
+export const onPaymentWritten = onDocumentWritten('payments/{paymentId}', async (event) => {
+  const before = event.data?.before.exists ? event.data.before.data() : undefined;
+  const after = event.data?.after.exists ? event.data.after.data() : undefined;
+  const entry = paymentAuditEntry(before as never, after as never);
+  if (!entry || !after) return;
+  const paymentId = event.params.paymentId;
+  const groupId = String(after.groupId ?? '');
+  const group = groupId ? await db.doc(`groups/${groupId}`).get() : null;
+  const clubId = (group?.exists && group.get('clubId')) || null;
+  await db.collection('paymentAudit').add({
+    paymentId, groupId, clubId, from: entry.from, to: entry.to, actorId: entry.actorId,
+    cancelledReason: after.cancelledReason ?? null, at: FieldValue.serverTimestamp(),
+  });
+  await writeAudit({
+    action: 'payment.status', actorId: entry.actorId, actorRole: entry.actorId === 'unknown' ? 'system' : 'coach',
+    targetType: 'payment', targetId: paymentId, clubId, details: { from: entry.from, to: entry.to, groupId },
+  });
+});

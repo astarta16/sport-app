@@ -14,6 +14,8 @@ export const SMS_TEMPLATES_KA = {
   d5Multi: 'შეხსენება: {children}-ს გადასახადები ({amount} ₾) გადასახდელია {date}-მდე.',
   /** 1 day before, several children of the same parent due the same day. */
   d1Multi: 'შეხსენება: ხვალ {date} ბოლო დღეა {children}-ს გადასახადების ({amount} ₾) გადასახდელად.',
+  /** Group invitation to a phone without a registered parent account. */
+  invite: '{group}: მოწვევა ({child}). დარეგისტრირდით აპლიკაციაში ამ ნომრით.',
 } as const;
 
 export const PUSH_TEMPLATES_KA = {
@@ -26,7 +28,34 @@ export const PUSH_TEMPLATES_KA = {
   certificateExpiring: { title: 'ცნობის ვადა იწურება', body: '{child}: სამედიცინო ცნობის ვადა იწურება {days} დღეში ({date}).' },
   certificateExpired: { title: 'ცნობის ვადა ამოიწურა', body: '{child}: სამედიცინო ცნობის ვადა ამოიწურა. ატვირთეთ ახალი ცნობა.' },
   paymentReminder: { title: 'გადასახადის შეხსენება', body: '{text}' },
+  trainingCancelledReason: { title: 'ვარჯიში გაუქმდა', body: '{group}: {date}, {time}. მიზეზი: {reason}' },
+  newMatch: { title: 'ახალი მატჩი', body: '{group}: {opponent}, {date}, {time}' },
+  matchCancelled: { title: 'მატჩი გაუქმდა', body: '{group}: {opponent}, {date}. მიზეზი: {reason}' },
+  matchMoved: { title: 'მატჩი გადაიდო', body: '{group}: {opponent}, ახალი დრო {date}, {time}' },
+  matchReminder1d: { title: 'ხვალ მატჩია', body: '{group}: {opponent}, {date}, {time}' },
+  matchReminder2h: { title: 'მატჩი 2 საათში', body: '{group}: {opponent}, დღეს {time}' },
+  groupInvite: { title: 'მოწვევა ჯგუფში', body: '{group}: {child}' },
+  inviteAnswered: { title: 'მოწვევაზე პასუხი', body: '{child}: {answer}' },
+  scheduleChanged: { title: 'განრიგი განახლდა', body: '{group}: {summary}' },
+  announcement: { title: 'განცხადება · {group}', body: '{text}' },
+  newMedia: { title: 'ახალი მედია', body: '{group}: {count} ახალი ფაილი' },
 } as const;
+
+/** Server-written chat messages (type 'system'). */
+export const SYSTEM_MESSAGES_KA = {
+  trainingCancelled: 'ვარჯიში ({date}, {time}) გაუქმდა. მიზეზი: {reason}',
+  matchCancelled: 'მატჩი {opponent}-თან ({date}, {time}) გაუქმდა. მიზეზი: {reason}',
+  newMatch: 'ახალი მატჩი: {opponent} — {date}, {time}',
+  matchMoved: 'მატჩი {opponent}-თან გადაიდო: {date}, {time}',
+} as const;
+
+export const WEEKDAYS_SHORT_KA = ['ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ', 'კვი'] as const;
+
+/** "ორშ, ოთხ 18:00" — schedule summary for the series notification. */
+export function weekdaySummary(weekdays: number[], startTime: string): string {
+  const days = [...new Set(weekdays)].sort((a, b) => a - b).map((d) => WEEKDAYS_SHORT_KA[d - 1] ?? String(d));
+  return `${days.join(', ')} ${startTime}`;
+}
 
 export type SmsTemplateKey = keyof typeof SMS_TEMPLATES_KA;
 export type PushTemplateKey = keyof typeof PUSH_TEMPLATES_KA;

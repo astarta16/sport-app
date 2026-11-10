@@ -3,10 +3,10 @@ import * as functionsV1 from 'firebase-functions/v1';
 import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { FieldValue } from 'firebase-admin/firestore';
-import { auth, db } from '../admin';
+import { auth, bucket, db } from '../admin';
 import { REGION } from '../config';
 import { childFrom, groupFrom, loadUser } from '../convert';
-import { canCoachSeeParentPhone, isValidCoachDecision, planAccountDeletion } from '../lib/access';
+import { canCoachSeeParentPhone, planAccountDeletion } from '../lib/access';
 import { purgeChildCertificates } from './certificates';
 
 /** Mirrors users/{uid} into publicProfiles/{uid} (no phone, no tokens). */
@@ -26,23 +26,6 @@ export const syncPublicProfile = onDocumentWritten('users/{uid}', async (event) 
   await ref.set(a);
 });
 
-/** 8. Admin-only (custom claim admin == true): approve or reject a coach. */
-export const setCoachStatus = onCall(async (request) => {
-  if (!request.auth) throw new HttpsError('unauthenticated', 'sign in required');
-  if (request.auth.token.admin !== true) throw new HttpsError('permission-denied', 'admin only');
-  const { uid, status } = (request.data ?? {}) as { uid?: unknown; status?: unknown };
-  if (typeof uid !== 'string' || !uid) throw new HttpsError('invalid-argument', 'uid is required');
-  if (!isValidCoachDecision(status)) throw new HttpsError('invalid-argument', 'status must be approved or rejected');
-
-  const ref = db.doc(`users/${uid}`);
-  const snap = await ref.get();
-  if (!snap.exists) throw new HttpsError('not-found', 'user not found');
-  if (snap.get('role') !== 'coach') throw new HttpsError('failed-precondition', 'user is not a coach');
-  await ref.update({ coachStatus: status });
-  logger.info('coach status set', { uid, status, by: request.auth.uid });
-  return { uid, coachStatus: status };
-});
-
 /**
  * Parent phone for a coach: only for approved coaches of a group the parent
  * belongs to. Parents never see each other's phones.
@@ -59,11 +42,37 @@ export const getParentPhone = onCall(async (request) => {
   return { phone: parent?.phone ?? null };
 });
 
+async function deleteWhere(q: FirebaseFirestore.Query): Promise<number> {
+  const snap = await q.get();
+  for (let i = 0; i < snap.docs.length; i += 400) {
+    const b = db.batch();
+    snap.docs.slice(i, i + 400).forEach((d) => b.delete(d.ref));
+    await b.commit();
+  }
+  return snap.size;
+}
+
+/** Per-doc updates; a doc deleted concurrently (NOT_FOUND) is skipped. */
+async function updateWhere(q: FirebaseFirestore.Query, patch: Record<string, unknown>): Promise<number> {
+  const snap = await q.get();
+  for (const d of snap.docs) {
+    await d.ref.update(patch).catch((e) => {
+      if ((e as { code?: number }).code !== 5) throw e;
+    });
+  }
+  return snap.size;
+}
+
+async function deletePrefix(prefix: string): Promise<void> {
+  await bucket().deleteFiles({ prefix }).catch((e) => logger.warn('storage purge failed', { prefix, error: String(e) }));
+}
+
 /**
  * Deletes everything owned by a user. Children whose only parent is this
  * user are deleted with all certificates and files (onChildDeleted also
- * covers this — both paths are idempotent); shared children are unlinked.
- * Payments are kept as financial records (see docs/backend.md).
+ * covers this — both paths are idempotent), RSVPs, attendance, feedback and
+ * avatars; shared children are unlinked. Payments are kept for club
+ * accounting with parentId anonymised to 'deleted'. Idempotent.
  */
 export async function cleanupUserData(uid: string): Promise<{ deleted: string[]; unlinked: string[] }> {
   const childrenSnap = await db.collection('children').where('parentIds', 'array-contains', uid).get();
@@ -78,6 +87,8 @@ export async function cleanupUserData(uid: string): Promise<{ deleted: string[];
     await Promise.all(groups.docs.map((g) => g.ref.update({ memberChildIds: FieldValue.arrayRemove(childId) })));
     const reqs = await db.collection('membershipRequests').where('childId', '==', childId).get();
     await Promise.all(reqs.docs.map((r) => r.ref.delete()));
+    for (const coll of ['rsvps', 'attendance', 'feedback']) await deleteWhere(db.collection(coll).where('childId', '==', childId));
+    await deletePrefix(`childPhotos/${childId}/`);
     await childRef.delete();
     if (typeof childUserId === 'string' && childUserId) {
       await db.doc(`users/${childUserId}`).delete();
@@ -85,10 +96,20 @@ export async function cleanupUserData(uid: string): Promise<{ deleted: string[];
     }
   }
   for (const childId of plan.unlinkChildIds) {
-    await db.doc(`children/${childId}`).update({ parentIds: FieldValue.arrayRemove(uid) });
+    await db.doc(`children/${childId}`).update({ parentIds: FieldValue.arrayRemove(uid) }).catch((e) => {
+      if ((e as { code?: number }).code !== 5) throw e;
+    });
   }
   const ownReqs = await db.collection('membershipRequests').where('parentId', '==', uid).get();
   await Promise.all(ownReqs.docs.map((r) => r.ref.delete()));
+  // Payments are kept for club accounting but anonymised; RSVPs on shared children too.
+  await updateWhere(db.collection('payments').where('parentId', '==', uid), { parentId: 'deleted' });
+  await updateWhere(db.collection('rsvps').where('parentId', '==', uid), { parentId: 'deleted' });
+  await deleteWhere(db.collection('notifications').where('userId', '==', uid));
+  await deleteWhere(db.collection('invites').where('parentId', '==', uid));
+  await db.doc(`userUnread/${uid}`).delete();
+  await deletePrefix(`profiles/${uid}/`);
+  await deletePrefix(`exports/${uid}/`);
   await db.doc(`users/${uid}`).delete();
   await db.doc(`publicProfiles/${uid}`).delete();
   return { deleted: plan.deleteChildIds, unlinked: plan.unlinkChildIds };

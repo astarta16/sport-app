@@ -37,6 +37,16 @@ export const UID = {
   coachPending: 'coachPending',
   coachOther: 'coachOther',
   admin: 'adminUser',
+  coachSuspended: 'coachSuspended',
+  clubAdminA: 'clubAdminA',
+  clubAdminB: 'clubAdminB',
+};
+
+/** Custom claims used by the v1.2 tests. */
+export const CLAIMS = {
+  platform: { admin: true },
+  clubA: { clubAdmin: ['club1'] },
+  clubB: { clubAdmin: ['club2'] },
 };
 
 const ts = (iso) => Timestamp.fromDate(new Date(iso));
@@ -129,6 +139,79 @@ export async function seed(env) {
     const storage = ctx.storage();
     await uploadBytes(ref(storage, 'medical/childA1/cert1'), new Uint8Array([1, 2, 3]), { contentType: 'application/pdf' });
     await uploadBytes(ref(storage, 'trainingPhotos/g1/photo1.jpg'), new Uint8Array([1, 2, 3]), { contentType: 'image/jpeg' });
+  });
+}
+
+/**
+ * v1.1/v1.2 fixture on top of seed(): suspended coach in g1, a far-future and
+ * a past training, a media post with its file, inbox, audit and report docs.
+ */
+export async function seedV12(env) {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    const put = (path, data) => setDoc(doc(db, path), data);
+    await put(`users/${UID.coachSuspended}`, user('coach', { coachStatus: 'suspended', clubIds: ['club1'], sportIds: ['football'] }));
+    await put(`users/${UID.clubAdminA}`, user('parent'));
+    await put('clubs/club2', { name: 'Club 2', address: 'Batumi', sportIds: ['football'], geohash: 'sz', status: 'active', adminIds: [UID.clubAdminB] });
+    await put('groups/g1', {
+      clubId: 'club1', sportId: 'football', coachIds: [UID.coach, UID.coachSuspended], name: 'U12',
+      ageMin: 10, ageMax: 12, memberChildIds: ['childA1', 'childB1'],
+      parentIds: [UID.parentA, UID.parentB], inviteCode: 'ABCD23', status: 'active', createdBy: UID.coach,
+    });
+    const training = (groupId, iso, extra = {}) => ({
+      groupId, venueId: 'v1', startAt: ts(iso), durationMin: 60, focus: ['ball'], description: '',
+      photoUrls: [], status: 'scheduled', createdBy: UID.coach, updatedAt: now, ...extra,
+    });
+    await put('trainings/tFuture', training('g1', '2030-06-01T14:00:00Z'));
+    await put('trainings/tPast', training('g1', '2020-06-01T14:00:00Z'));
+    await put('trainings/tOther', training('g2', '2030-06-01T14:00:00Z', { createdBy: UID.coachOther }));
+    await put('attendance/tPast_childA1', {
+      trainingId: 'tPast', groupId: 'g1', childId: 'childA1', status: 'present', markedBy: UID.coach, markedAt: now, note: null,
+    });
+    await put('rsvps/tFuture_childB1', {
+      trainingId: 'tFuture', groupId: 'g1', childId: 'childB1', parentId: UID.parentB, response: 'yes', reason: null, updatedAt: now,
+    });
+    await put('feedback/f1', {
+      childId: 'childA1', groupId: 'g1', coachId: UID.coach, coachName: 'coach', trainingId: null, createdAt: now,
+      ratings: { technique: 4 }, comment: 'კარგი', visibleToParent: true,
+    });
+    await put('mediaPosts/mp1', {
+      coachId: UID.coach, coachName: 'coach', groupIds: ['g1'], clubId: 'club1', type: 'photo',
+      storagePath: `media/${UID.coach}/mp1/a.jpg`, thumbPath: null, caption: 'ვარჯიში', durationSec: null,
+      createdAt: now, consentConfirmed: true, hidden: false, reportCount: 0,
+      readerIds: [UID.coach, UID.coachSuspended, UID.parentA, UID.parentB],
+    });
+    await put('notifications/n1', {
+      userId: UID.parentA, type: 'newTraining', category: 'trainings', title: 't', body: 'b', route: '/training/t1',
+      args: {}, childId: null, groupId: 'g1', createdAt: now, read: false, dedupeKey: 'training:t1:new',
+    });
+    await put('auditLog/a1', { action: 'coach.approve', actorId: UID.admin, actorRole: 'platformAdmin', targetType: 'user', targetId: UID.coach, clubId: 'club1', details: {}, at: now });
+    await put('auditLog/a2', { action: 'coach.approve', actorId: UID.admin, actorRole: 'platformAdmin', targetType: 'user', targetId: UID.coachOther, clubId: 'club2', details: {}, at: now });
+    await put('reports/r1', { targetType: 'chatMessage', targetPath: 'chats/g1/messages/m1', groupId: 'g1', clubId: 'club1', reason: 'spam', reporterId: UID.parentB, createdAt: now, status: 'open' });
+    await put('reports/r2', { targetType: 'chatMessage', targetPath: 'chats/g2/messages/x', groupId: 'g2', clubId: 'club2', reason: 'spam', reporterId: UID.coachOther, createdAt: now, status: 'open' });
+    await put('paymentAudit/pa1', { paymentId: 'p1', groupId: 'g1', clubId: 'club1', from: 'pending', to: 'paid', actorId: UID.coach, at: now });
+    await put('invites/i1', {
+      groupId: 'g1', clubId: 'club1', sportId: 'football', groupName: 'U12', childId: 'pend1', childFirstName: 'Luka',
+      childLastName: 'C', phone: '+995599000009', parentId: UID.parentB, status: 'sent', createdBy: UID.coach, createdAt: now,
+    });
+    await put('children/pend1', { firstName: 'Luka', lastName: 'C', birthDate: ts('2016-01-01T00:00:00Z'), parentIds: [], status: 'pendingParent', createdByCoachId: UID.coach });
+    await put('trainingSeries/s1', {
+      groupId: 'g1', clubId: 'club1', venueId: 'v1', weekdays: [1, 3], startTime: '18:00', durationMin: 90, focus: ['ball'],
+      description: '', startDate: '2026-11-01', endDate: null, status: 'active', createdBy: UID.coach, parentSeriesId: null,
+    });
+    await put('matches/mt1', {
+      groupId: 'g1', clubId: 'club1', venueId: 'v1', startAt: ts('2030-06-02T14:00:00Z'), durationMin: 90, opponentName: 'Dinamo',
+      matchType: 'friendly', homeAway: 'home', description: null, status: 'scheduled', cancelReasonCode: null, cancelReason: null,
+      cancelledAt: null, cancelledBy: null, previousStartAt: null, createdBy: UID.coach, updatedAt: now,
+    });
+    await put(`userUnread/${UID.parentA}`, { total: 2, byGroup: { g1: 2 } });
+    await put('groupCodes/ABCD23', { groupId: 'g1' });
+    await put('rateLimits/parentA_reports', { hits: [] });
+
+    const storage = ctx.storage();
+    await uploadBytes(ref(storage, `media/${UID.coach}/mp1/a.jpg`), new Uint8Array([1, 2, 3]), { contentType: 'image/jpeg' });
+    await uploadBytes(ref(storage, 'childPhotos/childA1/avatar.jpg'), new Uint8Array([1, 2, 3]), { contentType: 'image/jpeg' });
+    await uploadBytes(ref(storage, 'exports/parentA/x.json'), new Uint8Array([1]), { contentType: 'application/json' });
   });
 }
 

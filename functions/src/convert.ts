@@ -48,8 +48,10 @@ export function childFrom(id: string, d: DocumentData): ChildLite {
     firstName: d.firstName ?? '',
     lastName: d.lastName,
     parentIds: arr(d.parentIds),
-    photoConsent: d.photoConsent === true,
+    photoConsent: d.photoConsent === true || d.mediaConsent === true,
     groupIds: arr(d.groupIds),
+    status: d.status === 'pendingParent' ? 'pendingParent' : 'active',
+    createdByCoachId: typeof d.createdByCoachId === 'string' ? d.createdByCoachId : null,
   };
 }
 
@@ -62,6 +64,12 @@ export function trainingFrom(d: DocumentData): TrainingLite {
     status: d.status,
     photoUrls: arr(d.photoUrls),
     reminderSentAt: toDate(d.reminderSentAt) ?? null,
+    cancelReasonCode: d.cancelReasonCode ?? null,
+    cancelReason: d.cancelReason ?? null,
+    cancelledBy: d.cancelledBy ?? null,
+    seriesId: d.seriesId ?? null,
+    occurrenceDate: d.occurrenceDate ?? null,
+    detached: d.detached === true,
   };
 }
 

@@ -49,6 +49,22 @@ service firebase.storage {
       return request.resource.size < 10 * 1024 * 1024;
     }
 
+    function atMost1MB() {
+      return request.resource.size <= 1024 * 1024;
+    }
+
+    function childData(childId) {
+      return firestore.get(/databases/(default)/documents/children/$(childId)).data;
+    }
+
+    function isCoachOfChild(childId) {
+      return isApprovedCoach() && request.auth.uid in childData(childId).get('coachIds', []);
+    }
+
+    function mediaPost(postId) {
+      return firestore.get(/databases/(default)/documents/mediaPosts/$(postId)).data;
+    }
+
     // Medical certificates: NO client read, ever. Files are served only via
     // the getCertificateUrl callable (5-minute signed URL + access log).
     match /medical/{childId}/{allPaths=**} {
@@ -77,6 +93,51 @@ service firebase.storage {
         && under10MB()
         && request.resource.contentType.matches('image/.*');
       allow update, delete: if false;
+    }
+  
+    // Profile avatars: owner writes a JPEG ≤ 1 MB; any signed-in user reads
+    // (the app decides visibility via users.privacy.profilePhotoVisible).
+    match /profiles/{userId}/avatar.jpg {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == userId
+        && atMost1MB()
+        && request.resource.contentType == 'image/jpeg';
+      allow delete: if signedIn() && request.auth.uid == userId;
+    }
+
+    // Child avatars: a parent of the child writes (image ≤ 1 MB); parents and
+    // approved coaches of the child's groups read.
+    match /childPhotos/{childId}/avatar.jpg {
+      allow read: if isParentOfChild(childId) || isCoachOfChild(childId);
+      allow create, update: if isParentOfChild(childId)
+        && atMost1MB()
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if isParentOfChild(childId);
+    }
+
+    // Private group media. Upload only by the owning approved coach, AFTER
+    // the mediaPosts/{postId} doc exists with coachId == uid (consent is
+    // enforced on that doc). Images < 10 MB, videos < 100 MB. Read: the owner,
+    // or a parent / approved coach listed in the post's server-maintained
+    // readerIds (recomputed whenever group membership changes).
+    match /media/{coachId}/{postId}/{file} {
+      allow read: if signedIn()
+        && (request.auth.uid == coachId
+            || ((isParent() || isApprovedCoach())
+                && request.auth.uid in mediaPost(postId).get('readerIds', [])));
+      allow create, update: if signedIn()
+        && request.auth.uid == coachId
+        && isApprovedCoach()
+        && mediaPost(postId).coachId == request.auth.uid
+        && ((request.resource.contentType.matches('image/.*') && under10MB())
+            || (request.resource.contentType.matches('video/.*')
+                && request.resource.size < 100 * 1024 * 1024));
+      allow delete: if signedIn() && request.auth.uid == coachId;
+    }
+
+    // Data exports: never client-accessible (getExportUrl returns a signed URL).
+    match /exports/{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

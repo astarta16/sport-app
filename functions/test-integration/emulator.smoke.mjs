@@ -18,7 +18,7 @@ const { getAuth } = require('firebase-admin/auth');
 const { getStorage } = require('firebase-admin/storage');
 const db = getFirestore();
 
-const FUNCTIONS = `http://127.0.0.1:5001/${PROJECT}/europe-west1`;
+const FUNCTIONS = `${process.env.FUNCTIONS_EMULATOR_ORIGIN ?? 'http://127.0.0.1:5001'}/${PROJECT}/europe-west1`;
 const AUTH_HOST = process.env.FIREBASE_AUTH_EMULATOR_HOST ?? '127.0.0.1:9099';
 
 let passed = 0;
@@ -226,6 +226,193 @@ await step('deleteAccount removes solely-owned children and their data', async (
   assert.equal((await db.doc('children/c3').get()).exists, false);
   assert.equal((await db.doc('users/p2').get()).exists, false);
   await waitFor(async () => !(await db.doc('groups/g1').get()).get('parentIds').includes('p2'), 'p2 removed from group');
+});
+
+
+// ------------------------------------------------------------ v1.1 / v1.2 end-to-end flow
+const { createHash } = await import('node:crypto');
+const series = require('../lib/lib/series.js');
+const sha1 = (x) => createHash('sha1').update(x).digest('hex');
+const E2E = {};
+
+await step('v1.2: coach creates group via callable -> unique invite code + groupCodes index', async () => {
+  await db.doc('clubs/clubS').set({ name: 'Smoke Club', address: 'Tbilisi', sportIds: ['football'], status: 'active', adminIds: [] });
+  await db.doc('users/coachS').set(user('coach', { coachStatus: 'approved', clubIds: ['clubS'] }));
+  await db.doc('users/parentS').set(user('parent', { phone: '+995599777001' }));
+  await db.doc('children/childS').set({ firstName: 'გიორგი', lastName: 'S', birthDate: ts(new Date('2015-04-01')), parentIds: ['parentS'], sportIds: [], groupIds: [], photoConsent: false });
+  const r = await callable('createGroup', { clubId: 'clubS', sportId: 'football', name: 'U11', ageMin: 9, ageMax: 11 }, await idToken('coachS'));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  E2E.groupId = r.body.result.groupId;
+  assert.match(r.body.result.inviteCode, /^[A-HJ-NP-Z2-9]{6}$/);
+  assert.equal((await db.doc(`groupCodes/${r.body.result.inviteCode}`).get()).get('groupId'), E2E.groupId);
+  const denied = await callable('createGroup', { clubId: 'club1', sportId: 'football', name: 'X', ageMin: 9, ageMax: 11 }, await idToken('coachS'));
+  assert.equal(denied.status, 403);
+});
+
+await step('v1.2: invite (coach-created pending child) -> parent resolved by phone, inbox entry, nothing linked', async () => {
+  const r = await callable('createInvite', {
+    groupId: E2E.groupId, pendingChild: { firstName: 'გიორგი', lastName: 'S', birthDate: '2015-04-01T00:00:00.000', parentPhone: '599 777 001' },
+  }, await idToken('coachS'));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  E2E.inviteId = r.body.result.inviteId;
+  E2E.pendingChildId = r.body.result.childId;
+  const inv = (await db.doc(`invites/${E2E.inviteId}`).get()).data();
+  assert.equal(inv.parentId, 'parentS');
+  assert.equal(inv.status, 'sent');
+  const pending = (await db.doc(`children/${E2E.pendingChildId}`).get()).data();
+  assert.equal(pending.status, 'pendingParent');
+  assert.deepEqual(pending.parentIds, []);
+  const n = await db.doc(`notifications/${sha1(`parentS|invite:${E2E.inviteId}`)}`).get();
+  assert.equal(n.get('type'), 'groupInvite');
+  assert.equal(n.get('category'), 'invitations');
+  const wrong = await callable('respondInvite', { inviteId: E2E.inviteId, accept: true, mediaConsent: true }, await idToken('p1'));
+  assert.equal(wrong.status, 403);
+});
+
+await step('v1.2: parent accepts linking the EXISTING child -> joins group, pending child deleted, coach gains access', async () => {
+  const r = await callable('respondInvite', { inviteId: E2E.inviteId, accept: true, linkedChildId: 'childS', mediaConsent: true }, await idToken('parentS'));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.equal(r.body.result.childId, 'childS');
+  assert.equal((await db.doc(`children/${E2E.pendingChildId}`).get()).exists, false);
+  await waitFor(async () => {
+    const g = (await db.doc(`groups/${E2E.groupId}`).get()).data();
+    return g.memberChildIds.includes('childS') && g.parentIds.includes('parentS');
+  }, 'childS joined');
+  await waitFor(async () => ((await db.doc('children/childS').get()).get('coachIds') ?? []).includes('coachS'), 'child.coachIds');
+  const c = (await db.doc('children/childS').get()).data();
+  assert.equal(c.mediaConsent, true);
+  assert.equal(c.photoConsent, true);
+  const again = await callable('respondInvite', { inviteId: E2E.inviteId, accept: true, mediaConsent: true }, await idToken('parentS'));
+  assert.equal(again.status, 400); // failed-precondition: already accepted
+});
+
+await step('v1.2: coach creates a series -> occurrences with deterministic ids, one summary notification', async () => {
+  const today = series.tbilisiDateKey(new Date());
+  const rule = {
+    groupId: E2E.groupId, clubId: 'clubS', venueId: 'v1', weekdays: [1, 3, 5], startTime: '18:00', durationMin: 60, focus: ['ball'],
+    description: 'Smoke', startDate: today, endDate: null, status: 'active', createdBy: 'coachS', parentSeriesId: null,
+  };
+  const ref = db.collection('trainingSeries').doc('seriesS');
+  await ref.set(rule);
+  const expected = series.generateOccurrences({ ...rule, id: 'seriesS' }, new Date()).map((o) => o.id).sort();
+  assert.ok(expected.length >= 20);
+  const snap = await waitFor(async () => {
+    const q = await db.collection('trainings').where('seriesId', '==', 'seriesS').get();
+    return q.size === expected.length ? q : null;
+  }, 'occurrences generated', 30000);
+  assert.deepEqual(snap.docs.map((d) => d.id).sort(), expected);
+  for (const d of snap.docs) assert.equal(d.id, `seriesS_${d.get('occurrenceDate').replace(/-/g, '')}`);
+  await waitFor(async () => (await ref.get()).get('generatedUntil'), 'generatedUntil');
+  const { runExtendTrainingSeries } = require('../lib/triggers/series.js');
+  await runExtendTrainingSeries(new Date());
+  assert.equal((await db.collection('trainings').where('seriesId', '==', 'seriesS').get()).size, expected.length, 'idempotent');
+  await waitFor(async () => (await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'scheduleChanged').get()).size === 1, 'one summary');
+  const newTraining = await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'newTraining').get();
+  assert.equal(newTraining.size, 0, 'no per-occurrence notification');
+  E2E.occurrences = expected;
+});
+
+await step('v1.2: parent RSVP + coach attendance; weekday removal cancels (not deletes) the RSVP occurrence', async () => {
+  const fridays = E2E.occurrences.filter((id) => series.isoWeekday(`${id.slice(-8, -4)}-${id.slice(-4, -2)}-${id.slice(-2)}`) === 5);
+  const t = fridays[0];
+  await db.doc(`rsvps/${t}_childS`).set({ trainingId: t, groupId: E2E.groupId, childId: 'childS', parentId: 'parentS', response: 'yes', reason: null, updatedAt: ts(new Date()) });
+  await db.doc(`attendance/${t}_childS`).set({ trainingId: t, groupId: E2E.groupId, childId: 'childS', status: 'present', markedBy: 'coachS', markedAt: ts(new Date()), note: null });
+  await db.doc('trainingSeries/seriesS').update({ weekdays: [1, 3], updatedAt: ts(new Date()) });
+  await waitFor(async () => (await db.doc(`trainings/${t}`).get()).get('status') === 'cancelled', 'RSVP occurrence cancelled');
+  const tr = (await db.doc(`trainings/${t}`).get()).data();
+  assert.equal(tr.cancelReasonCode, 'other');
+  assert.equal(tr.cancelReason, series.SCHEDULE_CHANGED_REASON);
+  await waitFor(async () => !(await db.doc(`trainings/${fridays[1]}`).get()).exists, 'other Fridays deleted');
+  await waitFor(async () => (await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'scheduleChanged').get()).size === 2, 'second summary');
+});
+
+await step('v1.2: payment status change writes paymentAudit with the actor', async () => {
+  await db.doc('payments/payS').set({ childId: 'childS', parentId: 'parentS', groupId: E2E.groupId, sportId: 'football', amount: 60, currency: 'GEL', dueDate: ts(new Date()), status: 'pending', reminders: {}, createdAt: ts(new Date()) });
+  await db.doc('payments/payS').update({ status: 'paid', paidAt: ts(new Date()), updatedBy: 'coachS' });
+  const audit = await waitFor(async () => {
+    const q = await db.collection('paymentAudit').where('paymentId', '==', 'payS').get();
+    return q.size ? q.docs[0].data() : null;
+  }, 'paymentAudit');
+  assert.deepEqual([audit.from, audit.to, audit.actorId, audit.clubId], ['pending', 'paid', 'coachS', 'clubS']);
+  const log = await db.collection('auditLog').where('action', '==', 'payment.status').where('targetId', '==', 'payS').get();
+  assert.equal(log.size, 1);
+});
+
+await step('v1.2: chat unread counters, then report + moderate hides the message', async () => {
+  await db.doc(`chats/${E2E.groupId}/messages/msgS`).set({ senderId: 'parentS', senderName: 'parent T', senderRole: 'parent', type: 'text', pinned: false, text: 'spam spam', createdAt: ts(new Date()) });
+  await waitFor(async () => ((await db.doc('userUnread/coachS').get()).get(`byGroup.${E2E.groupId}`) ?? 0) >= 1, 'unread incremented');
+  assert.equal((await db.doc('userUnread/parentS').get()).get(`byGroup.${E2E.groupId}`) ?? 0, 0, 'sender not counted');
+  await db.doc(`chats/${E2E.groupId}/members/coachS`).set({ lastReadAt: ts(new Date()) });
+  await waitFor(async () => (await db.doc('userUnread/coachS').get()).get(`byGroup.${E2E.groupId}`) === 0, 'unread reset');
+
+  const outsider = await callable('createReport', { targetType: 'chatMessage', targetPath: `chats/${E2E.groupId}/messages/msgS`, reason: 'spam' }, await idToken('p1'));
+  assert.equal(outsider.status, 403);
+  const rep = await callable('createReport', { targetType: 'chatMessage', targetPath: `chats/${E2E.groupId}/messages/msgS`, groupId: E2E.groupId, reason: 'spam', note: 'რეკლამა' }, await idToken('coachS'));
+  assert.equal(rep.status, 200, JSON.stringify(rep.body));
+  const reportId = rep.body.result.reportId;
+  assert.equal((await db.doc(`reports/${reportId}`).get()).get('clubId'), 'clubS');
+  const notAdmin = await callable('moderate', { reportId, decision: 'hidden' }, await idToken('coachS'));
+  assert.equal(notAdmin.status, 403);
+  const otherClub = await callable('moderate', { reportId, decision: 'hidden' }, await idToken('clubAdminX', { clubAdmin: ['club1'] }));
+  assert.equal(otherClub.status, 403);
+  const ok = await callable('moderate', { reportId, decision: 'hidden' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  const m = (await db.doc(`chats/${E2E.groupId}/messages/msgS`).get()).data();
+  assert.equal(m.hidden, true);
+  assert.equal(m.reportCount, 1);
+  assert.equal((await db.doc(`reports/${reportId}`).get()).get('status'), 'resolved');
+  const audit = await db.collection('auditLog').where('action', '==', 'moderation.decide').where('clubId', '==', 'clubS').get();
+  assert.equal(audit.size, 1);
+});
+
+await step('v1.2: match create/cancel -> system chat messages + inbox', async () => {
+  const start = new Date(Date.now() + 5 * 86400000);
+  await db.doc('matches/matchS').set({ groupId: E2E.groupId, clubId: 'clubS', venueId: 'v1', startAt: ts(start), durationMin: 90, opponentName: 'Dinamo', matchType: 'friendly', homeAway: 'home', status: 'scheduled', createdBy: 'coachS', updatedAt: ts(new Date()) });
+  await waitFor(async () => (await db.doc(`chats/${E2E.groupId}/messages/system_match_matchS_new`).get()).exists, 'system new-match message');
+  await db.doc('matches/matchS').update({ status: 'cancelled', cancelReasonCode: 'weather', cancelReason: 'ძლიერი წვიმა', cancelledBy: 'coachS', cancelledAt: ts(new Date()) });
+  const sys = await waitFor(async () => (await db.doc(`chats/${E2E.groupId}/messages/system_match_matchS_cancelled`).get()).data(), 'system cancel message');
+  assert.equal(sys.type, 'system');
+  assert.match(sys.text, /ძლიერი წვიმა/);
+  assert.ok((await db.doc(`notifications/${sha1('parentS|match:matchS:cancelled')}`).get()).exists);
+});
+
+await step('v1.2: admin callables are scoped and audited', async () => {
+  const stats = await callable('adminStats', {}, await idToken('admin1', { admin: true }));
+  assert.equal(stats.status, 200, JSON.stringify(stats.body));
+  assert.ok(stats.body.result.parents >= 1 && 'upcomingMatches' in stats.body.result);
+  const clubStats = await callable('adminStats', {}, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(clubStats.status, 200, JSON.stringify(clubStats.body));
+  assert.equal(clubStats.body.result.activeGroups, 1);
+  assert.equal((await callable('adminStats', {}, await idToken('parentS'))).status, 403);
+  await db.doc('users/coachS2').set(user('coach', { coachStatus: 'approved', clubIds: ['clubS'] }));
+  const noReason = await callable('setCoachStatus', { uid: 'coachS2', status: 'suspended' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(noReason.status, 400);
+  const otherClub = await callable('setCoachStatus', { uid: 'coachS2', status: 'suspended', reason: 'Repeated no-shows' }, await idToken('clubAdminX', { clubAdmin: ['club1'] }));
+  assert.equal(otherClub.status, 403);
+  const ok = await callable('setCoachStatus', { uid: 'coachS2', status: 'suspended', reason: 'Repeated no-shows' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  assert.equal((await db.doc('users/coachS2').get()).get('coachStatus'), 'suspended');
+  const role = await callable('setAdminRole', { uid: 'clubAdminS', role: 'club', clubIds: ['clubS'] }, await idToken('admin1', { admin: true }));
+  assert.equal(role.status, 200, JSON.stringify(role.body));
+  assert.deepEqual((await getAuth().getUser('clubAdminS')).customClaims.clubAdmin, ['clubS']);
+  assert.deepEqual((await db.doc('clubs/clubS').get()).get('adminIds'), ['clubAdminS']);
+  const notPlatform = await callable('setAdminRole', { uid: 'parentS', role: 'platform', clubIds: [] }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(notPlatform.status, 403);
+});
+
+await step('v1.2: data export writes exports/{uid}/{id}.json without medical files', async () => {
+  const r = await callable('requestDataExport', {}, await idToken('parentS'));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const id = r.body.result.requestId;
+  await waitFor(async () => (await db.doc(`accountRequests/${id}`).get()).get('status') === 'done', 'export done', 30000);
+  const [buf] = await getStorage().bucket().file(`exports/parentS/${id}.json`).download();
+  const json = JSON.parse(buf.toString());
+  assert.equal(json.uid, 'parentS');
+  assert.ok(json.children.some((c) => c.id === 'childS'));
+  assert.equal(json.user.fcmTokens, undefined);
+  const url = await callable('getExportUrl', { requestId: id }, await idToken('parentS'));
+  assert.equal(url.status, 200, JSON.stringify(url.body));
+  assert.equal((await callable('getExportUrl', { requestId: id }, await idToken('p1'))).status, 404);
 });
 
 console.log(`${passed} smoke steps passed${process.exitCode ? ' (with failures)' : ''}`);

@@ -218,7 +218,10 @@ describe('trainings', () => {
 
   it('coach can update (e.g. cancel) but not move to another group or set reminderSentAt', async () => {
     const db = as(UID.coach);
-    await assertSucceeds(updateDoc(doc(db, 'trainings/t1'), { status: 'cancelled', updatedAt: now }));
+    // v1.1: a cancellation must carry a reason (see v12 rules tests for the negative cases).
+    await assertSucceeds(updateDoc(doc(db, 'trainings/t1'), {
+      status: 'cancelled', updatedAt: now, cancelReasonCode: 'weather', cancelReason: 'ძლიერი წვიმა', cancelledBy: UID.coach, cancelledAt: now,
+    }));
     await assertFails(updateDoc(doc(db, 'trainings/t1'), { groupId: 'g2' }));
     await assertFails(updateDoc(doc(db, 'trainings/t1'), { reminderSentAt: now }));
     await assertFails(updateDoc(doc(as(UID.coachOther), 'trainings/t1'), { status: 'cancelled' }));

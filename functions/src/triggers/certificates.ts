@@ -10,8 +10,8 @@ import { renderPush } from '../i18n/ka';
 import { canAccessCertificate, canDeleteCertificate } from '../lib/access';
 import { computeCertificateStatus, decideExpiryNotification } from '../lib/certificates';
 import { formatDate } from '../lib/dates';
-import { selectCertificateRecipients } from '../lib/recipients';
-import { sendPushToUsers } from '../push';
+import { notify } from '../notify';
+import { writeAudit } from '../audit';
 
 const SIGNED_URL_TTL_MS = 5 * 60 * 1000;
 
@@ -76,7 +76,7 @@ export const certificateExpiryCheck = onSchedule(
       const child = children.get(result.cert.childId);
       if (!child) continue;
       const users = await loadUsers(child.parentIds);
-      const recipients = selectCertificateRecipients(child, users);
+      const recipients = child.parentIds.map((u) => users.get(u)).filter((u): u is NonNullable<typeof u> => !!u && u.role === 'parent');
       const msg =
         result.decision.stage === 0
           ? renderPush('certificateExpired', { child: child.firstName })
@@ -85,9 +85,14 @@ export const certificateExpiryCheck = onSchedule(
               days: result.decision.daysLeft,
               date: formatDate(result.cert.validUntil),
             });
-      await sendPushToUsers(recipients, {
+      await notify(recipients, {
+        type: 'certificateExpiry',
         ...msg,
-        data: { type: 'certificateExpiry', certId: result.cert.id, childId: child.id, stage: String(result.decision.stage) },
+        route: `/child/${child.id}/certificates`,
+        args: { certId: result.cert.id, childId: child.id, stage: String(result.decision.stage) },
+        childId: child.id,
+        dedupeKey: `cert:${result.cert.id}:${result.decision.stage}:${result.cert.validUntil.getTime()}`,
+        data: { certId: result.cert.id, childId: child.id, stage: String(result.decision.stage) },
       });
       notified++;
     }
@@ -129,6 +134,10 @@ export const getCertificateUrl = onCall(async (request) => {
   if (!path.startsWith(`medical/${cert.childId}/`)) throw new HttpsError('failed-precondition', 'invalid storage path');
 
   await writeAccessLog({ certId: String(request.data.certId), childId: cert.childId, userId: uid, action: 'view' });
+  await writeAudit({
+    action: 'certificate.access', actorId: uid, actorRole: user?.role ?? 'unknown',
+    targetType: 'medicalCertificate', targetId: String(request.data.certId), details: { childId: cert.childId },
+  });
 
   const expiresAt = Date.now() + SIGNED_URL_TTL_MS;
   let url: string;

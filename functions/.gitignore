@@ -1,3 +1,6 @@
 node_modules/
-lib/
+# build output only (functions/lib); NOT src/lib, which holds the pure business logic
+/lib/
 *.log
+# Secret Manager overrides for the emulator — never commit
+.secret.local

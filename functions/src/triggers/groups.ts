@@ -3,8 +3,38 @@ import { onDocumentDeleted, onDocumentUpdated, onDocumentWritten } from 'firebas
 import { FieldValue } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { groupFrom, loadChildren } from '../convert';
+import { generateInviteCode } from '../lib/inviteCode';
 import { computeChildCoachIds, computeGroupParentIds, diffIds, sameSet } from '../lib/membership';
 import { purgeChildCertificates } from './certificates';
+import { refreshMediaReadersForGroup } from './media';
+
+/**
+ * Assigns a unique 6-character invite code (alphabet without 0/O/1/I) and
+ * writes the groupCodes/{code} -> {groupId} index (server only). Idempotent:
+ * a group that already has a valid code keeps it.
+ */
+export async function assignInviteCode(groupId: string): Promise<string | null> {
+  const groupRef = db.doc(`groups/${groupId}`);
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const code = generateInviteCode();
+    const res = await db.runTransaction(async (tx) => {
+      const [g, c] = await Promise.all([tx.get(groupRef), tx.get(db.doc(`groupCodes/${code}`))]);
+      if (!g.exists) return 'gone' as const;
+      const existing = g.get('inviteCode');
+      if (typeof existing === 'string' && existing.length === 6) {
+        const idx = await tx.get(db.doc(`groupCodes/${existing}`));
+        if (idx.exists && idx.get('groupId') === groupId) return existing;
+      }
+      if (c.exists) return 'taken' as const;
+      tx.create(db.doc(`groupCodes/${code}`), { groupId, createdAt: FieldValue.serverTimestamp() });
+      tx.update(groupRef, { inviteCode: code });
+      return code;
+    });
+    if (res === 'gone') return null;
+    if (res !== 'taken') return res;
+  }
+  throw new Error(`could not allocate an invite code for group ${groupId}`);
+}
 
 /**
  * Recomputes the server-managed children/{id}.groupIds and .coachIds from the
@@ -24,7 +54,11 @@ export async function syncChildMembership(childId: string): Promise<void> {
   const sportIds = [...new Set([...(childSnap.get('sportIds') ?? []), ...groups.map((g) => g.sportId).filter(Boolean)])] as string[];
   const cur = childSnap.data()!;
   if (sameSet(cur.groupIds ?? [], groupIds) && sameSet(cur.coachIds ?? [], coachIds) && sameSet(cur.sportIds ?? [], sportIds)) return;
-  await ref.update({ groupIds, coachIds, sportIds });
+  try {
+    await ref.update({ groupIds, coachIds, sportIds });
+  } catch (e) {
+    if ((e as { code?: number }).code !== 5) throw e; // child deleted concurrently (account deletion)
+  }
 }
 
 /**
@@ -64,6 +98,31 @@ export const onGroupWritten = onDocumentWritten('groups/{groupId}', async (event
   const coaches = diffIds(before?.coachIds, after?.coachIds);
   const coachesChanged = coaches.added.length + coaches.removed.length > 0;
 
+  if (members.added.length || members.removed.length || coachesChanged || !after || !before) {
+    await db.collection('groupAuditLog').add({
+      groupId,
+      at: FieldValue.serverTimestamp(),
+      action: !before ? 'created' : !after ? 'deleted' : 'membership_changed',
+      childrenAdded: members.added,
+      childrenRemoved: members.removed,
+      coachesAdded: coaches.added,
+      coachesRemoved: coaches.removed,
+    });
+    logger.info('group membership changed', { groupId, ...members, coaches });
+  }
+
+  const afterRaw = event.data?.after.exists ? event.data.after.data()! : undefined;
+  if (afterRaw && !(typeof afterRaw.inviteCode === 'string' && afterRaw.inviteCode.length === 6)) {
+    await assignInviteCode(groupId);
+  }
+  if (!after && event.data?.before.exists) {
+    const oldCode = event.data.before.get('inviteCode');
+    if (typeof oldCode === 'string' && oldCode) {
+      const idx = await db.doc(`groupCodes/${oldCode}`).get();
+      if (idx.exists && idx.get('groupId') === groupId) await idx.ref.delete();
+    }
+  }
+
   if (after) {
     const children = await loadChildren(after.memberChildIds);
     const parentIds = computeGroupParentIds(after.memberChildIds, children);
@@ -80,17 +139,9 @@ export const onGroupWritten = onDocumentWritten('groups/{groupId}', async (event
   }
   for (const childId of affected) await syncChildMembership(childId);
 
-  if (members.added.length || members.removed.length || coachesChanged || !after || !before) {
-    await db.collection('groupAuditLog').add({
-      groupId,
-      at: FieldValue.serverTimestamp(),
-      action: !before ? 'created' : !after ? 'deleted' : 'membership_changed',
-      childrenAdded: members.added,
-      childrenRemoved: members.removed,
-      coachesAdded: coaches.added,
-      coachesRemoved: coaches.removed,
-    });
-    logger.info('group membership changed', { groupId, ...members, coaches });
+  // mediaPosts.readerIds follow live group membership (parents + coaches).
+  if (!before || !after || !sameSet(before.parentIds, after.parentIds) || coachesChanged) {
+    await refreshMediaReadersForGroup(groupId);
   }
 });
 
