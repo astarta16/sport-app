@@ -57,6 +57,14 @@ Legend: ✅ implemented and verified (tests and/or run) · 🟡 implemented, not
 - ✅ Cloud Functions: training/chat/photo pushes, 2-hour reminders, certificate expiry, signed URLs, membership upkeep, public group projection, payments, account deletion, coach approval
 - ✅ 68 functions unit tests · 52 rules emulator tests · 12-step functions smoke test
 
+## Verification (2026-11-10, this machine)
+- ✅ `flutter analyze` — no issues · `flutter test` — 99 passed
+- ✅ Functions `npm test` — 68 passed · rules emulator tests — 52 passed · functions smoke — 12 steps passed
+- ✅ `flutter build apk --debug` (demo) — built `app-debug.apk`
+- ✅ `flutter build ios --simulator --debug` (demo) — built and launched on iPhone 17 Pro (iOS 26.1); onboarding, sign-in, coach dashboard, parent dashboard, calendar and map checked visually
+- ⛔ Release / signed builds not attempted (no signing identity / keystore)
+- 🟡 Known cosmetic: on the map, club pins can sit under venue pins at the same address
+
 ## Not done / follow-ups
 - ⛔ Real Firebase project, `flutterfire configure`, APNs, deploy — needs your accounts
 - ⛔ Attendance tracking, progress/evaluations, club admin web panel (spec Phase 3 items beyond payments)

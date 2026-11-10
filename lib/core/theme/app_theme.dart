@@ -185,6 +185,8 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (s) => textTheme.labelSmall?.copyWith(
+            fontSize: 10.5,
+            letterSpacing: -0.1,
             fontWeight: s.contains(WidgetState.selected) ? FontWeight.w800 : FontWeight.w600,
             color: s.contains(WidgetState.selected) ? scheme.primary : scheme.onSurfaceVariant,
           ),
