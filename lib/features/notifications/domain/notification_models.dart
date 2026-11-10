@@ -1,6 +1,9 @@
 import '../../../core/utils/dates.dart';
 
-/// Push/in-app notification categories (spec §9 + payments §14.5).
+/// Inbox categories (v1.2 notification center).
+enum NotificationCategory { trainings, matches, invitations, attendance, payments, chat, certificates, announcements }
+
+/// Push/in-app notification types (spec §9, payments §14.5, v1.1, v1.2).
 enum NotificationType {
   newTraining,
   trainingChanged,
@@ -9,10 +12,31 @@ enum NotificationType {
   certificateExpiry,
   newPhotos,
   paymentReminder,
-  paymentSms;
+  paymentSms,
+  newMatch,
+  matchChanged,
+  matchReminder,
+  groupInvite,
+  inviteAnswered,
+  attendanceRecorded,
+  feedbackAdded,
+  announcement,
+  newMedia,
+  scheduleChanged;
 
   static NotificationType fromName(String name) =>
       NotificationType.values.firstWhere((t) => t.name == name, orElse: () => NotificationType.newTraining);
+
+  NotificationCategory get category => switch (this) {
+    newTraining || trainingChanged || trainingReminder || scheduleChanged => NotificationCategory.trainings,
+    newMatch || matchChanged || matchReminder => NotificationCategory.matches,
+    groupInvite || inviteAnswered => NotificationCategory.invitations,
+    attendanceRecorded || feedbackAdded => NotificationCategory.attendance,
+    paymentReminder || paymentSms => NotificationCategory.payments,
+    chatMessage => NotificationCategory.chat,
+    certificateExpiry => NotificationCategory.certificates,
+    announcement || newPhotos || newMedia => NotificationCategory.announcements,
+  };
 }
 
 /// Per-user opt-outs. Unknown keys default to enabled.
@@ -25,6 +49,15 @@ class NotificationPreferences {
 
   NotificationPreferences toggle(NotificationType type, bool enabled) =>
       NotificationPreferences({..._values, type: enabled});
+
+  bool isCategoryEnabled(NotificationCategory c) =>
+      NotificationType.values.where((t) => t.category == c).any(isEnabled);
+
+  NotificationPreferences toggleCategory(NotificationCategory c, bool enabled) => NotificationPreferences({
+    ..._values,
+    for (final t in NotificationType.values)
+      if (t.category == c) t: enabled,
+  });
 
   Map<String, bool> toMap() => {for (final t in NotificationType.values) t.name: isEnabled(t)};
 
@@ -55,11 +88,23 @@ class AppNotification {
     this.read = false,
     this.route,
     this.args = const {},
+    this.childId,
+    this.groupId,
+    this.dedupeKey,
   });
 
   final String id;
   final String userId;
   final NotificationType type;
+
+  /// Context the deep link opens with (child / sport / group switch).
+  final String? childId;
+  final String? groupId;
+
+  /// Server-side idempotency key; the doc id is derived from it.
+  final String? dedupeKey;
+
+  NotificationCategory get category => type.category;
 
   /// Server-rendered fallback text (FCM payload). The app prefers to render
   /// localized text from [type] + [args].
@@ -82,6 +127,9 @@ class AppNotification {
     read: read ?? this.read,
     route: route,
     args: args,
+    childId: childId,
+    groupId: groupId,
+    dedupeKey: dedupeKey,
   );
 
   Map<String, dynamic> toMap() => {
@@ -93,6 +141,10 @@ class AppNotification {
     'read': read,
     'route': route,
     'args': args,
+    'category': category.name,
+    'childId': childId,
+    'groupId': groupId,
+    'dedupeKey': dedupeKey,
   };
 
   factory AppNotification.fromMap(String id, Map<String, dynamic> m) => AppNotification(
@@ -105,5 +157,8 @@ class AppNotification {
     read: m['read'] as bool? ?? false,
     route: m['route'] as String?,
     args: (m['args'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? const {},
+    childId: m['childId'] as String?,
+    groupId: m['groupId'] as String?,
+    dedupeKey: m['dedupeKey'] as String?,
   );
 }

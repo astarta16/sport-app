@@ -13,6 +13,7 @@ import '../../payments/domain/payment.dart';
 import '../../sports/domain/sport.dart';
 import '../../trainings/domain/training.dart';
 import 'demo_backend.dart';
+import 'demo_seed_v12.dart';
 
 /// Demo identities. All names, numbers and places are fictional.
 class DemoIds {
@@ -21,6 +22,8 @@ class DemoIds {
   static const parent = 'parent-1';
   static const coach = 'coach-1';
   static const pendingCoach = 'coach-4';
+  static const platformAdmin = 'admin-1';
+  static const clubAdmin = 'admin-2';
   static const otpCode = '123456';
 }
 
@@ -743,5 +746,6 @@ class DemoSeed {
       createdAt: now.subtract(const Duration(hours: 6)),
       childName: 'ელენე',
     );
+    DemoSeedV12.seed(db);
   }
 }

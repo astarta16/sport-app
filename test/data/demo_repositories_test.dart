@@ -154,8 +154,15 @@ void main() {
       await signIn(DemoIds.coach);
       final repo = DemoTrainingsRepository(db);
       final t = await repo.create(draft('g-football-u10'));
-      await repo.cancel(t.id);
-      expect((await repo.watchTraining(t.id).first)!.status, TrainingStatus.cancelled);
+      await expectLater(
+        repo.cancel(t.id, const CancelReason(CancelReasonCode.weather, 'ok')),
+        throwsA(isA<ValidationException>()),
+      );
+      await repo.cancel(t.id, const CancelReason(CancelReasonCode.weather, 'ძლიერი წვიმა'));
+      final cancelled = (await repo.watchTraining(t.id).first)!;
+      expect(cancelled.status, TrainingStatus.cancelled);
+      expect(cancelled.cancelReason, 'ძლიერი წვიმა');
+      expect(cancelled.cancelledBy, DemoIds.coach);
       final t2 = await repo.create(draft('g-football-u10'));
       final newStart = t2.startAt.add(const Duration(days: 1));
       await repo.reschedule(t2.id, newStart);

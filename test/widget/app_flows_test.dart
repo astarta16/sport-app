@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:sport_parent_app/app/app.dart';
 import 'package:sport_parent_app/features/demo/data/demo_backend.dart';
+import 'package:sport_parent_app/features/chat/domain/chat_message.dart';
 import 'package:sport_parent_app/features/demo/data/demo_seed.dart';
 import 'package:sport_parent_app/features/trainings/domain/training.dart';
 
@@ -110,8 +111,15 @@ void main() {
     await pumpFor(tester);
 
     await tapAndPump(tester, find.byKey(const Key('cancel-training')));
-    await tapAndPump(tester, find.widgetWithText(FilledButton, 'გაუქმება'));
+    // Reason is mandatory (v1.1 §7): submitting without one keeps the dialog open.
+    await tapAndPump(tester, find.byKey(const Key('cancel-reason-submit')));
+    expect(find.byKey(const Key('cancel-reason-dialog')), findsOneWidget);
+    expect(db.trainings[target.id]!.status, TrainingStatus.scheduled);
+    await tapAndPump(tester, find.byKey(const Key('cancel-reason-weather')));
+    await tapAndPump(tester, find.byKey(const Key('cancel-reason-submit')));
     expect(db.trainings[target.id]!.status, TrainingStatus.cancelled);
+    expect(db.trainings[target.id]!.cancelReason, isNotEmpty);
+    expect(db.messages['g-football-u10']!.last.type, ChatMessageType.system);
     await tester.drag(find.byType(ListView).first, const Offset(0, 2000));
     await pumpFor(tester);
     expect(find.text('ეს ვარჯიში გაუქმდა'), findsOneWidget);

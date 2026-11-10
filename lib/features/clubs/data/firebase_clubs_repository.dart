@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../core/errors/app_exception.dart';
 import '../../../core/firebase/firebase_utils.dart';
+import '../../../core/utils/geo.dart';
 import '../domain/club.dart';
 import '../domain/clubs_repository.dart';
 
@@ -13,7 +15,10 @@ class FirebaseClubsRepository implements ClubsRepository {
 
   @override
   Future<List<Club>> clubs() => guardFirebase(
-    () async => (await db.collection('clubs').get()).docs.map((d) => Club.fromMap(d.id, d.data())).toList(),
+    () async => (await db.collection('clubs').get()).docs
+        .map((d) => Club.fromMap(d.id, d.data()))
+        .where((c) => !c.archived)
+        .toList(),
   );
 
   @override
@@ -99,4 +104,42 @@ class FirebaseClubsRepository implements ClubsRepository {
       'status': (approve ? RequestStatus.approved : RequestStatus.rejected).name,
     }),
   );
+
+  /// Geohash prefix query (precision 6 ≈ 1.2 km cells) + exact distance filter.
+  @override
+  Future<List<Venue>> venuesNear(double lat, double lng, {double radiusMeters = 200}) => guardFirebase(() async {
+    final prefix = Geohash.encode(lat, lng).substring(0, 6);
+    final snap = await db.collection('venues').orderBy('geohash').startAt([prefix]).endAt(['$prefix\uf8ff']).get();
+    final here = GeoCoord(lat, lng);
+    return snap.docs
+        .map((d) => Venue.fromMap(d.id, d.data()))
+        .where((v) => v.location.distanceKm(here) * 1000 <= radiusMeters)
+        .toList();
+  });
+
+  @override
+  Future<Venue> createVenue({
+    required String name,
+    required String address,
+    required double lat,
+    required double lng,
+    required List<String> sportIds,
+    String? clubId,
+  }) => guardFirebase(() async {
+    if (name.trim().length < 2) throw const ValidationException('validationRequired');
+    final ref = db.collection('venues').doc();
+    final v = Venue(
+      id: ref.id,
+      clubId: clubId,
+      name: name.trim(),
+      address: address.trim(),
+      location: GeoCoord(lat, lng),
+      geohash: Geohash.encode(lat, lng),
+      sportIds: sportIds,
+      verified: false,
+      createdBy: requireUid(auth),
+    );
+    await ref.set(toFirestore(v.toMap()));
+    return v;
+  });
 }

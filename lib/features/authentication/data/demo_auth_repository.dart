@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import '../../../core/errors/app_exception.dart';
+import '../../account/data/demo_account_repository.dart';
 import '../../../core/utils/validators.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../demo/data/demo_seed.dart';
@@ -95,6 +98,49 @@ class DemoAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> updatePhoto(List<int> jpegBytes) async {
+    db.requireOnline();
+    if (jpegBytes.isEmpty) throw const ValidationException('fileEmpty');
+    if (jpegBytes.length > 1024 * 1024) throw const ValidationException('avatarTooLarge');
+    final me = db.me;
+    final path = 'profiles/${me.id}/avatar.jpg';
+    db.photos[path] = Uint8List.fromList(jpegBytes);
+    db.users[me.id] = me.copyWith(photoPath: path);
+    db.commit();
+  }
+
+  @override
+  Future<void> removePhoto() async {
+    db.requireOnline();
+    final me = db.me;
+    if (me.photoPath != null) db.photos.remove(me.photoPath);
+    db.users[me.id] = me.copyWith(clearPhoto: true);
+    db.commit();
+  }
+
+  @override
+  Future<void> updatePrivacy(PrivacySettings privacy) async {
+    db.requireOnline();
+    final me = db.me;
+    db.users[me.id] = me.copyWith(privacy: privacy);
+    db.commit();
+  }
+
+  @override
+  Future<void> updateSmsConsent(bool consent) async {
+    db.requireOnline();
+    final me = db.me;
+    db.users[me.id] = AppUser.fromMap(me.id, {
+      ...me.toMap(),
+      'smsConsentAt': consent ? db.clock() : null,
+      'adminRole': me.adminRole?.name,
+      'adminClubIds': me.adminClubIds,
+      'coachStatusReason': me.coachStatusReason,
+    });
+    db.commit();
+  }
+
+  @override
   Future<void> signOut() async {
     db.session = null;
     db.commit();
@@ -102,27 +148,8 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   Future<void> deleteAccount() async {
-    final me = db.me;
-    final owned = db.children.values.where((c) => c.parentIds.contains(me.id)).toList();
-    for (final c in owned) {
-      final others = c.parentIds.where((p) => p != me.id).toList();
-      if (others.isEmpty) {
-        for (final cert in db.certificates.values.where((x) => x.childId == c.id).toList()) {
-          db.certificateFiles.remove(cert.storagePath);
-          db.certificates.remove(cert.id);
-        }
-        db.children.remove(c.id);
-        for (final g in db.groups.values.toList()) {
-          db.groups[g.id] = g.copyWith(memberChildIds: g.memberChildIds.where((id) => id != c.id).toList());
-        }
-      } else {
-        db.children[c.id] = c.copyWith(parentIds: others);
-      }
-    }
-    db.payments.removeWhere((_, p) => p.parentId == me.id);
-    db.notifications.removeWhere((n) => n.userId == me.id);
-    db.users.remove(me.id);
-    db.recomputeMemberships();
+    db.requireOnline();
+    DemoAccountDeletion.run(db, db.me.id);
     db.session = null;
     db.commit();
   }
@@ -130,6 +157,14 @@ class DemoAuthRepository implements AuthRepository {
   @override
   List<DemoAccount> get demoAccounts => [
     for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.pendingCoach])
+      if (db.users[id] != null)
+        DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
+  ];
+
+  /// Admin demo accounts are offered only by the admin web app.
+  @override
+  List<DemoAccount> get demoAdminAccounts => [
+    for (final id in [DemoIds.platformAdmin, DemoIds.clubAdmin])
       if (db.users[id] != null)
         DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
   ];

@@ -1,4 +1,5 @@
 import '../../../core/errors/app_exception.dart';
+import '../../../core/utils/geo.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../demo/data/demo_backend.dart';
 import '../domain/club.dart';
@@ -10,7 +11,7 @@ class DemoClubsRepository implements ClubsRepository {
   final DemoBackend db;
 
   @override
-  Future<List<Club>> clubs() async => db.clubs.values.toList();
+  Future<List<Club>> clubs() async => db.clubs.values.where((c) => !c.archived).toList();
 
   @override
   Future<Club?> club(String id) async => db.clubs[id];
@@ -22,6 +23,44 @@ class DemoClubsRepository implements ClubsRepository {
 
   @override
   Future<Venue?> venue(String id) async => db.venues[id];
+
+  @override
+  Future<List<Venue>> venuesNear(double lat, double lng, {double radiusMeters = 200}) async {
+    final here = GeoCoord(lat, lng);
+    return db.venues.values.where((v) => v.location.distanceKm(here) * 1000 <= radiusMeters).toList()
+      ..sort((a, b) => a.location.distanceKm(here).compareTo(b.location.distanceKm(here)));
+  }
+
+  @override
+  Future<Venue> createVenue({
+    required String name,
+    required String address,
+    required double lat,
+    required double lng,
+    required List<String> sportIds,
+    String? clubId,
+  }) async {
+    db.requireOnline();
+    final me = db.me;
+    if (!me.isApprovedCoach) throw const PermissionDeniedException('venue');
+    if (name.trim().length < 2) throw const ValidationException('validationRequired');
+    if (lat < 41 || lat > 43.6 || lng < 40 || lng > 46.8) throw const ValidationException('locationOutsideGeorgia');
+    db.rateLimit('venue', 20);
+    final v = Venue(
+      id: db.newId('venue'),
+      clubId: clubId,
+      name: name.trim(),
+      address: address.trim(),
+      location: GeoCoord(lat, lng),
+      geohash: Geohash.encode(lat, lng),
+      sportIds: sportIds,
+      verified: false,
+      createdBy: me.id,
+    );
+    db.venues[v.id] = v;
+    db.commit();
+    return v;
+  }
 
   @override
   Future<MembershipRequest> requestMembership({

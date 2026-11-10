@@ -7,14 +7,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/misc.dart';
 
 import '../core/firebase/firebase_utils.dart';
+import '../features/account/data/firebase_account_repository.dart';
+import '../features/admin/data/firebase_admin_repository.dart';
+import '../features/attendance/data/firebase_attendance_repository.dart';
 import '../features/authentication/data/firebase_auth_repository.dart';
 import '../features/chat/data/firebase_chat_repository.dart';
 import '../features/children/data/firebase_children_repository.dart';
 import '../features/clubs/data/firebase_clubs_repository.dart';
 import '../features/groups/data/firebase_groups_repository.dart';
 import '../features/maps/data/firebase_location_repository.dart';
+import '../features/matches/data/firebase_matches_repository.dart';
+import '../features/media/data/firebase_media_posts_repository.dart';
 import '../features/media/data/firebase_media_repository.dart';
 import '../features/medical_certificates/data/firebase_certificates_repository.dart';
+import '../features/moderation/data/firebase_moderation_repository.dart';
 import '../features/notifications/data/firebase_notifications_repository.dart';
 import '../features/payments/data/firebase_payments_repository.dart';
 import '../features/sports/data/firebase_sports_repository.dart';
@@ -46,12 +52,12 @@ Future<List<Override>> firebaseOverrides() async {
 
   return [
     appModeProvider.overrideWithValue(AppMode.firebase),
-    authRepositoryProvider.overrideWithValue(FirebaseAuthRepository(auth, db, functions)),
+    authRepositoryProvider.overrideWithValue(FirebaseAuthRepository(auth, db, functions, storage: storage)),
     userDirectoryRepositoryProvider.overrideWithValue(FirebaseUserDirectoryRepository(auth, db, functions)),
-    childrenRepositoryProvider.overrideWithValue(FirebaseChildrenRepository(auth, db)),
+    childrenRepositoryProvider.overrideWithValue(FirebaseChildrenRepository(auth, db, storage: storage)),
     sportsRepositoryProvider.overrideWithValue(FirebaseSportsRepository(db)),
     clubsRepositoryProvider.overrideWithValue(FirebaseClubsRepository(auth, db)),
-    groupsRepositoryProvider.overrideWithValue(FirebaseGroupsRepository(auth, db)),
+    groupsRepositoryProvider.overrideWithValue(FirebaseGroupsRepository(auth, db, functions)),
     trainingsRepositoryProvider.overrideWithValue(FirebaseTrainingsRepository(auth, db, storage)),
     chatRepositoryProvider.overrideWithValue(FirebaseChatRepository(auth, db, storage)),
     certificatesRepositoryProvider.overrideWithValue(FirebaseCertificatesRepository(auth, db, storage, functions)),
@@ -61,5 +67,11 @@ Future<List<Override>> firebaseOverrides() async {
     paymentsRepositoryProvider.overrideWithValue(FirebasePaymentsRepository(auth, db)),
     locationRepositoryProvider.overrideWithValue(FirebaseLocationRepository(db)),
     mediaRepositoryProvider.overrideWithValue(FirebaseMediaRepository(storage)),
+    matchesRepositoryProvider.overrideWithValue(FirebaseMatchesRepository(auth, db)),
+    attendanceRepositoryProvider.overrideWithValue(FirebaseAttendanceRepository(auth, db)),
+    mediaPostsRepositoryProvider.overrideWithValue(FirebaseMediaPostsRepository(auth, db, storage)),
+    moderationRepositoryProvider.overrideWithValue(FirebaseModerationRepository(functions)),
+    adminRepositoryProvider.overrideWithValue(FirebaseAdminRepository(auth, db, functions)),
+    accountRepositoryProvider.overrideWithValue(FirebaseAccountRepository(auth, db, functions)),
   ];
 }

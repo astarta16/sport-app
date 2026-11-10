@@ -58,3 +58,13 @@ Future<({String uid, String role, bool approvedCoach})> currentRole(FirebaseAuth
   final role = d['role'] as String? ?? 'parent';
   return (uid: uid, role: role, approvedCoach: role == 'coach' && d['coachStatus'] == 'approved');
 }
+
+/// Calls a callable Cloud Function and returns its data as a map.
+Future<Map<String, dynamic>> callFunction(dynamic functions, String name, [Map<String, dynamic> data = const {}]) =>
+    guardFirebase(() async {
+      // ignore: avoid_dynamic_calls
+      final result = await functions.httpsCallable(name).call<Object?>(data);
+      // ignore: avoid_dynamic_calls
+      final d = result.data;
+      return d is Map ? d.map((k, v) => MapEntry(k.toString(), v)) : <String, dynamic>{};
+    });

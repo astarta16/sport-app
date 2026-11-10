@@ -7,18 +7,29 @@ class DemoNotificationsRepository implements NotificationsRepository {
 
   final DemoBackend db;
 
+  /// Owner-only, like the rules on `notifications/{id}`.
   @override
-  Stream<List<AppNotification>> watchInbox() => db.watch(() {
+  Stream<List<AppNotification>> watchInbox({int limit = 30, NotificationCategory? category}) => db.watch(() {
     final me = db.currentUser;
     if (me == null) return const <AppNotification>[];
-    return db.notifications.where((n) => n.userId == me.id).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final list =
+        db.notifications.where((n) => n.userId == me.id && (category == null || n.category == category)).toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return list.take(limit).toList();
+  });
+
+  @override
+  Stream<int> watchUnreadCount() => db.watch(() {
+    final me = db.currentUser;
+    if (me == null) return 0;
+    return db.notifications.where((n) => n.userId == me.id && !n.read).length;
   });
 
   @override
   Future<void> markRead(String id) async {
     final i = db.notifications.indexWhere((n) => n.id == id && n.userId == db.me.id);
-    if (i >= 0) db.notifications[i] = db.notifications[i].copyWith(read: true);
+    if (i < 0 || db.notifications[i].read) return;
+    db.notifications[i] = db.notifications[i].copyWith(read: true);
     db.commit();
   }
 

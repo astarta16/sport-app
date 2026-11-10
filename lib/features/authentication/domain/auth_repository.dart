@@ -22,6 +22,14 @@ abstract interface class AuthRepository {
   Future<void> updateLastContext(UserContext context);
   Future<void> updateNotificationPrefs(NotificationPreferences prefs);
   Future<void> updateProfile({required String firstName, required String lastName});
+
+  /// Uploads a square JPEG avatar (≤ 1 MB) to `profiles/{uid}/avatar.jpg`.
+  Future<void> updatePhoto(List<int> jpegBytes);
+  Future<void> removePhoto();
+  Future<void> updatePrivacy(PrivacySettings privacy);
+
+  /// Withdraws or gives SMS consent (payments reminders).
+  Future<void> updateSmsConsent(bool consent);
   Future<void> signOut();
 
   /// Deletes the account; all medical certificates of solely-owned children
@@ -29,6 +37,7 @@ abstract interface class AuthRepository {
   Future<void> deleteAccount();
 
   List<DemoAccount> get demoAccounts;
+  List<DemoAccount> get demoAdminAccounts;
   Future<void> signInAsDemo(String uid);
 }
 

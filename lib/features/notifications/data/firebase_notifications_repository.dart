@@ -1,65 +1,64 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../../../core/firebase/firebase_utils.dart';
 import '../domain/notification_models.dart';
 import '../domain/notifications_repository.dart';
 
-/// FCM integration. Push fan-out and recipient selection happen server-side
-/// (Cloud Functions). Messages received while the app runs are kept in a
-/// session inbox; a persisted inbox collection is a documented follow-up.
+/// Persisted inbox at `notifications/{id}` (written by Cloud Functions with
+/// a dedupe-derived id; rules let the owner read and flip `read` only) plus
+/// FCM device registration.
 class FirebaseNotificationsRepository implements NotificationsRepository {
-  FirebaseNotificationsRepository(this.auth, this.db, this.messaging) {
-    _sub = FirebaseMessaging.onMessage.listen(_add);
-    FirebaseMessaging.onMessageOpenedApp.listen(_add);
-  }
+  FirebaseNotificationsRepository(this.auth, this.db, this.messaging);
 
   final FirebaseAuth auth;
   final FirebaseFirestore db;
   final FirebaseMessaging messaging;
-  final _items = <AppNotification>[];
-  final _controller = StreamController<List<AppNotification>>.broadcast();
-  StreamSubscription<RemoteMessage>? _sub;
 
-  void _add(RemoteMessage m) {
-    final type = NotificationType.fromName(m.data['type'] as String? ?? '');
-    _items.insert(
-      0,
-      AppNotification(
-        id: m.messageId ?? '${DateTime.now().microsecondsSinceEpoch}',
-        userId: auth.currentUser?.uid ?? '',
-        type: type,
-        title: m.notification?.title ?? '',
-        body: m.notification?.body ?? '',
-        createdAt: m.sentTime ?? DateTime.now(),
-        route: m.data['route'] as String?,
-      ),
-    );
-    _controller.add(List.unmodifiable(_items));
+  CollectionReference<Map<String, dynamic>> get _col => db.collection('notifications');
+
+  @override
+  Stream<List<AppNotification>> watchInbox({int limit = 30, NotificationCategory? category}) {
+    final uid = auth.currentUser?.uid;
+    if (uid == null) return Stream.value(const []);
+    var q = _col.where('userId', isEqualTo: uid);
+    if (category != null) q = q.where('category', isEqualTo: category.name);
+    return q
+        .orderBy('createdAt', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((s) => s.docs.map((d) => AppNotification.fromMap(d.id, d.data())).toList())
+        .mapFirebaseErrors();
   }
 
   @override
-  Stream<List<AppNotification>> watchInbox() async* {
-    yield List.unmodifiable(_items);
-    yield* _controller.stream;
+  Stream<int> watchUnreadCount() {
+    final uid = auth.currentUser?.uid;
+    if (uid == null) return Stream.value(0);
+    return _col
+        .where('userId', isEqualTo: uid)
+        .where('read', isEqualTo: false)
+        .limit(100)
+        .snapshots()
+        .map((s) => s.size)
+        .mapFirebaseErrors();
   }
 
   @override
-  Future<void> markRead(String id) async {
-    final i = _items.indexWhere((n) => n.id == id);
-    if (i >= 0) _items[i] = _items[i].copyWith(read: true);
-    _controller.add(List.unmodifiable(_items));
-  }
+  Future<void> markRead(String id) => guardFirebase(() => _col.doc(id).update({'read': true}));
 
   @override
-  Future<void> markAllRead() async {
-    for (var i = 0; i < _items.length; i++) {
-      _items[i] = _items[i].copyWith(read: true);
+  Future<void> markAllRead() => guardFirebase(() async {
+    final uid = auth.currentUser?.uid;
+    if (uid == null) return;
+    final unread = await _col.where('userId', isEqualTo: uid).where('read', isEqualTo: false).limit(400).get();
+    final batch = db.batch();
+    for (final d in unread.docs) {
+      batch.update(d.reference, {'read': true});
     }
-    _controller.add(List.unmodifiable(_items));
-  }
+    await batch.commit();
+  });
 
   /// Requests permission and stores the FCM token on `users/{uid}.fcmTokens`.
   @override
@@ -77,10 +76,5 @@ class FirebaseNotificationsRepository implements NotificationsRepository {
     await db.collection('users').doc(uid).update({
       'fcmTokens': FieldValue.arrayUnion([token]),
     });
-  }
-
-  void dispose() {
-    _sub?.cancel();
-    _controller.close();
   }
 }

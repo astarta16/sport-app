@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/firebase/bytes.dart';
 import '../../../core/firebase/firebase_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../notifications/domain/notification_models.dart';
@@ -14,7 +16,9 @@ import '../domain/auth_repository.dart';
 
 /// Firebase Phone Auth + `users/{uid}` profile.
 class FirebaseAuthRepository implements AuthRepository {
-  FirebaseAuthRepository(this.auth, this.db, this.functions);
+  FirebaseAuthRepository(this.auth, this.db, this.functions, {this.storage});
+
+  final FirebaseStorage? storage;
 
   final FirebaseAuth auth;
   final FirebaseFirestore db;
@@ -107,6 +111,32 @@ class FirebaseAuthRepository implements AuthRepository {
       guardFirebase(() => _doc(requireUid(auth)).update({'firstName': firstName.trim(), 'lastName': lastName.trim()}));
 
   @override
+  Future<void> updatePhoto(List<int> jpegBytes) => guardFirebase(() async {
+    if (jpegBytes.length > 1024 * 1024) throw const ValidationException('avatarTooLarge');
+    final uid = requireUid(auth);
+    final st = storage ?? (throw const BackendUnavailableException('storage'));
+    final path = 'profiles/$uid/avatar.jpg';
+    await st.ref(path).putData(Uint8ListX.from(jpegBytes), SettableMetadata(contentType: 'image/jpeg'));
+    await _doc(uid).update({'photoPath': path});
+  });
+
+  @override
+  Future<void> removePhoto() => guardFirebase(() async {
+    final uid = requireUid(auth);
+    await storage?.ref('profiles/$uid/avatar.jpg').delete().catchError((_) {});
+    await _doc(uid).update({'photoPath': null});
+  });
+
+  @override
+  Future<void> updatePrivacy(PrivacySettings privacy) =>
+      guardFirebase(() => _doc(requireUid(auth)).update({'privacy': privacy.toMap()}));
+
+  @override
+  Future<void> updateSmsConsent(bool consent) => guardFirebase(
+    () => _doc(requireUid(auth)).update({'smsConsentAt': consent ? FieldValue.serverTimestamp() : null}),
+  );
+
+  @override
   Future<void> signOut() => auth.signOut();
 
   /// Server-side: deletes solely-owned children with all certificates.
@@ -118,6 +148,9 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   List<DemoAccount> get demoAccounts => const [];
+
+  @override
+  List<DemoAccount> get demoAdminAccounts => const [];
 
   @override
   Future<void> signInAsDemo(String uid) => throw UnsupportedError('Demo accounts are not available in Firebase mode');

@@ -31,19 +31,59 @@ class DemoPaymentsRepository implements PaymentsRepository {
   });
 
   @override
-  Future<void> setStatus(String paymentId, PaymentStatus status) async {
+  Future<void> setStatus(String paymentId, PaymentStatus status, {String? reason}) async {
+    db.requireOnline();
     final p = db.payments[paymentId] ?? (throw const NotFoundException());
-    if (!AccessPolicy.canManagePayments(db.me, db.requireGroup(p.groupId))) throw const PermissionDeniedException();
+    final g = db.requireGroup(p.groupId);
+    if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
+    if (p.status == status) return;
+    final r = (reason ?? '').trim();
+    if (status == PaymentStatus.cancelled && r.length < 3) throw const ValidationException('reasonRequired');
     db.payments[paymentId] = p.copyWith(
       status: status,
       paidAt: status == PaymentStatus.paid ? db.clock() : null,
       clearPaidAt: status != PaymentStatus.paid,
+      cancelledReason: status == PaymentStatus.cancelled ? r : null,
+    );
+    // Server trigger `onPaymentWritten` equivalent.
+    db.paymentAudit.add(
+      PaymentAuditEntry(
+        id: db.newId('paud'),
+        paymentId: paymentId,
+        groupId: p.groupId,
+        from: p.status,
+        to: status,
+        actorId: db.me.id,
+        actorName: db.me.fullName,
+        at: db.clock(),
+        reason: r.isEmpty ? null : r,
+      ),
+    );
+    db.auditLog(
+      'payment.status',
+      'payment',
+      paymentId,
+      clubId: g.clubId,
+      details: {'from': p.status.name, 'to': status.name},
     );
     db.commit();
   }
 
   @override
-  Future<int> chargeGroup({required String groupId, required num amount, required DateTime dueDate}) async {
+  Stream<List<PaymentAuditEntry>> watchAudit(String groupId) => db.watch(() {
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
+    return db.paymentAudit.where((a) => a.groupId == groupId).toList()..sort((a, b) => b.at.compareTo(a.at));
+  });
+
+  @override
+  Future<int> chargeGroup({
+    required String groupId,
+    required num amount,
+    required DateTime dueDate,
+    String? title,
+  }) async {
+    db.requireOnline();
     final g = db.requireGroup(groupId);
     if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
     if (amount <= 0) throw const ValidationException('amountPositive');
@@ -51,6 +91,17 @@ class DemoPaymentsRepository implements PaymentsRepository {
     for (final childId in g.memberChildIds) {
       final child = db.children[childId];
       if (child == null || child.parentIds.isEmpty) continue;
+      final due = DateTime.utc(dueDate.year, dueDate.month, dueDate.day);
+      // Duplicate guard: same child, same due date, same title, not cancelled.
+      final dup = db.payments.values.any(
+        (p) =>
+            p.childId == childId &&
+            p.groupId == groupId &&
+            p.dueDate == due &&
+            p.title == title &&
+            p.status != PaymentStatus.cancelled,
+      );
+      if (dup) continue;
       final id = db.newId('pay');
       db.payments[id] = Payment(
         id: id,
@@ -59,8 +110,9 @@ class DemoPaymentsRepository implements PaymentsRepository {
         groupId: groupId,
         sportId: g.sportId,
         amount: amount,
-        dueDate: DateTime.utc(dueDate.year, dueDate.month, dueDate.day),
+        dueDate: due,
         createdAt: db.clock(),
+        title: (title ?? '').trim().isEmpty ? null : title!.trim(),
       );
       created++;
     }

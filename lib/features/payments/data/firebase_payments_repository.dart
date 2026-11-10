@@ -42,16 +42,31 @@ class FirebasePaymentsRepository implements PaymentsRepository {
       _col.where('groupId', isEqualTo: groupId).snapshots().map(_map).mapFirebaseErrors();
 
   @override
-  Future<void> setStatus(String paymentId, PaymentStatus status) => guardFirebase(
-    () => _col.doc(paymentId).update({
+  Future<void> setStatus(String paymentId, PaymentStatus status, {String? reason}) => guardFirebase(() async {
+    final r = (reason ?? '').trim();
+    if (status == PaymentStatus.cancelled && r.length < 3) throw const ValidationException('reasonRequired');
+    // paymentAudit is written by the onPaymentWritten trigger.
+    await _col.doc(paymentId).update({
       'status': status.name,
       'paidAt': status == PaymentStatus.paid ? FieldValue.serverTimestamp() : null,
-    }),
-  );
+      'cancelledReason': status == PaymentStatus.cancelled ? r : null,
+    });
+  });
+
+  @override
+  Stream<List<PaymentAuditEntry>> watchAudit(String groupId) => db
+      .collection('paymentAudit')
+      .where('groupId', isEqualTo: groupId)
+      .snapshots()
+      .map(
+        (s) =>
+            s.docs.map((d) => PaymentAuditEntry.fromMap(d.id, d.data())).toList()..sort((a, b) => b.at.compareTo(a.at)),
+      )
+      .mapFirebaseErrors();
 
   /// One-off charges are an admin/back-office operation in production.
   @override
-  Future<int> chargeGroup({required String groupId, required num amount, required DateTime dueDate}) =>
+  Future<int> chargeGroup({required String groupId, required num amount, required DateTime dueDate, String? title}) =>
       throw const PermissionDeniedException('chargeGroup is admin-only in production');
 
   @override

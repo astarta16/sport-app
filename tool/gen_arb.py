@@ -1,11 +1,20 @@
 """Generates lib/l10n/app_ka.arb and app_en.arb from tool/strings.py."""
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
-from strings import S
+from strings import S as _S1
+from strings_v12 import S as _S2
+from strings_admin import S as _S3
+
+S = {**_S1}
+for extra in (_S2, _S3):
+    dup = set(S) & set(extra)
+    if dup:
+        raise SystemExit(f'duplicate keys: {sorted(dup)}')
+    S.update(extra)
 
 root = os.path.join(os.path.dirname(__file__), '..', 'lib', 'l10n')
 
-INT_NAMES = {'count', 'seconds', 'current', 'total', 'min', 'max', 'day', 'sent', 'skipped', 'minutes'}
+INT_NAMES = {'count', 'seconds', 'current', 'total', 'min', 'max', 'day', 'sent', 'skipped', 'minutes', 'percent', 'n'}
 
 def placeholders(text):
     names = {}

@@ -82,8 +82,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationRequired => 'სავალდებულო ველი';
 
   @override
-  String get validationInvalidPhone =>
-      'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
+  String get validationInvalidPhone => 'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
 
   @override
   String get validationInvalidOtp => 'კოდი უნდა იყოს 6 ციფრი';
@@ -131,8 +130,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationStartInPast => 'დრო უკვე გასულია';
 
   @override
-  String get validationPhotoConsentRequired =>
-      'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
+  String get validationPhotoConsentRequired => 'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
 
   @override
   String get validationFileType => 'დასაშვებია მხოლოდ JPG, PNG ან PDF';
@@ -171,22 +169,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get onboardingTitle1 => 'ყველა ვარჯიში ერთ კალენდარში';
 
   @override
-  String get onboardingBody1 =>
-      'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
+  String get onboardingBody1 => 'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
 
   @override
   String get onboardingTitle2 => 'პირდაპირი კავშირი მწვრთნელთან';
 
   @override
-  String get onboardingBody2 =>
-      'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
+  String get onboardingBody2 => 'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
 
   @override
   String get onboardingTitle3 => 'ცნობები და გადახდები უსაფრთხოდ';
 
   @override
-  String get onboardingBody3 =>
-      'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
+  String get onboardingBody3 => 'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
 
   @override
   String get onboardingStart => 'დავიწყოთ';
@@ -198,8 +193,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get phoneTitle => 'შესვლა ტელეფონით';
 
   @override
-  String get phoneSubtitle =>
-      'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
+  String get phoneSubtitle => 'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
 
   @override
   String get phoneLabel => 'მობილურის ნომერი';
@@ -243,8 +237,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get guestBrowse => 'კლუბების ნახვა შესვლის გარეშე';
 
   @override
-  String get termsNote =>
-      'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
+  String get termsNote => 'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
 
   @override
   String get registerTitle => 'პროფილის შექმნა';
@@ -256,22 +249,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roleParent => 'მშობელი';
 
   @override
-  String get roleParentDesc =>
-      'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
+  String get roleParentDesc => 'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
 
   @override
   String get roleCoach => 'მწვრთნელი';
 
   @override
-  String get roleCoachDesc =>
-      'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
+  String get roleCoachDesc => 'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
 
   @override
   String get roleChild => 'ბავშვი';
 
   @override
-  String get roleChildDesc =>
-      '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
+  String get roleChildDesc => '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
 
   @override
   String get soon => 'მალე';
@@ -314,8 +304,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'კლუბის ადმინისტრატორი ადასტურებს მწვრთნელის როლს. დადასტურებამდე ბავშვების მონაცემები არ ჩანს — ეს იცავს ბავშვებს.';
 
   @override
-  String get coachPendingDemoApprove =>
-      'დემო: დადასტურება ადმინისტრატორის სახელით';
+  String get coachPendingDemoApprove => 'დემო: დადასტურება ადმინისტრატორის სახელით';
 
   @override
   String get coachRejectedTitle => 'მოთხოვნა უარყოფილია';
@@ -394,8 +383,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get noChildrenTitle => 'დაამატეთ პირველი ბავშვი';
 
   @override
-  String get noChildrenBody =>
-      'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
+  String get noChildrenBody => 'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
 
   @override
   String get addChild => 'ბავშვის დამატება';
@@ -406,32 +394,20 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get noGroupBody =>
-      'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
+  String get noGroupBody => 'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
 
   @override
   String get findClub => 'კლუბის პოვნა';
 
   @override
   String inDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count დღეში',
-      one: 'ხვალ',
-      zero: 'დღეს',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count დღეში', one: 'ხვალ', zero: 'დღეს');
     return '$_temp0';
   }
 
   @override
   String startsInHours(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count საათში',
-      zero: 'იწყება მალე',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count საათში', zero: 'იწყება მალე');
     return '$_temp0';
   }
 
@@ -511,8 +487,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get cancelTraining => 'გაუქმება';
 
   @override
-  String get cancelTrainingConfirm =>
-      'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
+  String get cancelTrainingConfirm => 'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
 
   @override
   String get keepTraining => 'არა, დავტოვოთ';
@@ -556,12 +531,10 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get photoConsentAllGiven =>
-      'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
+  String get photoConsentAllGiven => 'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
 
   @override
-  String get photoConsentConfirm =>
-      'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
+  String get photoConsentConfirm => 'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
 
   @override
   String get selectVenue => 'აირჩიეთ ადგილი';
@@ -610,8 +583,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roster => 'ჯგუფის წევრები';
 
   @override
-  String get noGroupsCoach =>
-      'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
+  String get noGroupsCoach => 'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
 
   @override
   String get membershipRequests => 'გაწევრიანების მოთხოვნები';
@@ -680,8 +652,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chatGroups => 'ჯგუფის ჩატები';
 
   @override
-  String get chatNotAllowed =>
-      'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
+  String get chatNotAllowed => 'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
 
   @override
   String get chatPrivacyNote =>
@@ -807,8 +778,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'ნებისმიერ დროს შეგიძლიათ წაშლა. ანგარიშის წაშლისას ყველა ცნობა სრულად იშლება. ჯგუფიდან გასვლისას მწვრთნელის წვდომა წყდება.';
 
   @override
-  String get certConsentAgree =>
-      'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
+  String get certConsentAgree => 'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
 
   @override
   String get takePhoto => 'კამერა';
@@ -835,8 +805,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteCertificate => 'ცნობის წაშლა';
 
   @override
-  String get deleteCertificateConfirm =>
-      'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
+  String get deleteCertificateConfirm => 'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
 
   @override
   String get certDeleted => 'ცნობა წაიშალა';
@@ -898,8 +867,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get certRemindersNote =>
-      'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
+  String get certRemindersNote => 'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
 
   @override
   String fileSelected(String name) {
@@ -963,12 +931,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notificationSettings => 'შეტყობინებების პარამეტრები';
 
   @override
-  String get notificationSettingsHint =>
-      'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
+  String get notificationSettingsHint => 'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
 
   @override
-  String get pushDemoNote =>
-      'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
+  String get pushDemoNote => 'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
 
   @override
   String get paymentsTitle => 'გადახდები';
@@ -1011,8 +977,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chargeGroup => 'ერთჯერადი გადასახადი';
 
   @override
-  String get chargeGroupHint =>
-      'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
+  String get chargeGroupHint => 'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
 
   @override
   String get recurringPlans => 'ყოველთვიური გადასახადი';
@@ -1051,8 +1016,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get smsLog => 'SMS ჟურნალი';
 
   @override
-  String get smsMockNote =>
-      'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
+  String get smsMockNote => 'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
 
   @override
   String get noPayments => 'გადასახადები ჯერ არ არის';
@@ -1074,8 +1038,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get reminderSchedule =>
-      'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
+  String get reminderSchedule => 'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
 
   @override
   String get myChildren => 'ჩემი ბავშვები';
@@ -1108,8 +1071,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteAccount => 'ანგარიშის წაშლა';
 
   @override
-  String get deleteAccountConfirm =>
-      'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
+  String get deleteAccountConfirm => 'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
 
   @override
   String get privacyTitle => 'კონფიდენციალურობა';
@@ -1128,15 +1090,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get ownAccountTitle => 'საკუთარი ანგარიში (14+)';
 
   @override
-  String get ownAccountDisabled =>
-      'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
+  String get ownAccountDisabled => 'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
 
   @override
   String get photoConsentLabel => 'თანხმობა ვარჯიშის ფოტოებზე';
 
   @override
-  String get photoConsentHelp =>
-      'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
+  String get photoConsentHelp => 'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
 
   @override
   String get removeChild => 'ბავშვის წაშლა';
@@ -1186,4 +1146,1100 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get firebaseNotConfiguredBody =>
       'გაუშვით `flutterfire configure` ან აპი დემო რეჟიმში: --dart-define=APP_MODE=demo';
+
+  @override
+  String get chatTooltip => 'ჩატები';
+
+  @override
+  String get chatsTitle => 'ჩატები';
+
+  @override
+  String get quickActions => 'სწრაფი მოქმედებები';
+
+  @override
+  String get actionAdd => 'დამატება';
+
+  @override
+  String get reasonLabel => 'მიზეზი';
+
+  @override
+  String get reasonHint => 'მოკლედ აღწერეთ მიზეზი';
+
+  @override
+  String get loadMore => 'მეტის ჩატვირთვა';
+
+  @override
+  String get loadEarlier => 'ადრინდელი შეტყობინებები';
+
+  @override
+  String get all => 'ყველა';
+
+  @override
+  String get share => 'გაზიარება';
+
+  @override
+  String get copy => 'კოპირება';
+
+  @override
+  String get copied => 'დაკოპირდა';
+
+  @override
+  String get accept => 'მიღება';
+
+  @override
+  String get decline => 'უარყოფა';
+
+  @override
+  String get report => 'გასაჩივრება';
+
+  @override
+  String get send => 'გაგზავნა';
+
+  @override
+  String get search => 'ძიება';
+
+  @override
+  String get create => 'შექმნა';
+
+  @override
+  String get remove => 'წაშლა';
+
+  @override
+  String get statusLabel => 'სტატუსი';
+
+  @override
+  String get offlineBanner => 'კავშირი არ არის — ნაჩვენებია შენახული მონაცემები. ცვლილებები ვერ შეინახება.';
+
+  @override
+  String get backOnline => 'კავშირი აღდგა';
+
+  @override
+  String get permissionDeniedTitle => 'წვდომა შეზღუდულია';
+
+  @override
+  String get permissionDeniedBody => 'ამ გვერდის ნახვის უფლება არ გაქვთ.';
+
+  @override
+  String get validationCancelReasonRequired => 'აირჩიეთ გაუქმების მიზეზი';
+
+  @override
+  String get validationCancelReasonTooShort => 'მიზეზი უნდა იყოს მინიმუმ 5 სიმბოლო';
+
+  @override
+  String get validationWeekdaysRequired => 'აირჩიეთ მინიმუმ ერთი დღე';
+
+  @override
+  String get validationEndBeforeStart => 'დასრულება დაწყებამდეა';
+
+  @override
+  String get validationSeriesTooLong => 'განრიგი მაქსიმუმ 1 წლით';
+
+  @override
+  String get validationSeriesOverlap => 'ამ ჯგუფს ამ დღეებსა და დროს უკვე აქვს განრიგი';
+
+  @override
+  String get validationOpponentRequired => 'მიუთითეთ მეტოქე გუნდი';
+
+  @override
+  String get validationGroupNameRequired => 'მიუთითეთ ჯგუფის სახელი';
+
+  @override
+  String get validationGroupAgeRange => 'ასაკი 3–18, მინიმუმი ≤ მაქსიმუმი';
+
+  @override
+  String get validationInvalidGroupCode => 'კოდი არასწორია ან ჯგუფი არ არის აქტიური';
+
+  @override
+  String get validationInviteExists => 'მოწვევა უკვე გაგზავნილია';
+
+  @override
+  String get validationInviteClosed => 'მოწვევა უკვე დახურულია';
+
+  @override
+  String get validationLinkChildRequired => 'აირჩიეთ ბავშვი';
+
+  @override
+  String get validationNotMember => 'ბავშვი ამ ჯგუფში არ არის';
+
+  @override
+  String get validationRsvpClosed => 'ვარჯიში უკვე დაიწყო — პასუხის შეცვლა აღარ შეიძლება';
+
+  @override
+  String get validationTrainingCancelled => 'ვარჯიში გაუქმებულია';
+
+  @override
+  String get validationAttendanceTooEarly => 'დასწრებას ვარჯიშამდე ერთი საათით ადრე მონიშნავთ';
+
+  @override
+  String get validationFeedbackEmpty => 'შეაფასეთ მინიმუმ ერთი კატეგორია ან დაწერეთ კომენტარი';
+
+  @override
+  String get validationFeedbackRating => 'შეფასება 1–5';
+
+  @override
+  String get validationMediaGroupsRequired => 'აირჩიეთ მინიმუმ ერთი ჯგუფი';
+
+  @override
+  String get validationVideoTooLarge => 'ვიდეო 100 MB-ზე დიდია';
+
+  @override
+  String get validationVideoTooLong => 'ვიდეო 60 წამზე გრძელია';
+
+  @override
+  String get validationAvatarTooLarge => 'ფოტო 1 MB-ზე დიდია';
+
+  @override
+  String get validationRateLimited => 'ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.';
+
+  @override
+  String get validationAlreadyReported => 'უკვე გაასაჩივრეთ';
+
+  @override
+  String get validationReasonRequired => 'მიუთითეთ მიზეზი (მინიმუმ 5 სიმბოლო)';
+
+  @override
+  String get validationLocationOutsideGeorgia => 'ლოკაცია საქართველოს ფარგლებს გარეთაა';
+
+  @override
+  String get validationClubArchived => 'კლუბი დაარქივებულია';
+
+  @override
+  String get validationMatchCancelled => 'თამაში გაუქმებულია';
+
+  @override
+  String get validationCannotPin => 'სისტემური შეტყობინება ვერ დაიპინება';
+
+  @override
+  String get validationAgeRange => 'ასაკი 3–18';
+
+  @override
+  String get validationReportClosed => 'საჩივარი უკვე განხილულია';
+
+  @override
+  String get validationCannotChangeOwnRole => 'საკუთარ როლს ვერ შეცვლით';
+
+  @override
+  String get validationChildNotFound => 'ბავშვი ვერ მოიძებნა';
+
+  @override
+  String get cancelReasonTitle => 'გაუქმების მიზეზი';
+
+  @override
+  String get cancelReasonHint => 'მიზეზი სავალდებულოა — მშობლები მას ნახავენ კალენდარსა და ჩატში.';
+
+  @override
+  String get cancelReasonIllness => 'ავადმყოფობა';
+
+  @override
+  String get cancelReasonWeather => 'ამინდი';
+
+  @override
+  String get cancelReasonVenueBusy => 'სტადიონი დაკავებულია';
+
+  @override
+  String get cancelReasonOther => 'სხვა';
+
+  @override
+  String get cancelReasonTextLabel => 'დეტალები (5–300 სიმბოლო)';
+
+  @override
+  String get cancelAction => 'გაუქმება';
+
+  @override
+  String cancelledWithReason(String reason) {
+    return 'გაუქმდა: $reason';
+  }
+
+  @override
+  String get trainingCancelledSnack => 'ვარჯიში გაუქმდა, მშობლებს ეცნობათ';
+
+  @override
+  String get matchTitle => 'თამაში';
+
+  @override
+  String get matchesTitle => 'თამაშები';
+
+  @override
+  String get nextMatch => 'უახლოესი თამაში';
+
+  @override
+  String get newMatch => 'ახალი თამაში';
+
+  @override
+  String get editMatch => 'თამაშის რედაქტირება';
+
+  @override
+  String get matchOpponent => 'მეტოქე გუნდი';
+
+  @override
+  String matchVs(String opponent) {
+    return 'vs $opponent';
+  }
+
+  @override
+  String get matchType => 'ტიპი';
+
+  @override
+  String get matchTypeFriendly => 'ამხანაგური';
+
+  @override
+  String get matchTypeLeague => 'ლიგა';
+
+  @override
+  String get matchTypeTournament => 'ტურნირი';
+
+  @override
+  String get matchHomeAway => 'მოედანი';
+
+  @override
+  String get matchHome => 'საშინაო';
+
+  @override
+  String get matchAway => 'გასვლითი';
+
+  @override
+  String get matchNeutral => 'ნეიტრალური';
+
+  @override
+  String get matchComment => 'კომენტარი';
+
+  @override
+  String get matchSaved => 'თამაში შენახულია, მშობლებს ეცნობათ';
+
+  @override
+  String get matchCancelledSnack => 'თამაში გაუქმდა, მშობლებს ეცნობათ';
+
+  @override
+  String get matchPlayed => 'ჩატარდა';
+
+  @override
+  String get markPlayed => 'ჩატარებულად მონიშვნა';
+
+  @override
+  String get cancelMatch => 'თამაშის გაუქმება';
+
+  @override
+  String get matchBadge => 'თამაში';
+
+  @override
+  String get noMatches => 'დაგეგმილი თამაში არ არის';
+
+  @override
+  String get seriesTitle => 'ვარჯიშების განრიგი';
+
+  @override
+  String get seriesNew => 'განმეორებადი განრიგი';
+
+  @override
+  String get seriesEdit => 'განრიგის შეცვლა';
+
+  @override
+  String get seriesWeekdays => 'კვირის დღეები';
+
+  @override
+  String get seriesStartTime => 'დაწყების დრო';
+
+  @override
+  String get seriesStartDate => 'დაწყების თარიღი';
+
+  @override
+  String get seriesEndDate => 'დასრულების თარიღი';
+
+  @override
+  String get seriesNoEnd => 'დასრულების გარეშე';
+
+  @override
+  String seriesSummary(String days, String time) {
+    return '$days · $time';
+  }
+
+  @override
+  String get seriesSaved => 'განრიგი შენახულია — ვარჯიშები კალენდარშია';
+
+  @override
+  String get seriesEnded => 'განრიგი დასრულდა';
+
+  @override
+  String get seriesEndAction => 'განრიგის დასრულება';
+
+  @override
+  String get seriesEndConfirm =>
+      'შემდგომი ვარჯიშები წაიშლება. ვარჯიშები, რომლებზეც მშობლებმა უკვე უპასუხეს, გაუქმდება მიზეზით.';
+
+  @override
+  String get seriesNone => 'განმეორებადი განრიგი ჯერ არ არის';
+
+  @override
+  String get seriesRecurringBadge => 'განრიგიდან';
+
+  @override
+  String get editScopeTitle => 'რომელი ვარჯიში შევცვალოთ?';
+
+  @override
+  String get editScopeThis => 'მხოლოდ ეს ვარჯიში';
+
+  @override
+  String get editScopeFuture => 'ეს და შემდეგი ვარჯიშები';
+
+  @override
+  String get seriesHorizonNote => 'ვარჯიშები იქმნება 8 კვირით წინ და ავტომატურად გრძელდება.';
+
+  @override
+  String seriesConflicts(int count) {
+    return '$count თარიღი გამოტოვდა — იმ დროს უკვე არის ვარჯიში';
+  }
+
+  @override
+  String get rsvpTitle => 'მოვა ვარჯიშზე?';
+
+  @override
+  String get rsvpYes => 'მოვა';
+
+  @override
+  String get rsvpNo => 'ვერ მოვა';
+
+  @override
+  String get rsvpMaybe => 'ჯერ არ ვიცი';
+
+  @override
+  String get rsvpReasonHint => 'მიზეზი (არასავალდებულო)';
+
+  @override
+  String get rsvpSaved => 'პასუხი გაეგზავნა მწვრთნელს';
+
+  @override
+  String get rsvpClosedNote => 'ვარჯიში დაიწყო — პასუხი აღარ იცვლება.';
+
+  @override
+  String get rsvpNotice => 'პასუხი დასწრებად არ ითვლება — დასწრებას მწვრთნელი აღნიშნავს.';
+
+  @override
+  String get attendanceTitle => 'დასწრება';
+
+  @override
+  String get attendancePresent => 'მოვიდა';
+
+  @override
+  String get attendanceAbsent => 'არ მოსულა';
+
+  @override
+  String get attendanceExcused => 'საპატიო';
+
+  @override
+  String get attendanceNotMarked => 'არ არის მონიშნული';
+
+  @override
+  String get attendanceMarkAllPresent => 'დანარჩენები — მოვიდა';
+
+  @override
+  String attendanceSummary(String present, String absent, String excused, String unmarked) {
+    return '$present მოვიდა · $absent არა · $excused საპატიო · $unmarked მოუნიშნავი';
+  }
+
+  @override
+  String get attendanceRecorded => 'აღრიცხული დასწრება';
+
+  @override
+  String get attendanceOpen => 'დასწრების აღრიცხვა';
+
+  @override
+  String attendanceRsvpLabel(String answer) {
+    return 'მშობლის პასუხი: $answer';
+  }
+
+  @override
+  String get attendanceGroupStats => 'ჯგუფის დასწრება';
+
+  @override
+  String get attendanceThisMonth => 'ამ თვეში';
+
+  @override
+  String attendanceRate(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get attendanceNoData => 'დასწრება ჯერ არ არის აღრიცხული';
+
+  @override
+  String get attendanceHistory => 'დასწრების ისტორია';
+
+  @override
+  String get attendanceMonthly => 'თვიური დასწრება';
+
+  @override
+  String get attendanceUpcomingResponses => 'მომავალი ვარჯიშები';
+
+  @override
+  String get responsesTitle => 'მშობლების პასუხები';
+
+  @override
+  String responsesCount(String yes, String no, String maybe) {
+    return '$yes მოვა · $no ვერ · $maybe არ იცის';
+  }
+
+  @override
+  String get progressTitle => 'პროგრესი';
+
+  @override
+  String get progressTrainings => 'ჩატარებული ვარჯიში';
+
+  @override
+  String get progressRate => 'დასწრება';
+
+  @override
+  String get progressTrend => 'დასწრების ტენდენცია';
+
+  @override
+  String get progressFeedback => 'მწვრთნელის შეფასება';
+
+  @override
+  String get progressNoFeedback => 'მწვრთნელს ჯერ არ დაუწერია შეფასება';
+
+  @override
+  String get progressAchievements => 'მიღწევები';
+
+  @override
+  String get progressPrivacyNote => 'პროგრესს ხედავთ მხოლოდ თქვენ და ბავშვის მწვრთნელები. რეიტინგები არ ქვეყნდება.';
+
+  @override
+  String get feedbackTechnique => 'ტექნიკა';
+
+  @override
+  String get feedbackDiscipline => 'დისციპლინა';
+
+  @override
+  String get feedbackTeamwork => 'გუნდური თამაში';
+
+  @override
+  String get feedbackEffort => 'მონდომება';
+
+  @override
+  String get feedbackImprovement => 'პროგრესი';
+
+  @override
+  String get feedbackAdd => 'შეფასების დამატება';
+
+  @override
+  String get feedbackComment => 'კომენტარი მშობლისთვის';
+
+  @override
+  String get feedbackCommentHint => 'დაწერეთ კონსტრუქციულად და ბავშვის ასაკის შესაბამისად';
+
+  @override
+  String get feedbackSaved => 'შეფასება გაეგზავნა მშობელს';
+
+  @override
+  String get achFirstTraining => 'პირველი ვარჯიში';
+
+  @override
+  String achAttended(int count) {
+    return '$count ვარჯიში';
+  }
+
+  @override
+  String get achPerfectMonth => 'სრულყოფილი თვე';
+
+  @override
+  String get achStreak => '3 თვე ზედიზედ';
+
+  @override
+  String get achLocked => 'ჯერ არ არის';
+
+  @override
+  String get invitesTitle => 'მოწვევები';
+
+  @override
+  String get invitesEmpty => 'ახალი მოწვევა არ გაქვთ';
+
+  @override
+  String inviteFrom(String child, String group) {
+    return '$child მოწვეულია ჯგუფში $group';
+  }
+
+  @override
+  String get inviteLinkTitle => 'რომელ ბავშვს ეხება მოწვევა?';
+
+  @override
+  String get inviteLinkHint => 'თუ ბავშვი უკვე დარეგისტრირებულია, აირჩიეთ ის — ასე დუბლიკატი არ შეიქმნება.';
+
+  @override
+  String inviteAsNew(String name) {
+    return 'ახალი ბავშვის სახით დამატება ($name)';
+  }
+
+  @override
+  String get inviteMediaConsent => 'ვეთანხმები, რომ ბავშვი გამოჩნდეს გუნდის ფოტოებსა და ვიდეოებში';
+
+  @override
+  String get inviteAccepted => 'ბავშვი დაემატა ჯგუფს';
+
+  @override
+  String get inviteDeclined => 'მოწვევა უარყოფილია';
+
+  @override
+  String inviteBanner(int count) {
+    return '$count ახალი მოწვევა ჯგუფში';
+  }
+
+  @override
+  String get inviteStatusSent => 'გაგზავნილი';
+
+  @override
+  String get inviteStatusAccepted => 'მიღებული';
+
+  @override
+  String get inviteStatusDeclined => 'უარყოფილი';
+
+  @override
+  String get inviteStatusRevoked => 'გაუქმებული';
+
+  @override
+  String get inviteRevoke => 'მოწვევის გაუქმება';
+
+  @override
+  String get groupCode => 'ჯგუფის კოდი';
+
+  @override
+  String get groupCodeHint => 'მშობელი კოდს შეიყვანს ბავშვის პროფილში — თქვენ დაადასტურებთ.';
+
+  @override
+  String groupCodeShareText(String group, String code) {
+    return 'შემოუერთდით ჯგუფს „$group“ აპლიკაციაში გუნდი. კოდი: $code';
+  }
+
+  @override
+  String get joinGroup => 'ჯგუფში გაწევრება კოდით';
+
+  @override
+  String get joinGroupCodeLabel => '6-სიმბოლოიანი კოდი';
+
+  @override
+  String joinGroupSent(String group) {
+    return 'მოთხოვნა გაეგზავნა ჯგუფს „$group“';
+  }
+
+  @override
+  String get leaveGroup => 'ჯგუფიდან გასვლა';
+
+  @override
+  String leaveGroupConfirm(String child, String group) {
+    return '$child დატოვებს ჯგუფს „$group“. მწვრთნელი მის მონაცემებს და ცნობას ვეღარ ნახავს.';
+  }
+
+  @override
+  String get leftGroup => 'ბავშვი გავიდა ჯგუფიდან';
+
+  @override
+  String get membershipTitle => 'ჯგუფები და მოთხოვნები';
+
+  @override
+  String get newGroup => 'ახალი ჯგუფი';
+
+  @override
+  String get groupName => 'ჯგუფის სახელი';
+
+  @override
+  String get groupAgeFrom => 'ასაკი — დან';
+
+  @override
+  String get groupAgeTo => 'ასაკი — მდე';
+
+  @override
+  String get groupClub => 'კლუბი';
+
+  @override
+  String get groupSport => 'სპორტი';
+
+  @override
+  String groupCreated(String code) {
+    return 'ჯგუფი შეიქმნა. კოდი: $code';
+  }
+
+  @override
+  String get addChildTitle => 'ბავშვის დამატება';
+
+  @override
+  String get addChildByCode => 'კოდით';
+
+  @override
+  String get addChildBySearch => 'ძიებით';
+
+  @override
+  String get addChildManual => 'ხელით';
+
+  @override
+  String get addChildSearchHint => 'ბავშვის სახელი ან გვარი';
+
+  @override
+  String get addChildSearchNote => 'მოწვევა მიდის მშობელთან. ბავშვი ჯგუფში მხოლოდ მშობლის დადასტურების შემდეგ ჩანს.';
+
+  @override
+  String get addChildManualNote => 'მშობელი მიიღებს მოწვევას. დადასტურებამდე ხედავთ მხოლოდ სახელს და გვარს.';
+
+  @override
+  String get parentPhone => 'მშობლის ტელეფონი';
+
+  @override
+  String get inviteSent => 'მოწვევა გაეგზავნა მშობელს';
+
+  @override
+  String get invitesSent => 'გაგზავნილი მოწვევები';
+
+  @override
+  String birthYearShort(String year) {
+    return '$year წ.';
+  }
+
+  @override
+  String get pendingParentBadge => 'ელოდება მშობელს';
+
+  @override
+  String get noSearchResults => 'ვერაფერი მოიძებნა';
+
+  @override
+  String get requestViaCode => 'კოდით';
+
+  @override
+  String get mediaTitle => 'მედია';
+
+  @override
+  String get mediaRecent => 'ბოლო ფოტოები და ვიდეოები';
+
+  @override
+  String get mediaTakePhoto => 'ფოტოს გადაღება';
+
+  @override
+  String get mediaRecordVideo => 'ვიდეოს გადაღება';
+
+  @override
+  String get mediaFromGallery => 'გალერეიდან';
+
+  @override
+  String get mediaCaption => 'წარწერა';
+
+  @override
+  String get mediaGroups => 'ვის გამოუჩნდეს';
+
+  @override
+  String get mediaConsentConfirm => 'ვადასტურებ: ბავშვები, რომელთა მშობლებს თანხმობა არ აქვთ, მედიაში არ ჩანან';
+
+  @override
+  String get mediaPublish => 'გამოქვეყნება';
+
+  @override
+  String get mediaPublished => 'გამოქვეყნდა — ჯგუფის მშობლებს ეცნობათ';
+
+  @override
+  String get mediaEmpty => 'მედია ჯერ არ არის';
+
+  @override
+  String mediaVideo(int seconds) {
+    return 'ვიდეო · $seconds წმ';
+  }
+
+  @override
+  String get mediaNoDownload => 'ჩამოტვირთვა გამორთულია ბავშვების კონფიდენციალურობისთვის.';
+
+  @override
+  String get mediaDelete => 'მედიის წაშლა';
+
+  @override
+  String get mediaHidden => 'კონტენტი დამალულია მოდერაციით';
+
+  @override
+  String get mediaLimits => 'ფოტო ≤ 10 MB · ვიდეო ≤ 60 წმ და 100 MB';
+
+  @override
+  String mediaConsentMissing(int count, String names) {
+    return '$count ბავშვს მედიაზე თანხმობა არ აქვს: $names';
+  }
+
+  @override
+  String get reportTitle => 'გასაჩივრება';
+
+  @override
+  String get reportReasonInappropriate => 'შეუფერებელი კონტენტი';
+
+  @override
+  String get reportReasonPrivacy => 'კონფიდენციალურობა';
+
+  @override
+  String get reportReasonSpam => 'სპამი';
+
+  @override
+  String get reportReasonOther => 'სხვა';
+
+  @override
+  String get reportNote => 'კომენტარი (არასავალდებულო)';
+
+  @override
+  String get reportSent => 'საჩივარი გაეგზავნა ადმინისტრატორს';
+
+  @override
+  String get messageHidden => 'შეტყობინება დამალულია მოდერაციით';
+
+  @override
+  String get chatsEmpty => 'ჩატები გამოჩნდება, როცა ბავშვი ჯგუფში გაწევრდება';
+
+  @override
+  String get chatAnnouncement => 'განცხადება';
+
+  @override
+  String get chatAnnouncementToggle => 'განცხადებად გაგზავნა (დაპინული)';
+
+  @override
+  String get chatPin => 'დაპინვა';
+
+  @override
+  String get chatUnpin => 'მოხსნა';
+
+  @override
+  String get chatPinned => 'დაპინული';
+
+  @override
+  String chatReadBy(int count) {
+    return 'წაიკითხა $count';
+  }
+
+  @override
+  String get chatSendFailed => 'ვერ გაიგზავნა';
+
+  @override
+  String get chatRetry => 'ხელახლა';
+
+  @override
+  String get chatSending => 'იგზავნება…';
+
+  @override
+  String get chatNoMessages => 'შეტყობინებები ჯერ არ არის';
+
+  @override
+  String get chatSystem => 'სისტემა';
+
+  @override
+  String unreadCount(int count) {
+    return '$count წაუკითხავი';
+  }
+
+  @override
+  String get notifNewMatch => 'ახალი თამაში';
+
+  @override
+  String get notifMatchChanged => 'თამაში შეიცვალა';
+
+  @override
+  String get notifMatchReminder => 'თამაშის შეხსენება';
+
+  @override
+  String get notifGroupInvite => 'მოწვევა ჯგუფში';
+
+  @override
+  String get notifInviteAnswered => 'მოწვევაზე პასუხი';
+
+  @override
+  String get notifAttendanceRecorded => 'დასწრება აღირიცხა';
+
+  @override
+  String get notifFeedbackAdded => 'მწვრთნელის შეფასება';
+
+  @override
+  String get notifAnnouncement => 'განცხადება';
+
+  @override
+  String get notifNewMedia => 'ახალი ფოტო/ვიდეო';
+
+  @override
+  String get notifScheduleChanged => 'განრიგი შეიცვალა';
+
+  @override
+  String notifBodyMatch(String opponent, String group) {
+    return '$opponent · $group';
+  }
+
+  @override
+  String notifBodyInvite(String child, String group) {
+    return '$child → $group';
+  }
+
+  @override
+  String notifBodyChild(String child) {
+    return '$child';
+  }
+
+  @override
+  String notifBodyCancelled(String group, String reason) {
+    return '$group · $reason';
+  }
+
+  @override
+  String get catTrainings => 'ვარჯიშები';
+
+  @override
+  String get catMatches => 'თამაშები';
+
+  @override
+  String get catInvitations => 'მოწვევები';
+
+  @override
+  String get catAttendance => 'დასწრება';
+
+  @override
+  String get catPayments => 'გადახდები';
+
+  @override
+  String get catChat => 'ჩატი';
+
+  @override
+  String get catCertificates => 'ცნობები';
+
+  @override
+  String get catAnnouncements => 'განცხადებები';
+
+  @override
+  String get notificationsEmptyCategory => 'ამ კატეგორიაში შეტყობინება არ არის';
+
+  @override
+  String get paymentsOutstanding => 'გადასახდელი';
+
+  @override
+  String get paymentsPaidTotal => 'გადახდილი';
+
+  @override
+  String get paymentsOverdueTotal => 'ვადაგადაცილებული';
+
+  @override
+  String get paymentsFilterChild => 'ბავშვი';
+
+  @override
+  String get paymentsFilterSport => 'სპორტი';
+
+  @override
+  String get paymentsReminderPrefs => 'შეხსენების პარამეტრები';
+
+  @override
+  String get paymentsNoOnline => 'ონლაინ გადახდა ჯერ არ არის — გადაიხადეთ კლუბის მითითებით.';
+
+  @override
+  String get paymentCancelReason => 'გაუქმების მიზეზი';
+
+  @override
+  String get paymentAudit => 'ცვლილებების ისტორია';
+
+  @override
+  String paymentAuditLine(String actor, String from, String to) {
+    return '$actor: $from → $to';
+  }
+
+  @override
+  String paymentSummaryMonth(String month) {
+    return '$month — შეჯამება';
+  }
+
+  @override
+  String get paymentTitleLabel => 'დასახელება (არასავალდებულო)';
+
+  @override
+  String paymentChildren(int count) {
+    return '$count ბავშვი';
+  }
+
+  @override
+  String get accountTitle => 'ანგარიში';
+
+  @override
+  String get profilePhoto => 'პროფილის ფოტო';
+
+  @override
+  String get profilePhotoChange => 'ფოტოს შეცვლა';
+
+  @override
+  String get profilePhotoRemove => 'ფოტოს წაშლა';
+
+  @override
+  String get profilePhotoUpdated => 'ფოტო განახლდა';
+
+  @override
+  String get privacySettingsTitle => 'კონფიდენციალურობა';
+
+  @override
+  String get privacyPhotoVisible => 'ჩემი ფოტო ჩანდეს ჯგუფის მწვრთნელებისთვის/მშობლებისთვის';
+
+  @override
+  String get privacyAnalytics => 'ანონიმური დიაგნოსტიკა (შეცდომების ანგარიშები)';
+
+  @override
+  String get consentsTitle => 'თანხმობები';
+
+  @override
+  String consentDataGiven(String date) {
+    return 'მონაცემების დამუშავება — $date';
+  }
+
+  @override
+  String get consentSmsToggle => 'SMS შეხსენებები გადასახადებზე';
+
+  @override
+  String consentMedia(String child) {
+    return 'მედია: $child';
+  }
+
+  @override
+  String get dataExport => 'ჩემი მონაცემების ექსპორტი';
+
+  @override
+  String get dataExportHint =>
+      'მიიღებთ JSON ფაილს თქვენი და ბავშვების მონაცემებით (სამედიცინო ფაილების შიგთავსის გარეშე).';
+
+  @override
+  String get dataExportReady => 'ექსპორტი მზადაა';
+
+  @override
+  String get dataExportRequested => 'ექსპორტის მოთხოვნა მიღებულია';
+
+  @override
+  String get accountRequests => 'მოთხოვნები';
+
+  @override
+  String get requestStatusPending => 'მოლოდინში';
+
+  @override
+  String get requestStatusProcessing => 'მუშავდება';
+
+  @override
+  String get requestStatusDone => 'დასრულდა';
+
+  @override
+  String get requestStatusRejected => 'უარყოფილი';
+
+  @override
+  String get deleteImpactTitle => 'რა მოხდება წაშლისას';
+
+  @override
+  String deleteImpactDeleted(String names) {
+    return 'წაიშლება (მხოლოდ თქვენ ხართ მეურვე): $names';
+  }
+
+  @override
+  String deleteImpactUnlinked(String names) {
+    return 'დარჩება სხვა მეურვესთან: $names';
+  }
+
+  @override
+  String get deleteImpactPayments => 'გადახდების ისტორია ანონიმურად შეინახება კლუბის აღრიცხვისთვის.';
+
+  @override
+  String get retentionTitle => 'შენახვა და წაშლა';
+
+  @override
+  String get retentionBody =>
+      'ანგარიშის წაშლისას იშლება პროფილი, ფოტოები, ცნობები (ფაილებიც), დასწრება და შეფასებები იმ ბავშვებისა, რომელთა ერთადერთი მეურვე ხართ. სხვა მეურვის ბავშვი არ იშლება.';
+
+  @override
+  String get weekSchedule => 'ამ კვირის განრიგი';
+
+  @override
+  String get weekEmpty => 'ამ კვირაში ვარჯიში არ არის';
+
+  @override
+  String get attendanceTile => 'დასწრება';
+
+  @override
+  String attendanceTileValue(int percent) {
+    return '$percent% ამ თვეში';
+  }
+
+  @override
+  String get progressShort => 'პროგრესი';
+
+  @override
+  String get importantTitle => 'მნიშვნელოვანი';
+
+  @override
+  String get coachFab => 'დამატება';
+
+  @override
+  String get addTrainingOne => 'ერთჯერადი ვარჯიში';
+
+  @override
+  String get addSeries => 'განმეორებადი განრიგი';
+
+  @override
+  String get addMatch => 'თამაში';
+
+  @override
+  String get addMedia => 'ფოტო / ვიდეო';
+
+  @override
+  String get addChildToGroup => 'ბავშვის მოწვევა';
+
+  @override
+  String get newVenue => 'ახალი ლოკაცია რუკაზე';
+
+  @override
+  String get venuePickHint => 'შეეხეთ რუკას ადგილის მოსანიშნად';
+
+  @override
+  String get venueNearby => 'ახლოს უკვე არის ლოკაციები (200 მ):';
+
+  @override
+  String get venueUseExisting => 'არსებულის გამოყენება';
+
+  @override
+  String get venueName => 'ლოკაციის სახელი';
+
+  @override
+  String get venueAddress => 'მისამართი';
+
+  @override
+  String get venueUnverified => 'დაუდასტურებელი';
+
+  @override
+  String get venueSaved => 'ლოკაცია შენახულია';
+
+  @override
+  String get mapLayerVenues => 'ადგილები';
+
+  @override
+  String get mapLayerTrainings => 'ვარჯიშები';
+
+  @override
+  String get mapLayerMatches => 'თამაშები';
+
+  @override
+  String get mapToday => 'დღეს';
+
+  @override
+  String get mapThisWeek => 'ამ კვირაში';
+
+  @override
+  String get sportCategoryTeam => 'გუნდური';
+
+  @override
+  String get sportCategoryCombat => 'ორთაბრძოლა';
+
+  @override
+  String get sportCategoryOther => 'სხვა';
+
+  @override
+  String sportAgeMin(String age) {
+    return 'მინ. ასაკი: $age';
+  }
+
+  @override
+  String get sportRequiresCert => 'საჭიროა სამედიცინო ცნობა';
+
+  @override
+  String get demoOffline => 'ოფლაინ რეჟიმის სიმულაცია';
+
+  @override
+  String get demoOfflineHint => 'ჩანაწერები ვერ შეინახება — აპი სწორ შეცდომას აჩვენებს.';
+
+  @override
+  String aboutVersion(String version, String env) {
+    return 'ვერსია $version · $env';
+  }
+
+  @override
+  String get adminUseWeb => 'ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში.';
 }

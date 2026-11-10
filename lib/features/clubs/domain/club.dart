@@ -11,12 +11,20 @@ class Club {
     required this.geohash,
     this.phone,
     this.description,
+    this.archived = false,
+    this.adminIds = const [],
   });
 
   final String id;
   final String name;
   final String address;
   final String? phone;
+
+  /// Archived clubs are hidden from search and cannot get new groups.
+  final bool archived;
+
+  /// Club admins (server-managed mirror of the `clubAdmin` claims).
+  final List<String> adminIds;
   final List<String> sportIds;
   final GeoCoord location;
   final String geohash;
@@ -30,7 +38,31 @@ class Club {
     'location': location.toMap(),
     'geohash': geohash,
     'description': description,
+    'status': archived ? 'archived' : 'active',
   };
+
+  Club copyWith({
+    String? name,
+    String? address,
+    String? phone,
+    String? description,
+    List<String>? sportIds,
+    GeoCoord? location,
+    String? geohash,
+    bool? archived,
+    List<String>? adminIds,
+  }) => Club(
+    id: id,
+    name: name ?? this.name,
+    address: address ?? this.address,
+    phone: phone ?? this.phone,
+    description: description ?? this.description,
+    sportIds: sportIds ?? this.sportIds,
+    location: location ?? this.location,
+    geohash: geohash ?? this.geohash,
+    archived: archived ?? this.archived,
+    adminIds: adminIds ?? this.adminIds,
+  );
 
   factory Club.fromMap(String id, Map<String, dynamic> m) => Club(
     id: id,
@@ -41,6 +73,8 @@ class Club {
     location: GeoCoord.fromMap(m['location']),
     geohash: m['geohash'] as String? ?? '',
     description: m['description'] as String?,
+    archived: m['status'] == 'archived',
+    adminIds: readStringList(m['adminIds']),
   );
 }
 
@@ -65,6 +99,8 @@ class Venue {
     required this.sportIds,
     this.clubId,
     this.type = VenueType.field,
+    this.verified = true,
+    this.createdBy,
   });
 
   final String id;
@@ -76,6 +112,10 @@ class Venue {
   final List<String> sportIds;
   final VenueType type;
 
+  /// Coach-pinned venues start unverified (v1.1 §9).
+  final bool verified;
+  final String? createdBy;
+
   Map<String, dynamic> toMap() => {
     'clubId': clubId,
     'name': name,
@@ -84,6 +124,8 @@ class Venue {
     'geohash': geohash,
     'sportIds': sportIds,
     'type': type.name,
+    'verified': verified,
+    'createdBy': createdBy,
   };
 
   factory Venue.fromMap(String id, Map<String, dynamic> m) => Venue(
@@ -95,6 +137,8 @@ class Venue {
     geohash: m['geohash'] as String? ?? '',
     sportIds: readStringList(m['sportIds']),
     type: VenueType.fromName(m['type'] as String?),
+    verified: m['verified'] as bool? ?? true,
+    createdBy: m['createdBy'] as String?,
   );
 }
 
@@ -117,6 +161,7 @@ class MembershipRequest {
     this.groupId,
     this.status = RequestStatus.pending,
     this.childName = '',
+    this.source = 'request',
   });
 
   final String id;
@@ -131,7 +176,11 @@ class MembershipRequest {
   final RequestStatus status;
   final DateTime createdAt;
 
+  /// `request` (club page) or `code` (joined with a group invite code).
+  final String source;
+
   Map<String, dynamic> toMap() => {
+    'source': source,
     'parentId': parentId,
     'childId': childId,
     'clubId': clubId,
@@ -150,6 +199,7 @@ class MembershipRequest {
     createdAt: createdAt,
     status: s,
     childName: childName,
+    source: source,
   );
 
   factory MembershipRequest.fromMap(String id, Map<String, dynamic> m) => MembershipRequest(
@@ -161,5 +211,6 @@ class MembershipRequest {
     status: RequestStatus.fromName(m['status'] as String?),
     createdAt: readDate(m['createdAt']),
     childName: m['childName'] as String? ?? '',
+    source: m['source'] as String? ?? 'request',
   );
 }

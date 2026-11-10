@@ -27,6 +27,40 @@ enum TrainingStatus {
   bool get isActive => this == scheduled || this == moved;
 }
 
+/// Mandatory cancellation reason (v1.1 §7) — shared by trainings and matches.
+enum CancelReasonCode {
+  illness,
+  weather,
+  venueBusy,
+  other;
+
+  static CancelReasonCode? fromName(String? n) {
+    for (final c in values) {
+      if (c.name == n) return c;
+    }
+    return null;
+  }
+}
+
+class CancelReason {
+  const CancelReason(this.code, this.text);
+
+  final CancelReasonCode code;
+  final String text;
+
+  static const minLength = 5;
+  static const maxLength = 300;
+
+  /// Returns an error code or null.
+  static String? validate(CancelReasonCode? code, String text) {
+    if (code == null) return 'cancelReasonRequired';
+    final t = text.trim();
+    if (t.length < minLength) return 'cancelReasonTooShort';
+    if (t.length > maxLength) return 'validationTooLong';
+    return null;
+  }
+}
+
 class Training {
   const Training({
     required this.id,
@@ -41,6 +75,13 @@ class Training {
     this.status = TrainingStatus.scheduled,
     this.updatedAt,
     this.previousStartAt,
+    this.cancelReasonCode,
+    this.cancelReason,
+    this.cancelledAt,
+    this.cancelledBy,
+    this.seriesId,
+    this.occurrenceDate,
+    this.detached = false,
   });
 
   final String id;
@@ -57,6 +98,19 @@ class Training {
   final String createdBy;
   final DateTime? updatedAt;
   final DateTime? previousStartAt;
+  final CancelReasonCode? cancelReasonCode;
+  final String? cancelReason;
+  final DateTime? cancelledAt;
+  final String? cancelledBy;
+
+  /// Recurring series this occurrence belongs to (v1.2) and its Tbilisi date.
+  final String? seriesId;
+  final String? occurrenceDate;
+
+  /// Edited individually; series regeneration never touches it.
+  final bool detached;
+
+  bool get isRecurring => seriesId != null;
 
   DateTime get endAt => startAt.add(Duration(minutes: durationMin));
 
@@ -70,6 +124,11 @@ class Training {
     TrainingStatus? status,
     DateTime? updatedAt,
     DateTime? previousStartAt,
+    CancelReasonCode? cancelReasonCode,
+    String? cancelReason,
+    DateTime? cancelledAt,
+    String? cancelledBy,
+    bool? detached,
   }) => Training(
     id: id,
     groupId: groupId,
@@ -83,6 +142,13 @@ class Training {
     status: status ?? this.status,
     updatedAt: updatedAt ?? this.updatedAt,
     previousStartAt: previousStartAt ?? this.previousStartAt,
+    cancelReasonCode: cancelReasonCode ?? this.cancelReasonCode,
+    cancelReason: cancelReason ?? this.cancelReason,
+    cancelledAt: cancelledAt ?? this.cancelledAt,
+    cancelledBy: cancelledBy ?? this.cancelledBy,
+    seriesId: seriesId,
+    occurrenceDate: occurrenceDate,
+    detached: detached ?? this.detached,
   );
 
   Map<String, dynamic> toMap() => {
@@ -97,6 +163,13 @@ class Training {
     'createdBy': createdBy,
     'updatedAt': updatedAt,
     'previousStartAt': previousStartAt,
+    'cancelReasonCode': cancelReasonCode?.name,
+    'cancelReason': cancelReason,
+    'cancelledAt': cancelledAt,
+    'cancelledBy': cancelledBy,
+    'seriesId': seriesId,
+    'occurrenceDate': occurrenceDate,
+    'detached': detached,
   };
 
   factory Training.fromMap(String id, Map<String, dynamic> m) => Training(
@@ -112,6 +185,13 @@ class Training {
     createdBy: m['createdBy'] as String? ?? '',
     updatedAt: readDateOrNull(m['updatedAt']),
     previousStartAt: readDateOrNull(m['previousStartAt']),
+    cancelReasonCode: CancelReasonCode.fromName(m['cancelReasonCode'] as String?),
+    cancelReason: m['cancelReason'] as String?,
+    cancelledAt: readDateOrNull(m['cancelledAt']),
+    cancelledBy: m['cancelledBy'] as String?,
+    seriesId: m['seriesId'] as String?,
+    occurrenceDate: m['occurrenceDate'] as String?,
+    detached: m['detached'] as bool? ?? false,
   );
 }
 

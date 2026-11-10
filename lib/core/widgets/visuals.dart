@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../features/sports/domain/sport.dart';
+
+import '../../features/moderation/domain/report.dart';
+
+import '../../features/matches/domain/match.dart';
+
+import '../../features/attendance/domain/attendance.dart';
+
 import '../../features/clubs/domain/club.dart';
 import '../../features/medical_certificates/domain/medical_certificate.dart';
 import '../../features/notifications/domain/notification_models.dart';
@@ -129,6 +137,16 @@ String notificationTitle(BuildContext context, NotificationType t) {
     NotificationType.newPhotos => l.notifNewPhotos,
     NotificationType.paymentReminder => l.notifPaymentReminder,
     NotificationType.paymentSms => l.notifPaymentSms,
+    NotificationType.newMatch => l.notifNewMatch,
+    NotificationType.matchChanged => l.notifMatchChanged,
+    NotificationType.matchReminder => l.notifMatchReminder,
+    NotificationType.groupInvite => l.notifGroupInvite,
+    NotificationType.inviteAnswered => l.notifInviteAnswered,
+    NotificationType.attendanceRecorded => l.notifAttendanceRecorded,
+    NotificationType.feedbackAdded => l.notifFeedbackAdded,
+    NotificationType.announcement => l.notifAnnouncement,
+    NotificationType.newMedia => l.notifNewMedia,
+    NotificationType.scheduleChanged => l.notifScheduleChanged,
   };
 }
 
@@ -141,6 +159,15 @@ IconData notificationIcon(NotificationType t) => switch (t) {
   NotificationType.newPhotos => Icons.photo_library_rounded,
   NotificationType.paymentReminder => Icons.payments_rounded,
   NotificationType.paymentSms => Icons.sms_rounded,
+  NotificationType.newMatch ||
+  NotificationType.matchChanged ||
+  NotificationType.matchReminder => Icons.emoji_events_rounded,
+  NotificationType.groupInvite || NotificationType.inviteAnswered => Icons.group_add_rounded,
+  NotificationType.attendanceRecorded => Icons.fact_check_rounded,
+  NotificationType.feedbackAdded => Icons.insights_rounded,
+  NotificationType.announcement => Icons.campaign_rounded,
+  NotificationType.newMedia => Icons.video_library_rounded,
+  NotificationType.scheduleChanged => Icons.event_repeat_rounded,
 };
 
 String notificationBody(BuildContext context, AppNotification n) {
@@ -152,6 +179,157 @@ String notificationBody(BuildContext context, AppNotification n) {
     NotificationType.certificateExpiry => l.notifBodyCert(a['child'] ?? '', a['days'] ?? ''),
     NotificationType.paymentReminder ||
     NotificationType.paymentSms => l.notifBodyPayment(a['child'] ?? '', a['amount'] ?? ''),
+    NotificationType.trainingChanged || NotificationType.matchChanged when a['reason'] != null => l.notifBodyCancelled(
+      a['opponent'] ?? a['group'] ?? '',
+      a['reason']!,
+    ),
+    NotificationType.newMatch ||
+    NotificationType.matchChanged ||
+    NotificationType.matchReminder => l.notifBodyMatch(a['opponent'] ?? '', a['group'] ?? ''),
+    NotificationType.groupInvite ||
+    NotificationType.inviteAnswered => l.notifBodyInvite(a['child'] ?? '', a['group'] ?? ''),
+    NotificationType.attendanceRecorded || NotificationType.feedbackAdded => l.notifBodyChild(a['child'] ?? ''),
+    NotificationType.newMedia => a['coach'] ?? l.notifBodyGroup(a['group'] ?? ''),
     _ => l.notifBodyGroup(a['group'] ?? ''),
   };
 }
+
+String notificationCategoryLabel(BuildContext context, NotificationCategory c) {
+  final l = context.l10n;
+  return switch (c) {
+    NotificationCategory.trainings => l.catTrainings,
+    NotificationCategory.matches => l.catMatches,
+    NotificationCategory.invitations => l.catInvitations,
+    NotificationCategory.attendance => l.catAttendance,
+    NotificationCategory.payments => l.catPayments,
+    NotificationCategory.chat => l.catChat,
+    NotificationCategory.certificates => l.catCertificates,
+    NotificationCategory.announcements => l.catAnnouncements,
+  };
+}
+
+IconData notificationCategoryIcon(NotificationCategory c) => switch (c) {
+  NotificationCategory.trainings => Icons.event_rounded,
+  NotificationCategory.matches => Icons.emoji_events_rounded,
+  NotificationCategory.invitations => Icons.group_add_rounded,
+  NotificationCategory.attendance => Icons.fact_check_rounded,
+  NotificationCategory.payments => Icons.payments_rounded,
+  NotificationCategory.chat => Icons.chat_bubble_rounded,
+  NotificationCategory.certificates => Icons.health_and_safety_rounded,
+  NotificationCategory.announcements => Icons.campaign_rounded,
+};
+
+String cancelReasonLabel(BuildContext context, CancelReasonCode c) {
+  final l = context.l10n;
+  return switch (c) {
+    CancelReasonCode.illness => l.cancelReasonIllness,
+    CancelReasonCode.weather => l.cancelReasonWeather,
+    CancelReasonCode.venueBusy => l.cancelReasonVenueBusy,
+    CancelReasonCode.other => l.cancelReasonOther,
+  };
+}
+
+String matchTypeLabel(BuildContext context, MatchType t) {
+  final l = context.l10n;
+  return switch (t) {
+    MatchType.friendly => l.matchTypeFriendly,
+    MatchType.league => l.matchTypeLeague,
+    MatchType.tournament => l.matchTypeTournament,
+  };
+}
+
+String homeAwayLabel(BuildContext context, HomeAway h) {
+  final l = context.l10n;
+  return switch (h) {
+    HomeAway.home => l.matchHome,
+    HomeAway.away => l.matchAway,
+    HomeAway.neutral => l.matchNeutral,
+  };
+}
+
+String rsvpLabel(BuildContext context, RsvpResponse r) {
+  final l = context.l10n;
+  return switch (r) {
+    RsvpResponse.yes => l.rsvpYes,
+    RsvpResponse.no => l.rsvpNo,
+    RsvpResponse.maybe => l.rsvpMaybe,
+  };
+}
+
+Color rsvpColor(RsvpResponse r) => switch (r) {
+  RsvpResponse.yes => AppColors.success,
+  RsvpResponse.no => AppColors.danger,
+  RsvpResponse.maybe => AppColors.warning,
+};
+
+String attendanceLabel(BuildContext context, AttendanceStatus? s) {
+  final l = context.l10n;
+  return switch (s) {
+    AttendanceStatus.present => l.attendancePresent,
+    AttendanceStatus.absent => l.attendanceAbsent,
+    AttendanceStatus.excused => l.attendanceExcused,
+    null => l.attendanceNotMarked,
+  };
+}
+
+Color attendanceColor(AttendanceStatus? s) => switch (s) {
+  AttendanceStatus.present => AppColors.success,
+  AttendanceStatus.absent => AppColors.danger,
+  AttendanceStatus.excused => AppColors.warning,
+  null => AppColors.neutral,
+};
+
+String feedbackLabel(BuildContext context, FeedbackCategory c) {
+  final l = context.l10n;
+  return switch (c) {
+    FeedbackCategory.technique => l.feedbackTechnique,
+    FeedbackCategory.discipline => l.feedbackDiscipline,
+    FeedbackCategory.teamwork => l.feedbackTeamwork,
+    FeedbackCategory.effort => l.feedbackEffort,
+    FeedbackCategory.improvement => l.feedbackImprovement,
+  };
+}
+
+String achievementLabel(BuildContext context, AchievementKind k) {
+  final l = context.l10n;
+  return switch (k) {
+    AchievementKind.firstTraining => l.achFirstTraining,
+    AchievementKind.attended5 => l.achAttended(5),
+    AchievementKind.attended10 => l.achAttended(10),
+    AchievementKind.attended25 => l.achAttended(25),
+    AchievementKind.attended50 => l.achAttended(50),
+    AchievementKind.attended100 => l.achAttended(100),
+    AchievementKind.perfectMonth => l.achPerfectMonth,
+    AchievementKind.streak3Months => l.achStreak,
+  };
+}
+
+IconData achievementIcon(AchievementKind k) => switch (k) {
+  AchievementKind.firstTraining => Icons.flag_rounded,
+  AchievementKind.perfectMonth => Icons.star_rounded,
+  AchievementKind.streak3Months => Icons.local_fire_department_rounded,
+  _ => Icons.military_tech_rounded,
+};
+
+String reportReasonLabel(BuildContext context, ReportReason r) {
+  final l = context.l10n;
+  return switch (r) {
+    ReportReason.inappropriate => l.reportReasonInappropriate,
+    ReportReason.privacy => l.reportReasonPrivacy,
+    ReportReason.spam => l.reportReasonSpam,
+    ReportReason.other => l.reportReasonOther,
+  };
+}
+
+String sportCategoryLabel(BuildContext context, SportCategory c) {
+  final l = context.l10n;
+  return switch (c) {
+    SportCategory.team => l.sportCategoryTeam,
+    SportCategory.combat => l.sportCategoryCombat,
+    SportCategory.other => l.sportCategoryOther,
+  };
+}
+
+/// Short Georgian/English weekday names for 1 (Mon) … 7 (Sun).
+String weekdayShortName(BuildContext context, int weekday) =>
+    Fmt.of(context).weekdayShort(DateTime.utc(2024, 1, weekday)); // 2024-01-01 is a Monday

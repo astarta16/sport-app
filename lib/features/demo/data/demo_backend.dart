@@ -2,16 +2,23 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import '../../../core/errors/app_exception.dart';
+import '../../account/domain/account_request.dart';
+import '../../admin/domain/admin_models.dart';
+import '../../attendance/domain/attendance.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../chat/domain/chat_message.dart';
 import '../../children/domain/child.dart';
 import '../../clubs/domain/club.dart';
 import '../../groups/domain/group.dart';
+import '../../matches/domain/match.dart';
+import '../../media/domain/media_post.dart';
 import '../../medical_certificates/domain/medical_certificate.dart';
+import '../../moderation/domain/report.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../../payments/domain/payment.dart';
 import '../../sports/domain/sport.dart';
+import '../../trainings/domain/series.dart';
 import '../../trainings/domain/training.dart';
 
 /// In-memory stand-in for Firestore + Storage + Cloud Functions used by
@@ -40,6 +47,32 @@ class DemoBackend {
   final payments = <String, Payment>{};
   final plans = <String, PaymentPlan>{};
   final smsLog = <SmsLogEntry>[];
+
+  // v1.1 / v1.2 collections (see docs/data-model-v1.2.md).
+  final invites = <String, GroupInvite>{};
+  final matches = <String, SportMatch>{};
+  final series = <String, TrainingSeries>{};
+  final rsvps = <String, Rsvp>{};
+  final attendance = <String, AttendanceRecord>{};
+  final feedback = <String, CoachFeedback>{};
+  final mediaPosts = <String, MediaPost>{};
+  final reports = <String, ContentReport>{};
+  final audit = <AuditEntry>[];
+  final paymentAudit = <PaymentAuditEntry>[];
+  final accountRequests = <String, AccountRequest>{};
+
+  /// groupId → uid → lastReadAt (`chats/{groupId}/members/{uid}`).
+  final chatReads = <String, Map<String, DateTime>>{};
+
+  /// Server-side dedupe of notification fan-out (`notifications/{hash}`).
+  final _notificationKeys = <String>{};
+
+  /// uid|bucket|day → count (server `rateLimits`).
+  final _rate = <String, int>{};
+
+  /// Simulated loss of connectivity: reads keep serving the cache, writes
+  /// fail with [BackendUnavailableException] (never a fake success).
+  bool offline = false;
 
   /// Uploaded photo bytes keyed by `demo-mem://<id>`.
   final photos = <String, Uint8List>{};
@@ -78,6 +111,25 @@ class DemoBackend {
     return controller.stream;
   }
 
+  /// Call at the start of every mutation.
+  void requireOnline() {
+    if (offline) throw const BackendUnavailableException('offline');
+  }
+
+  void setOffline(bool value) {
+    offline = value;
+    commit();
+  }
+
+  /// Server-side rate limit (per user, per bucket, per Tbilisi day).
+  void rateLimit(String bucket, int maxPerDay) {
+    final w = TbilisiTimeX.dayKey(clock());
+    final key = '${me.id}|$bucket|$w';
+    final n = (_rate[key] ?? 0) + 1;
+    if (n > maxPerDay) throw const ValidationException('rateLimited');
+    _rate[key] = n;
+  }
+
   AppUser? get currentUser => session == null ? null : users[session!.uid];
 
   AppUser get me {
@@ -105,7 +157,8 @@ class DemoBackend {
   }
 
   /// Cloud-Function equivalent of a push fan-out with role-based recipient
-  /// selection and per-user preferences.
+  /// selection and per-user preferences. [dedupeKey] makes repeated
+  /// deliveries of the same event a no-op (server doc id = hash of it).
   void dispatch(
     NotificationType type,
     Group group, {
@@ -113,6 +166,7 @@ class DemoBackend {
     Map<String, String> args = const {},
     String? excludeUserId,
     Set<String>? onlyParentIds,
+    String? dedupeKey,
   }) {
     final recipients = AccessPolicy.notificationRecipients(
       type: type,
@@ -122,18 +176,104 @@ class DemoBackend {
       onlyParentIds: onlyParentIds,
     );
     for (final u in recipients) {
-      notifications.add(
-        AppNotification(
-          id: newId('ntf'),
-          userId: u.id,
-          type: type,
-          title: '',
-          body: '',
-          createdAt: clock(),
-          route: route,
-          args: {'group': group.name, ...args},
-        ),
+      // Deep-link context: the recipient's child in this group, if any.
+      final childId = u.isParent
+          ? group.memberChildIds.firstWhere((c) => children[c]?.parentIds.contains(u.id) ?? false, orElse: () => '')
+          : '';
+      notifyUser(
+        u.id,
+        type,
+        route: route,
+        args: {'group': group.name, ...args},
+        groupId: group.id,
+        childId: childId.isEmpty ? null : childId,
+        dedupeKey: dedupeKey,
       );
     }
+  }
+
+  /// Writes one inbox entry (respecting preferences and dedupe).
+  void notifyUser(
+    String userId,
+    NotificationType type, {
+    String? route,
+    Map<String, String> args = const {},
+    String? groupId,
+    String? childId,
+    String? dedupeKey,
+  }) {
+    final u = users[userId];
+    if (u == null || u.role == UserRole.child || !u.notificationPrefs.isEnabled(type)) return;
+    if (dedupeKey != null && !_notificationKeys.add('$userId|$dedupeKey')) return;
+    notifications.add(
+      AppNotification(
+        id: newId('ntf'),
+        userId: userId,
+        type: type,
+        title: '',
+        body: '',
+        createdAt: clock(),
+        route: route,
+        args: args,
+        groupId: groupId,
+        childId: childId,
+        dedupeKey: dedupeKey,
+      ),
+    );
+  }
+
+  /// Server-written chat line (`type: system`), e.g. on cancellation.
+  void systemMessage(String groupId, String text) {
+    (messages[groupId] ??= []).add(
+      ChatMessage(
+        id: newId('msg'),
+        groupId: groupId,
+        senderId: 'system',
+        senderName: '',
+        senderRole: UserRole.admin,
+        text: text,
+        createdAt: clock(),
+        type: ChatMessageType.system,
+      ),
+    );
+  }
+
+  /// Append-only audit trail (server `auditLog`).
+  void auditLog(
+    String action,
+    String targetType,
+    String targetId, {
+    String? clubId,
+    Map<String, String> details = const {},
+  }) {
+    final actor = currentUser;
+    audit.add(
+      AuditEntry(
+        id: newId('audit'),
+        action: action,
+        actorId: actor?.id ?? 'system',
+        actorName: actor?.fullName ?? 'system',
+        targetType: targetType,
+        targetId: targetId,
+        clubId: clubId,
+        details: details,
+        at: clock(),
+      ),
+    );
+  }
+
+  /// Unread chat messages for [uid] in [groupId] (server `userUnread`).
+  int unreadFor(String uid, String groupId) {
+    final since = chatReads[groupId]?[uid];
+    return (messages[groupId] ?? const <ChatMessage>[])
+        .where((m) => m.senderId != uid && !m.hidden && (since == null || m.createdAt.isAfter(since)))
+        .length;
+  }
+}
+
+extension TbilisiTimeX on DateTime {
+  static String dayKey(DateTime d) {
+    final w = d.toUtc().add(const Duration(hours: 4));
+    return '${w.year}-${w.month}-${w.day}';
   }
 }

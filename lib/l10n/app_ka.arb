@@ -671,5 +671,639 @@
   },
   "notInGroup": "ჯგუფის გარეშე",
   "firebaseNotConfiguredTitle": "Firebase არ არის კონფიგურირებული",
-  "firebaseNotConfiguredBody": "გაუშვით `flutterfire configure` ან აპი დემო რეჟიმში: --dart-define=APP_MODE=demo"
+  "firebaseNotConfiguredBody": "გაუშვით `flutterfire configure` ან აპი დემო რეჟიმში: --dart-define=APP_MODE=demo",
+  "chatTooltip": "ჩატები",
+  "chatsTitle": "ჩატები",
+  "quickActions": "სწრაფი მოქმედებები",
+  "actionAdd": "დამატება",
+  "reasonLabel": "მიზეზი",
+  "reasonHint": "მოკლედ აღწერეთ მიზეზი",
+  "loadMore": "მეტის ჩატვირთვა",
+  "loadEarlier": "ადრინდელი შეტყობინებები",
+  "all": "ყველა",
+  "share": "გაზიარება",
+  "copy": "კოპირება",
+  "copied": "დაკოპირდა",
+  "accept": "მიღება",
+  "decline": "უარყოფა",
+  "report": "გასაჩივრება",
+  "send": "გაგზავნა",
+  "search": "ძიება",
+  "create": "შექმნა",
+  "remove": "წაშლა",
+  "statusLabel": "სტატუსი",
+  "offlineBanner": "კავშირი არ არის — ნაჩვენებია შენახული მონაცემები. ცვლილებები ვერ შეინახება.",
+  "backOnline": "კავშირი აღდგა",
+  "permissionDeniedTitle": "წვდომა შეზღუდულია",
+  "permissionDeniedBody": "ამ გვერდის ნახვის უფლება არ გაქვთ.",
+  "validationCancelReasonRequired": "აირჩიეთ გაუქმების მიზეზი",
+  "validationCancelReasonTooShort": "მიზეზი უნდა იყოს მინიმუმ 5 სიმბოლო",
+  "validationWeekdaysRequired": "აირჩიეთ მინიმუმ ერთი დღე",
+  "validationEndBeforeStart": "დასრულება დაწყებამდეა",
+  "validationSeriesTooLong": "განრიგი მაქსიმუმ 1 წლით",
+  "validationSeriesOverlap": "ამ ჯგუფს ამ დღეებსა და დროს უკვე აქვს განრიგი",
+  "validationOpponentRequired": "მიუთითეთ მეტოქე გუნდი",
+  "validationGroupNameRequired": "მიუთითეთ ჯგუფის სახელი",
+  "validationGroupAgeRange": "ასაკი 3–18, მინიმუმი ≤ მაქსიმუმი",
+  "validationInvalidGroupCode": "კოდი არასწორია ან ჯგუფი არ არის აქტიური",
+  "validationInviteExists": "მოწვევა უკვე გაგზავნილია",
+  "validationInviteClosed": "მოწვევა უკვე დახურულია",
+  "validationLinkChildRequired": "აირჩიეთ ბავშვი",
+  "validationNotMember": "ბავშვი ამ ჯგუფში არ არის",
+  "validationRsvpClosed": "ვარჯიში უკვე დაიწყო — პასუხის შეცვლა აღარ შეიძლება",
+  "validationTrainingCancelled": "ვარჯიში გაუქმებულია",
+  "validationAttendanceTooEarly": "დასწრებას ვარჯიშამდე ერთი საათით ადრე მონიშნავთ",
+  "validationFeedbackEmpty": "შეაფასეთ მინიმუმ ერთი კატეგორია ან დაწერეთ კომენტარი",
+  "validationFeedbackRating": "შეფასება 1–5",
+  "validationMediaGroupsRequired": "აირჩიეთ მინიმუმ ერთი ჯგუფი",
+  "validationVideoTooLarge": "ვიდეო 100 MB-ზე დიდია",
+  "validationVideoTooLong": "ვიდეო 60 წამზე გრძელია",
+  "validationAvatarTooLarge": "ფოტო 1 MB-ზე დიდია",
+  "validationRateLimited": "ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.",
+  "validationAlreadyReported": "უკვე გაასაჩივრეთ",
+  "validationReasonRequired": "მიუთითეთ მიზეზი (მინიმუმ 5 სიმბოლო)",
+  "validationLocationOutsideGeorgia": "ლოკაცია საქართველოს ფარგლებს გარეთაა",
+  "validationClubArchived": "კლუბი დაარქივებულია",
+  "validationMatchCancelled": "თამაში გაუქმებულია",
+  "validationCannotPin": "სისტემური შეტყობინება ვერ დაიპინება",
+  "validationAgeRange": "ასაკი 3–18",
+  "validationReportClosed": "საჩივარი უკვე განხილულია",
+  "validationCannotChangeOwnRole": "საკუთარ როლს ვერ შეცვლით",
+  "validationChildNotFound": "ბავშვი ვერ მოიძებნა",
+  "cancelReasonTitle": "გაუქმების მიზეზი",
+  "cancelReasonHint": "მიზეზი სავალდებულოა — მშობლები მას ნახავენ კალენდარსა და ჩატში.",
+  "cancelReasonIllness": "ავადმყოფობა",
+  "cancelReasonWeather": "ამინდი",
+  "cancelReasonVenueBusy": "სტადიონი დაკავებულია",
+  "cancelReasonOther": "სხვა",
+  "cancelReasonTextLabel": "დეტალები (5–300 სიმბოლო)",
+  "cancelAction": "გაუქმება",
+  "cancelledWithReason": "გაუქმდა: {reason}",
+  "@cancelledWithReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingCancelledSnack": "ვარჯიში გაუქმდა, მშობლებს ეცნობათ",
+  "matchTitle": "თამაში",
+  "matchesTitle": "თამაშები",
+  "nextMatch": "უახლოესი თამაში",
+  "newMatch": "ახალი თამაში",
+  "editMatch": "თამაშის რედაქტირება",
+  "matchOpponent": "მეტოქე გუნდი",
+  "matchVs": "vs {opponent}",
+  "@matchVs": {
+    "placeholders": {
+      "opponent": {
+        "type": "String"
+      }
+    }
+  },
+  "matchType": "ტიპი",
+  "matchTypeFriendly": "ამხანაგური",
+  "matchTypeLeague": "ლიგა",
+  "matchTypeTournament": "ტურნირი",
+  "matchHomeAway": "მოედანი",
+  "matchHome": "საშინაო",
+  "matchAway": "გასვლითი",
+  "matchNeutral": "ნეიტრალური",
+  "matchComment": "კომენტარი",
+  "matchSaved": "თამაში შენახულია, მშობლებს ეცნობათ",
+  "matchCancelledSnack": "თამაში გაუქმდა, მშობლებს ეცნობათ",
+  "matchPlayed": "ჩატარდა",
+  "markPlayed": "ჩატარებულად მონიშვნა",
+  "cancelMatch": "თამაშის გაუქმება",
+  "matchBadge": "თამაში",
+  "noMatches": "დაგეგმილი თამაში არ არის",
+  "seriesTitle": "ვარჯიშების განრიგი",
+  "seriesNew": "განმეორებადი განრიგი",
+  "seriesEdit": "განრიგის შეცვლა",
+  "seriesWeekdays": "კვირის დღეები",
+  "seriesStartTime": "დაწყების დრო",
+  "seriesStartDate": "დაწყების თარიღი",
+  "seriesEndDate": "დასრულების თარიღი",
+  "seriesNoEnd": "დასრულების გარეშე",
+  "seriesSummary": "{days} · {time}",
+  "@seriesSummary": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesSaved": "განრიგი შენახულია — ვარჯიშები კალენდარშია",
+  "seriesEnded": "განრიგი დასრულდა",
+  "seriesEndAction": "განრიგის დასრულება",
+  "seriesEndConfirm": "შემდგომი ვარჯიშები წაიშლება. ვარჯიშები, რომლებზეც მშობლებმა უკვე უპასუხეს, გაუქმდება მიზეზით.",
+  "seriesNone": "განმეორებადი განრიგი ჯერ არ არის",
+  "seriesRecurringBadge": "განრიგიდან",
+  "editScopeTitle": "რომელი ვარჯიში შევცვალოთ?",
+  "editScopeThis": "მხოლოდ ეს ვარჯიში",
+  "editScopeFuture": "ეს და შემდეგი ვარჯიშები",
+  "seriesHorizonNote": "ვარჯიშები იქმნება 8 კვირით წინ და ავტომატურად გრძელდება.",
+  "seriesConflicts": "{count} თარიღი გამოტოვდა — იმ დროს უკვე არის ვარჯიში",
+  "@seriesConflicts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rsvpTitle": "მოვა ვარჯიშზე?",
+  "rsvpYes": "მოვა",
+  "rsvpNo": "ვერ მოვა",
+  "rsvpMaybe": "ჯერ არ ვიცი",
+  "rsvpReasonHint": "მიზეზი (არასავალდებულო)",
+  "rsvpSaved": "პასუხი გაეგზავნა მწვრთნელს",
+  "rsvpClosedNote": "ვარჯიში დაიწყო — პასუხი აღარ იცვლება.",
+  "rsvpNotice": "პასუხი დასწრებად არ ითვლება — დასწრებას მწვრთნელი აღნიშნავს.",
+  "attendanceTitle": "დასწრება",
+  "attendancePresent": "მოვიდა",
+  "attendanceAbsent": "არ მოსულა",
+  "attendanceExcused": "საპატიო",
+  "attendanceNotMarked": "არ არის მონიშნული",
+  "attendanceMarkAllPresent": "დანარჩენები — მოვიდა",
+  "attendanceSummary": "{present} მოვიდა · {absent} არა · {excused} საპატიო · {unmarked} მოუნიშნავი",
+  "@attendanceSummary": {
+    "placeholders": {
+      "present": {
+        "type": "String"
+      },
+      "absent": {
+        "type": "String"
+      },
+      "excused": {
+        "type": "String"
+      },
+      "unmarked": {
+        "type": "String"
+      }
+    }
+  },
+  "attendanceRecorded": "აღრიცხული დასწრება",
+  "attendanceOpen": "დასწრების აღრიცხვა",
+  "attendanceRsvpLabel": "მშობლის პასუხი: {answer}",
+  "@attendanceRsvpLabel": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "attendanceGroupStats": "ჯგუფის დასწრება",
+  "attendanceThisMonth": "ამ თვეში",
+  "attendanceRate": "{percent}%",
+  "@attendanceRate": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "attendanceNoData": "დასწრება ჯერ არ არის აღრიცხული",
+  "attendanceHistory": "დასწრების ისტორია",
+  "attendanceMonthly": "თვიური დასწრება",
+  "attendanceUpcomingResponses": "მომავალი ვარჯიშები",
+  "responsesTitle": "მშობლების პასუხები",
+  "responsesCount": "{yes} მოვა · {no} ვერ · {maybe} არ იცის",
+  "@responsesCount": {
+    "placeholders": {
+      "yes": {
+        "type": "String"
+      },
+      "no": {
+        "type": "String"
+      },
+      "maybe": {
+        "type": "String"
+      }
+    }
+  },
+  "progressTitle": "პროგრესი",
+  "progressTrainings": "ჩატარებული ვარჯიში",
+  "progressRate": "დასწრება",
+  "progressTrend": "დასწრების ტენდენცია",
+  "progressFeedback": "მწვრთნელის შეფასება",
+  "progressNoFeedback": "მწვრთნელს ჯერ არ დაუწერია შეფასება",
+  "progressAchievements": "მიღწევები",
+  "progressPrivacyNote": "პროგრესს ხედავთ მხოლოდ თქვენ და ბავშვის მწვრთნელები. რეიტინგები არ ქვეყნდება.",
+  "feedbackTechnique": "ტექნიკა",
+  "feedbackDiscipline": "დისციპლინა",
+  "feedbackTeamwork": "გუნდური თამაში",
+  "feedbackEffort": "მონდომება",
+  "feedbackImprovement": "პროგრესი",
+  "feedbackAdd": "შეფასების დამატება",
+  "feedbackComment": "კომენტარი მშობლისთვის",
+  "feedbackCommentHint": "დაწერეთ კონსტრუქციულად და ბავშვის ასაკის შესაბამისად",
+  "feedbackSaved": "შეფასება გაეგზავნა მშობელს",
+  "achFirstTraining": "პირველი ვარჯიში",
+  "achAttended": "{count} ვარჯიში",
+  "@achAttended": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "achPerfectMonth": "სრულყოფილი თვე",
+  "achStreak": "3 თვე ზედიზედ",
+  "achLocked": "ჯერ არ არის",
+  "invitesTitle": "მოწვევები",
+  "invitesEmpty": "ახალი მოწვევა არ გაქვთ",
+  "inviteFrom": "{child} მოწვეულია ჯგუფში {group}",
+  "@inviteFrom": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteLinkTitle": "რომელ ბავშვს ეხება მოწვევა?",
+  "inviteLinkHint": "თუ ბავშვი უკვე დარეგისტრირებულია, აირჩიეთ ის — ასე დუბლიკატი არ შეიქმნება.",
+  "inviteAsNew": "ახალი ბავშვის სახით დამატება ({name})",
+  "@inviteAsNew": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteMediaConsent": "ვეთანხმები, რომ ბავშვი გამოჩნდეს გუნდის ფოტოებსა და ვიდეოებში",
+  "inviteAccepted": "ბავშვი დაემატა ჯგუფს",
+  "inviteDeclined": "მოწვევა უარყოფილია",
+  "inviteBanner": "{count} ახალი მოწვევა ჯგუფში",
+  "@inviteBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteStatusSent": "გაგზავნილი",
+  "inviteStatusAccepted": "მიღებული",
+  "inviteStatusDeclined": "უარყოფილი",
+  "inviteStatusRevoked": "გაუქმებული",
+  "inviteRevoke": "მოწვევის გაუქმება",
+  "groupCode": "ჯგუფის კოდი",
+  "groupCodeHint": "მშობელი კოდს შეიყვანს ბავშვის პროფილში — თქვენ დაადასტურებთ.",
+  "groupCodeShareText": "შემოუერთდით ჯგუფს „{group}“ აპლიკაციაში გუნდი. კოდი: {code}",
+  "@groupCodeShareText": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "joinGroup": "ჯგუფში გაწევრება კოდით",
+  "joinGroupCodeLabel": "6-სიმბოლოიანი კოდი",
+  "joinGroupSent": "მოთხოვნა გაეგზავნა ჯგუფს „{group}“",
+  "@joinGroupSent": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveGroup": "ჯგუფიდან გასვლა",
+  "leaveGroupConfirm": "{child} დატოვებს ჯგუფს „{group}“. მწვრთნელი მის მონაცემებს და ცნობას ვეღარ ნახავს.",
+  "@leaveGroupConfirm": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "leftGroup": "ბავშვი გავიდა ჯგუფიდან",
+  "membershipTitle": "ჯგუფები და მოთხოვნები",
+  "newGroup": "ახალი ჯგუფი",
+  "groupName": "ჯგუფის სახელი",
+  "groupAgeFrom": "ასაკი — დან",
+  "groupAgeTo": "ასაკი — მდე",
+  "groupClub": "კლუბი",
+  "groupSport": "სპორტი",
+  "groupCreated": "ჯგუფი შეიქმნა. კოდი: {code}",
+  "@groupCreated": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "addChildTitle": "ბავშვის დამატება",
+  "addChildByCode": "კოდით",
+  "addChildBySearch": "ძიებით",
+  "addChildManual": "ხელით",
+  "addChildSearchHint": "ბავშვის სახელი ან გვარი",
+  "addChildSearchNote": "მოწვევა მიდის მშობელთან. ბავშვი ჯგუფში მხოლოდ მშობლის დადასტურების შემდეგ ჩანს.",
+  "addChildManualNote": "მშობელი მიიღებს მოწვევას. დადასტურებამდე ხედავთ მხოლოდ სახელს და გვარს.",
+  "parentPhone": "მშობლის ტელეფონი",
+  "inviteSent": "მოწვევა გაეგზავნა მშობელს",
+  "invitesSent": "გაგზავნილი მოწვევები",
+  "birthYearShort": "{year} წ.",
+  "@birthYearShort": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingParentBadge": "ელოდება მშობელს",
+  "noSearchResults": "ვერაფერი მოიძებნა",
+  "requestViaCode": "კოდით",
+  "mediaTitle": "მედია",
+  "mediaRecent": "ბოლო ფოტოები და ვიდეოები",
+  "mediaTakePhoto": "ფოტოს გადაღება",
+  "mediaRecordVideo": "ვიდეოს გადაღება",
+  "mediaFromGallery": "გალერეიდან",
+  "mediaCaption": "წარწერა",
+  "mediaGroups": "ვის გამოუჩნდეს",
+  "mediaConsentConfirm": "ვადასტურებ: ბავშვები, რომელთა მშობლებს თანხმობა არ აქვთ, მედიაში არ ჩანან",
+  "mediaPublish": "გამოქვეყნება",
+  "mediaPublished": "გამოქვეყნდა — ჯგუფის მშობლებს ეცნობათ",
+  "mediaEmpty": "მედია ჯერ არ არის",
+  "mediaVideo": "ვიდეო · {seconds} წმ",
+  "@mediaVideo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaNoDownload": "ჩამოტვირთვა გამორთულია ბავშვების კონფიდენციალურობისთვის.",
+  "mediaDelete": "მედიის წაშლა",
+  "mediaHidden": "კონტენტი დამალულია მოდერაციით",
+  "mediaLimits": "ფოტო ≤ 10 MB · ვიდეო ≤ 60 წმ და 100 MB",
+  "mediaConsentMissing": "{count} ბავშვს მედიაზე თანხმობა არ აქვს: {names}",
+  "@mediaConsentMissing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "reportTitle": "გასაჩივრება",
+  "reportReasonInappropriate": "შეუფერებელი კონტენტი",
+  "reportReasonPrivacy": "კონფიდენციალურობა",
+  "reportReasonSpam": "სპამი",
+  "reportReasonOther": "სხვა",
+  "reportNote": "კომენტარი (არასავალდებულო)",
+  "reportSent": "საჩივარი გაეგზავნა ადმინისტრატორს",
+  "messageHidden": "შეტყობინება დამალულია მოდერაციით",
+  "chatsEmpty": "ჩატები გამოჩნდება, როცა ბავშვი ჯგუფში გაწევრდება",
+  "chatAnnouncement": "განცხადება",
+  "chatAnnouncementToggle": "განცხადებად გაგზავნა (დაპინული)",
+  "chatPin": "დაპინვა",
+  "chatUnpin": "მოხსნა",
+  "chatPinned": "დაპინული",
+  "chatReadBy": "წაიკითხა {count}",
+  "@chatReadBy": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSendFailed": "ვერ გაიგზავნა",
+  "chatRetry": "ხელახლა",
+  "chatSending": "იგზავნება…",
+  "chatNoMessages": "შეტყობინებები ჯერ არ არის",
+  "chatSystem": "სისტემა",
+  "unreadCount": "{count} წაუკითხავი",
+  "@unreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifNewMatch": "ახალი თამაში",
+  "notifMatchChanged": "თამაში შეიცვალა",
+  "notifMatchReminder": "თამაშის შეხსენება",
+  "notifGroupInvite": "მოწვევა ჯგუფში",
+  "notifInviteAnswered": "მოწვევაზე პასუხი",
+  "notifAttendanceRecorded": "დასწრება აღირიცხა",
+  "notifFeedbackAdded": "მწვრთნელის შეფასება",
+  "notifAnnouncement": "განცხადება",
+  "notifNewMedia": "ახალი ფოტო/ვიდეო",
+  "notifScheduleChanged": "განრიგი შეიცვალა",
+  "notifBodyMatch": "{opponent} · {group}",
+  "@notifBodyMatch": {
+    "placeholders": {
+      "opponent": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyInvite": "{child} → {group}",
+  "@notifBodyInvite": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyChild": "{child}",
+  "@notifBodyChild": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyCancelled": "{group} · {reason}",
+  "@notifBodyCancelled": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "catTrainings": "ვარჯიშები",
+  "catMatches": "თამაშები",
+  "catInvitations": "მოწვევები",
+  "catAttendance": "დასწრება",
+  "catPayments": "გადახდები",
+  "catChat": "ჩატი",
+  "catCertificates": "ცნობები",
+  "catAnnouncements": "განცხადებები",
+  "notificationsEmptyCategory": "ამ კატეგორიაში შეტყობინება არ არის",
+  "paymentsOutstanding": "გადასახდელი",
+  "paymentsPaidTotal": "გადახდილი",
+  "paymentsOverdueTotal": "ვადაგადაცილებული",
+  "paymentsFilterChild": "ბავშვი",
+  "paymentsFilterSport": "სპორტი",
+  "paymentsReminderPrefs": "შეხსენების პარამეტრები",
+  "paymentsNoOnline": "ონლაინ გადახდა ჯერ არ არის — გადაიხადეთ კლუბის მითითებით.",
+  "paymentCancelReason": "გაუქმების მიზეზი",
+  "paymentAudit": "ცვლილებების ისტორია",
+  "paymentAuditLine": "{actor}: {from} → {to}",
+  "@paymentAuditLine": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentSummaryMonth": "{month} — შეჯამება",
+  "@paymentSummaryMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentTitleLabel": "დასახელება (არასავალდებულო)",
+  "paymentChildren": "{count} ბავშვი",
+  "@paymentChildren": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountTitle": "ანგარიში",
+  "profilePhoto": "პროფილის ფოტო",
+  "profilePhotoChange": "ფოტოს შეცვლა",
+  "profilePhotoRemove": "ფოტოს წაშლა",
+  "profilePhotoUpdated": "ფოტო განახლდა",
+  "privacySettingsTitle": "კონფიდენციალურობა",
+  "privacyPhotoVisible": "ჩემი ფოტო ჩანდეს ჯგუფის მწვრთნელებისთვის/მშობლებისთვის",
+  "privacyAnalytics": "ანონიმური დიაგნოსტიკა (შეცდომების ანგარიშები)",
+  "consentsTitle": "თანხმობები",
+  "consentDataGiven": "მონაცემების დამუშავება — {date}",
+  "@consentDataGiven": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "consentSmsToggle": "SMS შეხსენებები გადასახადებზე",
+  "consentMedia": "მედია: {child}",
+  "@consentMedia": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "dataExport": "ჩემი მონაცემების ექსპორტი",
+  "dataExportHint": "მიიღებთ JSON ფაილს თქვენი და ბავშვების მონაცემებით (სამედიცინო ფაილების შიგთავსის გარეშე).",
+  "dataExportReady": "ექსპორტი მზადაა",
+  "dataExportRequested": "ექსპორტის მოთხოვნა მიღებულია",
+  "accountRequests": "მოთხოვნები",
+  "requestStatusPending": "მოლოდინში",
+  "requestStatusProcessing": "მუშავდება",
+  "requestStatusDone": "დასრულდა",
+  "requestStatusRejected": "უარყოფილი",
+  "deleteImpactTitle": "რა მოხდება წაშლისას",
+  "deleteImpactDeleted": "წაიშლება (მხოლოდ თქვენ ხართ მეურვე): {names}",
+  "@deleteImpactDeleted": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteImpactUnlinked": "დარჩება სხვა მეურვესთან: {names}",
+  "@deleteImpactUnlinked": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteImpactPayments": "გადახდების ისტორია ანონიმურად შეინახება კლუბის აღრიცხვისთვის.",
+  "retentionTitle": "შენახვა და წაშლა",
+  "retentionBody": "ანგარიშის წაშლისას იშლება პროფილი, ფოტოები, ცნობები (ფაილებიც), დასწრება და შეფასებები იმ ბავშვებისა, რომელთა ერთადერთი მეურვე ხართ. სხვა მეურვის ბავშვი არ იშლება.",
+  "weekSchedule": "ამ კვირის განრიგი",
+  "weekEmpty": "ამ კვირაში ვარჯიში არ არის",
+  "attendanceTile": "დასწრება",
+  "attendanceTileValue": "{percent}% ამ თვეში",
+  "@attendanceTileValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "progressShort": "პროგრესი",
+  "importantTitle": "მნიშვნელოვანი",
+  "coachFab": "დამატება",
+  "addTrainingOne": "ერთჯერადი ვარჯიში",
+  "addSeries": "განმეორებადი განრიგი",
+  "addMatch": "თამაში",
+  "addMedia": "ფოტო / ვიდეო",
+  "addChildToGroup": "ბავშვის მოწვევა",
+  "newVenue": "ახალი ლოკაცია რუკაზე",
+  "venuePickHint": "შეეხეთ რუკას ადგილის მოსანიშნად",
+  "venueNearby": "ახლოს უკვე არის ლოკაციები (200 მ):",
+  "venueUseExisting": "არსებულის გამოყენება",
+  "venueName": "ლოკაციის სახელი",
+  "venueAddress": "მისამართი",
+  "venueUnverified": "დაუდასტურებელი",
+  "venueSaved": "ლოკაცია შენახულია",
+  "mapLayerVenues": "ადგილები",
+  "mapLayerTrainings": "ვარჯიშები",
+  "mapLayerMatches": "თამაშები",
+  "mapToday": "დღეს",
+  "mapThisWeek": "ამ კვირაში",
+  "sportCategoryTeam": "გუნდური",
+  "sportCategoryCombat": "ორთაბრძოლა",
+  "sportCategoryOther": "სხვა",
+  "sportAgeMin": "მინ. ასაკი: {age}",
+  "@sportAgeMin": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "sportRequiresCert": "საჭიროა სამედიცინო ცნობა",
+  "demoOffline": "ოფლაინ რეჟიმის სიმულაცია",
+  "demoOfflineHint": "ჩანაწერები ვერ შეინახება — აპი სწორ შეცდომას აჩვენებს.",
+  "aboutVersion": "ვერსია {version} · {env}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "env": {
+        "type": "String"
+      }
+    }
+  },
+  "adminUseWeb": "ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში."
 }

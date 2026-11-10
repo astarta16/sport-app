@@ -38,6 +38,8 @@ class Payment {
     this.paidAt,
     this.createdAt,
     this.planId,
+    this.cancelledReason,
+    this.title,
   });
 
   final String id;
@@ -53,25 +55,42 @@ class Payment {
   final DateTime? paidAt;
   final DateTime? createdAt;
   final String? planId;
+  final String? cancelledReason;
+
+  /// Optional label for one-off charges (e.g. "ტურნირის საფასური").
+  final String? title;
+
+  /// `YYYY-MM` billing month of the due date (Tbilisi).
+  String get period {
+    final w = TbilisiTime.wallClock(dueDate);
+    return '${w.year}-${w.month.toString().padLeft(2, '0')}';
+  }
 
   bool isOverdue(DateTime now) => status == PaymentStatus.pending && TbilisiTime.daysBetween(now, dueDate) < 0;
 
-  Payment copyWith({PaymentStatus? status, PaymentReminders? reminders, DateTime? paidAt, bool clearPaidAt = false}) =>
-      Payment(
-        id: id,
-        childId: childId,
-        parentId: parentId,
-        groupId: groupId,
-        sportId: sportId,
-        amount: amount,
-        currency: currency,
-        dueDate: dueDate,
-        status: status ?? this.status,
-        reminders: reminders ?? this.reminders,
-        paidAt: clearPaidAt ? null : (paidAt ?? this.paidAt),
-        createdAt: createdAt,
-        planId: planId,
-      );
+  Payment copyWith({
+    PaymentStatus? status,
+    PaymentReminders? reminders,
+    DateTime? paidAt,
+    bool clearPaidAt = false,
+    String? cancelledReason,
+  }) => Payment(
+    id: id,
+    childId: childId,
+    parentId: parentId,
+    groupId: groupId,
+    sportId: sportId,
+    amount: amount,
+    currency: currency,
+    dueDate: dueDate,
+    status: status ?? this.status,
+    reminders: reminders ?? this.reminders,
+    paidAt: clearPaidAt ? null : (paidAt ?? this.paidAt),
+    createdAt: createdAt,
+    planId: planId,
+    cancelledReason: cancelledReason ?? this.cancelledReason,
+    title: title,
+  );
 
   Map<String, dynamic> toMap() => {
     'childId': childId,
@@ -86,6 +105,9 @@ class Payment {
     'paidAt': paidAt,
     'createdAt': createdAt,
     'planId': planId,
+    'period': period,
+    'cancelledReason': cancelledReason,
+    'title': title,
   };
 
   factory Payment.fromMap(String id, Map<String, dynamic> m) => Payment(
@@ -102,7 +124,92 @@ class Payment {
     paidAt: readDateOrNull(m['paidAt']),
     createdAt: readDateOrNull(m['createdAt']),
     planId: m['planId'] as String?,
+    cancelledReason: m['cancelledReason'] as String?,
+    title: m['title'] as String?,
   );
+}
+
+/// Server-written trail of payment status changes (`paymentAudit`).
+class PaymentAuditEntry {
+  const PaymentAuditEntry({
+    required this.id,
+    required this.paymentId,
+    required this.groupId,
+    required this.from,
+    required this.to,
+    required this.actorId,
+    required this.actorName,
+    required this.at,
+    this.reason,
+  });
+
+  final String id;
+  final String paymentId;
+  final String groupId;
+  final PaymentStatus from;
+  final PaymentStatus to;
+  final String actorId;
+  final String actorName;
+  final DateTime at;
+  final String? reason;
+
+  factory PaymentAuditEntry.fromMap(String id, Map<String, dynamic> m) => PaymentAuditEntry(
+    id: id,
+    paymentId: m['paymentId'] as String? ?? '',
+    groupId: m['groupId'] as String? ?? '',
+    from: PaymentStatus.fromName(m['from'] as String?),
+    to: PaymentStatus.fromName(m['to'] as String?),
+    actorId: m['actorId'] as String? ?? '',
+    actorName: m['actorName'] as String? ?? '',
+    at: readDate(m['at']),
+    reason: m['reason'] as String?,
+  );
+}
+
+/// Group-level totals for the coach/admin payment summary.
+class PaymentSummary {
+  const PaymentSummary({
+    this.paid = 0,
+    this.outstanding = 0,
+    this.overdue = 0,
+    this.overdueCount = 0,
+    this.children = 0,
+  });
+
+  final num paid;
+  final num outstanding;
+  final num overdue;
+  final int overdueCount;
+  final int children;
+
+  static PaymentSummary of(Iterable<Payment> payments, DateTime now, {String? period}) {
+    num paid = 0, outstanding = 0, overdue = 0;
+    var overdueCount = 0;
+    final kids = <String>{};
+    for (final p in payments) {
+      if (period != null && p.period != period) continue;
+      kids.add(p.childId);
+      switch (p.status) {
+        case PaymentStatus.paid:
+          paid += p.amount;
+        case PaymentStatus.pending:
+          outstanding += p.amount;
+          if (p.isOverdue(now)) {
+            overdue += p.amount;
+            overdueCount++;
+          }
+        case PaymentStatus.cancelled:
+          break;
+      }
+    }
+    return PaymentSummary(
+      paid: paid,
+      outstanding: outstanding,
+      overdue: overdue,
+      overdueCount: overdueCount,
+      children: kids.length,
+    );
+  }
 }
 
 /// Recurring charge for a group (e.g. every month on day 1).

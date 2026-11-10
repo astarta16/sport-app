@@ -7,6 +7,13 @@ class DemoSportsRepository implements SportsRepository {
 
   final DemoBackend db;
 
+  List<Sport> _active() =>
+      db.sports.values.where((s) => s.active).toList()
+        ..sort((a, b) => a.order != b.order ? a.order - b.order : a.name.compareTo(b.name));
+
   @override
-  Future<List<Sport>> sports() async => db.sports.values.toList();
+  Future<List<Sport>> sports() async => _active();
+
+  @override
+  Stream<List<Sport>> watchSports() => db.watch(_active);
 }

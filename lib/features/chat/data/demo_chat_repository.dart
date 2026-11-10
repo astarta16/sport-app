@@ -13,18 +13,32 @@ class DemoChatRepository implements ChatRepository {
 
   final DemoBackend db;
 
-  @override
-  Stream<List<ChatMessage>> watchMessages(String groupId) => db.watch(() {
+  void _guard(String groupId) {
     final g = db.requireGroup(groupId);
     if (!AccessPolicy.canAccessChat(db.me, g)) throw const PermissionDeniedException('chat');
-    return List<ChatMessage>.of(db.messages[groupId] ?? const [])..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  }
+
+  @override
+  Stream<List<ChatMessage>> watchMessages(String groupId, {int limit = 50}) => db.watch(() {
+    _guard(groupId);
+    final all = List<ChatMessage>.of(db.messages[groupId] ?? const [])
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return all.length <= limit ? all : all.sublist(all.length - limit);
   });
 
   @override
-  Future<void> send(String groupId, String text, {List<PhotoUpload> attachments = const []}) async {
+  Future<void> send(
+    String groupId,
+    String text, {
+    List<PhotoUpload> attachments = const [],
+    bool announcement = false,
+  }) async {
+    db.requireOnline();
     final me = db.me;
     final g = db.requireGroup(groupId);
     if (!AccessPolicy.canAccessChat(me, g)) throw const PermissionDeniedException('chat');
+    if (announcement && !AccessPolicy.isCoachOf(me, g)) throw const PermissionDeniedException('announcement');
+    db.rateLimit('chat', 500);
     final keys = <String>[];
     for (final a in attachments) {
       if (!a.mimeType.startsWith('image/')) throw const ValidationException('fileType');
@@ -44,15 +58,68 @@ class DemoChatRepository implements ChatRepository {
       text: text.trim(),
       attachments: keys,
       createdAt: db.clock(),
+      type: announcement ? ChatMessageType.announcement : ChatMessageType.text,
+      pinned: announcement,
     );
     (db.messages[groupId] ??= []).add(m);
+    // Sending implies having read everything before it.
+    (db.chatReads[groupId] ??= {})[me.id] = db.clock();
     db.dispatch(
-      NotificationType.chatMessage,
+      announcement ? NotificationType.announcement : NotificationType.chatMessage,
       g,
       route: '/chat/$groupId',
       excludeUserId: me.id,
       args: {'sender': me.fullName},
+      dedupeKey: 'msg:${m.id}',
     );
     db.commit();
   }
+
+  @override
+  Future<void> setPinned(String groupId, String messageId, bool pinned) async {
+    db.requireOnline();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.isCoachOf(db.me, g)) throw const PermissionDeniedException('pin');
+    final list = db.messages[groupId] ?? const [];
+    final i = list.indexWhere((m) => m.id == messageId);
+    if (i < 0) throw const NotFoundException();
+    if (list[i].isSystem) throw const ValidationException('cannotPin');
+    list[i] = list[i].copyWith(pinned: pinned);
+    db.commit();
+  }
+
+  @override
+  Future<void> markRead(String groupId) async {
+    final me = db.currentUser;
+    if (me == null) return;
+    final g = db.groups[groupId];
+    if (g == null || !AccessPolicy.canAccessChat(me, g)) return;
+    final prev = db.chatReads[groupId]?[me.id];
+    if (prev != null && db.unreadFor(me.id, groupId) == 0) return;
+    (db.chatReads[groupId] ??= {})[me.id] = db.clock();
+    db.commit();
+  }
+
+  @override
+  Stream<List<ChatSummary>> watchSummaries(List<String> groupIds) => db.watch(() {
+    final me = db.me;
+    return [
+      for (final id in groupIds)
+        if (db.groups[id] != null && AccessPolicy.canAccessChat(me, db.groups[id]!))
+          ChatSummary(
+            groupId: id,
+            unread: db.unreadFor(me.id, id),
+            lastMessage: (db.messages[id] ?? const <ChatMessage>[])
+                .where((m) => !m.hidden)
+                .fold<ChatMessage?>(null, (a, m) => a == null || m.createdAt.isAfter(a.createdAt) ? m : a),
+          ),
+    ];
+  });
+
+  @override
+  Stream<Map<String, DateTime>> watchReadReceipts(String groupId) => db.watch(() {
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.isCoachOf(db.me, g)) throw const PermissionDeniedException('receipts');
+    return Map.of(db.chatReads[groupId] ?? const {});
+  });
 }

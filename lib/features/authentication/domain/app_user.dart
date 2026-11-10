@@ -14,10 +14,64 @@ enum UserRole {
 enum CoachStatus {
   pending,
   approved,
-  rejected;
+  rejected,
+
+  /// Temporarily blocked by an admin; no access to child data.
+  suspended,
+
+  /// Permanently revoked by an admin.
+  revoked;
 
   static CoachStatus? fromName(String? name) =>
       name == null ? null : CoachStatus.values.firstWhere((s) => s.name == name, orElse: () => CoachStatus.pending);
+}
+
+/// Administrative scope (v1.2). Rights come from server-side custom claims;
+/// these fields mirror them for the UI only.
+enum AdminRole {
+  platform,
+  club;
+
+  static AdminRole? fromName(String? n) => switch (n) {
+    'platform' => platform,
+    'club' => club,
+    _ => null,
+  };
+}
+
+/// Per-user privacy choices (v1.2 account management).
+class PrivacySettings {
+  const PrivacySettings({this.profilePhotoVisible = true, this.analyticsConsent = false});
+
+  /// Coaches/parents of shared groups may see the profile photo (v1.1 §3).
+  final bool profilePhotoVisible;
+
+  /// Anonymous crash/performance diagnostics (opt-in).
+  final bool analyticsConsent;
+
+  PrivacySettings copyWith({bool? profilePhotoVisible, bool? analyticsConsent}) => PrivacySettings(
+    profilePhotoVisible: profilePhotoVisible ?? this.profilePhotoVisible,
+    analyticsConsent: analyticsConsent ?? this.analyticsConsent,
+  );
+
+  Map<String, dynamic> toMap() => {'profilePhotoVisible': profilePhotoVisible, 'analyticsConsent': analyticsConsent};
+
+  factory PrivacySettings.fromMap(Object? m) {
+    if (m is! Map) return const PrivacySettings();
+    return PrivacySettings(
+      profilePhotoVisible: m['profilePhotoVisible'] as bool? ?? true,
+      analyticsConsent: m['analyticsConsent'] as bool? ?? false,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is PrivacySettings &&
+      other.profilePhotoVisible == profilePhotoVisible &&
+      other.analyticsConsent == analyticsConsent;
+
+  @override
+  int get hashCode => Object.hash(profilePhotoVisible, analyticsConsent);
 }
 
 /// Last selected child / sport / group (spec §5 `lastContext`).
@@ -68,6 +122,11 @@ class AppUser {
     this.dataConsentAt,
     this.smsConsentAt,
     this.notificationPrefs = const NotificationPreferences(),
+    this.photoPath,
+    this.adminRole,
+    this.adminClubIds = const [],
+    this.coachStatusReason,
+    this.privacy = const PrivacySettings(),
   });
 
   final String id;
@@ -87,6 +146,17 @@ class AppUser {
   final DateTime? smsConsentAt;
   final NotificationPreferences notificationPrefs;
 
+  /// Storage path of the profile photo (`profiles/{uid}/avatar.jpg`, v1.1 §3).
+  final String? photoPath;
+
+  /// Server-managed mirror of the admin custom claims.
+  final AdminRole? adminRole;
+  final List<String> adminClubIds;
+
+  /// Reason given by an admin when rejecting / suspending a coach.
+  final String? coachStatusReason;
+  final PrivacySettings privacy;
+
   String get fullName => '$firstName $lastName';
   String get initials =>
       '${firstName.isEmpty ? '' : firstName.characters0}${lastName.isEmpty ? '' : lastName.characters0}';
@@ -95,6 +165,10 @@ class AppUser {
   bool get isCoach => role == UserRole.coach;
   bool get isApprovedCoach => role == UserRole.coach && coachStatus == CoachStatus.approved;
   bool get isAdmin => role == UserRole.admin;
+  bool get isPlatformAdmin => isAdmin && adminRole == AdminRole.platform;
+
+  /// Club admin of [clubId] (platform admins manage every club).
+  bool administersClub(String clubId) => isPlatformAdmin || (isAdmin && adminClubIds.contains(clubId));
 
   /// Children never have chat (spec §3, §8).
   bool get canUseChat => isParent || isApprovedCoach;
@@ -109,6 +183,12 @@ class AppUser {
     List<String>? sportIds,
     DateTime? smsConsentAt,
     NotificationPreferences? notificationPrefs,
+    String? photoPath,
+    bool clearPhoto = false,
+    String? coachStatusReason,
+    PrivacySettings? privacy,
+    AdminRole? adminRole,
+    List<String>? adminClubIds,
   }) => AppUser(
     id: id,
     role: role,
@@ -124,6 +204,11 @@ class AppUser {
     dataConsentAt: dataConsentAt,
     smsConsentAt: smsConsentAt ?? this.smsConsentAt,
     notificationPrefs: notificationPrefs ?? this.notificationPrefs,
+    photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
+    adminRole: adminRole ?? this.adminRole,
+    adminClubIds: adminClubIds ?? this.adminClubIds,
+    coachStatusReason: coachStatusReason ?? this.coachStatusReason,
+    privacy: privacy ?? this.privacy,
   );
 
   Map<String, dynamic> toMap() => {
@@ -140,6 +225,8 @@ class AppUser {
     'dataConsentAt': dataConsentAt,
     'smsConsentAt': smsConsentAt,
     'notificationPrefs': notificationPrefs.toMap(),
+    'photoPath': photoPath,
+    'privacy': privacy.toMap(),
   };
 
   factory AppUser.fromMap(String id, Map<String, dynamic> m) => AppUser(
@@ -157,6 +244,11 @@ class AppUser {
     dataConsentAt: readDateOrNull(m['dataConsentAt']),
     smsConsentAt: readDateOrNull(m['smsConsentAt']),
     notificationPrefs: NotificationPreferences.fromMap(m['notificationPrefs']),
+    photoPath: m['photoPath'] as String?,
+    adminRole: AdminRole.fromName(m['adminRole'] as String?),
+    adminClubIds: readStringList(m['adminClubIds']),
+    coachStatusReason: m['coachStatusReason'] as String?,
+    privacy: PrivacySettings.fromMap(m['privacy']),
   );
 }
 
@@ -169,6 +261,7 @@ class PublicProfile {
     required this.lastName,
     required this.role,
     this.phone,
+    this.photoPath,
   });
 
   final String id;
@@ -176,8 +269,11 @@ class PublicProfile {
   final String lastName;
   final UserRole role;
   final String? phone;
+  final String? photoPath;
 
   String get fullName => '$firstName $lastName';
+  String get initials =>
+      '${firstName.isEmpty ? '' : firstName.characters0}${lastName.isEmpty ? '' : lastName.characters0}';
 }
 
 extension on String {

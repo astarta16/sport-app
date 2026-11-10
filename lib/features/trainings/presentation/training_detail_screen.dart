@@ -12,6 +12,7 @@ import '../../../core/services/launcher.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/cancel_reason_dialog.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/presentation/session_providers.dart';
@@ -296,18 +297,12 @@ class _CoachActions extends ConsumerWidget {
 
   Future<void> _cancel(BuildContext context, WidgetRef ref) async {
     final l = context.l10n;
-    final ok = await confirmDialog(
-      context,
-      title: l.cancelTraining,
-      message: l.cancelTrainingConfirm,
-      confirmLabel: l.cancelTraining,
-      destructive: true,
-    );
-    if (ok && context.mounted) {
+    final reason = await showCancelReasonDialog(context, title: l.cancelTraining);
+    if (reason != null && context.mounted) {
       await runGuarded(
         context,
-        () => ref.read(trainingsRepositoryProvider).cancel(training.id),
-        success: l.trainingCancelled,
+        () => ref.read(trainingsRepositoryProvider).cancel(training.id, reason),
+        success: l.trainingCancelledSnack,
       );
     }
   }

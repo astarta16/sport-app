@@ -10,4 +10,10 @@ abstract interface class ChildrenRepository {
   Future<Child> addChild(ChildDraft draft);
   Future<void> updateChild(Child child);
   Future<void> removeChild(String childId);
+
+  /// Optional child avatar, visible only to the child's coaches (v1.1 §3).
+  Future<void> setChildPhoto(String childId, List<int>? jpegBytes);
+
+  /// Media consent (photos/videos) with a timestamp (v1.0 §8, v1.1 §5).
+  Future<void> setMediaConsent(String childId, bool consent);
 }
