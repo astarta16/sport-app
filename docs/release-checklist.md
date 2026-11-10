@@ -8,9 +8,9 @@
 - [x] Rules emulator tests: 135 passed (Firestore on port 8181)
 - [x] Functions smoke test (emulators): 32 steps passed
 - [x] Android release APK (demo) built: `~/Desktop/SportParentApp-Beta-v1.3.apk`, 74.4 MB, versionName 1.3.0, versionCode 14 (checked with `aapt2 dump badging`)
-- [ ] APK install test: IOS_APK_PLACEHOLDER
+- [x] APK install test: the first 1.3.0 (14) build was installed on the Pixel 6 API 33 emulator (the package manager confirmed the version), launched, and showed the demo coach sign-in and dashboard. The final APK was rebuilt for a header-layout fix and could **not** be reinstalled, because the emulator shut itself down again (a known local emulator issue).
 - [x] Admin web built (`build/admin_web`) and checked in a browser: compliance, payments queue, switching to Russian
-- [ ] iOS simulator: IOS_SIM_PLACEHOLDER
+- [x] iOS simulator build (demo) launched on iPhone 17 Pro (iOS 26.1). Sign-in and the parent dashboard (child switch, training-plans section) were checked by eye. The iPad simulator was not checked by eye (no access granted); iPad layouts are covered by widget tests only.
 
 ## Build commands
 

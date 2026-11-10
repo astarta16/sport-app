@@ -106,7 +106,9 @@ class SectionHeader extends StatelessWidget {
             child: Semantics(header: true, child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
           ),
           if (actionLabel != null)
-            Flexible(
+            // Natural width, but never more than ~45 % of narrow rows.
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140),
               child: TextButton(
                 onPressed: onAction,
                 child: Text(actionLabel!, maxLines: 1, overflow: TextOverflow.ellipsis),
