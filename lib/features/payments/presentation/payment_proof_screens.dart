@@ -412,7 +412,10 @@ class ProofReviewCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${child?.fullName ?? ''} · ${group?.name ?? ''}', style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            [child?.fullName, group?.name].whereType<String>().where((x) => x.isNotEmpty).join(' · '),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           if (payment != null) Text('${f.money(payment.amount)} · ${l.dueOn(f.dayMonth(payment.dueDate))}'),
           Text('${l.payProofDate}: ${f.fullDate(proof.paidOn)}', style: Theme.of(context).textTheme.bodySmall),
           if (proof.reference != null)

@@ -61,7 +61,7 @@ Layouts follow the **window width** (so Split View, Slide Over and Stage Manager
 | 840–1199 | expanded (iPad portrait, iPad mini landscape) | navigation rail | two-column dashboards, chat master-detail, calendar beside lists, two-column forms/profile, roster grid, map side panel |
 | ≥ 1200 | large (iPad Air/Pro landscape) | sidebar (extended rail) | + coach group list as master pane, calendar with training-detail pane |
 
-## Admin web dashboard (v1.2)
+## Admin web dashboard (v1.3)
 
 ```bash
 flutter run -d chrome -t lib/main_admin.dart          # demo: platform admin / club admin / "parent" (denied)
@@ -72,17 +72,32 @@ cd build/admin_web && python3 -m http.server 8765    # http://127.0.0.1:8765
 
 What it covers:
 - coach verification, clubs, sports catalog, group oversight, moderation, audit log, admin roles;
+- v1.3: certificate compliance (counts only), attendance reports, plan oversight, payment verification queue with receipt review, payment reviewers per group, language (ka/en/ru);
 - roles enforced server-side through custom claims. Guide: [docs/admin-guide.md](docs/admin-guide.md).
 
 ## Android APK (demo mode)
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.2.0 --build-number=12
+  --build-name=1.3.0 --build-number=14
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.3
+
+- **Medical certificates:** sport-specific certificates, replace, preview, coach download with a warning and audit, reminders at 14/3/0 days, admin compliance as counts only.
+- **Coach student roster:** search, sort, filters, attendance and certificate status; attendance marked as a draft and then saved; PDF/CSV exports (roster, attendance sheet, monthly report) with the Georgian font.
+- **Training plans:** seasonal, monthly, weekly, exercise and homework plans, with exercises, media and https links; draft → published → archived; parent progress; homework on the dashboard.
+- **Payment proofs:** the parent uploads a receipt, giving "Awaiting verification". Only explicit reviewers or club admins can approve or reject (with a reason).
+- **Languages:** Georgian (default), English and Russian in the app, the admin web and server messages (Settings → Language).
+
+Demo walk-through (sign in on the demo screen):
+1. Parent Nino → Payments → football fee → *Submit proof* → demo receipt → Submit. The status changes to *Awaiting verification*.
+2. Coach Giorgi → Home → *Verify payments* → Approve. The payment becomes *Paid*.
+3. Coach → Home → *Training plans* → the U-12 draft → Publish. The parents of U-12 are notified.
+4. Coach → Home → *Students* → Export → PDF or CSV.
 
 ## Running against Firebase
 
@@ -130,10 +145,10 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 185 tests (responsive, security, workflows, admin)
-cd functions && npm install && npm run build && npm test      # 130 tests
-cd rules-tests && npm install && npm run test:emulator        # 94 rules tests (Java 17+)
-cd rules-tests && npm run smoke:functions                     # 22 end-to-end steps
+flutter test                                   # 215 tests (responsive, security, workflows, admin, l10n, v1.3 flows)
+cd functions && npm install && npm run build && npm test      # 185 tests
+cd rules-tests && npm install && npm run test:emulator        # 135 rules tests (Java 17+)
+cd rules-tests && npm run smoke:functions                     # 32 end-to-end steps
 ```
 
 ## Security model (summary)
@@ -154,6 +169,8 @@ Docs:
 - [docs/assumptions.md](docs/assumptions.md) — decisions taken on open questions;
 - [docs/implementation-progress.md](docs/implementation-progress.md) — v1.0 status;
 - [docs/beta-v1.2-progress.md](docs/beta-v1.2-progress.md) — v1.2 status;
+- [docs/beta-v1.3-progress.md](docs/beta-v1.3-progress.md) — v1.3 status (what is verified, untested or missing);
+- [docs/data-model-v1.3.md](docs/data-model-v1.3.md) — v1.3 data contract;
 - [docs/data-model-v1.2.md](docs/data-model-v1.2.md) — data model;
 - [docs/security-review.md](docs/security-review.md) — security review;
 - [docs/firebase-setup.md](docs/firebase-setup.md) — Firebase setup;

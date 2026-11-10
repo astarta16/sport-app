@@ -1,4 +1,4 @@
-# Admin guide — web dashboard (beta v1.2)
+# Admin guide: web dashboard (beta v1.3)
 
 The admin dashboard is a separate Flutter Web app (`lib/main_admin.dart`). It shares the domain and repositories with the mobile app. **Every admin action is checked again on the server** (custom claims plus Cloud Functions). Hiding buttons in the UI is not the security mechanism.
 
@@ -68,8 +68,17 @@ A coach can also be a club admin. They keep the coach app on mobile and use the 
 - **Audit log**:
   - append-only, written by the server;
   - covers coach decisions, role changes, club, sport and group changes, payment status changes, moderation, certificate access, and account deletion/export requests.
+- **Certificates** (v1.3): compliance per group as counts only (valid / expiring within 14 days / expired / missing). Admins never receive certificate files or links. The server denies `getCertificateUrl` to every admin role.
+- **Attendance** (v1.3): monthly report per group (members, recorded sessions, attendance rate), month picker for the last 6 months. No child names.
+- **Training plans** (v1.3): oversight list (title, type, status, groups, coach, number of exercises, start date). Read-only.
+- **Payments** (v1.3): verification queue of submitted payment proofs for the admin's clubs.
+  - Open the receipt (a short-lived link; every view is audited as `receipt.view`).
+  - **Approve** marks the payment paid and records who verified it. **Reject** requires a reason of at least 5 characters, which the parent sees before resubmitting.
+  - Decisions are transactional: if two reviewers act at once, the second gets an error.
+- **Groups → payment reviewers** (v1.3, the ✓₾ button on each group): choose which of the group's coaches may verify payments. **Coaches are not reviewers by default.** Without a reviewer, only club admins can verify. Changes are audited (`group.paymentManagers`).
+- **Settings** (v1.3): interface language (ქართული / English / Русский), saved on this device and to the admin's profile. It does not change the language of data typed by users.
 - **Administrators** (platform only): promote a coach to club admin for their clubs, or remove admin rights.
 
 ## Data minimisation
 
-Admins never open child profiles, medical certificates or chat histories in the dashboard. Moderation shows a short text preview of the reported item. Media opens only through short-lived signed URLs (`getMediaUrl`).
+Admins never open child profiles, medical certificates or chat histories in the dashboard. Payment receipts are the one document admins can open, and only for their own clubs, through an audited short-lived link. Moderation shows a short text preview of the reported item. Media opens only through short-lived signed URLs (`getMediaUrl`).

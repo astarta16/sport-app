@@ -1,4 +1,4 @@
-# Security and child-privacy review — beta v1.2
+# Security and child-privacy review: beta v1.3 (extends v1.2)
 
 **Scope:**
 - Firestore and Storage rules, Cloud Functions;
@@ -59,6 +59,20 @@ Each was run against the Firestore/Storage emulator (`rules-tests`, 94 tests) an
 ## Abuse prevention
 
 Server rate limits per user per day: invites 30, reports 20, join-by-code 20, venue pins 20, export 3. Chat writes are limited in demo, and the backend chat counters use the `rateLimits` collection. Reports created directly through rules (allowed by the contract) bypass the rate limit; the app always uses the `createReport` callable.
+
+## v1.3 additions
+
+- **Financial permission is explicit.** Payment `status` changes only for coaches listed in the group's `paymentManagerIds`, club admins of the group's club, or platform admins. A coach of the group without that flag gets `permission-denied` (rules tests + `v13_workflows_test`). `verification`, `verifiedBy` and `verifiedAt` are server-only.
+- **A parent's claim never marks a payment paid.** `submitPaymentProof` only sets `verification.state = proof_submitted`. Approval happens in one transaction that requires the proof to be `submitted` or `under_review`, so a second approval fails.
+- **Receipts** (`receipts/{uid}/{proofId}/…`): only the owning parent can write them (JPG/PNG/PDF ≤ 10 MB, and the server re-checks type and size). Nobody reads them directly; `getReceiptUrl` returns a short-lived link to the parent or an authorized reviewer, and logs `receipt.view`.
+- **Medical documents:** admins are denied based on their role alone. Downloads need a confirmation that warns about sensitive data and are logged separately from views. Replacing a certificate can only set `replacedBy`/`replacedAt`, pointing to another certificate of the same child.
+- **Training plans:**
+  - parents read published plans only through server-computed `readerIds`, which are recomputed on membership changes, so leaving a group revokes access (tested in the demo, rules and smoke suites);
+  - plan media is private and read through `readerIds`;
+  - links must be `https://`. The server quarantines a plan with a bad link (back to draft, no readers, `validationErrors`), and the app opens links externally only after a confirmation.
+- **Exports** are generated on the device from data the coach can already read. Certificate status is excluded unless the coach ticks it, a privacy warning precedes every export, and no copy is uploaded anywhere.
+- **Language preference** (`users.locale`) is the only new client-writable user field and is validated to `ka | en | ru`.
+- **Demo mode** contains only fictional people, payments and receipts, and never initializes Firebase.
 
 ## Open items before production
 
