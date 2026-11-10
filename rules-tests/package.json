@@ -5,7 +5,8 @@
   "description": "Security-rules tests for Firestore and Storage, run against the local emulators.",
   "scripts": {
     "test": "vitest run",
-    "test:emulator": "firebase emulators:exec --only firestore,storage --project demo-sport-parent --config ../firebase.json \"npm test\""
+    "test:emulator": "firebase emulators:exec --only firestore,storage --project demo-sport-parent --config ../firebase.json \"npm test\"",
+    "smoke:functions": "npm --prefix ../functions run build && firebase emulators:exec --config ../firebase.json --only functions,firestore,storage,auth --project demo-sport-parent \"node ../functions/test-integration/emulator.smoke.mjs\""
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "5.0.2",

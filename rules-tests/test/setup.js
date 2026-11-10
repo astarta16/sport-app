@@ -19,7 +19,7 @@ export async function createEnv() {
   return initializeTestEnvironment({
     projectId: PROJECT_ID,
     firestore: {
-      rules: readFileSync(resolve(root, 'firestore.rules'), 'utf8'),
+      rules: readFileSync(process.env.FIRESTORE_RULES_PATH ?? resolve(root, 'firestore.rules'), 'utf8'),
       ...hostPort('FIRESTORE_EMULATOR_HOST', 8080),
     },
     storage: {
