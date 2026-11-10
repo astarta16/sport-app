@@ -129,10 +129,10 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   List<DemoAccount> get demoAccounts => [
-        for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.pendingCoach])
-          if (db.users[id] != null)
-            DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
-      ];
+    for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.pendingCoach])
+      if (db.users[id] != null)
+        DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
+  ];
 
   @override
   Future<void> signInAsDemo(String uid) async {
@@ -163,8 +163,7 @@ class DemoUserDirectoryRepository implements UserDirectoryRepository {
   }
 
   @override
-  Future<List<PublicProfile>> profiles(Iterable<String> uids) async =>
-      [for (final id in uids) ?await profile(id)];
+  Future<List<PublicProfile>> profiles(Iterable<String> uids) async => [for (final id in uids) ?await profile(id)];
 
   /// Demo shortcut acting as the club administrator. Production calls the
   /// admin-only `setCoachStatus` Cloud Function.

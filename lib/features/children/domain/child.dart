@@ -38,41 +38,40 @@ class Child {
     List<String>? sportIds,
     List<String>? groupIds,
     bool? photoConsent,
-  }) =>
-      Child(
-        id: id,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        birthDate: birthDate ?? this.birthDate,
-        parentIds: parentIds ?? this.parentIds,
-        userId: userId,
-        sportIds: sportIds ?? this.sportIds,
-        groupIds: groupIds ?? this.groupIds,
-        photoConsent: photoConsent ?? this.photoConsent,
-      );
+  }) => Child(
+    id: id,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    birthDate: birthDate ?? this.birthDate,
+    parentIds: parentIds ?? this.parentIds,
+    userId: userId,
+    sportIds: sportIds ?? this.sportIds,
+    groupIds: groupIds ?? this.groupIds,
+    photoConsent: photoConsent ?? this.photoConsent,
+  );
 
   Map<String, dynamic> toMap() => {
-        'firstName': firstName,
-        'lastName': lastName,
-        'birthDate': birthDate,
-        'parentIds': parentIds,
-        'userId': userId,
-        'sportIds': sportIds,
-        'groupIds': groupIds,
-        'photoConsent': photoConsent,
-      };
+    'firstName': firstName,
+    'lastName': lastName,
+    'birthDate': birthDate,
+    'parentIds': parentIds,
+    'userId': userId,
+    'sportIds': sportIds,
+    'groupIds': groupIds,
+    'photoConsent': photoConsent,
+  };
 
   factory Child.fromMap(String id, Map<String, dynamic> m) => Child(
-        id: id,
-        firstName: m['firstName'] as String? ?? '',
-        lastName: m['lastName'] as String? ?? '',
-        birthDate: readDate(m['birthDate']),
-        parentIds: readStringList(m['parentIds']),
-        userId: m['userId'] as String?,
-        sportIds: readStringList(m['sportIds']),
-        groupIds: readStringList(m['groupIds']),
-        photoConsent: m['photoConsent'] as bool? ?? false,
-      );
+    id: id,
+    firstName: m['firstName'] as String? ?? '',
+    lastName: m['lastName'] as String? ?? '',
+    birthDate: readDate(m['birthDate']),
+    parentIds: readStringList(m['parentIds']),
+    userId: m['userId'] as String?,
+    sportIds: readStringList(m['sportIds']),
+    groupIds: readStringList(m['groupIds']),
+    photoConsent: m['photoConsent'] as bool? ?? false,
+  );
 }
 
 class ChildDraft {

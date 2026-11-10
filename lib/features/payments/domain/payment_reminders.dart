@@ -39,11 +39,18 @@ class SmsTemplates {
 
   static String _amount(num a) => a == a.roundToDouble() ? a.toInt().toString() : a.toStringAsFixed(2);
 
-  static String single(ReminderKind kind, {required String child, required String sport, required num amount, required DateTime due}) {
+  static String single(
+    ReminderKind kind, {
+    required String child,
+    required String sport,
+    required num amount,
+    required DateTime due,
+  }) {
     final date = _date.format(TbilisiTime.wallClock(due));
     return switch (kind) {
       ReminderKind.d5 => 'შეხსენება: $child-ს $sport-ის გადასახადი ${_amount(amount)} ₾ გადასახდელია $date-მდე.',
-      ReminderKind.d1 => 'შეხსენება: ხვალ $date ბოლო დღეა $child-ს $sport-ის გადასახადის (${_amount(amount)} ₾) გადასახდელად.',
+      ReminderKind.d1 =>
+        'შეხსენება: ხვალ $date ბოლო დღეა $child-ს $sport-ის გადასახადის (${_amount(amount)} ₾) გადასახდელად.',
     };
   }
 
@@ -159,7 +166,13 @@ class PaymentReminderService {
       final recipient = recipientOf(parentId);
       final lines = mine.map(lineOf).toList();
       final text = lines.length == 1
-          ? SmsTemplates.single(kind, child: lines.first.child, sport: lines.first.sport, amount: lines.first.amount, due: due)
+          ? SmsTemplates.single(
+              kind,
+              child: lines.first.child,
+              sport: lines.first.sport,
+              amount: lines.first.amount,
+              due: due,
+            )
           : SmsTemplates.combined(kind, lines, due);
 
       if (recipient == null || !smsEnabled || !recipient.smsEnabled || !recipient.hasSmsConsent) {
@@ -182,16 +195,23 @@ class PaymentReminderService {
     return ReminderRunReport(sent: sent, skipped: skipped, failed: failed, claimed: claimed);
   }
 
-  SmsLogEntry _entry(DateTime now, String phone, String text, String status, List<Payment> ps, ReminderKind kind, String? resp) =>
-      SmsLogEntry(
-        id: '${now.millisecondsSinceEpoch}_${ps.first.id}_${kind.name}',
-        at: now,
-        maskedPhone: phone.isEmpty ? '' : Validators.maskPhone(phone),
-        text: text,
-        status: status,
-        provider: provider.name,
-        providerResponse: resp,
-        paymentIds: ps.map((p) => p.id).toList(),
-        kind: kind.name,
-      );
+  SmsLogEntry _entry(
+    DateTime now,
+    String phone,
+    String text,
+    String status,
+    List<Payment> ps,
+    ReminderKind kind,
+    String? resp,
+  ) => SmsLogEntry(
+    id: '${now.millisecondsSinceEpoch}_${ps.first.id}_${kind.name}',
+    at: now,
+    maskedPhone: phone.isEmpty ? '' : Validators.maskPhone(phone),
+    text: text,
+    status: status,
+    provider: provider.name,
+    providerResponse: resp,
+    paymentIds: ps.map((p) => p.id).toList(),
+    kind: kind.name,
+  );
 }

@@ -95,9 +95,7 @@ class DemoBackend {
   /// `child.groupIds` consistent with `memberChildIds`.
   void recomputeMemberships() {
     for (final g in groups.values.toList()) {
-      final parents = <String>{
-        for (final cid in g.memberChildIds) ...?children[cid]?.parentIds,
-      }.toList();
+      final parents = <String>{for (final cid in g.memberChildIds) ...?children[cid]?.parentIds}.toList();
       groups[g.id] = g.copyWith(parentIds: parents);
     }
     for (final c in children.values.toList()) {
@@ -124,16 +122,18 @@ class DemoBackend {
       onlyParentIds: onlyParentIds,
     );
     for (final u in recipients) {
-      notifications.add(AppNotification(
-        id: newId('ntf'),
-        userId: u.id,
-        type: type,
-        title: '',
-        body: '',
-        createdAt: clock(),
-        route: route,
-        args: {'group': group.name, ...args},
-      ));
+      notifications.add(
+        AppNotification(
+          id: newId('ntf'),
+          userId: u.id,
+          type: type,
+          title: '',
+          body: '',
+          createdAt: clock(),
+          route: route,
+          args: {'group': group.name, ...args},
+        ),
+      );
     }
   }
 }

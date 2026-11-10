@@ -18,17 +18,17 @@ class DemoPaymentsRepository implements PaymentsRepository {
 
   @override
   Stream<List<Payment>> watchMyPayments() => db.watch(() {
-        final me = db.me;
-        return db.payments.values.where((p) => AccessPolicy.canViewPayment(me, p, db.groups[p.groupId])).toList()
-          ..sort(_byDue);
-      });
+    final me = db.me;
+    return db.payments.values.where((p) => AccessPolicy.canViewPayment(me, p, db.groups[p.groupId])).toList()
+      ..sort(_byDue);
+  });
 
   @override
   Stream<List<Payment>> watchGroupPayments(String groupId) => db.watch(() {
-        final g = db.requireGroup(groupId);
-        if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
-        return db.payments.values.where((p) => p.groupId == groupId).toList()..sort(_byDue);
-      });
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
+    return db.payments.values.where((p) => p.groupId == groupId).toList()..sort(_byDue);
+  });
 
   @override
   Future<void> setStatus(String paymentId, PaymentStatus status) async {
@@ -70,10 +70,10 @@ class DemoPaymentsRepository implements PaymentsRepository {
 
   @override
   Stream<List<PaymentPlan>> watchPlans(String groupId) => db.watch(() {
-        final g = db.requireGroup(groupId);
-        if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
-        return db.plans.values.where((p) => p.groupId == groupId).toList();
-      });
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
+    return db.plans.values.where((p) => p.groupId == groupId).toList();
+  });
 
   @override
   Future<PaymentPlan> createPlan({required String groupId, required num amount, required int dayOfMonth}) async {
@@ -151,8 +151,13 @@ class DemoPaymentsRepository implements PaymentsRepository {
       final p = db.payments[pid]!;
       final g = db.groups[p.groupId];
       if (g == null) continue;
-      db.dispatch(NotificationType.paymentReminder, g,
-          route: '/payments', onlyParentIds: {p.parentId}, args: {'amount': '${p.amount}', 'child': db.children[p.childId]?.firstName ?? ''});
+      db.dispatch(
+        NotificationType.paymentReminder,
+        g,
+        route: '/payments',
+        onlyParentIds: {p.parentId},
+        args: {'amount': '${p.amount}', 'child': db.children[p.childId]?.firstName ?? ''},
+      );
     }
     db.commit();
     return report;

@@ -9,11 +9,11 @@ class DemoNotificationsRepository implements NotificationsRepository {
 
   @override
   Stream<List<AppNotification>> watchInbox() => db.watch(() {
-        final me = db.currentUser;
-        if (me == null) return const <AppNotification>[];
-        return db.notifications.where((n) => n.userId == me.id).toList()
-          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      });
+    final me = db.currentUser;
+    if (me == null) return const <AppNotification>[];
+    return db.notifications.where((n) => n.userId == me.id).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  });
 
   @override
   Future<void> markRead(String id) async {

@@ -9,10 +9,7 @@ class GeoCoord {
 
   factory GeoCoord.fromMap(Object? value) {
     if (value is Map) {
-      return GeoCoord(
-        (value['latitude'] as num).toDouble(),
-        (value['longitude'] as num).toDouble(),
-      );
+      return GeoCoord((value['latitude'] as num).toDouble(), (value['longitude'] as num).toDouble());
     }
     if (value != null) {
       final dynamic v = value; // Firestore GeoPoint
@@ -28,7 +25,8 @@ class GeoCoord {
     const r = 6371.0;
     final dLat = _rad(other.latitude - latitude);
     final dLng = _rad(other.longitude - longitude);
-    final a = math.pow(math.sin(dLat / 2), 2) +
+    final a =
+        math.pow(math.sin(dLat / 2), 2) +
         math.cos(_rad(latitude)) * math.cos(_rad(other.latitude)) * math.pow(math.sin(dLng / 2), 2);
     return 2 * r * math.asin(math.sqrt(a));
   }
@@ -36,8 +34,7 @@ class GeoCoord {
   static double _rad(double deg) => deg * math.pi / 180;
 
   @override
-  bool operator ==(Object other) =>
-      other is GeoCoord && other.latitude == latitude && other.longitude == longitude;
+  bool operator ==(Object other) => other is GeoCoord && other.latitude == latitude && other.longitude == longitude;
 
   @override
   int get hashCode => Object.hash(latitude, longitude);

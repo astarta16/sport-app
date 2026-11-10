@@ -49,6 +49,12 @@ describe('guest mode', () => {
     await assertFails(getDoc(doc(db, `users/${UID.parentA}`)));
   });
 
+  it('guest can list a club\'s public groups but nobody can write them', async () => {
+    await assertSucceeds(getDocs(collection(guest(), 'clubs/club1/publicGroups')));
+    await assertFails(setDoc(doc(guest(), 'clubs/club1/publicGroups/g1'), { name: 'x' }));
+    await assertFails(setDoc(doc(as(UID.coach), 'clubs/club1/publicGroups/g1'), { name: 'x' }));
+  });
+
   it('only admin can write the catalogue', async () => {
     await assertFails(setDoc(doc(guest(), 'clubs/x'), { name: 'x' }));
     await assertFails(setDoc(doc(as(UID.coach), 'clubs/x'), { name: 'x' }));
@@ -338,6 +344,8 @@ describe('membership requests', () => {
     await assertSucceeds(setDoc(doc(as(UID.parentA), 'membershipRequests/r1'), { ...base, childId: 'childA1' }));
     await assertFails(setDoc(doc(as(UID.parentA), 'membershipRequests/r2'), { ...base, childId: 'childB1' }));
     await assertFails(setDoc(doc(as(UID.parentA), 'membershipRequests/r3'), { ...base, childId: 'childA1', status: 'approved' }));
+    await assertSucceeds(setDoc(doc(as(UID.parentA), 'membershipRequests/r4'), { ...base, childId: 'childA1', childName: 'ლუკა' }));
+    await assertFails(setDoc(doc(as(UID.parentA), 'membershipRequests/r5'), { ...base, childId: 'childA1', childName: 42 }));
   });
 
   it('club coach approves into own group only', async () => {

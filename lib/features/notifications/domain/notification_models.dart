@@ -26,9 +26,7 @@ class NotificationPreferences {
   NotificationPreferences toggle(NotificationType type, bool enabled) =>
       NotificationPreferences({..._values, type: enabled});
 
-  Map<String, bool> toMap() => {
-        for (final t in NotificationType.values) t.name: isEnabled(t),
-      };
+  Map<String, bool> toMap() => {for (final t in NotificationType.values) t.name: isEnabled(t)};
 
   factory NotificationPreferences.fromMap(Object? map) {
     if (map is! Map) return const NotificationPreferences();
@@ -40,8 +38,7 @@ class NotificationPreferences {
 
   @override
   bool operator ==(Object other) =>
-      other is NotificationPreferences &&
-      NotificationType.values.every((t) => other.isEnabled(t) == isEnabled(t));
+      other is NotificationPreferences && NotificationType.values.every((t) => other.isEnabled(t) == isEnabled(t));
 
   @override
   int get hashCode => Object.hashAll(NotificationType.values.map(isEnabled));
@@ -76,37 +73,37 @@ class AppNotification {
   final Map<String, String> args;
 
   AppNotification copyWith({bool? read}) => AppNotification(
-        id: id,
-        userId: userId,
-        type: type,
-        title: title,
-        body: body,
-        createdAt: createdAt,
-        read: read ?? this.read,
-        route: route,
-        args: args,
-      );
+    id: id,
+    userId: userId,
+    type: type,
+    title: title,
+    body: body,
+    createdAt: createdAt,
+    read: read ?? this.read,
+    route: route,
+    args: args,
+  );
 
   Map<String, dynamic> toMap() => {
-        'userId': userId,
-        'type': type.name,
-        'title': title,
-        'body': body,
-        'createdAt': createdAt,
-        'read': read,
-        'route': route,
-        'args': args,
-      };
+    'userId': userId,
+    'type': type.name,
+    'title': title,
+    'body': body,
+    'createdAt': createdAt,
+    'read': read,
+    'route': route,
+    'args': args,
+  };
 
   factory AppNotification.fromMap(String id, Map<String, dynamic> m) => AppNotification(
-        id: id,
-        userId: m['userId'] as String,
-        type: NotificationType.fromName(m['type'] as String),
-        title: m['title'] as String? ?? '',
-        body: m['body'] as String? ?? '',
-        createdAt: readDate(m['createdAt']),
-        read: m['read'] as bool? ?? false,
-        route: m['route'] as String?,
-        args: (m['args'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? const {},
-      );
+    id: id,
+    userId: m['userId'] as String,
+    type: NotificationType.fromName(m['type'] as String),
+    title: m['title'] as String? ?? '',
+    body: m['body'] as String? ?? '',
+    createdAt: readDate(m['createdAt']),
+    read: m['read'] as bool? ?? false,
+    route: m['route'] as String?,
+    args: (m['args'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? const {},
+  );
 }

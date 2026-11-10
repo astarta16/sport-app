@@ -17,17 +17,22 @@ class DemoCertificatesRepository implements CertificatesRepository {
   }
 
   List<MedicalCertificate> _forChild(String childId) =>
-      db.certificates.values.where((c) => c.childId == childId).toList()..sort((a, b) => b.validUntil.compareTo(a.validUntil));
+      db.certificates.values.where((c) => c.childId == childId).toList()
+        ..sort((a, b) => b.validUntil.compareTo(a.validUntil));
 
   @override
   Stream<List<MedicalCertificate>> watchForChild(String childId) => db.watch(() {
-        if (!_canView(childId)) throw const PermissionDeniedException('certificate');
-        return _forChild(childId);
-      });
+    if (!_canView(childId)) throw const PermissionDeniedException('certificate');
+    return _forChild(childId);
+  });
 
   @override
-  Stream<List<MedicalCertificate>> watchForChildren(List<String> childIds) =>
-      db.watch(() => [for (final id in childIds) if (_canView(id)) ..._forChild(id)]);
+  Stream<List<MedicalCertificate>> watchForChildren(List<String> childIds) => db.watch(
+    () => [
+      for (final id in childIds)
+        if (_canView(id)) ..._forChild(id),
+    ],
+  );
 
   @override
   Future<MedicalCertificate> upload(CertificateUpload u) async {
@@ -67,14 +72,16 @@ class DemoCertificatesRepository implements CertificatesRepository {
     db.commit();
   }
 
-  void _audit(MedicalCertificate cert, String action) => db.accessLog.add(CertificateAccessEntry(
-        certId: cert.id,
-        childId: cert.childId,
-        userId: db.me.id,
-        userName: db.me.fullName,
-        at: db.clock(),
-        action: action,
-      ));
+  void _audit(MedicalCertificate cert, String action) => db.accessLog.add(
+    CertificateAccessEntry(
+      certId: cert.id,
+      childId: cert.childId,
+      userId: db.me.id,
+      userName: db.me.fullName,
+      at: db.clock(),
+      action: action,
+    ),
+  );
 
   /// Mirrors the `getCertificateUrl` Cloud Function: membership check,
   /// audit entry, 5-minute grant.
@@ -99,8 +106,8 @@ class DemoCertificatesRepository implements CertificatesRepository {
 
   @override
   Stream<List<CertificateAccessEntry>> watchAccessLog(String childId) => db.watch(() {
-        final c = db.requireChild(childId);
-        if (!AccessPolicy.isParentOf(db.me, c)) throw const PermissionDeniedException();
-        return db.accessLog.where((e) => e.childId == childId).toList().reversed.toList();
-      });
+    final c = db.requireChild(childId);
+    if (!AccessPolicy.isParentOf(db.me, c)) throw const PermissionDeniedException();
+    return db.accessLog.where((e) => e.childId == childId).toList().reversed.toList();
+  });
 }

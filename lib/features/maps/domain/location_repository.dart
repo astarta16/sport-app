@@ -5,9 +5,7 @@ enum MapPlaceKind { club, venue }
 
 /// A pin on the map: either a club or a venue.
 class MapPlace {
-  const MapPlace.club(Club this.club)
-      : kind = MapPlaceKind.club,
-        venue = null;
+  const MapPlace.club(Club this.club) : kind = MapPlaceKind.club, venue = null;
   const MapPlace.venue(Venue this.venue, {this.club}) : kind = MapPlaceKind.venue;
 
   final MapPlaceKind kind;

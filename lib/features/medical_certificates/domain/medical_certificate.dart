@@ -34,32 +34,32 @@ class MedicalCertificate {
   CertificateStatus statusOn(DateTime now) => CertificatePolicy.statusFor(validUntil, now);
 
   Map<String, dynamic> toMap({DateTime? now}) => {
-        'childId': childId,
-        'uploadedBy': uploadedBy,
-        'storagePath': storagePath,
-        'issuedAt': issuedAt,
-        'validUntil': validUntil,
-        'consentAt': consentAt,
-        'fileName': fileName,
-        'mimeType': mimeType,
-        'sizeBytes': sizeBytes,
-        'createdAt': createdAt,
-        'status': statusOn(now ?? DateTime.now()).name,
-      };
+    'childId': childId,
+    'uploadedBy': uploadedBy,
+    'storagePath': storagePath,
+    'issuedAt': issuedAt,
+    'validUntil': validUntil,
+    'consentAt': consentAt,
+    'fileName': fileName,
+    'mimeType': mimeType,
+    'sizeBytes': sizeBytes,
+    'createdAt': createdAt,
+    'status': statusOn(now ?? DateTime.now()).name,
+  };
 
   factory MedicalCertificate.fromMap(String id, Map<String, dynamic> m) => MedicalCertificate(
-        id: id,
-        childId: m['childId'] as String,
-        uploadedBy: m['uploadedBy'] as String? ?? '',
-        storagePath: m['storagePath'] as String? ?? '',
-        issuedAt: readDate(m['issuedAt']),
-        validUntil: readDate(m['validUntil']),
-        consentAt: readDate(m['consentAt']),
-        fileName: m['fileName'] as String? ?? '',
-        mimeType: m['mimeType'] as String? ?? '',
-        sizeBytes: (m['sizeBytes'] as num?)?.toInt() ?? 0,
-        createdAt: readDateOrNull(m['createdAt']),
-      );
+    id: id,
+    childId: m['childId'] as String,
+    uploadedBy: m['uploadedBy'] as String? ?? '',
+    storagePath: m['storagePath'] as String? ?? '',
+    issuedAt: readDate(m['issuedAt']),
+    validUntil: readDate(m['validUntil']),
+    consentAt: readDate(m['consentAt']),
+    fileName: m['fileName'] as String? ?? '',
+    mimeType: m['mimeType'] as String? ?? '',
+    sizeBytes: (m['sizeBytes'] as num?)?.toInt() ?? 0,
+    createdAt: readDateOrNull(m['createdAt']),
+  );
 }
 
 /// Upload request; validated by [CertificatePolicy.validateUpload].

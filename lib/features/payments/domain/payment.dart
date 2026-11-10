@@ -54,8 +54,7 @@ class Payment {
   final DateTime? createdAt;
   final String? planId;
 
-  bool isOverdue(DateTime now) =>
-      status == PaymentStatus.pending && TbilisiTime.daysBetween(now, dueDate) < 0;
+  bool isOverdue(DateTime now) => status == PaymentStatus.pending && TbilisiTime.daysBetween(now, dueDate) < 0;
 
   Payment copyWith({PaymentStatus? status, PaymentReminders? reminders, DateTime? paidAt, bool clearPaidAt = false}) =>
       Payment(
@@ -75,35 +74,35 @@ class Payment {
       );
 
   Map<String, dynamic> toMap() => {
-        'childId': childId,
-        'parentId': parentId,
-        'groupId': groupId,
-        'sportId': sportId,
-        'amount': amount,
-        'currency': currency,
-        'dueDate': dueDate,
-        'status': status.name,
-        'reminders': reminders.toMap(),
-        'paidAt': paidAt,
-        'createdAt': createdAt,
-        'planId': planId,
-      };
+    'childId': childId,
+    'parentId': parentId,
+    'groupId': groupId,
+    'sportId': sportId,
+    'amount': amount,
+    'currency': currency,
+    'dueDate': dueDate,
+    'status': status.name,
+    'reminders': reminders.toMap(),
+    'paidAt': paidAt,
+    'createdAt': createdAt,
+    'planId': planId,
+  };
 
   factory Payment.fromMap(String id, Map<String, dynamic> m) => Payment(
-        id: id,
-        childId: m['childId'] as String,
-        parentId: m['parentId'] as String,
-        groupId: m['groupId'] as String,
-        sportId: m['sportId'] as String,
-        amount: m['amount'] as num? ?? 0,
-        currency: m['currency'] as String? ?? 'GEL',
-        dueDate: readDate(m['dueDate']),
-        status: PaymentStatus.fromName(m['status'] as String?),
-        reminders: PaymentReminders.fromMap(m['reminders']),
-        paidAt: readDateOrNull(m['paidAt']),
-        createdAt: readDateOrNull(m['createdAt']),
-        planId: m['planId'] as String?,
-      );
+    id: id,
+    childId: m['childId'] as String,
+    parentId: m['parentId'] as String,
+    groupId: m['groupId'] as String,
+    sportId: m['sportId'] as String,
+    amount: m['amount'] as num? ?? 0,
+    currency: m['currency'] as String? ?? 'GEL',
+    dueDate: readDate(m['dueDate']),
+    status: PaymentStatus.fromName(m['status'] as String?),
+    reminders: PaymentReminders.fromMap(m['reminders']),
+    paidAt: readDateOrNull(m['paidAt']),
+    createdAt: readDateOrNull(m['createdAt']),
+    planId: m['planId'] as String?,
+  );
 }
 
 /// Recurring charge for a group (e.g. every month on day 1).
@@ -129,25 +128,25 @@ class PaymentPlan {
   final String createdBy;
 
   Map<String, dynamic> toMap() => {
-        'groupId': groupId,
-        'sportId': sportId,
-        'amount': amount,
-        'currency': currency,
-        'dayOfMonth': dayOfMonth,
-        'active': active,
-        'createdBy': createdBy,
-      };
+    'groupId': groupId,
+    'sportId': sportId,
+    'amount': amount,
+    'currency': currency,
+    'dayOfMonth': dayOfMonth,
+    'active': active,
+    'createdBy': createdBy,
+  };
 
   factory PaymentPlan.fromMap(String id, Map<String, dynamic> m) => PaymentPlan(
-        id: id,
-        groupId: m['groupId'] as String,
-        sportId: m['sportId'] as String,
-        amount: m['amount'] as num? ?? 0,
-        currency: m['currency'] as String? ?? 'GEL',
-        dayOfMonth: (m['dayOfMonth'] as num?)?.toInt() ?? 1,
-        active: m['active'] as bool? ?? true,
-        createdBy: m['createdBy'] as String? ?? '',
-      );
+    id: id,
+    groupId: m['groupId'] as String,
+    sportId: m['sportId'] as String,
+    amount: m['amount'] as num? ?? 0,
+    currency: m['currency'] as String? ?? 'GEL',
+    dayOfMonth: (m['dayOfMonth'] as num?)?.toInt() ?? 1,
+    active: m['active'] as bool? ?? true,
+    createdBy: m['createdBy'] as String? ?? '',
+  );
 
   /// Deterministic id so regeneration for the same month is idempotent.
   String paymentIdFor(String childId, int year, int month) =>

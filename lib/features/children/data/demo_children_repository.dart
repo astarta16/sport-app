@@ -14,31 +14,35 @@ class DemoChildrenRepository implements ChildrenRepository {
 
   @override
   Stream<List<Child>> watchMyChildren() => db.watch(() {
-        final me = db.me;
-        return db.children.values.where((c) => AccessPolicy.isParentOf(me, c)).toList()..sort(_byName);
-      });
+    final me = db.me;
+    return db.children.values.where((c) => AccessPolicy.isParentOf(me, c)).toList()..sort(_byName);
+  });
 
   @override
   Stream<Child?> watchChild(String childId) => db.watch(() {
-        final c = db.children[childId];
-        if (c == null) return null;
-        if (!AccessPolicy.canViewChild(db.me, c, db.groupsOfChild(c.id))) throw const PermissionDeniedException();
-        return c;
-      });
+    final c = db.children[childId];
+    if (c == null) return null;
+    if (!AccessPolicy.canViewChild(db.me, c, db.groupsOfChild(c.id))) throw const PermissionDeniedException();
+    return c;
+  });
 
   @override
   Stream<List<Child>> watchGroupMembers(String groupId) => db.watch(() {
-        final g = db.requireGroup(groupId);
-        if (!AccessPolicy.isCoachOf(db.me, g) && !db.me.isAdmin) throw const PermissionDeniedException();
-        return g.memberChildIds.map((id) => db.children[id]).whereType<Child>().toList()
-          ..sort((a, b) => a.firstName.compareTo(b.firstName));
-      });
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.isCoachOf(db.me, g) && !db.me.isAdmin) throw const PermissionDeniedException();
+    return g.memberChildIds.map((id) => db.children[id]).whereType<Child>().toList()
+      ..sort((a, b) => a.firstName.compareTo(b.firstName));
+  });
 
   @override
   Future<Child> addChild(ChildDraft d) async {
     final me = db.me;
     if (!me.isParent) throw const PermissionDeniedException('only parents add children');
-    for (final v in [Validators.name(d.firstName), Validators.name(d.lastName), Validators.birthDate(d.birthDate, db.clock())]) {
+    for (final v in [
+      Validators.name(d.firstName),
+      Validators.name(d.lastName),
+      Validators.birthDate(d.birthDate, db.clock()),
+    ]) {
       if (v != null) throw ValidationException(v);
     }
     if (d.sportIds.isEmpty) throw const ValidationException('sportRequired');

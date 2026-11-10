@@ -91,8 +91,7 @@ class AccessPolicy {
         NotificationType.chatMessage => isGroupParent || isGroupCoach,
         NotificationType.certificateExpiry ||
         NotificationType.paymentReminder ||
-        NotificationType.paymentSms =>
-          isGroupParent && (onlyParentIds == null || onlyParentIds.contains(u.id)),
+        NotificationType.paymentSms => isGroupParent && (onlyParentIds == null || onlyParentIds.contains(u.id)),
         _ => isGroupParent,
       };
     }).toList();

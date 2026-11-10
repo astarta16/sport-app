@@ -14,32 +14,30 @@ class DemoTrainingsRepository implements TrainingsRepository {
 
   @override
   Stream<List<Training>> watchForGroups(List<String> groupIds) => db.watch(() {
-        final me = db.me;
-        final visible = groupIds.where((id) {
-          final g = db.groups[id];
-          return g != null && AccessPolicy.canViewTrainings(me, g);
-        }).toSet();
-        return db.trainings.values.where((t) => visible.contains(t.groupId)).toList()
-          ..sort((a, b) => a.startAt.compareTo(b.startAt));
-      });
+    final me = db.me;
+    final visible = groupIds.where((id) {
+      final g = db.groups[id];
+      return g != null && AccessPolicy.canViewTrainings(me, g);
+    }).toSet();
+    return db.trainings.values.where((t) => visible.contains(t.groupId)).toList()
+      ..sort((a, b) => a.startAt.compareTo(b.startAt));
+  });
 
   @override
   Stream<Training?> watchTraining(String id) => db.watch(() {
-        final t = db.trainings[id];
-        if (t == null) return null;
-        final g = db.requireGroup(t.groupId);
-        if (!AccessPolicy.canViewTrainings(db.me, g)) throw const PermissionDeniedException();
-        return t;
-      });
+    final t = db.trainings[id];
+    if (t == null) return null;
+    final g = db.requireGroup(t.groupId);
+    if (!AccessPolicy.canViewTrainings(db.me, g)) throw const PermissionDeniedException();
+    return t;
+  });
 
   void _guard(String groupId) {
     final g = db.requireGroup(groupId);
     if (!AccessPolicy.canManageTrainings(db.me, g)) throw const PermissionDeniedException('not coach of group');
   }
 
-  List<String> _storePhotos(List<PhotoUpload> photos) => [
-        for (final p in photos) _storePhoto(p),
-      ];
+  List<String> _storePhotos(List<PhotoUpload> photos) => [for (final p in photos) _storePhoto(p)];
 
   String _storePhoto(PhotoUpload p) {
     if (!p.mimeType.startsWith('image/')) throw const ValidationException('fileType');
@@ -107,7 +105,12 @@ class DemoTrainingsRepository implements TrainingsRepository {
     final t = db.trainings[id] ?? (throw const NotFoundException());
     _guard(t.groupId);
     db.trainings[id] = t.copyWith(status: TrainingStatus.cancelled, updatedAt: db.clock());
-    db.dispatch(NotificationType.trainingChanged, db.groups[t.groupId]!, route: '/training/$id', args: {'kind': 'cancelled'});
+    db.dispatch(
+      NotificationType.trainingChanged,
+      db.groups[t.groupId]!,
+      route: '/training/$id',
+      args: {'kind': 'cancelled'},
+    );
     db.commit();
   }
 
@@ -122,7 +125,12 @@ class DemoTrainingsRepository implements TrainingsRepository {
       startAt: newStart,
       updatedAt: db.clock(),
     );
-    db.dispatch(NotificationType.trainingChanged, db.groups[t.groupId]!, route: '/training/$id', args: {'kind': 'moved'});
+    db.dispatch(
+      NotificationType.trainingChanged,
+      db.groups[t.groupId]!,
+      route: '/training/$id',
+      args: {'kind': 'moved'},
+    );
     db.commit();
   }
 

@@ -32,40 +32,40 @@ class Group {
   bool hasChild(String childId) => memberChildIds.contains(childId);
 
   Group copyWith({List<String>? memberChildIds, List<String>? parentIds}) => Group(
-        id: id,
-        clubId: clubId,
-        sportId: sportId,
-        coachIds: coachIds,
-        name: name,
-        ageMin: ageMin,
-        ageMax: ageMax,
-        memberChildIds: memberChildIds ?? this.memberChildIds,
-        parentIds: parentIds ?? this.parentIds,
-        scheduleNote: scheduleNote,
-      );
+    id: id,
+    clubId: clubId,
+    sportId: sportId,
+    coachIds: coachIds,
+    name: name,
+    ageMin: ageMin,
+    ageMax: ageMax,
+    memberChildIds: memberChildIds ?? this.memberChildIds,
+    parentIds: parentIds ?? this.parentIds,
+    scheduleNote: scheduleNote,
+  );
 
   Map<String, dynamic> toMap() => {
-        'clubId': clubId,
-        'sportId': sportId,
-        'coachIds': coachIds,
-        'name': name,
-        'ageMin': ageMin,
-        'ageMax': ageMax,
-        'memberChildIds': memberChildIds,
-        'parentIds': parentIds,
-        'scheduleNote': scheduleNote,
-      };
+    'clubId': clubId,
+    'sportId': sportId,
+    'coachIds': coachIds,
+    'name': name,
+    'ageMin': ageMin,
+    'ageMax': ageMax,
+    'memberChildIds': memberChildIds,
+    'parentIds': parentIds,
+    'scheduleNote': scheduleNote,
+  };
 
   factory Group.fromMap(String id, Map<String, dynamic> m) => Group(
-        id: id,
-        clubId: m['clubId'] as String? ?? '',
-        sportId: m['sportId'] as String? ?? '',
-        coachIds: readStringList(m['coachIds']),
-        name: m['name'] as String? ?? '',
-        ageMin: (m['ageMin'] as num?)?.toInt() ?? 0,
-        ageMax: (m['ageMax'] as num?)?.toInt() ?? 18,
-        memberChildIds: readStringList(m['memberChildIds']),
-        parentIds: readStringList(m['parentIds']),
-        scheduleNote: m['scheduleNote'] as String?,
-      );
+    id: id,
+    clubId: m['clubId'] as String? ?? '',
+    sportId: m['sportId'] as String? ?? '',
+    coachIds: readStringList(m['coachIds']),
+    name: m['name'] as String? ?? '',
+    ageMin: (m['ageMin'] as num?)?.toInt() ?? 0,
+    ageMax: (m['ageMax'] as num?)?.toInt() ?? 18,
+    memberChildIds: readStringList(m['memberChildIds']),
+    parentIds: readStringList(m['parentIds']),
+    scheduleNote: m['scheduleNote'] as String?,
+  );
 }

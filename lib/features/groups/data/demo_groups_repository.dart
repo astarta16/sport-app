@@ -11,18 +11,18 @@ class DemoGroupsRepository implements GroupsRepository {
 
   @override
   Stream<List<Group>> watchMyGroups() => db.watch(() {
-        final me = db.me;
-        return db.groups.values.where((g) => AccessPolicy.canViewGroup(me, g)).toList()
-          ..sort((a, b) => a.name.compareTo(b.name));
-      });
+    final me = db.me;
+    return db.groups.values.where((g) => AccessPolicy.canViewGroup(me, g)).toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+  });
 
   @override
   Stream<Group?> watchGroup(String id) => db.watch(() {
-        final g = db.groups[id];
-        if (g == null) return null;
-        if (!AccessPolicy.canViewGroup(db.me, g)) throw const PermissionDeniedException();
-        return g;
-      });
+    final g = db.groups[id];
+    if (g == null) return null;
+    if (!AccessPolicy.canViewGroup(db.me, g)) throw const PermissionDeniedException();
+    return g;
+  });
 
   /// Public info only — member/parent lists are stripped.
   @override

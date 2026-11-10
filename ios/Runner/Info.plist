@@ -4,10 +4,19 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>კამერა გამოიყენება ჯანმრთელობის ცნობისა და ვარჯიშის ფოტოების გადასაღებად.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>გალერეა გამოიყენება ჯანმრთელობის ცნობისა და ვარჯიშის ფოტოების ასარჩევად.</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ka</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Sport Parent App</string>
+	<string>გუნდი</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

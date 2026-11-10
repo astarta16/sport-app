@@ -117,6 +117,13 @@ service cloud.firestore {
     match /clubs/{clubId} {
       allow read: if true;
       allow write: if isAdmin();
+
+      // Server-maintained public projection of the club's groups (no ids of
+      // members, parents or coaches) for the guest map and join flow.
+      match /publicGroups/{groupId} {
+        allow read: if true;
+        allow write: if false;
+      }
     }
 
     match /venues/{venueId} {
@@ -365,7 +372,12 @@ service cloud.firestore {
 
       allow create: if isParent()
         && request.resource.data.keys().hasOnly([
-             'parentId', 'childId', 'clubId', 'groupId', 'status', 'createdAt'])
+             'parentId', 'childId', 'clubId', 'groupId', 'status', 'createdAt', 'childName'])
+        // childName: denormalized first name so the coach can review the
+        // request without reading a non-member child's profile.
+        && (!('childName' in request.resource.data)
+            || (request.resource.data.childName is string
+                && request.resource.data.childName.size() <= 40))
         && request.resource.data.parentId == uid()
         && isParentOfChild(request.resource.data.childId)
         && request.resource.data.clubId is string

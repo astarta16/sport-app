@@ -18,8 +18,7 @@ class TbilisiTime {
   }
 
   /// Whole calendar days from [from] to [to] in Tbilisi (can be negative).
-  static int daysBetween(DateTime from, DateTime to) =>
-      calendarDay(to).difference(calendarDay(from)).inDays;
+  static int daysBetween(DateTime from, DateTime to) => calendarDay(to).difference(calendarDay(from)).inDays;
 
   /// Builds the instant for a Tbilisi wall-clock date and time.
   static DateTime at(int year, int month, int day, [int hour = 0, int minute = 0]) =>
@@ -29,14 +28,12 @@ class TbilisiTime {
 /// Strips the time part, keeping the local calendar date.
 DateTime dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
-bool isSameDay(DateTime a, DateTime b) =>
-    a.year == b.year && a.month == b.month && a.day == b.day;
+bool isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 
 /// Age in completed years on [on].
 int ageInYears(DateTime birthDate, DateTime on) {
   var age = on.year - birthDate.year;
-  final hadBirthday = on.month > birthDate.month ||
-      (on.month == birthDate.month && on.day >= birthDate.day);
+  final hadBirthday = on.month > birthDate.month || (on.month == birthDate.month && on.day >= birthDate.day);
   if (!hadBirthday) age--;
   return age;
 }
@@ -59,5 +56,4 @@ DateTime readDate(Object? value) {
 
 DateTime? readDateOrNull(Object? value) => value == null ? null : readDate(value);
 
-List<String> readStringList(Object? value) =>
-    value is List ? value.map((e) => e.toString()).toList() : const [];
+List<String> readStringList(Object? value) => value is List ? value.map((e) => e.toString()).toList() : const [];

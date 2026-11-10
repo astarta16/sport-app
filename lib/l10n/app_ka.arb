@@ -1,0 +1,675 @@
+{
+  "@@locale": "ka",
+  "appName": "გუნდი",
+  "appTagline": "ბავშვის სპორტი — ერთ სივრცეში",
+  "continueLabel": "გაგრძელება",
+  "cancel": "გაუქმება",
+  "save": "შენახვა",
+  "delete": "წაშლა",
+  "confirm": "დადასტურება",
+  "close": "დახურვა",
+  "retry": "ხელახლა ცდა",
+  "next": "შემდეგი",
+  "done": "მზადაა",
+  "edit": "რედაქტირება",
+  "seeAll": "ყველა",
+  "today": "დღეს",
+  "optional": "არასავალდებულო",
+  "demoBadge": "დემო",
+  "errorGeneric": "რაღაც შეცდომა მოხდა. სცადეთ ხელახლა.",
+  "errorPermission": "ამ მოქმედებაზე წვდომა არ გაქვთ.",
+  "errorNetwork": "კავშირი ვერ დამყარდა. შეამოწმეთ ინტერნეტი.",
+  "errorNotFound": "ჩანაწერი ვერ მოიძებნა.",
+  "errorInvalidCode": "კოდი არასწორია.",
+  "errorNotSignedIn": "გთხოვთ, შეხვიდეთ ანგარიშზე.",
+  "errorTitle": "ვერ ჩაიტვირთა",
+  "validationRequired": "სავალდებულო ველი",
+  "validationInvalidPhone": "შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)",
+  "validationInvalidOtp": "კოდი უნდა იყოს 6 ციფრი",
+  "validationTooShort": "ძალიან მოკლეა",
+  "validationTooLong": "ძალიან გრძელია",
+  "validationInvalidName": "გამოიყენეთ მხოლოდ ასოები",
+  "validationDateInFuture": "თარიღი მომავალშია",
+  "validationTooOldForChild": "ბავშვის ასაკი უნდა იყოს 18 წლამდე",
+  "validationTooYoung": "მინიმალური ასაკი 3 წელია",
+  "validationSportRequired": "აირჩიეთ მინიმუმ ერთი სპორტი",
+  "validationClubRequired": "აირჩიეთ კლუბი",
+  "validationConsentRequired": "გასაგრძელებლად საჭიროა თანხმობა",
+  "validationVenueRequired": "აირჩიეთ ადგილი",
+  "validationDurationRange": "ხანგრძლივობა 15–300 წუთი",
+  "validationFocusRequired": "აირჩიეთ მინიმუმ ერთი თემა",
+  "validationDescriptionTooLong": "აღწერა ძალიან გრძელია",
+  "validationStartInPast": "დრო უკვე გასულია",
+  "validationPhotoConsentRequired": "დაადასტურეთ ფოტოებზე თანხმობის პირობა",
+  "validationFileType": "დასაშვებია მხოლოდ JPG, PNG ან PDF",
+  "validationFileTooLarge": "ფაილი 10 MB-ზე დიდია",
+  "validationFileEmpty": "აირჩიეთ ფაილი",
+  "validationDatesOrder": "ვადა გაცემის თარიღის შემდეგ უნდა იყოს",
+  "validationIssuedInFuture": "გაცემის თარიღი მომავალშია",
+  "validationEmptyMessage": "შეტყობინება ცარიელია",
+  "validationMessageTooLong": "შეტყობინება ძალიან გრძელია",
+  "validationAmountPositive": "თანხა უნდა იყოს 0-ზე მეტი",
+  "validationDayOfMonth": "რიცხვი 1-დან 28-მდე",
+  "validationAlreadyMember": "ბავშვი უკვე ამ ჯგუფშია",
+  "validationRequestExists": "მოთხოვნა უკვე გაგზავნილია",
+  "onboardingTitle1": "ყველა ვარჯიში ერთ კალენდარში",
+  "onboardingBody1": "დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.",
+  "onboardingTitle2": "პირდაპირი კავშირი მწვრთნელთან",
+  "onboardingBody2": "ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.",
+  "onboardingTitle3": "ცნობები და გადახდები უსაფრთხოდ",
+  "onboardingBody3": "ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.",
+  "onboardingStart": "დავიწყოთ",
+  "onboardingSkip": "გამოტოვება",
+  "phoneTitle": "შესვლა ტელეფონით",
+  "phoneSubtitle": "გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.",
+  "phoneLabel": "მობილურის ნომერი",
+  "sendCode": "კოდის მიღება",
+  "otpTitle": "შეიყვანეთ კოდი",
+  "otpSubtitle": "6-ნიშნა კოდი გაიგზავნა ნომერზე {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "verify": "დადასტურება",
+  "resendCode": "კოდის ხელახლა გაგზავნა",
+  "resendIn": "ხელახლა გაგზავნა {seconds} წამში",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "demoOtpHint": "დემო რეჟიმი: შეიყვანეთ 123456",
+  "demoAccountsTitle": "სწრაფი შესვლა დემო ანგარიშით",
+  "demoAccountsSubtitle": "გამოგონილი მონაცემები — რეალური SMS, გადახდა ან სამედიცინო ინფორმაცია არ გამოიყენება.",
+  "demoPendingCoach": "მწვრთნელი (დასადასტურებელი)",
+  "guestBrowse": "კლუბების ნახვა შესვლის გარეშე",
+  "termsNote": "გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.",
+  "registerTitle": "პროფილის შექმნა",
+  "chooseRole": "ვინ ხართ?",
+  "roleParent": "მშობელი",
+  "roleParentDesc": "ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები",
+  "roleCoach": "მწვრთნელი",
+  "roleCoachDesc": "ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.",
+  "roleChild": "ბავშვი",
+  "roleChildDesc": "14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.",
+  "soon": "მალე",
+  "firstName": "სახელი",
+  "lastName": "გვარი",
+  "sportsLabel": "სპორტის სახეობები",
+  "clubsLabel": "კლუბი",
+  "consentData": "ვეთანხმები პერსონალური მონაცემების დამუშავებას",
+  "consentDataDetails": "ვამუშავებთ სახელს, ტელეფონს და ბავშვის სავარჯიშო მონაცემებს მხოლოდ სერვისის მიწოდებისთვის. ნებისმიერ დროს შეგიძლიათ ანგარიშის წაშლა.",
+  "consentSms": "ვეთანხმები SMS შეხსენებების მიღებას გადასახადებზე",
+  "finishRegistration": "დასრულება",
+  "stepOf": "ნაბიჯი {current} / {total}",
+  "@stepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "coachPendingTitle": "ანგარიში მოწმდება",
+  "coachPendingBody": "კლუბის ადმინისტრატორი ადასტურებს მწვრთნელის როლს. დადასტურებამდე ბავშვების მონაცემები არ ჩანს — ეს იცავს ბავშვებს.",
+  "coachPendingDemoApprove": "დემო: დადასტურება ადმინისტრატორის სახელით",
+  "coachRejectedTitle": "მოთხოვნა უარყოფილია",
+  "coachRejectedBody": "დაუკავშირდით კლუბის ადმინისტრაციას.",
+  "childAccountUnsupported": "ბავშვის დამოუკიდებელი ანგარიში ჯერ არ არის ხელმისაწვდომი. ვარჯიშებს მშობლის ანგარიშიდან ნახავთ.",
+  "signOut": "გასვლა",
+  "navHome": "მთავარი",
+  "navCalendar": "კალენდარი",
+  "navChat": "ჩატი",
+  "navMap": "რუკა",
+  "navProfile": "პროფილი",
+  "greetingMorning": "დილა მშვიდობისა, {name}",
+  "@greetingMorning": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greetingDay": "გამარჯობა, {name}",
+  "@greetingDay": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greetingEvening": "საღამო მშვიდობისა, {name}",
+  "@greetingEvening": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nextTraining": "შემდეგი ვარჯიში",
+  "noUpcomingTrainings": "უახლოესი ვარჯიში ჯერ არ არის დაგეგმილი",
+  "directions": "მარშრუტი",
+  "details": "დეტალები",
+  "coachLabel": "მწვრთნელი",
+  "venueLabel": "ადგილი",
+  "medicalStatus": "ჯანმრთელობის ცნობა",
+  "coachMessages": "მწვრთნელის შეტყობინებები",
+  "recentPhotos": "ფოტოები ვარჯიშებიდან",
+  "paymentSummary": "გადასახადი",
+  "noChildrenTitle": "დაამატეთ პირველი ბავშვი",
+  "noChildrenBody": "შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.",
+  "addChild": "ბავშვის დამატება",
+  "noGroupTitle": "{name} ჯერ არ არის ჯგუფში",
+  "@noGroupTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noGroupBody": "იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.",
+  "findClub": "კლუბის პოვნა",
+  "inDays": "{count, plural, =0{დღეს} =1{ხვალ} other{{count} დღეში}}",
+  "@inDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "startsInHours": "{count, plural, =0{იწყება მალე} other{{count} საათში}}",
+  "@startsInHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noMessages": "შეტყობინებები ჯერ არ არის",
+  "noPhotos": "ფოტოები გამოჩნდება ვარჯიშების შემდეგ",
+  "allPaid": "ყველა გადასახადი დაფარულია",
+  "yearsOld": "{count} წლის",
+  "@yearsOld": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "openChat": "ჩატის გახსნა",
+  "statusScheduled": "დაგეგმილი",
+  "statusCancelled": "გაუქმებული",
+  "statusMoved": "გადატანილი",
+  "statusDone": "ჩატარებული",
+  "focusTechnique": "ტექნიკა",
+  "focusSpeed": "სისწრაფე",
+  "focusPhysical": "ფიზიკური მომზადება",
+  "focusBall": "ბურთთან მუშაობა",
+  "durationMinutes": "{count} წთ",
+  "@durationMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trainingTitle": "ვარჯიში",
+  "trainingDescription": "აღწერა",
+  "trainingFocus": "თემა",
+  "trainingPhotos": "ფოტოები",
+  "movedFrom": "გადატანილია {date}-დან",
+  "@movedFrom": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledBanner": "ეს ვარჯიში გაუქმდა",
+  "newTraining": "ახალი ვარჯიში",
+  "editTraining": "ვარჯიშის რედაქტირება",
+  "cancelTraining": "გაუქმება",
+  "cancelTrainingConfirm": "გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.",
+  "keepTraining": "არა, დავტოვოთ",
+  "rescheduleTraining": "გადატანა",
+  "markDone": "ჩატარებულია",
+  "addPhotos": "ფოტოების დამატება",
+  "dateLabel": "თარიღი",
+  "timeLabel": "დაწყების დრო",
+  "durationLabel": "ხანგრძლივობა",
+  "trainingSaved": "ვარჯიში შენახულია და მშობლებს ეცნობათ",
+  "trainingCancelled": "ვარჯიში გაუქმდა",
+  "trainingRescheduled": "ვარჯიში გადატანილია",
+  "trainingMarkedDone": "მონიშნულია ჩატარებულად",
+  "photoConsentTitle": "ფოტოებზე თანხმობა",
+  "photoConsentMissing": "თანხმობა არ აქვს: {names}. ეს ბავშვები ფოტოზე არ უნდა ჩანდნენ.",
+  "@photoConsentMissing": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "photoConsentAllGiven": "ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.",
+  "photoConsentConfirm": "ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე",
+  "selectVenue": "აირჩიეთ ადგილი",
+  "descriptionHint": "რას ვივარჯიშებთ? მაგ.: პასები, დარტყმა კარში…",
+  "groupLabel": "ჯგუფი",
+  "photosAdded": "ფოტოები დაემატა",
+  "customDuration": "სხვა",
+  "saveTraining": "ვარჯიშის შენახვა",
+  "trainingFromTo": "{start} – {end}",
+  "@trainingFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingHistory": "ვარჯიშების ისტორია",
+  "upcoming": "მომავალი ვარჯიშები",
+  "noTrainingsDay": "ამ დღეს ვარჯიში არ არის",
+  "allChildren": "ყველა ბავშვი",
+  "coachHomeSubtitle": "დღევანდელი სურათი თქვენს ჯგუფებში",
+  "groupMembers": "{count} ბავშვი",
+  "@groupMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roster": "ჯგუფის წევრები",
+  "noGroupsCoach": "ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.",
+  "membershipRequests": "გაწევრიანების მოთხოვნები",
+  "approve": "დადასტურება",
+  "reject": "უარყოფა",
+  "requestApproved": "ბავშვი დაემატა ჯგუფს",
+  "requestRejected": "მოთხოვნა უარყოფილია",
+  "removeFromGroup": "ჯგუფიდან ამოშლა",
+  "removeFromGroupConfirm": "ამოვშალოთ {name} ჯგუფიდან? თქვენი წვდომა ბავშვის მონაცემებსა და ცნობებზე ავტომატურად შეწყდება.",
+  "@removeFromGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "parentsLabel": "მშობლები",
+  "call": "დარეკვა",
+  "viewCertificate": "ცნობის გახსნა",
+  "ageRange": "{min}–{max} წელი",
+  "@ageRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "statMembers": "წევრი",
+  "statThisWeek": "ამ კვირაში",
+  "statCertAlerts": "ცნობის პრობლემა",
+  "wantsToJoin": "{child} სურს გაწევრიანება ჯგუფში {group}",
+  "@wantsToJoin": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "todayTrainings": "დღევანდელი და მომავალი ვარჯიშები",
+  "selectGroupTitle": "აირჩიეთ ჯგუფი",
+  "chatEmpty": "დაიწყეთ საუბარი ჯგუფთან",
+  "typeMessage": "შეტყობინება…",
+  "chatGroups": "ჯგუფის ჩატები",
+  "chatNotAllowed": "ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.",
+  "chatPrivacyNote": "ჩატში მხოლოდ ჯგუფის მწვრთნელები და მშობლები არიან. ტელეფონის ნომრები სხვა მშობლებს არ უჩანთ.",
+  "noChats": "ჩატები გამოჩნდება, როცა ბავშვი ჯგუფში გაწევრიანდება",
+  "photoAttachment": "ფოტო",
+  "searchPlaces": "ძიება სახელით ან მისამართით",
+  "allSports": "ყველა",
+  "venueStadium": "სტადიონი",
+  "venueHall": "დარბაზი",
+  "venueField": "მოედანი",
+  "venuePool": "აუზი",
+  "clubLabel": "კლუბი",
+  "groupsLabel": "ჯგუფები",
+  "requestMembership": "გაწევრიანების მოთხოვნა",
+  "requestSent": "მოთხოვნა გაიგზავნა მწვრთნელთან",
+  "selectChild": "აირჩიეთ ბავშვი",
+  "openInMaps": "გახსნა რუკის აპლიკაციაში",
+  "mapNoResults": "ამ ფილტრით ლოკაცია ვერ მოიძებნა",
+  "distanceKm": "{km} კმ",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "clubDetails": "კლუბის გვერდი",
+  "noGroupsInClub": "ამ კლუბში ჯგუფები ჯერ არ არის",
+  "signInToJoin": "გაწევრიანებისთვის შედით ანგარიშზე",
+  "mapAttribution": "© OpenStreetMap",
+  "placesCount": "{count} ლოკაცია",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "certificatesTitle": "ჯანმრთელობის ცნობები",
+  "certValid": "მოქმედებს",
+  "certExpiring": "იწურება",
+  "certExpired": "ვადაგასული",
+  "certMissing": "არ არის",
+  "validUntil": "მოქმედებს {date}-მდე",
+  "@validUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "issuedOn": "გაცემულია {date}",
+  "@issuedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "uploadCertificate": "ცნობის ატვირთვა",
+  "certConsentTitle": "სანამ ატვირთავთ",
+  "certConsentWhat": "რა მონაცემი მუშავდება",
+  "certConsentWhatBody": "ცნობის ფაილი, გაცემის თარიღი და მოქმედების ვადა. ჯანმრთელობის მონაცემი განსაკუთრებული კატეგორიაა და დაცულია კანონით.",
+  "certConsentWho": "ვის ექნება წვდომა",
+  "certConsentWhoBody": "თქვენ და იმ ჯგუფის მწვრთნელებს, სადაც ბავშვი ამჟამად ვარჯიშობს. მწვრთნელი ხედავს სტატუსს, ფაილის გახსნა ცალკე ქმედებაა და აღირიცხება ჟურნალში.",
+  "certConsentDelete": "როგორ წაიშლება",
+  "certConsentDeleteBody": "ნებისმიერ დროს შეგიძლიათ წაშლა. ანგარიშის წაშლისას ყველა ცნობა სრულად იშლება. ჯგუფიდან გასვლისას მწვრთნელის წვდომა წყდება.",
+  "certConsentAgree": "ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით",
+  "takePhoto": "კამერა",
+  "fromGallery": "გალერეა",
+  "pickDocument": "ფაილი (PDF)",
+  "issueDate": "გაცემის თარიღი",
+  "expiryDate": "მოქმედების ვადა",
+  "fileRequirements": "JPG, PNG ან PDF · მაქსიმუმ 10 MB",
+  "certUploaded": "ცნობა ატვირთულია",
+  "deleteCertificate": "ცნობის წაშლა",
+  "deleteCertificateConfirm": "წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.",
+  "certDeleted": "ცნობა წაიშალა",
+  "openFile": "ფაილის გახსნა",
+  "accessExpiresIn": "დროებითი წვდომა · იწურება {minutes} წუთში",
+  "@accessExpiresIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "accessExpired": "წვდომის ვადა ამოიწურა. გახსენით ხელახლა.",
+  "demoDocument": "დემო დოკუმენტი",
+  "demoDocumentBody": "დემო რეჟიმში რეალური სამედიცინო ფაილები არ ინახება. პროდაქშენში ფაილი იხსნება 5-წუთიანი ხელმოწერილი ბმულით.",
+  "accessLog": "წვდომის ჟურნალი",
+  "accessLogOpen": "{name} — გახსნა",
+  "@accessLogOpen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accessLogDenied": "{name} — უარი",
+  "@accessLogDenied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accessLogDelete": "{name} — წაშლა",
+  "@accessLogDelete": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noCertificates": "ცნობა ჯერ არ არის ატვირთული",
+  "certExpiresIn": "{count, plural, =0{ვადა იწურება დღეს} =1{ვადა იწურება ხვალ} other{ვადა იწურება {count} დღეში}}",
+  "@certExpiresIn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "certExpiredAgo": "ვადა გავიდა {count} დღის წინ",
+  "@certExpiredAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "certRemindersNote": "შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.",
+  "fileSelected": "არჩეულია: {name}",
+  "@fileSelected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationsTitle": "შეტყობინებები",
+  "notificationsEmpty": "ახალი შეტყობინება არ გაქვთ",
+  "markAllRead": "ყველას წაკითხვა",
+  "notifNewTraining": "ახალი ვარჯიში",
+  "notifTrainingChanged": "ვარჯიში შეიცვალა",
+  "notifTrainingReminder": "ვარჯიში 2 საათში",
+  "notifChatMessage": "ახალი შეტყობინება",
+  "notifCertificateExpiry": "ცნობის ვადა იწურება",
+  "notifNewPhotos": "ახალი ფოტოები",
+  "notifPaymentReminder": "გადასახადის შეხსენება",
+  "notifPaymentSms": "SMS შეხსენება გადასახადზე",
+  "notifBodyGroup": "ჯგუფი: {group}",
+  "@notifBodyGroup": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyChat": "{sender} · {group}",
+  "@notifBodyChat": {
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyCert": "{child} — {days} დღე დარჩა",
+  "@notifBodyCert": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBodyPayment": "{child} — {amount} ₾",
+  "@notifBodyPayment": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationSettings": "შეტყობინებების პარამეტრები",
+  "notificationSettingsHint": "აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.",
+  "pushDemoNote": "დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.",
+  "paymentsTitle": "გადახდები",
+  "paymentPending": "გადასახდელი",
+  "paymentPaid": "გადახდილი",
+  "paymentCancelled": "გაუქმებული",
+  "paymentOverdue": "ვადაგადაცილებული",
+  "totalDue": "სულ გადასახდელი",
+  "dueOn": "ვადა: {date}",
+  "@dueOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paidOn": "გადახდილია {date}",
+  "@paidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "markPaid": "გადახდილია",
+  "markPending": "დაბრუნება მოლოდინში",
+  "cancelPayment": "გაუქმება",
+  "chargeGroup": "ერთჯერადი გადასახადი",
+  "chargeGroupHint": "გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.",
+  "recurringPlans": "ყოველთვიური გადასახადი",
+  "createPlan": "გეგმის შექმნა",
+  "amountLabel": "თანხა (₾)",
+  "dayOfMonthLabel": "თვის რიცხვი",
+  "everyMonthOn": "{amount} ₾ · ყოველი თვის {day} რიცხვში",
+  "@everyMonthOn": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "generateThisMonth": "ამ თვის გადასახადების შექმნა",
+  "generated": "შეიქმნა {count} გადასახადი",
+  "@generated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "runReminders": "SMS შეხსენებების გაშვება",
+  "remindersReport": "გაიგზავნა {sent} · გამოტოვდა {skipped} · ხელახლა გაშვება დუბლიკატს არ ქმნის",
+  "@remindersReport": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "smsLog": "SMS ჟურნალი",
+  "smsMockNote": "დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.",
+  "noPayments": "გადასახადები ჯერ არ არის",
+  "paymentHistory": "ისტორია",
+  "nextDue": "უახლოესი ვადა {date}",
+  "@nextDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentUpdated": "სტატუსი განახლდა",
+  "chargeCreated": "შეიქმნა {count} გადასახადი",
+  "@chargeCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderSchedule": "SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)",
+  "myChildren": "ჩემი ბავშვები",
+  "editProfile": "პროფილის რედაქტირება",
+  "settingsTitle": "პარამეტრები",
+  "themeLabel": "თემა",
+  "themeSystem": "სისტემური",
+  "themeLight": "ღია",
+  "themeDark": "მუქი",
+  "languageLabel": "ენა",
+  "switchDemoAccount": "დემო ანგარიშის შეცვლა",
+  "deleteAccount": "ანგარიშის წაშლა",
+  "deleteAccountConfirm": "ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.",
+  "privacyTitle": "კონფიდენციალურობა",
+  "privacyBody": "ბავშვების მონაცემები ხელმისაწვდომია მხოლოდ მშობლებისა და ჯგუფის დადასტურებული მწვრთნელებისთვის.",
+  "childProfile": "ბავშვის პროფილი",
+  "birthDateLabel": "დაბადების თარიღი",
+  "ownAccountTitle": "საკუთარი ანგარიში (14+)",
+  "ownAccountDisabled": "ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.",
+  "photoConsentLabel": "თანხმობა ვარჯიშის ფოტოებზე",
+  "photoConsentHelp": "თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.",
+  "removeChild": "ბავშვის წაშლა",
+  "removeChildConfirm": "წავშალოთ {name}-ს პროფილი? წაიშლება ცნობებიც.",
+  "@removeChildConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "childSaved": "პროფილი შენახულია",
+  "requestPending": "მოლოდინში",
+  "pendingRequests": "გაგზავნილი მოთხოვნები",
+  "roleLabel": "როლი",
+  "approvedCoach": "დადასტურებული მწვრთნელი",
+  "appVersion": "ვერსია {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "modeDemo": "დემო რეჟიმი",
+  "modeFirebase": "Firebase",
+  "groupsCount": "{count} ჯგუფი",
+  "@groupsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notInGroup": "ჯგუფის გარეშე",
+  "firebaseNotConfiguredTitle": "Firebase არ არის კონფიგურირებული",
+  "firebaseNotConfiguredBody": "გაუშვით `flutterfire configure` ან აპი დემო რეჟიმში: --dart-define=APP_MODE=demo"
+}

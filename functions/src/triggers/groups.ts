@@ -28,6 +28,29 @@ export async function syncChildMembership(childId: string): Promise<void> {
 }
 
 /**
+ * Public projection used by the club page / join flow: only name, sport, age
+ * range and schedule — never member, parent or coach ids.
+ */
+export function publicGroupFields(data: FirebaseFirestore.DocumentData): Record<string, unknown> {
+  return {
+    name: data.name ?? '',
+    sportId: data.sportId ?? '',
+    ageMin: data.ageMin ?? 0,
+    ageMax: data.ageMax ?? 18,
+    scheduleNote: data.scheduleNote ?? null,
+  };
+}
+
+async function syncPublicGroup(groupId: string, beforeClubId: string | undefined, after?: FirebaseFirestore.DocumentData) {
+  if (beforeClubId && beforeClubId !== after?.clubId) {
+    await db.doc(`clubs/${beforeClubId}/publicGroups/${groupId}`).delete();
+  }
+  if (after?.clubId) {
+    await db.doc(`clubs/${after.clubId}/publicGroups/${groupId}`).set(publicGroupFields(after));
+  }
+}
+
+/**
  * 6. groups/{groupId} written: maintain group.parentIds (denormalized for
  *    rules), sync each affected child's groupIds/coachIds, and write an audit
  *    entry for membership / coach changes.
@@ -48,6 +71,8 @@ export const onGroupWritten = onDocumentWritten('groups/{groupId}', async (event
       await event.data!.after.ref.update({ parentIds });
     }
   }
+
+  await syncPublicGroup(groupId, before?.clubId, event.data?.after.exists ? event.data.after.data() : undefined);
 
   const affected = new Set<string>([...members.added, ...members.removed]);
   if (coachesChanged || !after) {

@@ -23,24 +23,24 @@ class ChatMessage {
   final DateTime createdAt;
 
   Map<String, dynamic> toMap() => {
-        'senderId': senderId,
-        'senderName': senderName,
-        'senderRole': senderRole.name,
-        'text': text,
-        'attachments': attachments,
-        'createdAt': createdAt,
-      };
+    'senderId': senderId,
+    'senderName': senderName,
+    'senderRole': senderRole.name,
+    'text': text,
+    'attachments': attachments,
+    'createdAt': createdAt,
+  };
 
   factory ChatMessage.fromMap(String groupId, String id, Map<String, dynamic> m) => ChatMessage(
-        id: id,
-        groupId: groupId,
-        senderId: m['senderId'] as String? ?? '',
-        senderName: m['senderName'] as String? ?? '',
-        senderRole: UserRole.fromName(m['senderRole'] as String?),
-        text: m['text'] as String? ?? '',
-        attachments: readStringList(m['attachments']),
-        createdAt: readDateOrNull(m['createdAt']) ?? DateTime.now(),
-      );
+    id: id,
+    groupId: groupId,
+    senderId: m['senderId'] as String? ?? '',
+    senderName: m['senderName'] as String? ?? '',
+    senderRole: UserRole.fromName(m['senderRole'] as String?),
+    text: m['text'] as String? ?? '',
+    attachments: readStringList(m['attachments']),
+    createdAt: readDateOrNull(m['createdAt']) ?? DateTime.now(),
+  );
 }
 
 class ChatValidator {

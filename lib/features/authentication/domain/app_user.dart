@@ -30,11 +30,8 @@ class UserContext {
 
   bool get isEmpty => childId == null && sportId == null && groupId == null;
 
-  UserContext copyWith({String? childId, String? sportId, String? groupId}) => UserContext(
-        childId: childId ?? this.childId,
-        sportId: sportId ?? this.sportId,
-        groupId: groupId ?? this.groupId,
-      );
+  UserContext copyWith({String? childId, String? sportId, String? groupId}) =>
+      UserContext(childId: childId ?? this.childId, sportId: sportId ?? this.sportId, groupId: groupId ?? this.groupId);
 
   Map<String, dynamic> toMap() => {'childId': childId, 'sportId': sportId, 'groupId': groupId};
 
@@ -112,56 +109,55 @@ class AppUser {
     List<String>? sportIds,
     DateTime? smsConsentAt,
     NotificationPreferences? notificationPrefs,
-  }) =>
-      AppUser(
-        id: id,
-        role: role,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        phone: phone,
-        createdAt: createdAt,
-        lastContext: lastContext ?? this.lastContext,
-        fcmTokens: fcmTokens ?? this.fcmTokens,
-        coachStatus: coachStatus ?? this.coachStatus,
-        clubIds: clubIds ?? this.clubIds,
-        sportIds: sportIds ?? this.sportIds,
-        dataConsentAt: dataConsentAt,
-        smsConsentAt: smsConsentAt ?? this.smsConsentAt,
-        notificationPrefs: notificationPrefs ?? this.notificationPrefs,
-      );
+  }) => AppUser(
+    id: id,
+    role: role,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    phone: phone,
+    createdAt: createdAt,
+    lastContext: lastContext ?? this.lastContext,
+    fcmTokens: fcmTokens ?? this.fcmTokens,
+    coachStatus: coachStatus ?? this.coachStatus,
+    clubIds: clubIds ?? this.clubIds,
+    sportIds: sportIds ?? this.sportIds,
+    dataConsentAt: dataConsentAt,
+    smsConsentAt: smsConsentAt ?? this.smsConsentAt,
+    notificationPrefs: notificationPrefs ?? this.notificationPrefs,
+  );
 
   Map<String, dynamic> toMap() => {
-        'role': role.name,
-        'firstName': firstName,
-        'lastName': lastName,
-        'phone': phone,
-        'createdAt': createdAt,
-        'lastContext': lastContext.toMap(),
-        'fcmTokens': fcmTokens,
-        if (coachStatus != null) 'coachStatus': coachStatus!.name,
-        'clubIds': clubIds,
-        'sportIds': sportIds,
-        'dataConsentAt': dataConsentAt,
-        'smsConsentAt': smsConsentAt,
-        'notificationPrefs': notificationPrefs.toMap(),
-      };
+    'role': role.name,
+    'firstName': firstName,
+    'lastName': lastName,
+    'phone': phone,
+    'createdAt': createdAt,
+    'lastContext': lastContext.toMap(),
+    'fcmTokens': fcmTokens,
+    if (coachStatus != null) 'coachStatus': coachStatus!.name,
+    'clubIds': clubIds,
+    'sportIds': sportIds,
+    'dataConsentAt': dataConsentAt,
+    'smsConsentAt': smsConsentAt,
+    'notificationPrefs': notificationPrefs.toMap(),
+  };
 
   factory AppUser.fromMap(String id, Map<String, dynamic> m) => AppUser(
-        id: id,
-        role: UserRole.fromName(m['role'] as String?),
-        firstName: m['firstName'] as String? ?? '',
-        lastName: m['lastName'] as String? ?? '',
-        phone: m['phone'] as String? ?? '',
-        createdAt: readDateOrNull(m['createdAt']) ?? DateTime.fromMillisecondsSinceEpoch(0),
-        lastContext: UserContext.fromMap(m['lastContext']),
-        fcmTokens: readStringList(m['fcmTokens']),
-        coachStatus: CoachStatus.fromName(m['coachStatus'] as String?),
-        clubIds: readStringList(m['clubIds']),
-        sportIds: readStringList(m['sportIds']),
-        dataConsentAt: readDateOrNull(m['dataConsentAt']),
-        smsConsentAt: readDateOrNull(m['smsConsentAt']),
-        notificationPrefs: NotificationPreferences.fromMap(m['notificationPrefs']),
-      );
+    id: id,
+    role: UserRole.fromName(m['role'] as String?),
+    firstName: m['firstName'] as String? ?? '',
+    lastName: m['lastName'] as String? ?? '',
+    phone: m['phone'] as String? ?? '',
+    createdAt: readDateOrNull(m['createdAt']) ?? DateTime.fromMillisecondsSinceEpoch(0),
+    lastContext: UserContext.fromMap(m['lastContext']),
+    fcmTokens: readStringList(m['fcmTokens']),
+    coachStatus: CoachStatus.fromName(m['coachStatus'] as String?),
+    clubIds: readStringList(m['clubIds']),
+    sportIds: readStringList(m['sportIds']),
+    dataConsentAt: readDateOrNull(m['dataConsentAt']),
+    smsConsentAt: readDateOrNull(m['smsConsentAt']),
+    notificationPrefs: NotificationPreferences.fromMap(m['notificationPrefs']),
+  );
 }
 
 /// Public-facing identity. Phone is only filled when the viewer is allowed to

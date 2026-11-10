@@ -15,10 +15,10 @@ class DemoChatRepository implements ChatRepository {
 
   @override
   Stream<List<ChatMessage>> watchMessages(String groupId) => db.watch(() {
-        final g = db.requireGroup(groupId);
-        if (!AccessPolicy.canAccessChat(db.me, g)) throw const PermissionDeniedException('chat');
-        return List<ChatMessage>.of(db.messages[groupId] ?? const [])..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      });
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canAccessChat(db.me, g)) throw const PermissionDeniedException('chat');
+    return List<ChatMessage>.of(db.messages[groupId] ?? const [])..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  });
 
   @override
   Future<void> send(String groupId, String text, {List<PhotoUpload> attachments = const []}) async {
@@ -46,8 +46,13 @@ class DemoChatRepository implements ChatRepository {
       createdAt: db.clock(),
     );
     (db.messages[groupId] ??= []).add(m);
-    db.dispatch(NotificationType.chatMessage, g,
-        route: '/chat/$groupId', excludeUserId: me.id, args: {'sender': me.fullName});
+    db.dispatch(
+      NotificationType.chatMessage,
+      g,
+      route: '/chat/$groupId',
+      excludeUserId: me.id,
+      args: {'sender': me.fullName},
+    );
     db.commit();
   }
 }

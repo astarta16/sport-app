@@ -1,0 +1,149 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/di.dart';
+import '../../../app/routes.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/services/launcher.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/validators.dart';
+import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/visuals.dart';
+import '../../authentication/presentation/session_providers.dart';
+import '../../children/domain/child.dart';
+import '../../children/presentation/children_providers.dart';
+import '../../groups/presentation/groups_providers.dart';
+import '../../medical_certificates/domain/medical_certificate.dart';
+import '../../medical_certificates/presentation/certificates_providers.dart';
+import 'coach_home_screen.dart';
+
+/// Group roster with certificate status, parents (phone visible to the
+/// group's coach only) and member management.
+class GroupRosterScreen extends ConsumerWidget {
+  const GroupRosterScreen({super.key, required this.groupId});
+
+  final String groupId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final group = ref.watch(groupsByIdProvider)[groupId];
+    final members = ref.watch(groupMembersProvider(groupId));
+    final now = ref.watch(clockProvider)();
+    final certs =
+        ref.watch(certificatesForChildrenProvider(childrenKey(group?.memberChildIds ?? const []))).value ?? const [];
+    return Scaffold(
+      appBar: AppBar(title: Text(group?.name ?? l.roster)),
+      body: AsyncView<List<Child>>(
+        value: members,
+        onRetry: () => ref.invalidate(groupMembersProvider(groupId)),
+        data: (list) {
+          if (list.isEmpty) return EmptyState(icon: Icons.group_off_rounded, title: l.roster, body: l.noGroupsInClub);
+          return ListView.separated(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            itemCount: list.length,
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
+            itemBuilder: (context, i) {
+              final c = list[i];
+              final mine = certs.where((x) => x.childId == c.id).toList();
+              final status = CertificatePolicy.childStatus(mine, now);
+              return AppCard(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                child: Theme(
+                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    key: Key('roster-${c.id}'),
+                    leading: InitialsAvatar(name: c.fullName, size: 40),
+                    title: Text(c.fullName, style: Theme.of(context).textTheme.titleSmall),
+                    subtitle: Row(
+                      children: [
+                        Text(l.yearsOld(c.ageOn(now))),
+                        const SizedBox(width: 8),
+                        if (!c.photoConsent)
+                          const Icon(Icons.no_photography_rounded, size: 16, color: AppColors.warning),
+                      ],
+                    ),
+                    trailing: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                    childrenPadding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+                    children: [
+                      if (mine.isNotEmpty)
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.description_rounded),
+                          title: Text(l.validUntil(Fmt.of(context).numericDate(mine.first.validUntil))),
+                          trailing: TextButton(
+                            onPressed: () => context.push(Routes.certificates(c.id)),
+                            child: Text(l.viewCertificate),
+                          ),
+                        ),
+                      _ParentsList(parentIds: c.parentIds),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+                          onPressed: () async {
+                            final ok = await confirmDialog(
+                              context,
+                              title: l.removeFromGroup,
+                              message: l.removeFromGroupConfirm(c.fullName),
+                              confirmLabel: l.removeFromGroup,
+                              destructive: true,
+                            );
+                            if (ok && context.mounted) {
+                              await runGuarded(
+                                context,
+                                () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.person_remove_rounded),
+                          label: Text(l.removeFromGroup),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ParentsList extends ConsumerWidget {
+  const _ParentsList({required this.parentIds});
+
+  final List<String> parentIds;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        for (final id in parentIds)
+          Builder(
+            builder: (context) {
+              final p = ref.watch(publicProfileProvider(id)).value;
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.family_restroom_rounded),
+                title: Text(p?.fullName ?? '…'),
+                subtitle: p?.phone == null ? null : Text(Validators.formatPhone(p!.phone!)),
+                trailing: p?.phone == null
+                    ? null
+                    : IconButton.filledTonal(
+                        onPressed: () => callPhone(p!.phone!),
+                        icon: const Icon(Icons.call_rounded),
+                      ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+}
+
+// Re-exported for the roster preview on the coach home.
+typedef CoachRosterRow = RosterRow;

@@ -23,25 +23,25 @@ class Club {
   final String? description;
 
   Map<String, dynamic> toMap() => {
-        'name': name,
-        'address': address,
-        'phone': phone,
-        'sportIds': sportIds,
-        'location': location.toMap(),
-        'geohash': geohash,
-        'description': description,
-      };
+    'name': name,
+    'address': address,
+    'phone': phone,
+    'sportIds': sportIds,
+    'location': location.toMap(),
+    'geohash': geohash,
+    'description': description,
+  };
 
   factory Club.fromMap(String id, Map<String, dynamic> m) => Club(
-        id: id,
-        name: m['name'] as String? ?? '',
-        address: m['address'] as String? ?? '',
-        phone: m['phone'] as String?,
-        sportIds: readStringList(m['sportIds']),
-        location: GeoCoord.fromMap(m['location']),
-        geohash: m['geohash'] as String? ?? '',
-        description: m['description'] as String?,
-      );
+    id: id,
+    name: m['name'] as String? ?? '',
+    address: m['address'] as String? ?? '',
+    phone: m['phone'] as String?,
+    sportIds: readStringList(m['sportIds']),
+    location: GeoCoord.fromMap(m['location']),
+    geohash: m['geohash'] as String? ?? '',
+    description: m['description'] as String?,
+  );
 }
 
 enum VenueType {
@@ -77,25 +77,25 @@ class Venue {
   final VenueType type;
 
   Map<String, dynamic> toMap() => {
-        'clubId': clubId,
-        'name': name,
-        'address': address,
-        'location': location.toMap(),
-        'geohash': geohash,
-        'sportIds': sportIds,
-        'type': type.name,
-      };
+    'clubId': clubId,
+    'name': name,
+    'address': address,
+    'location': location.toMap(),
+    'geohash': geohash,
+    'sportIds': sportIds,
+    'type': type.name,
+  };
 
   factory Venue.fromMap(String id, Map<String, dynamic> m) => Venue(
-        id: id,
-        clubId: m['clubId'] as String?,
-        name: m['name'] as String? ?? '',
-        address: m['address'] as String? ?? '',
-        location: GeoCoord.fromMap(m['location']),
-        geohash: m['geohash'] as String? ?? '',
-        sportIds: readStringList(m['sportIds']),
-        type: VenueType.fromName(m['type'] as String?),
-      );
+    id: id,
+    clubId: m['clubId'] as String?,
+    name: m['name'] as String? ?? '',
+    address: m['address'] as String? ?? '',
+    location: GeoCoord.fromMap(m['location']),
+    geohash: m['geohash'] as String? ?? '',
+    sportIds: readStringList(m['sportIds']),
+    type: VenueType.fromName(m['type'] as String?),
+  );
 }
 
 enum RequestStatus {
@@ -116,32 +116,50 @@ class MembershipRequest {
     required this.createdAt,
     this.groupId,
     this.status = RequestStatus.pending,
+    this.childName = '',
   });
 
   final String id;
   final String parentId;
   final String childId;
+
+  /// Denormalized first name so the coach can review a request without
+  /// read access to a non-member child's profile.
+  final String childName;
   final String clubId;
   final String? groupId;
   final RequestStatus status;
   final DateTime createdAt;
 
   Map<String, dynamic> toMap() => {
-        'parentId': parentId,
-        'childId': childId,
-        'clubId': clubId,
-        'groupId': groupId,
-        'status': status.name,
-        'createdAt': createdAt,
-      };
+    'parentId': parentId,
+    'childId': childId,
+    'clubId': clubId,
+    'groupId': groupId,
+    'status': status.name,
+    'createdAt': createdAt,
+    'childName': childName,
+  };
+
+  MembershipRequest withStatus(RequestStatus s) => MembershipRequest(
+    id: id,
+    parentId: parentId,
+    childId: childId,
+    clubId: clubId,
+    groupId: groupId,
+    createdAt: createdAt,
+    status: s,
+    childName: childName,
+  );
 
   factory MembershipRequest.fromMap(String id, Map<String, dynamic> m) => MembershipRequest(
-        id: id,
-        parentId: m['parentId'] as String,
-        childId: m['childId'] as String,
-        clubId: m['clubId'] as String,
-        groupId: m['groupId'] as String?,
-        status: RequestStatus.fromName(m['status'] as String?),
-        createdAt: readDate(m['createdAt']),
-      );
+    id: id,
+    parentId: m['parentId'] as String,
+    childId: m['childId'] as String,
+    clubId: m['clubId'] as String,
+    groupId: m['groupId'] as String?,
+    status: RequestStatus.fromName(m['status'] as String?),
+    createdAt: readDate(m['createdAt']),
+    childName: m['childName'] as String? ?? '',
+  );
 }
