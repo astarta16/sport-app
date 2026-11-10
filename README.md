@@ -1,5 +1,11 @@
 # გუნდი (Gundi) — Sports app for parents, children and coaches
 
+**Beta v1.2:**
+- mobile app (iOS / Android / iPad) plus a separate **admin web dashboard**;
+- v1.0 spec + v1.1 changes + v1.2 beta: invitations, recurring schedules, attendance/RSVP, progress, matches, media, moderation, notification center, account lifecycle.
+
+Status: [docs/beta-v1.2-progress.md](docs/beta-v1.2-progress.md).
+
 Flutter app (iOS + Android) built from the technical specification
 *„სპორტის აპლიკაცია მშობლებისთვის: ტექნიკური დოკუმენტი" v1.0*. Georgian is the
 primary language; English is wired in for the second phase.
@@ -23,6 +29,22 @@ On the sign-in screen use **Quick demo sign-in**:
 | **გიორგი კაპანაძე** (coach) | Groups U-10/U-12, roster with certificate status, create / edit / reschedule / cancel trainings, photos with consent check, approve membership requests, payments (mark paid, plans, run SMS reminders with the mock provider) |
 | **ლევან გელაშვილი** (coach, pending) | The approval gate; a demo button approves him as the club admin would |
 
+**What's new in v1.2 to try:**
+- Parent:
+  - the invitation banner on Home (link the invite to existing Mariam → no duplicate);
+  - RSVP on a training;
+  - Progress (attendance %, achievements, coach feedback);
+  - the chat icon in the top bar;
+  - the notification center with categories.
+- Coach:
+  - the "+" button (training / recurring schedule / match / media / invite);
+  - the group page (code, invitations, schedules);
+  - attendance roster;
+  - announcements in chat.
+- Profile:
+  - "Simulate offline" (demo card);
+  - Account (consents, export, deletion preview).
+
 You can also sign in with any Georgian mobile number (`5XX XXX XXX`) and the demo
 code **123456** to try registration. Switch demo accounts from **Profile**.
 Demo data resets on every app restart; the last selected child/sport/group is
@@ -39,10 +61,24 @@ Layouts follow the **window width** (so Split View, Slide Over and Stage Manager
 | 840–1199 | expanded (iPad portrait, iPad mini landscape) | navigation rail | two-column dashboards, chat master-detail, calendar beside lists, two-column forms/profile, roster grid, map side panel |
 | ≥ 1200 | large (iPad Air/Pro landscape) | sidebar (extended rail) | + coach group list as master pane, calendar with training-detail pane |
 
+## Admin web dashboard (v1.2)
+
+```bash
+flutter run -d chrome -t lib/main_admin.dart          # demo: platform admin / club admin / "parent" (denied)
+flutter build web -t lib/main_admin.dart --release --dart-define=APP_MODE=demo \
+  --dart-define=ALLOW_DEMO_IN_RELEASE=true -o build/admin_web
+cd build/admin_web && python3 -m http.server 8765    # http://127.0.0.1:8765
+```
+
+What it covers:
+- coach verification, clubs, sports catalog, group oversight, moderation, audit log, admin roles;
+- roles enforced server-side through custom claims. Guide: [docs/admin-guide.md](docs/admin-guide.md).
+
 ## Android APK (demo mode)
 
 ```bash
-flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true
+flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
+  --build-name=1.2.0 --build-number=12
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
@@ -62,6 +98,7 @@ build is signed with the debug key (no release keystore configured) — fine for
 | `--dart-define` | Default | Meaning |
 |---|---|---|
 | `APP_MODE` | `demo` in debug, `firebase` in release | `demo` or `firebase` |
+| `APP_ENV` | `dev` (debug) / `staging` (release) | Firebase environment: `dev`, `staging`, `prod` (demo is always `demo`) |
 | `ALLOW_DEMO_IN_RELEASE` | `false` | Release builds ignore `APP_MODE=demo` unless this is `true` |
 | `USE_FIREBASE_EMULATOR` | `false` | Point SDKs at local emulators |
 | `EMULATOR_HOST` | `localhost` | Emulator host |
@@ -79,11 +116,12 @@ lib/
     authentication  onboarding  parent  children  coach  sports  clubs  groups
     trainings  calendar  chat  maps  medical_certificates  notifications  payments
     media  profile  settings  demo (in-memory backend + seed)
+  admin/          admin web dashboard (entry: lib/main_admin.dart)
   l10n/           app_ka.arb (template), app_en.arb + generated AppLocalizations
 functions/        Cloud Functions (TypeScript) + unit tests
 rules-tests/      Firestore/Storage rules tests + functions smoke test (emulators)
 firestore.rules  storage.rules  firestore.indexes.json  firebase.json
-tool/strings.py   single source for both ARB files → `python3 tool/gen_arb.py`
+tool/strings*.py  single source for both ARB files (strings, strings_v12, strings_admin) → `python3 tool/gen_arb.py`
 docs/             assumptions, implementation progress, backend
 ```
 
@@ -92,10 +130,10 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 130 tests (incl. 31 responsive)
-cd functions && npm install && npm run build && npm test      # 68 tests
-cd rules-tests && npm install && npm run test:emulator        # 52 rules tests (Java 17+)
-cd rules-tests && npm run smoke:functions                     # 12 end-to-end steps
+flutter test                                   # 185 tests (responsive, security, workflows, admin)
+cd functions && npm install && npm run build && npm test      # 130 tests
+cd rules-tests && npm install && npm run test:emulator        # 94 rules tests (Java 17+)
+cd rules-tests && npm run smoke:functions                     # 22 end-to-end steps
 ```
 
 ## Security model (summary)
@@ -112,5 +150,14 @@ Default-deny Firestore and Storage rules, enforced server-side and mirrored by
 - SMS is server-only, mock by default, and requires `SMS_SENDING_ENABLED=true` plus a
   configured provider; reminders are claimed in a transaction before sending (idempotent).
 
-See [docs/assumptions.md](docs/assumptions.md) for decisions taken on open questions and
-[docs/implementation-progress.md](docs/implementation-progress.md) for status.
+Docs:
+- [docs/assumptions.md](docs/assumptions.md) — decisions taken on open questions;
+- [docs/implementation-progress.md](docs/implementation-progress.md) — v1.0 status;
+- [docs/beta-v1.2-progress.md](docs/beta-v1.2-progress.md) — v1.2 status;
+- [docs/data-model-v1.2.md](docs/data-model-v1.2.md) — data model;
+- [docs/security-review.md](docs/security-review.md) — security review;
+- [docs/firebase-setup.md](docs/firebase-setup.md) — Firebase setup;
+- [docs/admin-guide.md](docs/admin-guide.md) — admin guide;
+- [docs/beta-test-plan.md](docs/beta-test-plan.md) — beta test plan;
+- [docs/release-checklist.md](docs/release-checklist.md) — release checklist;
+- [docs/backend.md](docs/backend.md) — backend.
