@@ -56,25 +56,36 @@ class GroupRosterScreen extends ConsumerWidget {
                     key: Key('roster-${c.id}'),
                     leading: InitialsAvatar(name: c.fullName, size: 40),
                     title: Text(c.fullName, style: Theme.of(context).textTheme.titleSmall),
-                    subtitle: Row(
+                    subtitle: Wrap(
+                      spacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(l.yearsOld(c.ageOn(now))),
-                        const SizedBox(width: 8),
                         if (!c.photoConsent)
                           const Icon(Icons.no_photography_rounded, size: 16, color: AppColors.warning),
                       ],
                     ),
-                    trailing: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                    trailing: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 120),
+                      child: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                    ),
                     childrenPadding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
                     children: [
                       if (mine.isNotEmpty)
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.description_rounded),
-                          title: Text(l.validUntil(Fmt.of(context).numericDate(mine.first.validUntil))),
-                          trailing: TextButton(
-                            onPressed: () => context.push(Routes.certificates(c.id)),
-                            child: Text(l.viewCertificate),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                          child: Wrap(
+                            spacing: AppSpacing.sm,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Icon(Icons.description_rounded),
+                              Text(l.validUntil(Fmt.of(context).numericDate(mine.first.validUntil))),
+                              TextButton(
+                                onPressed: () => context.push(Routes.certificates(c.id)),
+                                child: Text(l.viewCertificate),
+                              ),
+                            ],
                           ),
                         ),
                       _ParentsList(parentIds: c.parentIds),

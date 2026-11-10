@@ -195,7 +195,20 @@ class AppTheme {
           (s) => IconThemeData(color: s.contains(WidgetState.selected) ? scheme.primary : scheme.onSurfaceVariant),
         ),
       ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: scheme.surface,
+        indicatorColor: scheme.primaryContainer,
+        selectedIconTheme: IconThemeData(color: scheme.primary),
+        unselectedIconTheme: IconThemeData(color: scheme.onSurfaceVariant),
+        selectedLabelTextStyle: textTheme.labelMedium?.copyWith(color: scheme.primary, fontWeight: FontWeight.w800),
+        unselectedLabelTextStyle: textTheme.labelMedium?.copyWith(
+          color: scheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
+        // Never stretch sheets edge-to-edge on wide iPad windows.
+        constraints: const BoxConstraints(maxWidth: 640),
         backgroundColor: scheme.surface,
         showDragHandle: true,
         shape: const RoundedRectangleBorder(

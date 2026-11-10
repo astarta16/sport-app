@@ -133,21 +133,26 @@ class NextTrainingCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        l.nextTraining.toUpperCase(),
-                        style: t.labelSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.8,
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          l.nextTraining.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: t.labelSmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.8,
+                          ),
                         ),
                       ),
                     ),
+                    const SizedBox(width: AppSpacing.xs),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

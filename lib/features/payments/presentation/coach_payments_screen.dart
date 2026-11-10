@@ -41,23 +41,20 @@ class CoachPaymentsScreen extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
             children: [
-              Row(
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      key: const Key('charge-group'),
-                      onPressed: () => _charge(context, ref),
-                      icon: const Icon(Icons.add_card_rounded),
-                      label: Text(l.chargeGroup),
-                    ),
+                  OutlinedButton.icon(
+                    key: const Key('charge-group'),
+                    onPressed: () => _charge(context, ref),
+                    icon: const Icon(Icons.add_card_rounded),
+                    label: Text(l.chargeGroup),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _plan(context, ref),
-                      icon: const Icon(Icons.autorenew_rounded),
-                      label: Text(l.createPlan),
-                    ),
+                  OutlinedButton.icon(
+                    onPressed: () => _plan(context, ref),
+                    icon: const Icon(Icons.autorenew_rounded),
+                    label: Text(l.createPlan),
                   ),
                 ],
               ),
@@ -69,12 +66,16 @@ class CoachPaymentsScreen extends ConsumerWidget {
                     child: ListTile(
                       leading: const Icon(Icons.event_repeat_rounded),
                       title: Text(l.everyMonthOn(f.money(p.amount).replaceAll(' ₾', ''), p.dayOfMonth)),
-                      trailing: TextButton(
-                        onPressed: () async {
-                          final n = await repo.generateRecurring(p.id, year: now.year, month: now.month);
-                          if (context.mounted) showAppSnack(context, l.generated(n));
-                        },
-                        child: Text(l.generateThisMonth, textAlign: TextAlign.end),
+                      subtitle: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: TextButton(
+                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                          onPressed: () async {
+                            final n = await repo.generateRecurring(p.id, year: now.year, month: now.month);
+                            if (context.mounted) showAppSnack(context, l.generated(n));
+                          },
+                          child: Text(l.generateThisMonth),
+                        ),
                       ),
                     ),
                   ),

@@ -65,48 +65,68 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   onPageChanged: (i) => setState(() => _page = i),
                   itemBuilder: (context, i) {
                     final (icon, title, body, colors) = slides[i];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TweenAnimationBuilder<double>(
-                            key: ValueKey(i),
-                            tween: Tween(begin: 0.85, end: 1),
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeOutBack,
-                            builder: (_, s, child) => Transform.scale(scale: s, child: child),
-                            child: Container(
-                              width: 220,
-                              height: 220,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  colors: colors,
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                    return LayoutBuilder(
+                      builder: (context, c) {
+                        // Scale the illustration to the window height (phone
+                        // landscape, Split View) and keep text readable on iPad.
+                        final art = (c.maxHeight * 0.4).clamp(96.0, 260.0);
+                        return SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minHeight: c.maxHeight),
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 520),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TweenAnimationBuilder<double>(
+                                      key: ValueKey(i),
+                                      tween: Tween(begin: 0.85, end: 1),
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.easeOutBack,
+                                      builder: (_, s, child) => Transform.scale(scale: s, child: child),
+                                      child: Container(
+                                        width: art,
+                                        height: art,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            colors: colors,
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: colors.last.withValues(alpha: 0.4),
+                                              blurRadius: 60,
+                                              spreadRadius: 4,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Icon(icon, size: art * 0.44, color: Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(height: (c.maxHeight * 0.06).clamp(12.0, 48.0)),
+                                    Text(
+                                      title,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    Text(
+                                      body,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyLarge
+                                          ?.copyWith(color: Colors.white70, height: 1.45),
+                                    ),
+                                  ],
                                 ),
-                                boxShadow: [
-                                  BoxShadow(color: colors.last.withValues(alpha: 0.4), blurRadius: 60, spreadRadius: 4),
-                                ],
                               ),
-                              child: Icon(icon, size: 96, color: Colors.white),
                             ),
                           ),
-                          const SizedBox(height: 48),
-                          Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            body,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white70, height: 1.45),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     );
                   },
                 ),

@@ -116,13 +116,16 @@ class PaymentRow extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(f.money(payment.amount), style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 2),
-                    StatusPill.of(v, dense: true),
-                  ],
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 120),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(f.money(payment.amount), style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 2),
+                      StatusPill.of(v, dense: true),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
@@ -38,6 +39,7 @@ class CoachHomeScreen extends ConsumerWidget {
     final selected = ref.watch(coachSelectedGroupProvider);
     final unread = ref.watch(unreadCountProvider);
     final group = selected.value;
+    final showGroupPanel = context.windowSize == WindowSize.large && (groups.value?.length ?? 0) > 1;
     return Scaffold(
       floatingActionButton: group == null
           ? null
@@ -49,100 +51,251 @@ class CoachHomeScreen extends ConsumerWidget {
             ),
       body: SafeArea(
         bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.sm, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (showGroupPanel) ...[
+              SizedBox(
+                width: 300,
+                child: _GroupListPanel(groups: groups.value!, selectedId: group?.id),
+              ),
+              VerticalDivider(width: 1, color: Theme.of(context).colorScheme.outline),
+            ],
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.sm, 0),
+                      child: Row(
                         children: [
-                          Text(
-                            l.coachHomeSubtitle.toUpperCase(),
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 1.2,
-                              fontWeight: FontWeight.w900,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l.coachHomeSubtitle.toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    letterSpacing: 1.2,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  l.greetingDay(user?.firstName ?? ''),
+                                  style: Theme.of(context).textTheme.headlineSmall,
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(l.greetingDay(user?.firstName ?? ''), style: Theme.of(context).textTheme.headlineSmall),
+                          IconButton(
+                            tooltip: l.notificationsTitle,
+                            onPressed: () => context.push(Routes.notifications),
+                            icon: Badge(
+                              isLabelVisible: unread > 0,
+                              label: Text('$unread'),
+                              child: const Icon(Icons.notifications_none_rounded, size: 28),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      tooltip: l.notificationsTitle,
-                      onPressed: () => context.push(Routes.notifications),
-                      icon: Badge(
-                        isLabelVisible: unread > 0,
-                        label: Text('$unread'),
-                        child: const Icon(Icons.notifications_none_rounded, size: 28),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: AsyncView<List<Group>>(
-                value: groups,
-                loading: const Padding(padding: EdgeInsets.all(AppSpacing.lg), child: Skeleton(height: 48)),
-                data: (list) => list.isEmpty
-                    ? const SizedBox.shrink()
-                    : SizedBox(
-                        height: 60,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 0),
-                          children: [
-                            for (final g in list)
-                              Padding(
-                                padding: const EdgeInsets.only(right: AppSpacing.xs),
-                                child: ChoiceChip(
-                                  key: Key('group-chip-${g.id}'),
-                                  avatar: Icon(
-                                    SportVisuals.icon(g.sportId),
-                                    size: 18,
-                                    color: SportVisuals.color(g.sportId),
-                                  ),
-                                  label: Text(g.name),
-                                  selected: g.id == group?.id,
-                                  onSelected: (_) => ref.read(selectionContextProvider.notifier).selectGroup(g.id),
+                  ),
+                  if (!showGroupPanel)
+                    SliverToBoxAdapter(
+                      child: AsyncView<List<Group>>(
+                        value: groups,
+                        loading: const Padding(padding: EdgeInsets.all(AppSpacing.lg), child: Skeleton(height: 48)),
+                        data: (list) => list.isEmpty
+                            ? const SizedBox.shrink()
+                            : SizedBox(
+                                height: 60,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 0),
+                                  children: [
+                                    for (final g in list)
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: AppSpacing.xs),
+                                        child: ChoiceChip(
+                                          key: Key('group-chip-${g.id}'),
+                                          avatar: Icon(
+                                            SportVisuals.icon(g.sportId),
+                                            size: 18,
+                                            color: SportVisuals.color(g.sportId),
+                                          ),
+                                          label: Text(g.name),
+                                          selected: g.id == group?.id,
+                                          onSelected: (_) =>
+                                              ref.read(selectionContextProvider.notifier).selectGroup(g.id),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
-                          ],
-                        ),
                       ),
+                    ),
+                  if (groups.hasValue && (groups.value?.isEmpty ?? true))
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: EmptyState(icon: Icons.groups_rounded, title: l.noGroupsCoach),
+                    )
+                  else if (group != null)
+                    SliverConstrained(
+                      maxWidth: Breakpoints.dashboard,
+                      minPadding: context.pagePadding,
+                      sliver: SliverPadding(
+                        padding: const EdgeInsets.only(top: AppSpacing.md, bottom: 100),
+                        sliver: SliverToBoxAdapter(child: _GroupDashboard(group: group)),
+                      ),
+                    ),
+                ],
               ),
             ),
-            if (groups.hasValue && (groups.value?.isEmpty ?? true))
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyState(icon: Icons.groups_rounded, title: l.noGroupsCoach),
-              )
-            else if (group != null)
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
-                sliver: SliverList.list(
-                  children: [
-                    _GroupOverview(group: group),
-                    const _IncomingRequests(),
-                    SectionHeader(l.todayTrainings),
-                    _UpcomingTrainings(group: group),
-                    SectionHeader(
-                      l.roster,
-                      actionLabel: l.seeAll,
-                      onAction: () => context.push(Routes.roster(group.id)),
-                    ),
-                    _RosterPreview(group: group),
-                  ],
-                ),
-              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Master list of groups (large windows): the dashboard is the detail pane.
+class _GroupListPanel extends ConsumerWidget {
+  const _GroupListPanel({required this.groups, required this.selectedId});
+
+  final List<Group> groups;
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final clubs = ref.watch(clubsByIdProvider);
+    return ListView(
+      key: const Key('coach-group-panel'),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.sm, AppSpacing.xs, AppSpacing.sm),
+          child: Text(l.groupsLabel, style: Theme.of(context).textTheme.titleMedium),
+        ),
+        for (final g in groups)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: Material(
+              color: g.id == selectedId ? Theme.of(context).colorScheme.primaryContainer : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              child: ListTile(
+                key: Key('group-tile-${g.id}'),
+                selected: g.id == selectedId,
+                leading: SportBadge(sportKey: g.sportId, size: 40),
+                title: Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                subtitle: Text(
+                  '${clubs[g.clubId]?.name ?? ''} · ${l.groupMembers(g.memberChildIds.length)}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () => ref.read(selectionContextProvider.notifier).selectGroup(g.id),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Group dashboard. Phone: the original single column. Tablet: two columns
+/// (overview + schedule | quick actions, requests, roster).
+class _GroupDashboard extends StatelessWidget {
+  const _GroupDashboard({required this.group});
+
+  final Group group;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final rosterHeader = SectionHeader(
+      l.roster,
+      actionLabel: l.seeAll,
+      onAction: () => context.push(Routes.roster(group.id)),
+    );
+    return LayoutBuilder(
+      builder: (context, c) {
+        if (c.maxWidth < Breakpoints.expanded - 80) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _GroupOverview(group: group),
+              const _IncomingRequests(),
+              SectionHeader(l.todayTrainings),
+              _UpcomingTrainings(group: group),
+              rosterHeader,
+              _RosterPreview(group: group),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _GroupOverview(group: group),
+                  SectionHeader(l.todayTrainings),
+                  _UpcomingTrainings(group: group, limit: 6),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.lg),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _QuickActions(group: group),
+                  const _IncomingRequests(),
+                  rosterHeader,
+                  _RosterPreview(group: group, limit: 10),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _QuickActions extends StatelessWidget {
+  const _QuickActions({required this.group});
+
+  final Group group;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final actions = [
+      (Icons.add_circle_rounded, l.newTraining, Routes.newTraining(group.id), const Key('qa-new-training')),
+      (Icons.chat_bubble_rounded, l.navChat, Routes.chat(group.id), const Key('qa-chat')),
+      (Icons.groups_rounded, l.roster, Routes.roster(group.id), const Key('qa-roster')),
+      (Icons.payments_rounded, l.paymentsTitle, Routes.groupPayments(group.id), const Key('qa-payments')),
+    ];
+    return AppCard(
+      key: const Key('coach-quick-actions'),
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: [
+          for (final (icon, label, route, key) in actions)
+            ActionChip(
+              key: key,
+              avatar: Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+              label: Text(label),
+              onPressed: () => context.push(route),
+            ),
+        ],
       ),
     );
   }
@@ -326,9 +479,10 @@ class _IncomingRequests extends ConsumerWidget {
 }
 
 class _UpcomingTrainings extends ConsumerWidget {
-  const _UpcomingTrainings({required this.group});
+  const _UpcomingTrainings({required this.group, this.limit = 4});
 
   final Group group;
+  final int limit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -340,7 +494,7 @@ class _UpcomingTrainings extends ConsumerWidget {
       compact: true,
       loading: const SkeletonList(count: 2, padding: EdgeInsets.zero),
       data: (all) {
-        final list = CalendarLogic.upcoming(all.where((t) => t.groupId == group.id), now, limit: 4);
+        final list = CalendarLogic.upcoming(all.where((t) => t.groupId == group.id), now, limit: limit);
         if (list.isEmpty) {
           return AppCard(
             child: EmptyState(compact: true, icon: Icons.event_note_rounded, title: l.noUpcomingTrainings),
@@ -361,9 +515,10 @@ class _UpcomingTrainings extends ConsumerWidget {
 }
 
 class _RosterPreview extends ConsumerWidget {
-  const _RosterPreview({required this.group});
+  const _RosterPreview({required this.group, this.limit = 5});
 
   final Group group;
+  final int limit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -379,7 +534,7 @@ class _RosterPreview extends ConsumerWidget {
         onTap: () => context.push(Routes.roster(group.id)),
         child: Column(
           children: [
-            for (final c in list.take(5))
+            for (final c in list.take(limit))
               RosterRow(
                 child: c,
                 status: CertificatePolicy.childStatus(certs.where((x) => x.childId == c.id), now),

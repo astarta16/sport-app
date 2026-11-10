@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
+import '../../calendar/domain/calendar_logic.dart';
+import '../../groups/presentation/groups_providers.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../chat/presentation/chat_providers.dart';
@@ -43,7 +46,9 @@ class ParentHomeScreen extends ConsumerWidget {
           onRefresh: () async => ref.invalidate(myChildrenProvider),
           child: CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(child: _Header(user: user)),
+              SliverToBoxAdapter(
+                child: _Bounded(child: _Header(user: user)),
+              ),
               ...switch (selection) {
                 AsyncData(:final value) => _content(context, ref, value),
                 AsyncError(:final error) => [
@@ -94,51 +99,120 @@ class ParentHomeScreen extends ConsumerWidget {
       ];
     }
     final child = s.child!;
-    return [
-      SliverToBoxAdapter(child: _ChildSelector(selection: s)),
-      SliverToBoxAdapter(
-        child: _SportTabs(child: child, selectedSportId: s.sportId),
+    final noGroup = AppCard(
+      child: EmptyState(
+        compact: true,
+        icon: Icons.groups_rounded,
+        title: l.noGroupTitle(child.firstName),
+        body: l.noGroupBody,
+        actionLabel: l.findClub,
+        onAction: () => context.go(Routes.parentMap),
       ),
-      SliverPadding(
-        padding: AppSpacing.page,
-        sliver: SliverList.list(
-          children: [
-            const SizedBox(height: AppSpacing.md),
-            if (s.group == null)
-              AppCard(
-                child: EmptyState(
-                  compact: true,
-                  icon: Icons.groups_rounded,
-                  title: l.noGroupTitle(child.firstName),
-                  body: l.noGroupBody,
-                  actionLabel: l.findClub,
-                  onAction: () => context.go(Routes.parentMap),
+    );
+    final tiles = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _CertificateTile(child: child)),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _PaymentTile(child: child, sportId: s.sportId),
+        ),
+      ],
+    );
+    final group = s.group;
+    return [
+      SliverToBoxAdapter(
+        child: _Bounded(child: _ChildSelector(selection: s)),
+      ),
+      SliverToBoxAdapter(
+        child: _Bounded(
+          child: _SportTabs(child: child, selectedSportId: s.sportId),
+        ),
+      ),
+      SliverConstrained(
+        maxWidth: Breakpoints.dashboard,
+        minPadding: AppSpacing.lg,
+        sliver: SliverToBoxAdapter(
+          child: LayoutBuilder(
+            builder: (context, c) {
+              // Phone & narrow windows: the original single-column dashboard.
+              if (c.maxWidth < Breakpoints.expanded - 80) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: AppSpacing.md),
+                    if (group == null) noGroup else _NextTrainingSection(group: group),
+                    const SizedBox(height: AppSpacing.md),
+                    tiles,
+                    if (group != null) ...[
+                      SectionHeader(
+                        l.coachMessages,
+                        actionLabel: l.openChat,
+                        onAction: () => context.push(Routes.chat(group.id)),
+                      ),
+                      _CoachMessages(group: group),
+                      SectionHeader(l.recentPhotos),
+                      _RecentPhotos(group: group),
+                    ],
+                  ],
+                );
+              }
+              // Tablet: training + communication on the left, status,
+              // schedule and notifications on the right.
+              return Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.md),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (group == null) noGroup else _NextTrainingSection(group: group),
+                          if (group != null) ...[
+                            SectionHeader(
+                              l.coachMessages,
+                              actionLabel: l.openChat,
+                              onAction: () => context.push(Routes.chat(group.id)),
+                            ),
+                            _CoachMessages(group: group),
+                            SectionHeader(l.recentPhotos),
+                            _RecentPhotos(group: group),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.lg),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        key: const Key('parent-dashboard-side'),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          tiles,
+                          if (group != null) ...[
+                            SectionHeader(
+                              l.upcoming,
+                              actionLabel: l.seeAll,
+                              onAction: () => context.go(Routes.parentCalendar),
+                            ),
+                            _UpcomingList(groupId: group.id),
+                          ],
+                          SectionHeader(
+                            l.notificationsTitle,
+                            actionLabel: l.seeAll,
+                            onAction: () => context.push(Routes.notifications),
+                          ),
+                          const _NotificationsPreview(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            else
-              _NextTrainingSection(group: s.group!),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _CertificateTile(child: child)),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _PaymentTile(child: child, sportId: s.sportId),
-                ),
-              ],
-            ),
-            if (s.group != null) ...[
-              SectionHeader(
-                l.coachMessages,
-                actionLabel: l.openChat,
-                onAction: () => context.push(Routes.chat(s.group!.id)),
-              ),
-              _CoachMessages(group: s.group!),
-              SectionHeader(l.recentPhotos),
-              _RecentPhotos(group: s.group!),
-            ],
-          ],
+              );
+            },
+          ),
         ),
       ),
     ];
@@ -208,8 +282,10 @@ class _ChildSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final now = ref.watch(clockProvider)();
+    // Grows with the user's text size (accessibility).
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     return SizedBox(
-      height: 122,
+      height: 72 + 50 * textScale,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
@@ -362,13 +438,14 @@ class _CertificateTile extends ConsumerWidget {
     return AppCard(
       key: const Key('certificate-tile'),
       onTap: () => context.push(Routes.certificates(child.id)),
-      child: SizedBox(
-        height: 108,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 108),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.health_and_safety_rounded, color: v.color),
-            const Spacer(),
+            const SizedBox(height: AppSpacing.md),
             Text(
               l.medicalStatus,
               style: Theme.of(context).textTheme.bodySmall,
@@ -409,16 +486,17 @@ class _PaymentTile extends ConsumerWidget {
     return AppCard(
       key: const Key('payment-tile'),
       onTap: () => context.push(Routes.payments),
-      child: SizedBox(
-        height: 108,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 108),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.account_balance_wallet_rounded,
               color: overdue ? AppColors.danger : Theme.of(context).colorScheme.primary,
             ),
-            const Spacer(),
+            const SizedBox(height: AppSpacing.md),
             Text(l.paymentSummary, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 2),
             Text(
@@ -518,6 +596,78 @@ class _RecentPhotos extends ConsumerWidget {
             child: MediaPhoto(refPath: p, sportKey: group.sportId, size: 120),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Caps header rows to the dashboard width on large windows.
+class _Bounded extends StatelessWidget {
+  const _Bounded({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      ConstrainedContent(maxWidth: Breakpoints.dashboard + 2 * AppSpacing.lg, child: child);
+}
+
+class _UpcomingList extends ConsumerWidget {
+  const _UpcomingList({required this.groupId});
+
+  final String groupId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = ref.watch(clockProvider)();
+    final groups = ref.watch(groupsByIdProvider);
+    final all = ref.watch(myTrainingsProvider).value ?? const <Training>[];
+    final list = CalendarLogic.upcoming(all.where((t) => t.groupId == groupId), now, limit: 4);
+    if (list.isEmpty) {
+      return AppCard(
+        child: EmptyState(compact: true, icon: Icons.event_busy_rounded, title: context.l10n.noUpcomingTrainings),
+      );
+    }
+    return Column(
+      children: [
+        for (final t in list)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: TrainingTile(training: t, group: groups[t.groupId]),
+          ),
+      ],
+    );
+  }
+}
+
+class _NotificationsPreview extends ConsumerWidget {
+  const _NotificationsPreview();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final inbox = ref.watch(inboxProvider).value ?? const [];
+    if (inbox.isEmpty) {
+      return AppCard(
+        child: EmptyState(compact: true, icon: Icons.notifications_none_rounded, title: l.notificationsEmpty),
+      );
+    }
+    return AppCard(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      child: Column(
+        children: [
+          for (final n in inbox.take(3))
+            ListTile(
+              leading: Icon(notificationIcon(n.type), color: Theme.of(context).colorScheme.primary),
+              title: Text(notificationTitle(context, n.type), maxLines: 1, overflow: TextOverflow.ellipsis),
+              subtitle: Text(notificationBody(context, n), maxLines: 1, overflow: TextOverflow.ellipsis),
+              trailing: n.read ? null : const CircleAvatar(radius: 4, backgroundColor: AppColors.blue),
+              onTap: () {
+                ref.read(notificationsRepositoryProvider).markRead(n.id);
+                if (n.route != null) context.push(n.route!);
+              },
+            ),
+        ],
       ),
     );
   }

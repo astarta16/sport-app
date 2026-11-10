@@ -82,8 +82,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationRequired => 'სავალდებულო ველი';
 
   @override
-  String get validationInvalidPhone =>
-      'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
+  String get validationInvalidPhone => 'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
 
   @override
   String get validationInvalidOtp => 'კოდი უნდა იყოს 6 ციფრი';
@@ -131,8 +130,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationStartInPast => 'დრო უკვე გასულია';
 
   @override
-  String get validationPhotoConsentRequired =>
-      'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
+  String get validationPhotoConsentRequired => 'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
 
   @override
   String get validationFileType => 'დასაშვებია მხოლოდ JPG, PNG ან PDF';
@@ -171,22 +169,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get onboardingTitle1 => 'ყველა ვარჯიში ერთ კალენდარში';
 
   @override
-  String get onboardingBody1 =>
-      'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
+  String get onboardingBody1 => 'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
 
   @override
   String get onboardingTitle2 => 'პირდაპირი კავშირი მწვრთნელთან';
 
   @override
-  String get onboardingBody2 =>
-      'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
+  String get onboardingBody2 => 'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
 
   @override
   String get onboardingTitle3 => 'ცნობები და გადახდები უსაფრთხოდ';
 
   @override
-  String get onboardingBody3 =>
-      'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
+  String get onboardingBody3 => 'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
 
   @override
   String get onboardingStart => 'დავიწყოთ';
@@ -198,8 +193,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get phoneTitle => 'შესვლა ტელეფონით';
 
   @override
-  String get phoneSubtitle =>
-      'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
+  String get phoneSubtitle => 'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
 
   @override
   String get phoneLabel => 'მობილურის ნომერი';
@@ -243,8 +237,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get guestBrowse => 'კლუბების ნახვა შესვლის გარეშე';
 
   @override
-  String get termsNote =>
-      'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
+  String get termsNote => 'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
 
   @override
   String get registerTitle => 'პროფილის შექმნა';
@@ -256,22 +249,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roleParent => 'მშობელი';
 
   @override
-  String get roleParentDesc =>
-      'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
+  String get roleParentDesc => 'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
 
   @override
   String get roleCoach => 'მწვრთნელი';
 
   @override
-  String get roleCoachDesc =>
-      'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
+  String get roleCoachDesc => 'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
 
   @override
   String get roleChild => 'ბავშვი';
 
   @override
-  String get roleChildDesc =>
-      '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
+  String get roleChildDesc => '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
 
   @override
   String get soon => 'მალე';
@@ -314,8 +304,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'კლუბის ადმინისტრატორი ადასტურებს მწვრთნელის როლს. დადასტურებამდე ბავშვების მონაცემები არ ჩანს — ეს იცავს ბავშვებს.';
 
   @override
-  String get coachPendingDemoApprove =>
-      'დემო: დადასტურება ადმინისტრატორის სახელით';
+  String get coachPendingDemoApprove => 'დემო: დადასტურება ადმინისტრატორის სახელით';
 
   @override
   String get coachRejectedTitle => 'მოთხოვნა უარყოფილია';
@@ -394,8 +383,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get noChildrenTitle => 'დაამატეთ პირველი ბავშვი';
 
   @override
-  String get noChildrenBody =>
-      'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
+  String get noChildrenBody => 'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
 
   @override
   String get addChild => 'ბავშვის დამატება';
@@ -406,32 +394,20 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get noGroupBody =>
-      'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
+  String get noGroupBody => 'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
 
   @override
   String get findClub => 'კლუბის პოვნა';
 
   @override
   String inDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count დღეში',
-      one: 'ხვალ',
-      zero: 'დღეს',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count დღეში', one: 'ხვალ', zero: 'დღეს');
     return '$_temp0';
   }
 
   @override
   String startsInHours(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count საათში',
-      zero: 'იწყება მალე',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count საათში', zero: 'იწყება მალე');
     return '$_temp0';
   }
 
@@ -511,8 +487,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get cancelTraining => 'გაუქმება';
 
   @override
-  String get cancelTrainingConfirm =>
-      'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
+  String get cancelTrainingConfirm => 'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
 
   @override
   String get keepTraining => 'არა, დავტოვოთ';
@@ -556,12 +531,10 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get photoConsentAllGiven =>
-      'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
+  String get photoConsentAllGiven => 'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
 
   @override
-  String get photoConsentConfirm =>
-      'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
+  String get photoConsentConfirm => 'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
 
   @override
   String get selectVenue => 'აირჩიეთ ადგილი';
@@ -610,8 +583,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roster => 'ჯგუფის წევრები';
 
   @override
-  String get noGroupsCoach =>
-      'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
+  String get noGroupsCoach => 'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
 
   @override
   String get membershipRequests => 'გაწევრიანების მოთხოვნები';
@@ -680,8 +652,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chatGroups => 'ჯგუფის ჩატები';
 
   @override
-  String get chatNotAllowed =>
-      'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
+  String get chatNotAllowed => 'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
 
   @override
   String get chatPrivacyNote =>
@@ -807,8 +778,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'ნებისმიერ დროს შეგიძლიათ წაშლა. ანგარიშის წაშლისას ყველა ცნობა სრულად იშლება. ჯგუფიდან გასვლისას მწვრთნელის წვდომა წყდება.';
 
   @override
-  String get certConsentAgree =>
-      'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
+  String get certConsentAgree => 'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
 
   @override
   String get takePhoto => 'კამერა';
@@ -835,8 +805,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteCertificate => 'ცნობის წაშლა';
 
   @override
-  String get deleteCertificateConfirm =>
-      'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
+  String get deleteCertificateConfirm => 'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
 
   @override
   String get certDeleted => 'ცნობა წაიშალა';
@@ -898,8 +867,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get certRemindersNote =>
-      'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
+  String get certRemindersNote => 'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
 
   @override
   String fileSelected(String name) {
@@ -963,12 +931,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notificationSettings => 'შეტყობინებების პარამეტრები';
 
   @override
-  String get notificationSettingsHint =>
-      'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
+  String get notificationSettingsHint => 'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
 
   @override
-  String get pushDemoNote =>
-      'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
+  String get pushDemoNote => 'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
 
   @override
   String get paymentsTitle => 'გადახდები';
@@ -1011,8 +977,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chargeGroup => 'ერთჯერადი გადასახადი';
 
   @override
-  String get chargeGroupHint =>
-      'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
+  String get chargeGroupHint => 'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
 
   @override
   String get recurringPlans => 'ყოველთვიური გადასახადი';
@@ -1051,8 +1016,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get smsLog => 'SMS ჟურნალი';
 
   @override
-  String get smsMockNote =>
-      'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
+  String get smsMockNote => 'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
 
   @override
   String get noPayments => 'გადასახადები ჯერ არ არის';
@@ -1074,8 +1038,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get reminderSchedule =>
-      'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
+  String get reminderSchedule => 'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
 
   @override
   String get myChildren => 'ჩემი ბავშვები';
@@ -1108,8 +1071,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteAccount => 'ანგარიშის წაშლა';
 
   @override
-  String get deleteAccountConfirm =>
-      'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
+  String get deleteAccountConfirm => 'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
 
   @override
   String get privacyTitle => 'კონფიდენციალურობა';
@@ -1128,15 +1090,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get ownAccountTitle => 'საკუთარი ანგარიში (14+)';
 
   @override
-  String get ownAccountDisabled =>
-      'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
+  String get ownAccountDisabled => 'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
 
   @override
   String get photoConsentLabel => 'თანხმობა ვარჯიშის ფოტოებზე';
 
   @override
-  String get photoConsentHelp =>
-      'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
+  String get photoConsentHelp => 'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
 
   @override
   String get removeChild => 'ბავშვის წაშლა';
