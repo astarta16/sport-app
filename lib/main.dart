@@ -9,6 +9,7 @@ import 'app/config.dart';
 import 'app/demo_overrides.dart';
 import 'app/di.dart';
 import 'app/firebase_bootstrap.dart';
+import 'app/monitoring.dart';
 import 'core/theme/app_theme.dart';
 import 'features/demo/data/demo_seed.dart';
 
@@ -24,6 +25,7 @@ Future<void> main() async {
   } else {
     try {
       overrides = await firebaseOverrides();
+      await initMonitoring();
     } catch (e) {
       runApp(_ConfigErrorApp(error: e));
       return;

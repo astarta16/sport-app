@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/l10n.dart';
+import '../services/error_reporter.dart';
 import '../theme/app_theme.dart';
 import 'visuals.dart';
 
@@ -579,7 +580,8 @@ Future<bool> runGuarded(BuildContext context, Future<void> Function() action, {S
     await action();
     if (context.mounted && success != null) showAppSnack(context, success);
     return true;
-  } catch (e) {
+  } catch (e, st) {
+    ErrorReporter.report(e, st, context: 'ui-action');
     if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
     return false;
   }

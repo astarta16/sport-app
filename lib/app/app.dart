@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/services/error_reporter.dart';
 import '../core/theme/app_theme.dart';
 import '../core/widgets/offline_banner.dart';
 import '../features/authentication/presentation/session_providers.dart';
@@ -21,6 +22,10 @@ class SportParentApp extends ConsumerWidget {
       if (next != null && next != prev) {
         ref.read(notificationsRepositoryProvider).registerDevice().catchError((Object _) {});
       }
+    });
+    // Diagnostics follow the user's privacy consent (opt-in).
+    ref.listen(currentUserProvider.select((u) => u?.privacy.analyticsConsent ?? false), (_, consent) {
+      ErrorReporter.setConsent(consent);
     });
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,

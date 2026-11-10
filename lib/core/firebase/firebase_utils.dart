@@ -28,9 +28,13 @@ Object mapFirebaseError(Object e) {
   };
 }
 
-Future<T> guardFirebase<T>(Future<T> Function() f) async {
+/// Maps errors and bounds every backend call with a timeout so a hanging
+/// network never leaves the UI spinning (timeouts surface as "unavailable").
+Future<T> guardFirebase<T>(Future<T> Function() f, {Duration timeout = const Duration(seconds: 25)}) async {
   try {
-    return await f();
+    return await f().timeout(timeout);
+  } on TimeoutException {
+    throw const BackendUnavailableException('timeout');
   } catch (e) {
     throw mapFirebaseError(e);
   }
