@@ -1,0 +1,72 @@
+rules_version = '2';
+
+// Sport Parent App — Cloud Storage security rules. Default deny.
+// Uses cross-service Firestore lookups (firestore.get) for membership.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function fsUser() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isParent() {
+      return signedIn()
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && fsUser().role == 'parent';
+    }
+
+    function isApprovedCoach() {
+      return signedIn()
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && fsUser().role == 'coach'
+        && fsUser().get('coachStatus', '') == 'approved';
+    }
+
+    function isParentOfChild(childId) {
+      return isParent()
+        && request.auth.uid in firestore.get(
+             /databases/(default)/documents/children/$(childId)).data.get('parentIds', []);
+    }
+
+    function group(groupId) {
+      return firestore.get(/databases/(default)/documents/groups/$(groupId)).data;
+    }
+
+    function isGroupParent(groupId) {
+      return isParent() && request.auth.uid in group(groupId).get('parentIds', []);
+    }
+
+    function isGroupCoach(groupId) {
+      return isApprovedCoach() && request.auth.uid in group(groupId).get('coachIds', []);
+    }
+
+    function under10MB() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Medical certificates: NO client read, ever. Files are served only via
+    // the getCertificateUrl callable (5-minute signed URL + access log).
+    match /medical/{childId}/{allPaths=**} {
+      allow read: if false;
+      allow create, update: if isParentOfChild(childId)
+        && under10MB()
+        && request.resource.contentType in ['image/jpeg', 'image/png', 'application/pdf'];
+      allow delete: if isParentOfChild(childId);
+    }
+
+    // Training photos: uploaded by an approved coach of the group,
+    // viewable by that group's parents and coaches.
+    match /trainingPhotos/{groupId}/{allPaths=**} {
+      allow read: if isGroupParent(groupId) || isGroupCoach(groupId);
+      allow create, update: if isGroupCoach(groupId)
+        && under10MB()
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if isGroupCoach(groupId);
+    }
+  }
+}
