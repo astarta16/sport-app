@@ -6,7 +6,11 @@ export type AuditAction =
   | 'coach.approve' | 'coach.reject' | 'coach.suspend' | 'coach.revoke' | 'role.set'
   | 'club.create' | 'club.update' | 'club.archive' | 'group.update' | 'sport.upsert'
   | 'payment.status' | 'moderation.decide' | 'certificate.access' | 'account.deleteRequest'
-  | 'account.exportRequest';
+  | 'account.exportRequest'
+  // v1.3
+  | 'certificate.view' | 'certificate.download' | 'receipt.view'
+  | 'payment.proofSubmitted' | 'payment.proofResubmitted' | 'payment.proofApproved' | 'payment.proofRejected'
+  | 'plan.publish' | 'plan.archive' | 'group.paymentManagers';
 
 export interface AuditEntry {
   action: AuditAction;

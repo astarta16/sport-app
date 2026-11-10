@@ -1,6 +1,7 @@
 // Pure payment-reminder and recurring-payment logic.
 
-import { SMS_TEMPLATES_KA, formatAmount, renderTemplate } from '../i18n/ka';
+import { t } from '../i18n';
+import { formatAmount } from '../i18n/ka';
 import { daysInMonth, formatShortDate, tbilisiDayDiff, tbilisiDayKey, tbilisiLocalToUtc, tbilisiParts } from './dates';
 import { PaymentLite, UserLite, prefEnabled } from './types';
 
@@ -67,15 +68,14 @@ export interface NameLookup {
   sportName: (sportId: string) => string;
 }
 
-/** Renders the Georgian reminder text for a batch (single or combined). */
-export function renderReminderText(batch: ReminderBatch, names: NameLookup): string {
+/** Renders the reminder text for a batch (single or combined) in `locale` (default Georgian). */
+export function renderReminderText(batch: ReminderBatch, names: NameLookup, locale: string = 'ka'): string {
   const total = batch.payments.reduce((s, p) => s + p.amount, 0);
   const date = formatShortDate(batch.dueDate);
   const amount = formatAmount(Math.round(total * 100) / 100);
   if (batch.payments.length === 1) {
     const p = batch.payments[0];
-    const tpl = batch.kind === 'd5' ? SMS_TEMPLATES_KA.d5 : SMS_TEMPLATES_KA.d1;
-    return renderTemplate(tpl, {
+    return t(locale, batch.kind === 'd5' ? 'sms.d5' : 'sms.d1', {
       child: names.childName(p.childId),
       sport: names.sportName(p.sportId),
       amount,
@@ -83,8 +83,7 @@ export function renderReminderText(batch: ReminderBatch, names: NameLookup): str
     });
   }
   const children = [...new Set(batch.payments.map((p) => names.childName(p.childId)))].join(', ');
-  const tpl = batch.kind === 'd5' ? SMS_TEMPLATES_KA.d5Multi : SMS_TEMPLATES_KA.d1Multi;
-  return renderTemplate(tpl, { children, amount, date });
+  return t(locale, batch.kind === 'd5' ? 'sms.d5Multi' : 'sms.d1Multi', { children, amount, date });
 }
 
 export interface ChannelDecision {

@@ -87,8 +87,8 @@ class PlanCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: AppColors.blue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
@@ -126,11 +126,17 @@ class PlanCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                if (showStatus) ...[
+                  const SizedBox(height: 4),
+                  StatusPill(
+                    label: planStatusLabel(context, plan.status),
+                    color: planStatusColor(plan.status),
+                    dense: true,
+                  ),
+                ],
               ],
             ),
           ),
-          if (showStatus)
-            StatusPill(label: planStatusLabel(context, plan.status), color: planStatusColor(plan.status), dense: true),
         ],
       ),
     );

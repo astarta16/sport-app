@@ -1,3 +1,5 @@
+import type { Locale } from '../i18n';
+
 // Plain domain types used by the pure business-logic modules.
 // Timestamps are converted to JS Dates at the Firestore boundary so that the
 // logic here is testable without Firebase.
@@ -15,6 +17,11 @@ export const NOTIFICATION_TYPES = [
   'newPhotos',
   'paymentReminder',
   'paymentSms',
+  // v1.3
+  'paymentProofSubmitted',
+  'paymentProofApproved',
+  'paymentProofRejected',
+  'trainingPlanPublished',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
@@ -30,6 +37,8 @@ export interface UserLite {
   fcmTokens?: string[];
   notificationPrefs?: NotificationPrefs;
   smsConsentAt?: Date | null;
+  /** users/{uid}.locale (normalized; missing/invalid → 'ka'). */
+  locale?: Locale;
 }
 
 export interface GroupLite {
@@ -83,6 +92,12 @@ export interface CertificateLite {
   notified14At?: Date | null;
   notified3At?: Date | null;
   notified0At?: Date | null;
+  /** v1.3 */
+  sportId?: string | null;
+  groupId?: string | null;
+  replacedBy?: string | null;
+  createdAt?: Date | null;
+  reminders?: { d14SentAt?: Date | null; d3SentAt?: Date | null; d0SentAt?: Date | null };
 }
 
 export type PaymentStatus = 'pending' | 'paid' | 'cancelled';

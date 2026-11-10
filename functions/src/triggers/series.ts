@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { db } from '../admin';
 import { TIMEZONE } from '../config';
 import { loadGroup, loadUser, loadUsers, toDate } from '../convert';
-import { renderPush, weekdaySummary } from '../i18n/ka';
+import { pushText, t, weekdaySummaryL } from '../i18n';
 import { groupParentUsers } from '../lib/recipients';
 import {
   ExistingOccurrence, HORIZON_DAYS, SeriesDraft, SeriesPlan, SeriesRule, horizonEnd, occurrencesInScope,
@@ -183,10 +183,10 @@ export const onSeriesWritten = onDocumentWritten('trainingSeries/{seriesId}', as
   const group = await loadGroup(after.groupId);
   if (!group) return;
   const recipients = groupParentUsers(group, await loadUsers(group.parentIds));
-  const summary = after.status === 'active' ? weekdaySummary(after.weekdays, after.startTime) : 'სერია დასრულდა';
+  const summary = (l: string) => (after.status === 'active' ? weekdaySummaryL(l, after.weekdays, after.startTime) : t(l, 'words.seriesEnded'));
   await notify(recipients, {
     type: 'scheduleChanged',
-    ...renderPush('scheduleChanged', { group: group.name ?? '', summary }),
+    ...pushText('scheduleChanged', (l) => ({ group: group.name ?? '', summary: summary(l) })),
     route: `/group/${group.id}/schedule`,
     args: { seriesId, groupId: group.id },
     groupId: group.id,

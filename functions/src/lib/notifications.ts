@@ -9,11 +9,11 @@ export const NOTIFICATION_CATEGORIES = [
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
 
 export const CATEGORY_TYPES: Record<NotificationCategory, readonly string[]> = {
-  trainings: ['newTraining', 'trainingChanged', 'trainingReminder', 'scheduleChanged'],
+  trainings: ['newTraining', 'trainingChanged', 'trainingReminder', 'scheduleChanged', 'trainingPlanPublished'],
   matches: ['newMatch', 'matchChanged', 'matchReminder'],
   invitations: ['groupInvite', 'inviteAnswered'],
   attendance: ['attendanceRecorded', 'feedbackAdded'],
-  payments: ['paymentReminder', 'paymentSms'],
+  payments: ['paymentReminder', 'paymentSms', 'paymentProofSubmitted', 'paymentProofApproved', 'paymentProofRejected'],
   chat: ['chatMessage'],
   certificates: ['certificateExpiry'],
   announcements: ['announcement', 'newPhotos', 'newMedia'],

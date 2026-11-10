@@ -11,6 +11,9 @@ import {
   isAnyAdmin, isSettableCoachStatus,
 } from '../lib/adminScope';
 import { cleanText } from '../lib/moderation';
+import { CertificateForSelection, countGroupCompliance } from '../lib/certificates';
+import { normalizeManagerIds } from '../lib/paymentProofs';
+import { certificateFrom } from '../convert';
 import { encodeGeohash } from '../lib/geo';
 
 interface Actor { uid: string; scope: AdminScope; role: string; name: string }
@@ -269,9 +272,12 @@ export const upsertSport = onCall(async (request) => {
 });
 
 /**
- * updateGroup {groupId, name?, status?, coachIds?}
+ * updateGroup {groupId, name?, status?, coachIds?, paymentManagerIds?}
  * - platform admin / club admin of the group's club: name, status, coachIds
  *   (every coach must be an approved coach assigned to the club);
+ * - paymentManagerIds (v1.3): platform admin or club admin of the group's
+ *   club only; every id must be an approved coach assigned to that club.
+ *   Audited separately as group.paymentManagers {from, to}.
  * - approved coach of the group: name and status only.
  */
 export const updateGroup = onCall(async (request) => {
@@ -307,12 +313,68 @@ export const updateGroup = onCall(async (request) => {
     if (!ok) throw new HttpsError('failed-precondition', 'every coach must be approved and assigned to the club');
     patch.coachIds = ids;
   }
-  if (!Object.keys(patch).length) throw new HttpsError('invalid-argument', 'nothing to update');
-  await ref.update({ ...patch, updatedAt: FieldValue.serverTimestamp() });
-  await writeAudit({
-    action: 'group.update', actorId: uid, actorRole: actorRoleOf(request.auth.token as Record<string, unknown>, user?.role),
-    actorName: [user?.firstName, user?.lastName].filter(Boolean).join(' '),
-    targetType: 'group', targetId: groupId, clubId, details: patch,
-  });
-  return { groupId, ...patch };
+  let managers: string[] | null = null;
+  if (d.paymentManagerIds !== undefined) {
+    if (!isAdminOfClub) throw new HttpsError('permission-denied', 'only club admins change payment managers');
+    managers = normalizeManagerIds(d.paymentManagerIds);
+    if (!managers) throw new HttpsError('invalid-argument', 'paymentManagerIds must be a list of ≤ 20 uids');
+    if (managers.length) {
+      const snaps = await db.getAll(...managers.map((c) => db.doc(`users/${c}`)));
+      const ok = snaps.every((s) => s.exists && s.get('role') === 'coach' && s.get('coachStatus') === 'approved' && (s.get('clubIds') ?? []).includes(clubId));
+      if (!ok) throw new HttpsError('failed-precondition', 'every payment manager must be an approved coach of the club');
+    }
+  }
+  if (!Object.keys(patch).length && managers === null) throw new HttpsError('invalid-argument', 'nothing to update');
+  await ref.update({ ...patch, ...(managers !== null ? { paymentManagerIds: managers } : {}), updatedAt: FieldValue.serverTimestamp() });
+  const actorRole = actorRoleOf(request.auth.token as Record<string, unknown>, user?.role);
+  const actorName = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+  if (Object.keys(patch).length) {
+    await writeAudit({ action: 'group.update', actorId: uid, actorRole, actorName, targetType: 'group', targetId: groupId, clubId, details: patch });
+  }
+  if (managers !== null) {
+    await writeAudit({
+      action: 'group.paymentManagers', actorId: uid, actorRole, actorName, targetType: 'group', targetId: groupId, clubId,
+      details: { from: g.get('paymentManagerIds') ?? [], to: managers },
+    });
+  }
+  return { groupId, ...patch, ...(managers !== null ? { paymentManagerIds: managers } : {}) };
+});
+
+/**
+ * adminCompliance {clubId?} → {groups: [{groupId, groupName, clubId, valid, expiring, expired, missing}]}
+ * Medical-certificate compliance COUNTS per active group (current certificate
+ * for the group's sport, see lib/certificates). Scoped to the caller's clubs
+ * (platform admin: all clubs, or the given clubId). No child ids, names or
+ * documents are returned.
+ */
+export const adminCompliance = onCall(async (request) => {
+  const a = await requireAdmin(request);
+  const reqClub = request.data?.clubId;
+  let clubIds: string[] | null;
+  if (typeof reqClub === 'string' && reqClub) {
+    const c = idArg(reqClub, 'clubId');
+    if (!canActOnClub(a.scope, c)) throw new HttpsError('permission-denied', 'not your club');
+    clubIds = [c];
+  } else {
+    clubIds = a.scope.platform ? null : a.scope.clubIds;
+  }
+  const groupDocs: FirebaseFirestore.QueryDocumentSnapshot[] = [];
+  if (clubIds === null) groupDocs.push(...(await db.collection('groups').get()).docs);
+  else for (let i = 0; i < clubIds.length; i += 30) groupDocs.push(...(await db.collection('groups').where('clubId', 'in', clubIds.slice(i, i + 30)).get()).docs);
+  const active = groupDocs.filter((g) => g.get('status') !== 'archived');
+  const childIds = [...new Set(active.flatMap((g) => (g.get('memberChildIds') ?? []) as string[]))];
+  const certsByChild = new Map<string, CertificateForSelection[]>();
+  for (let i = 0; i < childIds.length; i += 30) {
+    const q = await db.collection('medicalCertificates').where('childId', 'in', childIds.slice(i, i + 30)).get();
+    for (const d of q.docs) {
+      const c = certificateFrom(d.id, d.data());
+      certsByChild.set(c.childId, [...(certsByChild.get(c.childId) ?? []), c]);
+    }
+  }
+  const now = new Date();
+  const groups = active.map((g) => ({
+    ...countGroupCompliance({ groupId: g.id, groupName: g.get('name') ?? '', sportId: g.get('sportId') ?? null, memberChildIds: g.get('memberChildIds') ?? [] }, certsByChild, now),
+    clubId: g.get('clubId') ?? null,
+  })).sort((x, y) => x.groupName.localeCompare(y.groupName) || x.groupId.localeCompare(y.groupId));
+  return { groups };
 });

@@ -1,9 +1,14 @@
 // Georgian (ka) message templates for SMS and push notifications.
 // Placeholders use {name} syntax and are filled by renderTemplate().
+// ka is the reference catalog: en.ts / ru.ts must have exactly the same keys
+// and placeholders (enforced by the Catalog type and test/i18n.test.ts).
+// Use t() / pushText() from ./index for recipient-locale rendering.
 //
 // SMS note: Georgian text is sent as UCS-2, where one segment holds 70
 // characters (67 per segment when concatenated). Keep templates short; the
 // sender logs the computed segment count for every SMS.
+
+import { CANCEL_REASON_LABELS_KA } from '../lib/cancel';
 
 export const SMS_TEMPLATES_KA = {
   /** 5 days before the due date, one child. */
@@ -39,6 +44,12 @@ export const PUSH_TEMPLATES_KA = {
   scheduleChanged: { title: 'განრიგი განახლდა', body: '{group}: {summary}' },
   announcement: { title: 'განცხადება · {group}', body: '{text}' },
   newMedia: { title: 'ახალი მედია', body: '{group}: {count} ახალი ფაილი' },
+  // v1.3
+  certificateExpiresToday: { title: 'ცნობის ვადა დღეს იწურება', body: '{child}: სამედიცინო ცნობის ვადა დღეს იწურება ({date}). ატვირთეთ ახალი ცნობა.' },
+  paymentProofSubmitted: { title: 'გადახდის ქვითარი შემოწმებას ელოდება', body: '{group}: {child} — {amount} ₾, გადახდილია {date}' },
+  paymentProofApproved: { title: 'გადახდა დადასტურდა', body: '{child}: {amount} ₾ — გადახდა დადასტურებულია.' },
+  paymentProofRejected: { title: 'გადახდა ვერ დადასტურდა', body: '{child}: {amount} ₾. მიზეზი: {reason}' },
+  trainingPlanPublished: { title: 'ახალი სავარჯიშო გეგმა', body: '{group}: {title}' },
 } as const;
 
 /** Server-written chat messages (type 'system'). */
@@ -50,6 +61,13 @@ export const SYSTEM_MESSAGES_KA = {
 } as const;
 
 export const WEEKDAYS_SHORT_KA = ['ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ', 'კვი'] as const;
+
+/** Single words / short phrases inserted into templates. */
+export const WORDS_KA = {
+  inviteAccepted: 'მიიღო',
+  inviteDeclined: 'უარყო',
+  seriesEnded: 'სერია დასრულდა',
+} as const;
 
 /** "ორშ, ოთხ 18:00" — schedule summary for the series notification. */
 export function weekdaySummary(weekdays: number[], startTime: string): string {
@@ -82,3 +100,19 @@ export function truncate(text: string, max = 120): string {
   const chars = Array.from(text);
   return chars.length <= max ? text : chars.slice(0, max - 1).join('') + '…';
 }
+
+
+/** Full Georgian catalog (reference locale). */
+export const MESSAGES_KA = {
+  sms: SMS_TEMPLATES_KA,
+  push: PUSH_TEMPLATES_KA,
+  system: SYSTEM_MESSAGES_KA,
+  words: WORDS_KA,
+  cancelReasons: CANCEL_REASON_LABELS_KA,
+  weekdays: WEEKDAYS_SHORT_KA,
+} as const;
+
+type Widen<T> = T extends string ? string : { readonly [K in keyof T]: Widen<T[K]> };
+
+/** Shape every locale catalog must have (same keys as MESSAGES_KA, any strings). */
+export type Catalog = Widen<typeof MESSAGES_KA>;

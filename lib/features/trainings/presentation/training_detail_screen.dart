@@ -143,7 +143,9 @@ class _Body extends ConsumerWidget {
             key: const Key('training-cancel-reason'),
             icon: Icons.event_busy_rounded,
             color: AppColors.danger,
-            text: training.cancelReason == null ? l.cancelledBanner : l.cancelledWithReason(training.cancelReason!),
+            text: training.cancelReason == null
+                ? l.cancelledBanner
+                : l.cancelledWithReason(cancelReasonText(context, training.cancelReason!)),
           ),
         ],
         if (canManage) _CoachActions(training: training, group: group!),

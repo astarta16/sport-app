@@ -7,6 +7,7 @@ import { generateInviteCode } from '../lib/inviteCode';
 import { computeChildCoachIds, computeGroupParentIds, diffIds, sameSet } from '../lib/membership';
 import { purgeChildCertificates } from './certificates';
 import { refreshMediaReadersForGroup } from './media';
+import { refreshPlansForGroup } from './trainingPlans';
 
 /**
  * Assigns a unique 6-character invite code (alphabet without 0/O/1/I) and
@@ -142,6 +143,8 @@ export const onGroupWritten = onDocumentWritten('groups/{groupId}', async (event
   // mediaPosts.readerIds follow live group membership (parents + coaches).
   if (!before || !after || !sameSet(before.parentIds, after.parentIds) || coachesChanged) {
     await refreshMediaReadersForGroup(groupId);
+    // v1.3: trainingPlans.readerIds / coachIds follow live membership too (revokes parent access on removal).
+    await refreshPlansForGroup(groupId);
   }
 });
 

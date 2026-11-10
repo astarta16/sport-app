@@ -3,7 +3,8 @@ import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/fire
 import { FieldValue } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { loadGroup, loadUsers } from '../convert';
-import { renderPush, truncate } from '../i18n/ka';
+import { Locale, normalizeLocale, pushText } from '../i18n';
+import { truncate } from '../i18n/ka';
 import { groupMemberUsers, selectChatRecipients } from '../lib/recipients';
 import { resetGroupUnread, unreadRecipients } from '../lib/unread';
 import { notify } from '../notify';
@@ -15,7 +16,12 @@ export const SYSTEM_SENDER = 'system';
  * Writes a server-only chat message (type 'system'). The id is deterministic,
  * so repeated trigger runs never post twice.
  */
-export async function postSystemMessage(groupId: string, messageId: string, text: string): Promise<boolean> {
+export async function postSystemMessage(
+  groupId: string,
+  messageId: string,
+  text: string,
+  system?: { key: string; args: Record<string, string> },
+): Promise<boolean> {
   try {
     await db.doc(`chats/${groupId}/messages/${messageId}`).create({
       senderId: SYSTEM_SENDER,
@@ -23,7 +29,9 @@ export async function postSystemMessage(groupId: string, messageId: string, text
       senderRole: SYSTEM_SENDER,
       type: 'system',
       pinned: false,
+      // Georgian fallback; v1.3 readers render systemKey + systemArgs in their own language.
       text,
+      ...(system ? { systemKey: system.key, systemArgs: system.args } : {}),
       createdAt: FieldValue.serverTimestamp(),
     });
     return true;
@@ -70,7 +78,7 @@ export const onChatMessageCreated = onDocumentCreated('chats/{groupId}/messages/
   if (type === 'announcement') {
     if (data.pinned !== true) await snap.ref.update({ pinned: true });
     const recipients = groupMemberUsers(group, users).filter((u) => u.uid !== senderId);
-    const msg = renderPush('announcement', { group: group.name ?? '', text: truncate(String(data.text ?? ''), 120) });
+    const msg = pushText('announcement', { group: group.name ?? '', text: truncate(String(data.text ?? ''), 120) });
     await notify(recipients, {
       type: 'announcement', ...msg, route: `/chat/${groupId}`, args: { groupId, messageId },
       groupId, dedupeKey: `announcement:${groupId}:${messageId}`,
@@ -81,15 +89,20 @@ export const onChatMessageCreated = onDocumentCreated('chats/{groupId}/messages/
 
   const recipients = selectChatRecipients(group, users, senderId);
   if (recipients.length === 0) return;
-  const msg = renderPush('chatMessage', {
+  const msg = pushText('chatMessage', {
     sender: String(data.senderName ?? ''),
     group: group.name ?? '',
     text: truncate(String(data.text ?? ''), 120),
   });
-  const delivered = await sendPushToUsers(recipients, {
-    ...msg,
-    data: { type: 'chatMessage', groupId: group.id, messageId },
-  });
+  const byLocale = new Map<Locale, typeof recipients>();
+  for (const u of recipients) {
+    const l = normalizeLocale(u.locale);
+    byLocale.set(l, [...(byLocale.get(l) ?? []), u]);
+  }
+  let delivered = 0;
+  for (const [l, us] of byLocale) {
+    delivered += await sendPushToUsers(us, { ...msg.localized(l), data: { type: 'chatMessage', groupId: group.id, messageId } });
+  }
   logger.info('chat push', { groupId: group.id, recipients: recipients.length, delivered, unread: targets.length });
 });
 

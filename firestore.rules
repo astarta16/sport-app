@@ -131,6 +131,21 @@ service cloud.firestore {
       return isApprovedCoach() && uid() in childDoc(childId).get('coachIds', []);
     }
 
+    // v1.3: coaches explicitly authorized to verify payments of the group
+    // (groups.paymentManagerIds, set only through the updateGroup callable).
+    function isPaymentManager(groupId) {
+      return isApprovedCoach() && uid() in groupDoc(groupId).get('paymentManagerIds', []);
+    }
+
+    // Payment reviewer: payment manager of the group or club admin of its club.
+    function isPaymentReviewer(groupId) {
+      return isPaymentManager(groupId) || isClubAdmin(groupDoc(groupId).get('clubId', ''));
+    }
+
+    function planDoc(planId) {
+      return get(/databases/$(database)/documents/trainingPlans/$(planId)).data;
+    }
+
     // A child account is linked through children/{childId}.userId == uid.
     // The child id is taken from users/{uid}.lastContext.childId and then
     // verified against the child doc, so a forged lastContext grants nothing.
@@ -216,7 +231,10 @@ service cloud.firestore {
                    'paymentReminder', 'paymentSms',
                    'newMatch', 'matchChanged', 'matchReminder', 'groupInvite',
                    'inviteAnswered', 'attendanceRecorded', 'feedbackAdded',
-                   'announcement', 'newMedia', 'scheduleChanged']));
+                   'announcement', 'newMedia', 'scheduleChanged',
+                   // v1.3
+                   'paymentProofSubmitted', 'paymentProofApproved', 'paymentProofRejected',
+                   'trainingPlanPublished']));
       }
 
       function validUserShape(d) {
@@ -224,7 +242,7 @@ service cloud.firestore {
                  'role', 'firstName', 'lastName', 'phone', 'createdAt',
                  'lastContext', 'fcmTokens', 'coachStatus', 'clubIds',
                  'sportIds', 'smsConsentAt', 'dataConsentAt',
-                 'notificationPrefs', 'photoPath', 'privacy',
+                 'notificationPrefs', 'photoPath', 'privacy', 'locale',
                  // server-managed (never client-set, see create/update):
                  'coachStatusReason', 'adminRole', 'adminClubIds'])
           && d.firstName is string && d.firstName.size() > 0 && d.firstName.size() <= 100
@@ -239,6 +257,7 @@ service cloud.firestore {
               || d.photoPath == 'profiles/' + userId + '/avatar.jpg')
           && (!('privacy' in d) || (d.privacy is map
               && d.privacy.keys().hasOnly(['profilePhotoVisible', 'analyticsConsent'])))
+          && (!('locale' in d) || d.locale in ['ka', 'en', 'ru'])
           && validNotificationPrefs(d);
       }
 
@@ -342,7 +361,10 @@ service cloud.firestore {
       // An approved coach assigned to an active club may create a group in it
       // (or use the createGroup callable). They must be its only coach; the
       // invite code is assigned by the server (inviteCode absent or '').
+      // paymentManagerIds is server-managed (updateGroup callable, audited) —
+      // not even a platform admin writes it directly.
       allow create: if isAdmin() && request.resource.data.get('inviteCode', '') == ''
+          && !('paymentManagerIds' in request.resource.data)
         || (isApprovedCoach()
             && request.resource.data.keys().hasOnly([
                  'clubId', 'sportId', 'coachIds', 'name', 'ageMin', 'ageMax',
@@ -367,7 +389,7 @@ service cloud.firestore {
       // may only REMOVE members. Adding members happens server-side (approved
       // membership request / accepted invite). parentIds is recomputed by
       // the onGroupWritten trigger.
-      allow update: if (isAdmin() && !changed(['inviteCode']))
+      allow update: if (isAdmin() && !changed(['inviteCode', 'paymentManagerIds']))
         || (isApprovedCoach()
             && uid() in resource.data.get('coachIds', [])
             && changedOnly(['memberChildIds'])
@@ -503,7 +525,10 @@ service cloud.firestore {
       allow create: if isParentOfChild(request.resource.data.childId)
         && request.resource.data.keys().hasOnly([
              'childId', 'uploadedBy', 'storagePath', 'issuedAt',
-             'validUntil', 'consentAt', 'status'])
+             'validUntil', 'consentAt', 'status', 'groupId', 'sportId'])
+        // v1.3: optional scope (null = general certificate)
+        && optString(request.resource.data, 'groupId', 128)
+        && optString(request.resource.data, 'sportId', 128)
         && request.resource.data.uploadedBy == uid()
         && request.resource.data.storagePath
              == 'medical/' + request.resource.data.childId + '/' + certId
@@ -513,8 +538,17 @@ service cloud.firestore {
         && request.resource.data.consentAt is timestamp
         && request.resource.data.status in ['valid', 'expiring', 'expired'];
 
-      // Status and notification bookkeeping are server-managed.
-      allow update: if false;
+      // Status and notification bookkeeping are server-managed. v1.3: a parent
+      // of the child may mark an OLDER certificate as replaced by another
+      // certificate of the same child — only replacedBy + replacedAt.
+      allow update: if isParentOfChild(resource.data.childId)
+        && changedOnly(['replacedBy', 'replacedAt'])
+        && request.resource.data.replacedBy is string
+        && request.resource.data.replacedBy != certId
+        && exists(/databases/$(database)/documents/medicalCertificates/$(request.resource.data.replacedBy))
+        && get(/databases/$(database)/documents/medicalCertificates/$(request.resource.data.replacedBy))
+             .data.childId == resource.data.childId
+        && request.resource.data.replacedAt is timestamp;
 
       // Deleting the doc triggers deletion of the storage file
       // (onCertificateDeleted). The deleteCertificate callable does both.
@@ -575,16 +609,21 @@ service cloud.firestore {
     match /payments/{paymentId} {
       allow read: if isAdmin()
         || (isParent() && resource.data.parentId == uid())
-        || isGroupCoach(resource.data.groupId);
+        || isGroupCoach(resource.data.groupId)
+        || isPaymentReviewer(resource.data.groupId);
 
       // Payments are generated server-side (generateRecurringPayments) or by admins.
       allow create, delete: if isAdmin();
 
-      // Parents never write payments. The group coach may change only
-      // status/paidAt/cancelledReason (+ updatedBy/updatedAt bookkeeping).
-      // If updatedBy is present it must be the caller (paymentAudit actor).
-      allow update: if isAdmin()
-        || (isGroupCoach(resource.data.groupId)
+      // Parents never write payments. v1.3: only a payment reviewer — an
+      // approved coach in group.paymentManagerIds or a club admin of the
+      // group's club — may change status/paidAt/cancelledReason (+
+      // updatedBy/updatedAt bookkeeping); a coach who is not a payment
+      // manager can no longer change payment status. If updatedBy is present
+      // it must be the caller (paymentAudit actor). verification / verifiedBy
+      // / verifiedAt are server-only (reviewPaymentProof), even for admins.
+      allow update: if (isAdmin() && !changed(['verification', 'verifiedBy', 'verifiedAt']))
+        || (isPaymentReviewer(resource.data.groupId)
             && changedOnly(['status', 'paidAt', 'cancelledReason', 'updatedBy', 'updatedAt'])
             && request.resource.data.status in ['pending', 'paid', 'cancelled']
             && (!('paidAt' in request.resource.data)
@@ -593,6 +632,32 @@ service cloud.firestore {
             && optString(request.resource.data, 'cancelledReason', 300)
             && optTimestamp(request.resource.data, 'updatedAt')
             && (!('updatedBy' in request.resource.data) || request.resource.data.updatedBy == uid()));
+    }
+
+    // v1.3: payment proofs (receipts). All writes through callables
+    // (submitPaymentProof / startPaymentReview / reviewPaymentProof).
+    // Reviewer list queries must constrain groupId (payment managers) or
+    // clubId (club admins) so the rule is provable.
+    match /paymentProofs/{proofId} {
+      allow read: if isAdmin()
+        || (isParent() && resource.data.parentId == uid())
+        || isPaymentManager(resource.data.groupId)
+        || isClubAdmin(resource.data.get('clubId', ''))
+        || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
+      allow write: if false;
+    }
+
+    // Server-written verification history. Readable by the payment's parent,
+    // payment reviewers of its group and club admins (resolved through the
+    // payment, so `where paymentId == X` queries work).
+    match /paymentVerificationEvents/{eventId} {
+      function paymentOf(paymentId) {
+        return get(/databases/$(database)/documents/payments/$(paymentId)).data;
+      }
+      allow read: if isAdmin()
+        || (signedIn() && paymentOf(resource.data.paymentId).parentId == uid())
+        || isPaymentReviewer(paymentOf(resource.data.paymentId).groupId);
+      allow write: if false;
     }
 
     // Server-written (onPaymentWritten) status history.
@@ -856,6 +921,178 @@ service cloud.firestore {
         && changedOnly(['ratings', 'comment']);
 
       allow delete: if signedIn() && resource.data.coachId == uid();
+    }
+
+    // --------------------------------------------------------- training plans
+    // Coaches of EVERY listed group (1–10) create/update. readerIds (parents +
+    // coaches while published) and coachIds (coaches of the groups) are
+    // server-managed (onTrainingPlanWritten / onGroupWritten), as is
+    // validationErrors. Links are https only (enforced server-side, see
+    // below). Parents read published plans whose readerIds contain them
+    // (query: readerIds array-contains uid, status == published); coaches
+    // query coachIds array-contains uid.
+    match /trainingPlans/{planId} {
+      // Approved coach (checked once) listed in coachIds of every group.
+      // Kept lean: rules stop after 1000 evaluated expressions. At most 9
+      // groups per client write: a request may read only 10 documents
+      // (caller's users doc + 9 groups) — the contract's 10th group cannot be
+      // verified by rules (measured in the emulator, also inside a batch).
+      function inCoaches(g) {
+        return uid() in get(/databases/$(database)/documents/groups/$(g)).data.get('coachIds', []);
+      }
+
+      // Like isApprovedCoach() but without exists(): exists + get of the same
+      // doc count as two of the 10 allowed reads (a missing doc errors → deny).
+      function approvedCoachNoExists() {
+        let u = get(userPath(uid())).data;
+        return signedIn() && u.role == 'coach' && u.get('coachStatus', '') == 'approved';
+      }
+
+      function coachOfAll(gs) {
+        return gs is list && gs.size() >= 1 && gs.size() <= 9
+          && approvedCoachNoExists()
+          && inCoaches(gs[0])
+          && (gs.size() < 2 || inCoaches(gs[1]))
+          && (gs.size() < 3 || inCoaches(gs[2]))
+          && (gs.size() < 4 || inCoaches(gs[3]))
+          && (gs.size() < 5 || inCoaches(gs[4]))
+          && (gs.size() < 6 || inCoaches(gs[5]))
+          && (gs.size() < 7 || inCoaches(gs[6]))
+          && (gs.size() < 8 || inCoaches(gs[7]))
+          && (gs.size() < 9 || inCoaches(gs[8]));
+      }
+
+      // Exercises are validated by the SERVER, not here: Firestore rules stop
+      // after 1000 evaluated expressions per request, and per-exercise /
+      // per-link checks exhaust that budget at roughly 10–20 exercises (measured
+      // in the emulator), far below the contract's 50 exercises × 10 media.
+      // The rules enforce the list size (≤ 50); onTrainingPlanWritten runs
+      // lib/trainingPlans.validatePlan (names, numbers, ≤ 10 media, kinds,
+      // storage paths, https-only links) and QUARANTINES an invalid plan:
+      // status forced back to 'draft', readerIds [], validationErrors set, no
+      // publish notification — so a bad link never reaches a parent.
+
+      function validPlan(d) {
+        return d.keys().hasOnly([
+                 'title', 'description', 'type', 'groupIds', 'clubId', 'startDate', 'endDate',
+                 'status', 'exercises', 'createdBy', 'coachName', 'createdAt', 'updatedAt',
+                 'publishedAt', 'readerIds', 'coachIds', 'validationErrors'])
+          && d.title is string && d.title.size() > 0 && d.title.size() <= 120
+          && optString(d, 'description', 4000)
+          && optString(d, 'coachName', 200)
+          && d.type in ['seasonal', 'monthly', 'weekly', 'exercise', 'homework']
+          && d.groupIds is list && d.groupIds.size() >= 1 && d.groupIds.size() <= 10
+          && d.groupIds.toSet().size() == d.groupIds.size()
+          && d.clubId is string
+          && d.startDate is string && d.startDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && (d.get('endDate', null) == null
+              || (d.endDate is string && d.endDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+                  && d.endDate >= d.startDate))
+          && d.status in ['draft', 'published', 'archived']
+          && d.createdAt is timestamp
+          && d.updatedAt is timestamp
+          && optTimestamp(d, 'publishedAt')
+          && (!('exercises' in d) || (d.exercises is list && d.exercises.size() <= 50));
+      }
+
+      function okTransition(from, to) {
+        return from == to
+          || (from == 'draft' && to == 'published')
+          || (from == 'published' && to in ['draft', 'archived']);
+      }
+
+      allow read: if isAdmin()
+        || isClubAdmin(resource.data.get('clubId', ''))
+        || (isParent() && resource.data.status == 'published'
+            && uid() in resource.data.get('readerIds', []))
+        || (isApprovedCoach() && uid() in resource.data.get('coachIds', []))
+        || (isApprovedCoach() && resource.data.get('createdBy', '') == uid())
+        || (isApprovedCoach()
+            && (isGroupCoach(resource.data.groupIds[0])
+                || (resource.data.groupIds.size() > 1 && isGroupCoach(resource.data.groupIds[1]))));
+
+      allow create: if validPlan(request.resource.data)
+        && coachOfAll(request.resource.data.groupIds)
+        && request.resource.data.clubId == groupDoc(request.resource.data.groupIds[0]).clubId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.status in ['draft', 'published']
+        && !('readerIds' in request.resource.data)
+        && !('coachIds' in request.resource.data)
+        && !('validationErrors' in request.resource.data);
+
+      // Coach of every old AND new group; status transitions draft→published,
+      // published→draft, published→archived (archived is final).
+      allow update: if validPlan(request.resource.data)
+        && coachOfAll(request.resource.data.groupIds)
+        && (request.resource.data.groupIds == resource.data.groupIds || coachOfAll(resource.data.groupIds))
+        && !changed(['createdBy', 'createdAt', 'clubId', 'readerIds', 'coachIds', 'validationErrors'])
+        && okTransition(resource.data.status, request.resource.data.status);
+
+      // Only drafts are deleted (published plans are archived).
+      allow delete: if isApprovedCoach()
+        && resource.data.status == 'draft'
+        && (resource.data.createdBy == uid() || coachOfAll(resource.data.groupIds));
+    }
+
+    // Self-reported progress; id = {planId}_{exerciseId}_{childId}. Written by
+    // a parent of the child who is a reader of the PUBLISHED plan; the child
+    // must be a member of one of the plan's groups.
+    match /exerciseProgress/{progressId} {
+      function validProgress(d) {
+        return d.keys().hasOnly(['planId', 'exerciseId', 'childId', 'groupId', 'parentId', 'status', 'viewedAt', 'updatedAt'])
+          && d.planId is string && d.exerciseId is string && d.childId is string && d.groupId is string
+          && progressId == d.planId + '_' + d.exerciseId + '_' + d.childId
+          && d.parentId == uid()
+          && d.status in ['not_started', 'in_progress', 'completed']
+          && optTimestamp(d, 'viewedAt')
+          && d.updatedAt is timestamp;
+      }
+
+      function canWrite(d) {
+        return isParentOfChild(d.childId)
+          && planDoc(d.planId).status == 'published'
+          && uid() in planDoc(d.planId).get('readerIds', [])
+          && d.groupId in planDoc(d.planId).groupIds
+          && d.childId in groupDoc(d.groupId).get('memberChildIds', []);
+      }
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.parentId == uid())
+        || isParentOfChild(resource.data.childId)
+        || (isApprovedCoach() && uid() in planDoc(resource.data.planId).get('coachIds', []))
+        || isGroupCoach(resource.data.groupId);
+
+      allow create: if validProgress(request.resource.data) && canWrite(request.resource.data);
+      allow update: if validProgress(request.resource.data) && canWrite(request.resource.data)
+        && !changed(['planId', 'exerciseId', 'childId', 'groupId']);
+      allow delete: if signedIn() && resource.data.parentId == uid();
+    }
+
+    // id = {planId}_{parentId}; written by the parent (a reader of the
+    // published plan), read by the plan's coaches (query planId == X).
+    match /planViews/{viewId} {
+      function validView(d) {
+        return d.keys().hasOnly(['planId', 'parentId', 'firstViewedAt', 'lastViewedAt'])
+          && d.planId is string
+          && d.parentId == uid()
+          && viewId == d.planId + '_' + uid()
+          && d.firstViewedAt is timestamp
+          && d.lastViewedAt is timestamp;
+      }
+
+      function canView(d) {
+        return isParent()
+          && planDoc(d.planId).status == 'published'
+          && uid() in planDoc(d.planId).get('readerIds', []);
+      }
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.parentId == uid())
+        || (isApprovedCoach() && uid() in planDoc(resource.data.planId).get('coachIds', []));
+      allow create: if validView(request.resource.data) && canView(request.resource.data);
+      allow update: if validView(request.resource.data) && canView(request.resource.data)
+        && !changed(['planId', 'parentId', 'firstViewedAt']);
+      allow delete: if false;
     }
 
     // ----------------------------------------------------------- notifications

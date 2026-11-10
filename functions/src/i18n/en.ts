@@ -1,0 +1,58 @@
+// English (en) server texts. Same keys and placeholders as ka.ts.
+// English SMS avoid "₾" (not in GSM-7) and use "GEL", so they stay 160 chars/segment.
+import type { Catalog } from './ka';
+
+export const MESSAGES_EN: Catalog = {
+  sms: {
+    d5: "Reminder: {child}'s {sport} fee of {amount} GEL is due by {date}.",
+    d1: "Reminder: tomorrow ({date}) is the last day to pay {child}'s {sport} fee ({amount} GEL).",
+    d5Multi: 'Reminder: the fees for {children} ({amount} GEL) are due by {date}.',
+    d1Multi: 'Reminder: tomorrow ({date}) is the last day to pay the fees for {children} ({amount} GEL).',
+    invite: '{group}: invitation for {child}. Sign up in the app with this phone number.',
+  },
+  push: {
+    newTraining: { title: 'New training', body: '{group}: {date}, {time}' },
+    trainingCancelled: { title: 'Training cancelled', body: '{group}: {date}, {time}' },
+    trainingMoved: { title: 'Training rescheduled', body: '{group}: new time {date}, {time}' },
+    trainingReminder: { title: 'Training in 2 hours', body: '{group}: today at {time}' },
+    newPhotos: { title: 'New photos', body: '{group}: {count} new photos' },
+    chatMessage: { title: '{sender} · {group}', body: '{text}' },
+    certificateExpiring: { title: 'Certificate expiring soon', body: "{child}: the medical certificate expires in {days} days ({date})." },
+    certificateExpired: { title: 'Certificate expired', body: "{child}: the medical certificate has expired. Please upload a new one." },
+    paymentReminder: { title: 'Payment reminder', body: '{text}' },
+    trainingCancelledReason: { title: 'Training cancelled', body: '{group}: {date}, {time}. Reason: {reason}' },
+    newMatch: { title: 'New match', body: '{group}: {opponent}, {date}, {time}' },
+    matchCancelled: { title: 'Match cancelled', body: '{group}: {opponent}, {date}. Reason: {reason}' },
+    matchMoved: { title: 'Match rescheduled', body: '{group}: {opponent}, new time {date}, {time}' },
+    matchReminder1d: { title: 'Match tomorrow', body: '{group}: {opponent}, {date}, {time}' },
+    matchReminder2h: { title: 'Match in 2 hours', body: '{group}: {opponent}, today at {time}' },
+    groupInvite: { title: 'Group invitation', body: '{group}: {child}' },
+    inviteAnswered: { title: 'Invitation answered', body: '{child}: invitation {answer}' },
+    scheduleChanged: { title: 'Schedule updated', body: '{group}: {summary}' },
+    announcement: { title: 'Announcement · {group}', body: '{text}' },
+    newMedia: { title: 'New media', body: '{group}: {count} new files' },
+    certificateExpiresToday: { title: 'Certificate expires today', body: '{child}: the medical certificate expires today ({date}). Please upload a new one.' },
+    paymentProofSubmitted: { title: 'Payment proof to review', body: '{group}: {child} — {amount} GEL, paid on {date}' },
+    paymentProofApproved: { title: 'Payment confirmed', body: '{child}: {amount} GEL — your payment has been confirmed.' },
+    paymentProofRejected: { title: 'Payment not confirmed', body: '{child}: {amount} GEL. Reason: {reason}' },
+    trainingPlanPublished: { title: 'New training plan', body: '{group}: {title}' },
+  },
+  system: {
+    trainingCancelled: 'The training on {date} at {time} has been cancelled. Reason: {reason}',
+    matchCancelled: 'The match against {opponent} ({date}, {time}) has been cancelled. Reason: {reason}',
+    newMatch: 'New match: {opponent} — {date}, {time}',
+    matchMoved: 'The match against {opponent} has been rescheduled: {date}, {time}',
+  },
+  words: {
+    inviteAccepted: 'accepted',
+    inviteDeclined: 'declined',
+    seriesEnded: 'the series has ended',
+  },
+  cancelReasons: {
+    illness: 'Illness',
+    weather: 'Weather',
+    venueBusy: 'Venue unavailable',
+    other: 'Other',
+  },
+  weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+};

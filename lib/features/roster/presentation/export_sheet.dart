@@ -223,6 +223,7 @@ class _ExportFormState extends ConsumerState<_ExportForm> {
       final bytes = _format == ExportFormat.pdf ? await ExportService.pdf(table) : ExportService.csv(table);
       final name = ExportService.fileName(kindName, g.id, now, _format);
       final mime = _format == ExportFormat.pdf ? 'application/pdf' : 'text/csv';
+      ref.read(lastExportProvider.notifier).state = (name: name, bytes: bytes.length);
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile.fromData(bytes, name: name, mimeType: mime)],
@@ -231,7 +232,6 @@ class _ExportFormState extends ConsumerState<_ExportForm> {
         ),
       );
       if (mounted) showAppSnack(context, l.exportReady(name));
-      ref.read(lastExportProvider.notifier).state = (name: name, bytes: bytes.length);
     } catch (e) {
       if (mounted) showAppSnack(context, errorText(context, e), error: true);
     }

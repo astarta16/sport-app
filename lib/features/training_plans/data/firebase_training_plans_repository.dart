@@ -30,13 +30,16 @@ class FirebaseTrainingPlansRepository implements TrainingPlansRepository {
   Stream<List<TrainingPlan>> watchPlans() async* {
     final me = await currentRole(auth, db);
     if (me.approvedCoach) {
-      final groups = await db.collection('groups').where('coachIds', arrayContains: me.uid).get();
-      final ids = groups.docs.map((d) => d.id).take(30).toList();
-      if (ids.isEmpty) {
-        yield const [];
-        return;
-      }
-      yield* _col.where('groupIds', arrayContainsAny: ids).snapshots().map(_map).mapFirebaseErrors();
+      // `coachIds` is server-maintained (coaches of every listed group); a
+      // plan the coach just created is also matched by `createdBy` until the
+      // trigger has run. `groupIds array-contains-any` is not rule-checkable.
+      yield* mergeLatestLists([
+        _col.where('coachIds', arrayContains: me.uid).snapshots().map(_map),
+        _col.where('createdBy', isEqualTo: me.uid).snapshots().map(_map),
+      ]).map((all) {
+        final byId = {for (final p in all) p.id: p};
+        return byId.values.toList()..sort((a, b) => b.startDate.compareTo(a.startDate));
+      }).mapFirebaseErrors();
     } else {
       yield* _col
           .where('readerIds', arrayContains: me.uid)
@@ -61,6 +64,40 @@ class FirebaseTrainingPlansRepository implements TrainingPlansRepository {
     final uid = requireUid(auth);
     final ref = planId == null ? _col.doc() : _col.doc(planId);
     final old = planId == null ? null : (await ref.get()).data();
+    final me = (await db.collection('users').doc(uid).get()).data() ?? const {};
+    final group = (await db.collection('groups').doc(d.groupIds.first).get()).data() ?? const {};
+    final now = DateTime.now();
+    TrainingPlan build(List<Exercise> exercises) => TrainingPlan(
+      id: ref.id,
+      title: d.title.trim(),
+      description: d.description.trim(),
+      type: d.type,
+      groupIds: d.groupIds,
+      clubId: old?['clubId'] as String? ?? group['clubId'] as String? ?? '',
+      startDate: d.startDate,
+      endDate: d.endDate,
+      status: PlanStatus.fromName(old?['status'] as String?),
+      exercises: exercises,
+      createdBy: old?['createdBy'] as String? ?? uid,
+      coachName: old?['coachName'] as String? ?? '${me['firstName'] ?? ''} ${me['lastName'] ?? ''}'.trim(),
+      createdAt: now,
+      updatedAt: now,
+    );
+    Map<String, dynamic> dataOf(TrainingPlan p) => p.toMap()
+      ..remove('publishedAt')
+      ..['createdAt'] = old?['createdAt'] ?? now;
+    // Storage rules authorize plan media through the plan doc (createdBy), so
+    // a new plan is written first without its pending uploads.
+    if (old == null && d.newFiles.isNotEmpty) {
+      await ref.set(
+        dataOf(
+          build([
+            for (final e in d.exercises)
+              e.copyWith(media: e.media.where((m) => !d.newFiles.containsKey(m.id)).toList()),
+          ]),
+        ),
+      );
+    }
     final exercises = <Exercise>[];
     for (final e in d.exercises) {
       final media = <ExerciseMedia>[];
@@ -77,28 +114,8 @@ class FirebaseTrainingPlansRepository implements TrainingPlansRepository {
       }
       exercises.add(e.copyWith(media: media));
     }
-    final me = (await db.collection('users').doc(uid).get()).data() ?? const {};
-    final group = (await db.collection('groups').doc(d.groupIds.first).get()).data() ?? const {};
-    final now = DateTime.now();
-    final plan = TrainingPlan(
-      id: ref.id,
-      title: d.title.trim(),
-      description: d.description.trim(),
-      type: d.type,
-      groupIds: d.groupIds,
-      clubId: group['clubId'] as String? ?? '',
-      startDate: d.startDate,
-      endDate: d.endDate,
-      status: PlanStatus.fromName(old?['status'] as String?),
-      exercises: exercises,
-      createdBy: old?['createdBy'] as String? ?? uid,
-      coachName: old?['coachName'] as String? ?? '${me['firstName'] ?? ''} ${me['lastName'] ?? ''}'.trim(),
-      createdAt: now,
-      updatedAt: now,
-    );
-    final data = plan.toMap()
-      ..remove('publishedAt')
-      ..['createdAt'] = old?['createdAt'] ?? now;
+    final plan = build(exercises);
+    final data = dataOf(plan);
     await ref.set(data, SetOptions(merge: true));
     return plan;
   });

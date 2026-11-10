@@ -28,6 +28,7 @@ export const RATE_LIMITS = {
   accountRequests: { limit: 5, windowMs: DAY_MS },
   childSearch: { limit: 200, windowMs: DAY_MS },
   createGroup: { limit: 20, windowMs: DAY_MS },
+  paymentProofs: { limit: 10, windowMs: DAY_MS },
 } as const;
 export type RateBucket = keyof typeof RATE_LIMITS;
 

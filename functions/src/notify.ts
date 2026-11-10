@@ -5,14 +5,21 @@
 import { logger } from 'firebase-functions';
 import { FieldValue } from 'firebase-admin/firestore';
 import { db } from './admin';
+import { Locale, normalizeLocale } from './i18n';
 import { categoryFor, notificationId, pushAllowed } from './lib/notifications';
 import { UserLite } from './lib/types';
 import { sendPushToUsers } from './push';
 
 export interface NotifyInput {
   type: string;
+  /** Georgian fallback text (used when `localized` is absent). */
   title: string;
   body: string;
+  /**
+   * v1.3: per-recipient text in users/{uid}.locale (ka fallback). Spread
+   * `...pushText(key, vars)` from ./i18n to get title/body/localized at once.
+   */
+  localized?: (locale: Locale) => { title: string; body: string };
   route: string;
   args?: Record<string, string>;
   childId?: string | null;
@@ -30,15 +37,17 @@ export async function notify(users: UserLite[], n: NotifyInput): Promise<{ creat
   const category = categoryFor(n.type);
   const unique = [...new Map(users.filter((u) => u && u.role !== 'child').map((u) => [u.uid, u])).values()];
   const fresh: UserLite[] = [];
+  const textFor = (u: UserLite) => (n.localized ? n.localized(normalizeLocale(u.locale)) : { title: n.title, body: n.body });
   for (const u of unique) {
     const id = notificationId(u.uid, n.dedupeKey);
+    const text = textFor(u);
     try {
       await db.doc(`notifications/${id}`).create({
         userId: u.uid,
         type: n.type,
         category,
-        title: n.title,
-        body: n.body,
+        title: text.title,
+        body: text.body,
         route: n.route,
         args: n.args ?? {},
         childId: n.childId ?? null,
@@ -56,10 +65,19 @@ export async function notify(users: UserLite[], n: NotifyInput): Promise<{ creat
   let pushed = 0;
   if (n.push !== false) {
     const pushUsers = fresh.filter((u) => pushAllowed(u.notificationPrefs as Record<string, boolean> | undefined, n.type));
-    if (pushUsers.length) {
-      pushed = await sendPushToUsers(pushUsers, {
-        title: n.title,
-        body: n.body,
+    // One FCM multicast per distinct rendered text (i.e. per locale).
+    const byText = new Map<string, { text: { title: string; body: string }; users: UserLite[] }>();
+    for (const u of pushUsers) {
+      const text = textFor(u);
+      const key = `${text.title}\u0000${text.body}`;
+      const entry = byText.get(key) ?? { text, users: [] };
+      entry.users.push(u);
+      byText.set(key, entry);
+    }
+    for (const { text, users: group } of byText.values()) {
+      pushed += await sendPushToUsers(group, {
+        title: text.title,
+        body: text.body,
         data: { type: n.type, category, route: n.route, ...(n.groupId ? { groupId: n.groupId } : {}), ...(n.data ?? {}) },
       });
     }

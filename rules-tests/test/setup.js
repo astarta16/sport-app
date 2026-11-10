@@ -40,6 +40,7 @@ export const UID = {
   coachSuspended: 'coachSuspended',
   clubAdminA: 'clubAdminA',
   clubAdminB: 'clubAdminB',
+  coachNoPay: 'coachNoPay',
 };
 
 /** Custom claims used by the v1.2 tests. */
@@ -98,6 +99,8 @@ export async function seed(env) {
       clubId: 'club1', sportId: 'football', coachIds: [UID.coach], name: 'U12',
       ageMin: 10, ageMax: 12, memberChildIds: ['childA1', 'childB1'],
       parentIds: [UID.parentA, UID.parentB],
+      // v1.3: the approved coach is also the group's payment manager.
+      paymentManagerIds: [UID.coach],
     });
     await put('groups/g2', {
       clubId: 'club2', sportId: 'football', coachIds: [UID.coachOther], name: 'U10',
@@ -157,6 +160,7 @@ export async function seedV12(env) {
       clubId: 'club1', sportId: 'football', coachIds: [UID.coach, UID.coachSuspended], name: 'U12',
       ageMin: 10, ageMax: 12, memberChildIds: ['childA1', 'childB1'],
       parentIds: [UID.parentA, UID.parentB], inviteCode: 'ABCD23', status: 'active', createdBy: UID.coach,
+      paymentManagerIds: [UID.coach],
     });
     const training = (groupId, iso, extra = {}) => ({
       groupId, venueId: 'v1', startAt: ts(iso), durationMin: 60, focus: ['ball'], description: '',

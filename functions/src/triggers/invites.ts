@@ -4,7 +4,7 @@ import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { SMS_SECRETS } from '../config';
 import { childFrom, groupFrom, loadUser, loadUsers, toDate } from '../convert';
-import { SMS_TEMPLATES_KA, renderPush, renderTemplate } from '../i18n/ka';
+import { normalizeLocale, pushText, t } from '../i18n';
 import { tbilisiLocalToUtc } from '../lib/dates';
 import { normalizeInviteCode } from '../lib/inviteCode';
 import { InviteLite, isInviteAddressee, isUnclaimedPendingChild, normalizePhone, planInviteResponse, validateNewChild } from '../lib/invites';
@@ -119,7 +119,7 @@ export const createInvite = onCall({ secrets: SMS_SECRETS }, async (request) => 
     if (parent) {
       await notify([parent], {
         type: 'groupInvite',
-        ...renderPush('groupInvite', { group: group.name ?? '', child: child.firstName }),
+        ...pushText('groupInvite', { group: group.name ?? '', child: child.firstName }),
         route: `/invites/${inviteRef.id}`,
         args: { inviteId: inviteRef.id, groupId },
         groupId,
@@ -129,7 +129,8 @@ export const createInvite = onCall({ secrets: SMS_SECRETS }, async (request) => 
     }
   } else if (phone) {
     const provider = createSmsProvider();
-    const text = renderTemplate(SMS_TEMPLATES_KA.invite, { group: group.name ?? '', child: child.firstName });
+    // The phone has no account (no users.locale): Georgian unless the coach passes smsLocale.
+    const text = t(normalizeLocale(data.smsLocale), 'sms.invite', { group: group.name ?? '', child: child.firstName });
     let status = 'failed';
     let providerResponse = '';
     try {
@@ -215,7 +216,10 @@ export const respondInvite = onCall(async (request) => {
     if (coach) {
       await notify([coach], {
         type: 'inviteAnswered',
-        ...renderPush('inviteAnswered', { child: invSnap.get('childFirstName') ?? '', answer: result.status === 'accepted' ? 'მიიღო' : 'უარყო' }),
+        ...pushText('inviteAnswered', (l) => ({
+          child: invSnap.get('childFirstName') ?? '',
+          answer: t(l, result.status === 'accepted' ? 'words.inviteAccepted' : 'words.inviteDeclined'),
+        })),
         route: `/group/${invSnap.get('groupId')}`,
         args: { inviteId, groupId: invSnap.get('groupId') },
         groupId: invSnap.get('groupId'),

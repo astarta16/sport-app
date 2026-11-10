@@ -5,8 +5,7 @@ import { DocumentData, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { TIMEZONE } from '../config';
 import { loadGroup, loadUsers, toDate } from '../convert';
-import { SYSTEM_MESSAGES_KA, renderPush, renderTemplate } from '../i18n/ka';
-import { cancelReasonText } from '../lib/cancel';
+import { cancelReasonTextL, pushText, t } from '../i18n';
 import { formatShortDate, formatTime } from '../lib/dates';
 import {
   MATCH_REMINDER_1D_MS, MatchLite, classifyMatchWrite, matchReminderFields, matchReminderStage, movedMatchPatch,
@@ -57,23 +56,25 @@ export const onMatchWritten = onDocumentWritten('matches/{matchId}', async (even
   const group = await loadGroup(after.groupId);
   if (!group) return;
   const recipients = groupParentUsers(group, await loadUsers(group.parentIds));
-  const vars = {
+  const baseVars = {
     group: group.name ?? '', opponent: after.opponentName ?? '',
     date: formatShortDate(after.startAt), time: formatTime(after.startAt),
-    reason: cancelReasonText(after.cancelReasonCode, after.cancelReason) || '—',
   };
+  const vars = (l: string) => ({ ...baseVars, reason: cancelReasonTextL(l, after.cancelReasonCode, after.cancelReason) || '—' });
+  // systemArgs: raw values; the app renders {reason} as "<label(reasonCode)> — <reason>".
+  const sysArgs = { opponent: baseVars.opponent, date: baseVars.date, time: baseVars.time, reasonCode: after.cancelReasonCode ?? '', reason: after.cancelReason ?? '' };
   for (const ev of events) {
     const base = { route: `/match/${matchId}`, args: { matchId, groupId: group.id }, groupId: group.id, data: { matchId } };
     if (ev.type === 'newMatch') {
-      await notify(recipients, { type: 'newMatch', ...renderPush('newMatch', vars), ...base, dedupeKey: `match:${matchId}:new` });
-      await postSystemMessage(group.id, `system_match_${matchId}_new`, renderTemplate(SYSTEM_MESSAGES_KA.newMatch, vars));
+      await notify(recipients, { type: 'newMatch', ...pushText('newMatch', baseVars), ...base, dedupeKey: `match:${matchId}:new` });
+      await postSystemMessage(group.id, `system_match_${matchId}_new`, t('ka', 'system.newMatch', vars('ka')), { key: 'newMatch', args: sysArgs });
     } else if (ev.change === 'cancelled') {
-      await notify(recipients, { type: 'matchChanged', ...renderPush('matchCancelled', vars), ...base, dedupeKey: `match:${matchId}:cancelled` });
-      await postSystemMessage(group.id, `system_match_${matchId}_cancelled`, renderTemplate(SYSTEM_MESSAGES_KA.matchCancelled, vars));
+      await notify(recipients, { type: 'matchChanged', ...pushText('matchCancelled', vars), ...base, dedupeKey: `match:${matchId}:cancelled` });
+      await postSystemMessage(group.id, `system_match_${matchId}_cancelled`, t('ka', 'system.matchCancelled', vars('ka')), { key: 'matchCancelled', args: sysArgs });
     } else {
       const key = `match:${matchId}:moved:${after.startAt.getTime()}`;
-      await notify(recipients, { type: 'matchChanged', ...renderPush('matchMoved', vars), ...base, dedupeKey: key });
-      await postSystemMessage(group.id, `system_match_${matchId}_moved_${after.startAt.getTime()}`, renderTemplate(SYSTEM_MESSAGES_KA.matchMoved, vars));
+      await notify(recipients, { type: 'matchChanged', ...pushText('matchMoved', baseVars), ...base, dedupeKey: key });
+      await postSystemMessage(group.id, `system_match_${matchId}_moved_${after.startAt.getTime()}`, t('ka', 'system.matchMoved', vars('ka')), { key: 'matchMoved', args: sysArgs });
     }
   }
   logger.info('match notification', { matchId, events: events.map((e) => e.type), recipients: recipients.length });
@@ -107,7 +108,7 @@ export async function runMatchReminders(now: Date): Promise<{ candidates: number
     const vars = { group: group.name ?? '', opponent: m.opponentName ?? '', date: formatShortDate(m.startAt), time: formatTime(m.startAt) };
     await notify(recipients, {
       type: 'matchReminder',
-      ...renderPush(stage === '1d' ? 'matchReminder1d' : 'matchReminder2h', vars),
+      ...pushText(stage === '1d' ? 'matchReminder1d' : 'matchReminder2h', vars),
       route: `/match/${doc.id}`, args: { matchId: doc.id, groupId: group.id }, groupId: group.id,
       dedupeKey: `match:${doc.id}:reminder:${stage}:${m.startAt.getTime()}`, data: { matchId: doc.id },
     });

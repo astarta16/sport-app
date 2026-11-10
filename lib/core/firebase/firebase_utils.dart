@@ -72,3 +72,32 @@ Future<Map<String, dynamic>> callFunction(dynamic functions, String name, [Map<S
       final d = result.data;
       return d is Map ? d.map((k, v) => MapEntry(k.toString(), v)) : <String, dynamic>{};
     });
+
+/// Emits the concatenation of the latest list from every source (each source
+/// counts as empty until it first emits). Used where security rules require
+/// one bounded query per scope instead of a single broad query.
+Stream<List<T>> mergeLatestLists<T>(List<Stream<List<T>>> sources) {
+  if (sources.isEmpty) return Stream.value(<T>[]);
+  if (sources.length == 1) return sources.first;
+  late final StreamController<List<T>> c;
+  final latest = List<List<T>>.filled(sources.length, const []);
+  final subs = <StreamSubscription<List<T>>>[];
+  c = StreamController<List<T>>(
+    onListen: () {
+      for (var i = 0; i < sources.length; i++) {
+        subs.add(
+          sources[i].listen((v) {
+            latest[i] = v;
+            c.add([for (final l in latest) ...l]);
+          }, onError: c.addError),
+        );
+      }
+    },
+    onCancel: () async {
+      for (final s in subs) {
+        await s.cancel();
+      }
+    },
+  );
+  return c.stream;
+}

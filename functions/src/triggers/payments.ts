@@ -5,7 +5,7 @@ import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { SMS_SECRETS, TIMEZONE } from '../config';
 import { loadChildren, loadUser, paymentFrom } from '../convert';
-import { renderPush } from '../i18n/ka';
+import { normalizeLocale, pushText } from '../i18n';
 import { tbilisiLocalToUtc, tbilisiMonthKey, tbilisiParts } from '../lib/dates';
 import {
   ClaimedReminder, decidePaymentReminder, decideReminderChannels, groupReminders, paymentAuditEntry,
@@ -76,7 +76,8 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
 
   for (const batch of batches) {
     const parent = await loadUser(batch.parentId);
-    const text = renderReminderText(batch, names);
+    const locale = normalizeLocale(parent?.locale);
+    const text = renderReminderText(batch, names, locale);
     const channels = decideReminderChannels(parent);
     const paymentIds = batch.payments.map((p) => p.id);
     const seg = smsSegments(text);
@@ -119,7 +120,7 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
 
     if (parent) {
       // Inbox always; push only if paymentReminder != false (notify() applies prefs).
-      const msg = renderPush('paymentReminder', { text });
+      const msg = pushText('paymentReminder', { text });
       await notify([parent], {
         type: 'paymentReminder', ...msg, route: '/payments', args: { paymentIds: paymentIds.join(',') },
         dedupeKey: `payment:${batch.kind}:${[...paymentIds].sort().join(',')}`,

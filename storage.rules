@@ -135,6 +135,43 @@ service firebase.storage {
       allow delete: if signedIn() && request.auth.uid == coachId;
     }
 
+    // v1.3 payment receipts: the owning parent uploads (JPG/PNG/PDF ≤ 10 MB)
+    // BEFORE calling submitPaymentProof; once the proof doc exists the file
+    // is evidence and can no longer be replaced or deleted. Read: owner only
+    // (reviewers use the getReceiptUrl callable, which is logged).
+    match /receipts/{parentId}/{proofId}/{file} {
+      allow read: if signedIn() && request.auth.uid == parentId;
+      allow create: if signedIn() && request.auth.uid == parentId
+        && isParent()
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType in ['image/jpeg', 'image/png', 'application/pdf']
+        && !firestore.exists(/databases/(default)/documents/paymentProofs/$(proofId));
+      allow update: if false;
+      allow delete: if signedIn() && request.auth.uid == parentId
+        && !firestore.exists(/databases/(default)/documents/paymentProofs/$(proofId));
+    }
+
+    // v1.3 training-plan media. Write: the plan's creator (approved coach,
+    // plan doc must exist): images ≤ 10 MB, videos ≤ 100 MB, PDF ≤ 10 MB.
+    // Read: readers of the plan (server-managed readerIds, published only)
+    // and coaches of the plan's groups (server-managed coachIds), the creator.
+    match /plans/{planId}/{file} {
+      function plan() {
+        return firestore.get(/databases/(default)/documents/trainingPlans/$(planId)).data;
+      }
+      allow read: if signedIn()
+        && (request.auth.uid in plan().get('readerIds', [])
+            || (isApprovedCoach()
+                && (request.auth.uid in plan().get('coachIds', [])
+                    || plan().get('createdBy', '') == request.auth.uid)));
+      allow create, update: if isApprovedCoach()
+        && plan().get('createdBy', '') == request.auth.uid
+        && ((request.resource.contentType.matches('image/.*') && request.resource.size <= 10 * 1024 * 1024)
+            || (request.resource.contentType.matches('video/.*') && request.resource.size <= 100 * 1024 * 1024)
+            || (request.resource.contentType == 'application/pdf' && request.resource.size <= 10 * 1024 * 1024));
+      allow delete: if isApprovedCoach() && plan().get('createdBy', '') == request.auth.uid;
+    }
+
     // Data exports: never client-accessible (getExportUrl returns a signed URL).
     match /exports/{allPaths=**} {
       allow read, write: if false;

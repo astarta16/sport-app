@@ -247,6 +247,8 @@ class PlanDraft {
   /// Media id → file to upload (photo/video/pdf picked in the editor).
   final Map<String, PhotoUpload> newFiles;
 
+  /// Server limit: a rules request may read ≤ 10 docs (user + one per group).
+  static const maxGroups = 9;
   static const maxExercises = 50;
   static const maxMedia = 10;
   static final _https = RegExp(r'^https://[^\s<>"]+$', caseSensitive: false);
@@ -261,7 +263,7 @@ class PlanDraft {
     if (d.title.trim().isEmpty) 'planTitle',
     if (d.title.trim().length > 120) 'validationTooLong',
     if (d.description.length > 4000) 'validationTooLong',
-    if (d.groupIds.isEmpty || d.groupIds.length > 10) 'planGroups',
+    if (d.groupIds.isEmpty || d.groupIds.length > maxGroups) 'planGroups',
     if (d.endDate != null && d.endDate! < d.startDate) 'planDates',
     if (publishing && d.exercises.isEmpty) 'planExercises',
     if (d.exercises.length > maxExercises) 'tooManyExercises',

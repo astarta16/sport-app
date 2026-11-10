@@ -298,7 +298,7 @@ class _MatchBody extends ConsumerWidget {
                 children: [
                   const Icon(Icons.info_outline_rounded, color: AppColors.danger),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(child: Text(l.cancelledWithReason(match.cancelReason!))),
+                  Expanded(child: Text(l.cancelledWithReason(cancelReasonText(context, match.cancelReason!)))),
                 ],
               ),
             ),

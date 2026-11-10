@@ -1,6 +1,7 @@
 // Firestore <-> plain domain type adapters.
 import { DocumentData, Timestamp } from 'firebase-admin/firestore';
 import { db } from './admin';
+import { normalizeLocale } from './i18n';
 import {
   CertificateLite, ChildLite, GroupLite, PaymentLite, TrainingLite, UserLite,
 } from './lib/types';
@@ -27,6 +28,7 @@ export function userFrom(uid: string, d: DocumentData): UserLite {
     fcmTokens: arr(d.fcmTokens),
     notificationPrefs: d.notificationPrefs ?? {},
     smsConsentAt: toDate(d.smsConsentAt) ?? null,
+    locale: normalizeLocale(d.locale),
   };
 }
 
@@ -82,6 +84,15 @@ export function certificateFrom(id: string, d: DocumentData): CertificateLite {
     notified14At: toDate(d.notified14At) ?? null,
     notified3At: toDate(d.notified3At) ?? null,
     notified0At: toDate(d.notified0At) ?? null,
+    sportId: typeof d.sportId === 'string' && d.sportId ? d.sportId : null,
+    groupId: typeof d.groupId === 'string' && d.groupId ? d.groupId : null,
+    replacedBy: typeof d.replacedBy === 'string' && d.replacedBy ? d.replacedBy : null,
+    createdAt: toDate(d.createdAt) ?? toDate(d.consentAt) ?? null,
+    reminders: {
+      d14SentAt: toDate(d.reminders?.d14SentAt) ?? null,
+      d3SentAt: toDate(d.reminders?.d3SentAt) ?? null,
+      d0SentAt: toDate(d.reminders?.d0SentAt) ?? null,
+    },
   };
 }
 

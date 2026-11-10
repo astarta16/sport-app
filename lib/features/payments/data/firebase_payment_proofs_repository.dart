@@ -73,11 +73,54 @@ class FirebasePaymentProofsRepository implements PaymentProofsRepository {
         .mapFirebaseErrors();
   }
 
+  static const _open = ['submitted', 'under_review'];
+
+  /// Rules allow only bounded queries: platform admin → all open proofs;
+  /// club admin → one query per administered club; coach → one query per
+  /// group whose `paymentManagerIds` contains them.
   @override
   Stream<List<PaymentProof>> watchReviewQueue({String? groupId}) {
-    var q = _col.where('status', whereIn: const ['submitted', 'under_review']);
-    if (groupId != null) q = q.where('groupId', isEqualTo: groupId);
-    return q.snapshots().map(_map).mapFirebaseErrors();
+    final uid = auth.currentUser?.uid;
+    if (uid == null) return Stream.value(const []);
+    Query<Map<String, dynamic>> open() => _col.where('status', whereIn: _open);
+    return db.collection('users').doc(uid).snapshots().asyncExpand((u) {
+      final user = u.data() ?? const <String, dynamic>{};
+      final adminRole = user['adminRole'] as String?;
+      if (adminRole == 'platform') {
+        final q = groupId == null ? open() : open().where('groupId', isEqualTo: groupId);
+        return q.snapshots().map(_map);
+      }
+      final clubs = List<String>.from(user['adminClubIds'] as List? ?? const []);
+      final byClub = [
+        for (final c in clubs)
+          (groupId == null
+                  ? open().where('clubId', isEqualTo: c)
+                  : open().where('clubId', isEqualTo: c).where('groupId', isEqualTo: groupId))
+              .snapshots()
+              .map(_map),
+      ];
+      final managed = db
+          .collection('groups')
+          .where('coachIds', arrayContains: uid)
+          .snapshots()
+          .map(
+            (s) => s.docs
+                .where((d) => List<String>.from(d.data()['paymentManagerIds'] as List? ?? const []).contains(uid))
+                .map((d) => d.id)
+                .where((id) => groupId == null || id == groupId)
+                .toList(),
+          );
+      return managed.asyncExpand((ids) {
+        final byGroup = [for (final g in ids) open().where('groupId', isEqualTo: g).snapshots().map(_map)];
+        return mergeLatestLists([...byClub, ...byGroup]).map((all) {
+          final seen = <String>{};
+          return [
+            for (final p in all)
+              if (seen.add(p.id)) p,
+          ]..sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+        });
+      });
+    }).mapFirebaseErrors();
   }
 
   @override

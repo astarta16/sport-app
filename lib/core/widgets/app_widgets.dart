@@ -105,7 +105,13 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Semantics(header: true, child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
           ),
-          if (actionLabel != null) TextButton(onPressed: onAction, child: Text(actionLabel!)),
+          if (actionLabel != null)
+            Flexible(
+              child: TextButton(
+                onPressed: onAction,
+                child: Text(actionLabel!, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
+            ),
         ],
       ),
     );
@@ -564,6 +570,7 @@ Future<bool> confirmDialog(
       actions: [
         TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.l10n.cancel)),
         FilledButton(
+          key: const Key('confirm-ok'),
           style: destructive ? FilledButton.styleFrom(backgroundColor: AppColors.danger) : null,
           onPressed: () => Navigator.pop(context, true),
           child: Text(confirmLabel),

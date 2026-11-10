@@ -63,14 +63,20 @@ Future<void> pumpFrames(WidgetTester tester, [int n = 8]) => collecting(() async
   }
 });
 
-Future<DemoBackend> boot(WidgetTester tester, Size size, {double textScale = 1, bool onboarded = true}) async {
+Future<DemoBackend> boot(
+  WidgetTester tester,
+  Size size, {
+  double textScale = 1,
+  bool onboarded = true,
+  String? locale,
+}) async {
   currentLabel = '${size.width.toInt()}x${size.height.toInt()} boot';
   tester.view.physicalSize = size * 2;
   tester.view.devicePixelRatio = 2;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-  final (db, overrides) = await demoSetup(prefs: {'settings.onboardingSeen': onboarded});
+  final (db, overrides) = await demoSetup(prefs: {'settings.onboardingSeen': onboarded, 'settings.locale': ?locale});
   await collecting(
     () => tester.pumpWidget(ProviderScope(overrides: overrides, retry: (_, _) => null, child: const SportParentApp())),
   );
@@ -93,6 +99,28 @@ Future<void> visit(WidgetTester tester, String label, List<String> routes) async
     await pumpFrames(tester);
   }
 }
+
+const parentV13 = [
+  '/plans',
+  '/plans/plan-summer',
+  '/plans/plan-homework',
+  '/payments/pay-l-f-0/proof',
+  '/payments/pay-l-s-0/proof',
+  '/certificates/child-1',
+  '/certificates/child-1/upload?replace=cert-1',
+];
+
+const coachV13 = [
+  '/students',
+  '/students?groupId=g-football-u10',
+  '/plans',
+  '/plans/new?groupId=g-football-u10',
+  '/plans/plan-summer',
+  '/plans/plan-summer/edit',
+  '/plans/plan-draft',
+  '/payments/review',
+  '/group/g-football-u10/payments',
+];
 
 void main() {
   setUpAll(() => initializeDateFormatting());
@@ -129,6 +157,8 @@ void main() {
         '/media/post-1',
         '/account',
         '/account/privacy',
+        // v1.3
+        ...parentV13,
       ]);
       expectNoLayoutErrors();
     });
@@ -163,6 +193,8 @@ void main() {
         '/group/g-football-u10/invite',
         '/children/child-1/progress',
         '/account',
+        // v1.3
+        ...coachV13,
       ]);
       expectNoLayoutErrors();
     });
@@ -185,6 +217,20 @@ void main() {
     }
     expectNoLayoutErrors();
   });
+
+  // Russian is the longest language: check the narrowest layouts with it.
+  for (final name in ['iPhone portrait', 'iPad Slide Over', 'iPhone landscape']) {
+    testWidgets('Russian / English UI fits — $name', (tester) async {
+      for (final locale in ['ru', 'en']) {
+        final db = await boot(tester, sizes[name]!, locale: locale);
+        await signInAs(tester, db, DemoIds.parent);
+        await visit(tester, '$name $locale parent', ['/parent/home', '/parent/profile', '/settings', ...parentV13]);
+        await signInAs(tester, db, DemoIds.coach);
+        await visit(tester, '$name $locale coach', ['/coach/home', '/group/g-football-u10', ...coachV13]);
+      }
+      expectNoLayoutErrors();
+    });
+  }
 
   testWidgets('large text (1.4x) on iPhone does not overflow key screens', (tester) async {
     final db = await boot(tester, sizes['iPhone portrait']!, textScale: 1.4);

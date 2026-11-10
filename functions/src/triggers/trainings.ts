@@ -5,8 +5,7 @@ import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { db } from '../admin';
 import { TIMEZONE } from '../config';
 import { loadChildren, loadGroup, loadUsers, trainingFrom } from '../convert';
-import { SYSTEM_MESSAGES_KA, renderPush, renderTemplate } from '../i18n/ka';
-import { cancelReasonText } from '../lib/cancel';
+import { cancelReasonTextL, pushText, t } from '../i18n';
 import { formatShortDate, formatTime } from '../lib/dates';
 import { selectTrainingRecipients } from '../lib/recipients';
 import { SCHEDULE_CHANGED_REASON } from '../lib/series';
@@ -17,19 +16,21 @@ import { ChildLite, TrainingLite } from '../lib/types';
 import { notify } from '../notify';
 import { postSystemMessage } from './chat';
 
-function pushFor(ev: TrainingEvent, t: TrainingLite, groupName: string) {
-  const vars = { group: groupName, date: formatShortDate(t.startAt), time: formatTime(t.startAt) };
+function pushFor(ev: TrainingEvent, tr: TrainingLite, groupName: string) {
+  const vars = { group: groupName, date: formatShortDate(tr.startAt), time: formatTime(tr.startAt) };
   switch (ev.type) {
     case 'newTraining':
-      return renderPush('newTraining', vars);
+      return pushText('newTraining', vars);
     case 'trainingChanged':
       if (ev.change === 'cancelled') {
-        const reason = cancelReasonText(t.cancelReasonCode, t.cancelReason);
-        return reason ? renderPush('trainingCancelledReason', { ...vars, reason }) : renderPush('trainingCancelled', vars);
+        const hasReason = !!cancelReasonTextL('ka', tr.cancelReasonCode, tr.cancelReason);
+        return hasReason
+          ? pushText('trainingCancelledReason', (l) => ({ ...vars, reason: cancelReasonTextL(l, tr.cancelReasonCode, tr.cancelReason) }))
+          : pushText('trainingCancelled', vars);
       }
-      return renderPush('trainingMoved', vars);
+      return pushText('trainingMoved', vars);
     case 'newPhotos':
-      return renderPush('newPhotos', { ...vars, count: ev.added });
+      return pushText('newPhotos', { ...vars, count: ev.added });
   }
 }
 
@@ -112,12 +113,14 @@ export const onTrainingWritten = onDocumentWritten('trainings/{trainingId}', asy
       data: { trainingId },
     });
     if (ev.type === 'trainingChanged' && ev.change === 'cancelled') {
-      const text = renderTemplate(SYSTEM_MESSAGES_KA.trainingCancelled, {
+      const sysArgs = {
         date: formatShortDate(after.startAt),
         time: formatTime(after.startAt),
-        reason: cancelReasonText(after.cancelReasonCode, after.cancelReason) || '—',
-      });
-      await postSystemMessage(group.id, `system_training_${trainingId}_cancelled`, text);
+        reasonCode: after.cancelReasonCode ?? '',
+        reason: after.cancelReason ?? '',
+      };
+      const text = t('ka', 'system.trainingCancelled', { ...sysArgs, reason: cancelReasonTextL('ka', after.cancelReasonCode, after.cancelReason) || '—' });
+      await postSystemMessage(group.id, `system_training_${trainingId}_cancelled`, text, { key: 'trainingCancelled', args: sysArgs });
     }
     logger.info('training notification', { type: ev.type, trainingId, recipients: recipients.length, ...res });
   }
@@ -154,7 +157,7 @@ export const sendTrainingReminders = onSchedule(
       if (!group) continue;
       const users = await loadUsers(group.parentIds);
       const recipients = selectTrainingRecipients({ group, users, type: 'trainingReminder', ignorePrefs: true });
-      const msg = renderPush('trainingReminder', { group: group.name ?? '', time: formatTime(t.startAt) });
+      const msg = pushText('trainingReminder', { group: group.name ?? '', time: formatTime(t.startAt) });
       await notify(recipients, {
         type: 'trainingReminder', ...msg, route: `/training/${doc.id}`, args: { trainingId: doc.id, groupId: group.id },
         groupId: group.id, dedupeKey: `training:${doc.id}:reminder:${t.startAt.getTime()}`, data: { trainingId: doc.id },

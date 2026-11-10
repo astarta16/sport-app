@@ -23,8 +23,11 @@ export { extendTrainingSeries, onSeriesWritten, splitTrainingSeries } from './tr
 export { getMediaUrl, onMediaPostWritten, onMediaUpload } from './triggers/media';
 export { createReport, moderate } from './triggers/moderation';
 export {
-  adminStats, archiveClub, assignCoach, setAdminRole, setCoachStatus, updateGroup, upsertClub, upsertSport,
+  adminCompliance, adminStats, archiveClub, assignCoach, setAdminRole, setCoachStatus, updateGroup, upsertClub, upsertSport,
 } from './triggers/adminCallables';
 export {
   getExportUrl, onAccountRequestCreated, requestAccountDeletion, requestDataExport,
 } from './triggers/account';
+// v1.3
+export { getReceiptUrl, reviewPaymentProof, startPaymentReview, submitPaymentProof } from './triggers/paymentProofs';
+export { getPlanMediaUrl, onTrainingPlanWritten } from './triggers/trainingPlans';

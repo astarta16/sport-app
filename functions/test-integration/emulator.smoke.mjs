@@ -415,4 +415,256 @@ await step('v1.2: data export writes exports/{uid}/{id}.json without medical fil
   assert.equal((await callable('getExportUrl', { requestId: id }, await idToken('p1'))).status, 404);
 });
 
+
+// ------------------------------------------------------------ v1.3 flow
+const V13 = {};
+const putReceipt = (parentId, proofId, file = 'r.jpg', contentType = 'image/jpeg', body = Buffer.from([1, 2, 3, 4])) =>
+  getStorage().bucket().file(`receipts/${parentId}/${proofId}/${file}`).save(body, { contentType }).then(() => body.length);
+const proofPayload = async (proofId, paymentId) => {
+  const size = await putReceipt('parentS', proofId);
+  return { proofId, paymentId, paidOn: series.tbilisiDateKey(new Date()), reference: 'TBC-42', note: 'ბანკით', receiptPath: `receipts/parentS/${proofId}/r.jpg`, receiptMime: 'image/jpeg', receiptSize: size };
+};
+
+await step('v1.3: club admin sets paymentManagerIds via updateGroup (audited); a coach cannot', async () => {
+  await db.doc('users/parentS').update({ locale: 'en' });
+  await db.doc('users/clubAdminS').set(user('parent', { locale: 'ru' }));
+  const denied = await callable('updateGroup', { groupId: E2E.groupId, paymentManagerIds: ['coachS'] }, await idToken('coachS'));
+  assert.equal(denied.status, 403, JSON.stringify(denied.body));
+  const ok = await callable('updateGroup', { groupId: E2E.groupId, paymentManagerIds: ['coachS'] }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  assert.deepEqual((await db.doc(`groups/${E2E.groupId}`).get()).get('paymentManagerIds'), ['coachS']);
+  const audit = await db.collection('auditLog').where('action', '==', 'group.paymentManagers').where('targetId', '==', E2E.groupId).get();
+  assert.equal(audit.size, 1);
+  assert.deepEqual(audit.docs[0].get('details.to'), ['coachS']);
+});
+
+await step('v1.3: proof submit → second submit rejected → approve → payment paid → second approve fails', async () => {
+  const pay = { childId: 'childS', parentId: 'parentS', groupId: E2E.groupId, sportId: 'football', amount: 60, currency: 'GEL', dueDate: ts(new Date(Date.now() + 5 * 86400000)), status: 'pending', reminders: {}, createdAt: ts(new Date()) };
+  await db.doc('payments/payV13').set(pay);
+  await db.doc('payments/payV13b').set({ ...pay, amount: 70 });
+  const parentTok = await idToken('parentS');
+  const other = await callable('submitPaymentProof', await proofPayload('proofX', 'payV13'), await idToken('p1'));
+  assert.equal(other.status, 400, JSON.stringify(other.body)); // receiptPath is not under the caller's uid
+  const r = await callable('submitPaymentProof', await proofPayload('proofA', 'payV13'), parentTok);
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.equal(r.body.result.proofId, 'proofA');
+  assert.equal(r.body.result.action, 'submitted');
+  const p = (await db.doc('payments/payV13').get()).data();
+  assert.equal(p.status, 'pending');
+  assert.equal(p.verification.state, 'proof_submitted');
+  assert.equal(p.verification.proofId, 'proofA');
+  const proof = (await db.doc('paymentProofs/proofA').get()).data();
+  assert.deepEqual([proof.status, proof.parentId, proof.groupId, proof.clubId, proof.childId], ['submitted', 'parentS', E2E.groupId, 'clubS', 'childS']);
+  assert.ok((await db.doc(`notifications/${sha1('coachS|proof:proofA:submitted')}`).get()).exists, 'payment manager notified');
+  const adminN = (await db.doc(`notifications/${sha1('clubAdminS|proof:proofA:submitted')}`).get()).data();
+  assert.ok(adminN, 'club admin notified');
+  assert.equal(adminN.title, 'Подтверждение оплаты на проверку', 'rendered in the club admin locale (ru)');
+
+  const second = await callable('submitPaymentProof', await proofPayload('proofB', 'payV13'), parentTok);
+  assert.equal(second.status, 409, JSON.stringify(second.body)); // already-exists
+  assert.equal((await db.doc('paymentProofs/proofB').get()).exists, false);
+
+  const notReviewer = await callable('reviewPaymentProof', { proofId: 'proofA', decision: 'approve' }, parentTok);
+  assert.equal(notReviewer.status, 403);
+  const otherClub = await callable('reviewPaymentProof', { proofId: 'proofA', decision: 'approve' }, await idToken('clubAdminX', { clubAdmin: ['club1'] }));
+  assert.equal(otherClub.status, 403);
+  const start = await callable('startPaymentReview', { proofId: 'proofA' }, await idToken('coachS'));
+  assert.equal(start.status, 200, JSON.stringify(start.body));
+  assert.equal((await db.doc('payments/payV13').get()).get('verification.state'), 'under_review');
+
+  const ok = await callable('reviewPaymentProof', { proofId: 'proofA', decision: 'approve' }, await idToken('coachS'));
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  const paid = (await db.doc('payments/payV13').get()).data();
+  assert.equal(paid.status, 'paid');
+  assert.equal(paid.verifiedBy, 'coachS');
+  assert.ok(paid.paidAt && paid.verifiedAt);
+  assert.equal(paid.verification.state, 'none');
+  assert.equal(paid.verification.proofId, 'proofA');
+  assert.equal((await db.doc('paymentProofs/proofA').get()).get('status'), 'approved');
+
+  const again = await callable('reviewPaymentProof', { proofId: 'proofA', decision: 'approve' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(again.status, 400, JSON.stringify(again.body)); // failed-precondition
+  assert.equal(again.body.error.status, 'FAILED_PRECONDITION');
+
+  const n = (await db.doc(`notifications/${sha1('parentS|proof:proofA:approved')}`).get()).data();
+  assert.equal(n.type, 'paymentProofApproved');
+  assert.equal(n.category, 'payments');
+  assert.equal(n.title, 'Payment confirmed', 'rendered in the parent locale (en)');
+  const events = await db.collection('paymentVerificationEvents').where('paymentId', '==', 'payV13').get();
+  assert.deepEqual(events.docs.map((d) => d.get('action')).sort(), ['approved', 'review_started', 'submitted']);
+  for (const a of ['payment.proofSubmitted', 'payment.proofApproved']) {
+    assert.equal((await db.collection('auditLog').where('action', '==', a).where('targetId', '==', 'proofA').get()).size, 1, a);
+  }
+  await waitFor(async () => (await db.collection('paymentAudit').where('paymentId', '==', 'payV13').get()).docs.some((d) => d.get('to') === 'paid' && d.get('actorId') === 'coachS'), 'paymentAudit actor');
+
+  const url = await callable('getReceiptUrl', { proofId: 'proofA' }, await idToken('coachS'));
+  assert.equal(url.status, 200, JSON.stringify(url.body));
+  assert.equal(url.body.result.mimeType, 'image/jpeg');
+  assert.match(url.body.result.url, /receipts%2FparentS%2FproofA/);
+  assert.equal((await callable('getReceiptUrl', { proofId: 'proofA' }, await idToken('p1'))).status, 403);
+  assert.equal((await db.collection('auditLog').where('action', '==', 'receipt.view').where('targetId', '==', 'proofA').get()).size, 1);
+});
+
+await step('v1.3: reject (reason required) → parent notified → resubmit supersedes the rejected proof', async () => {
+  const parentTok = await idToken('parentS');
+  const r = await callable('submitPaymentProof', await proofPayload('proofC', 'payV13b'), parentTok);
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const short = await callable('reviewPaymentProof', { proofId: 'proofC', decision: 'reject', reason: 'no' }, await idToken('coachS'));
+  assert.equal(short.status, 400);
+  const rej = await callable('reviewPaymentProof', { proofId: 'proofC', decision: 'reject', reason: 'Amount does not match' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(rej.status, 200, JSON.stringify(rej.body));
+  const p = (await db.doc('payments/payV13b').get()).data();
+  assert.equal(p.status, 'pending');
+  assert.equal(p.verification.state, 'rejected');
+  assert.equal(p.verification.rejectionReason, 'Amount does not match');
+  const n = (await db.doc(`notifications/${sha1('parentS|proof:proofC:rejected')}`).get()).data();
+  assert.equal(n.type, 'paymentProofRejected');
+  assert.match(n.body, /Amount does not match/);
+  const re = await callable('submitPaymentProof', await proofPayload('proofD', 'payV13b'), parentTok);
+  assert.equal(re.status, 200, JSON.stringify(re.body));
+  assert.equal(re.body.result.action, 'resubmitted');
+  assert.equal((await db.doc('paymentProofs/proofC').get()).get('status'), 'superseded');
+  assert.equal((await db.doc('payments/payV13b').get()).get('verification.state'), 'proof_submitted');
+  assert.equal((await db.collection('auditLog').where('action', '==', 'payment.proofResubmitted').where('targetId', '==', 'proofD').get()).size, 1);
+});
+
+const planDoc = (o = {}, planId = 'planS') => ({
+  title: 'Winter technique', description: 'Ball control', type: 'weekly', groupIds: [E2E.groupId], clubId: 'clubS',
+  startDate: series.tbilisiDateKey(new Date()), endDate: null, status: 'draft', createdBy: 'coachS', coachName: 'coach',
+  createdAt: ts(new Date()), updatedAt: ts(new Date()), publishedAt: null,
+  exercises: [{ id: 'e1', order: 0, name: 'Juggling', description: null, instructions: 'Both feet', durationMin: 10, reps: null, sets: 3, restSec: null,
+    media: [{ id: 'm1', kind: 'photo', path: `plans/${planId}/m1_a.jpg`, url: null, name: 'a.jpg' }, { id: 'm2', kind: 'link', path: null, url: 'https://example.com/drill', name: null }] }],
+  ...o,
+});
+
+await step('v1.3: plan publish → readerIds set → parent notification (en) → audit; media URL access', async () => {
+  await db.doc('trainingPlans/planS').set(planDoc());
+  const draft = await waitFor(async () => {
+    const d = (await db.doc('trainingPlans/planS').get()).data();
+    return Array.isArray(d.coachIds) && d.coachIds.includes('coachS') ? d : null;
+  }, 'coachIds');
+  assert.deepEqual(draft.readerIds, []);
+  await getStorage().bucket().file('plans/planS/m1_a.jpg').save(Buffer.from([1, 2, 3]), { contentType: 'image/jpeg' });
+  const parentTok = await idToken('parentS');
+  assert.equal((await callable('getPlanMediaUrl', { planId: 'planS', path: 'plans/planS/m1_a.jpg' }, parentTok)).status, 403, 'draft is not visible to parents');
+
+  await db.doc('trainingPlans/planS').update({ status: 'published', updatedAt: ts(new Date()) });
+  const pub = await waitFor(async () => {
+    const d = (await db.doc('trainingPlans/planS').get()).data();
+    return d.readerIds?.includes('parentS') && d.publishedAt ? d : null;
+  }, 'readerIds');
+  assert.ok(pub.readerIds.includes('coachS'));
+  const n = await waitFor(async () => (await db.doc(`notifications/${sha1('parentS|plan:planS:published')}`).get()).data(), 'plan notification');
+  assert.equal(n.type, 'trainingPlanPublished');
+  assert.equal(n.category, 'trainings');
+  assert.equal(n.title, 'New training plan');
+  assert.equal((await db.collection('auditLog').where('action', '==', 'plan.publish').where('targetId', '==', 'planS').get()).size, 1);
+  const url = await callable('getPlanMediaUrl', { planId: 'planS', path: 'plans/planS/m1_a.jpg' }, parentTok);
+  assert.equal(url.status, 200, JSON.stringify(url.body));
+  assert.equal((await callable('getPlanMediaUrl', { planId: 'planS', path: 'plans/planS/m1_a.jpg' }, await idToken('p1'))).status, 403);
+  assert.equal((await callable('getPlanMediaUrl', { planId: 'planS', path: 'plans/planS/other.jpg' }, parentTok)).status, 404);
+
+  // re-publish never notifies twice
+  await db.doc('trainingPlans/planS').update({ status: 'draft' });
+  await waitFor(async () => ((await db.doc('trainingPlans/planS').get()).get('readerIds') ?? []).length === 0, 'readers cleared on draft');
+  await db.doc('trainingPlans/planS').update({ status: 'published' });
+  await waitFor(async () => ((await db.doc('trainingPlans/planS').get()).get('readerIds') ?? []).includes('parentS'), 'readers back');
+  const all = await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'trainingPlanPublished').get();
+  assert.equal(all.size, 1);
+  await db.doc('trainingPlans/planS').update({ status: 'archived' });
+  await waitFor(async () => (await db.collection('auditLog').where('action', '==', 'plan.archive').where('targetId', '==', 'planS').get()).size === 1, 'plan.archive audit');
+  assert.deepEqual((await db.doc('trainingPlans/planS').get()).get('readerIds'), []);
+});
+
+await step('v1.3: plan with a javascript:/http: link is quarantined (draft, no readers, no notification)', async () => {
+  const bad = planDoc({ status: 'published', exercises: [{ id: 'e1', order: 0, name: 'x', media: [
+    { id: 'm1', kind: 'link', path: null, url: 'javascript:alert(1)', name: null },
+    { id: 'm2', kind: 'link', path: null, url: 'http://example.com', name: null }] }] });
+  await db.doc('trainingPlans/planBad').set(bad);
+  const d = await waitFor(async () => {
+    const x = (await db.doc('trainingPlans/planBad').get()).data();
+    return x.status === 'draft' && x.validationErrors ? x : null;
+  }, 'quarantine');
+  assert.deepEqual(d.readerIds ?? [], []);
+  assert.ok(d.validationErrors.includes('exercises[0].media[0].url'));
+  assert.ok(d.validationErrors.includes('exercises[0].media[1].url'));
+  await new Promise((r) => setTimeout(r, 1500));
+  assert.equal((await db.doc(`notifications/${sha1('parentS|plan:planBad:published')}`).get()).exists, false);
+});
+
+await step('v1.3: removing the child from the group revokes plan read (readerIds recomputed)', async () => {
+  await db.doc('trainingPlans/planR').set(planDoc({ status: 'published' }, 'planR'));
+  await waitFor(async () => ((await db.doc('trainingPlans/planR').get()).get('readerIds') ?? []).includes('parentS'), 'reader');
+  await db.doc(`groups/${E2E.groupId}`).update({ memberChildIds: FieldValue.arrayRemove('childS') });
+  await waitFor(async () => !((await db.doc('trainingPlans/planR').get()).get('readerIds') ?? []).includes('parentS'), 'reader removed', 30000);
+  await db.doc(`groups/${E2E.groupId}`).update({ memberChildIds: FieldValue.arrayUnion('childS') });
+  await waitFor(async () => ((await db.doc('trainingPlans/planR').get()).get('readerIds') ?? []).includes('parentS'), 'reader back', 30000);
+  await waitFor(async () => ((await db.doc('children/childS').get()).get('coachIds') ?? []).includes('coachS'), 'coach access back');
+});
+
+await step('v1.3: certificate download is logged with purpose; admins are denied', async () => {
+  await db.doc('medicalCertificates/certS').set({
+    childId: 'childS', uploadedBy: 'parentS', storagePath: 'medical/childS/certS', issuedAt: ts(new Date('2026-01-01')),
+    validUntil: ts(new Date(Date.now() + 200 * 86400000)), consentAt: ts(new Date()), status: 'valid', sportId: 'football',
+  });
+  await getStorage().bucket().file('medical/childS/certS').save(Buffer.from('%PDF-1.4'), { contentType: 'application/pdf' });
+  const r = await callable('getCertificateUrl', { certId: 'certS', purpose: 'download' }, await idToken('parentS'));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.ok(r.body.result.url && r.body.result.expiresAt);
+  const v = await callable('getCertificateUrl', { certId: 'certS', purpose: 'view' }, await idToken('coachS'));
+  assert.equal(v.status, 200, JSON.stringify(v.body));
+  assert.equal((await callable('getCertificateUrl', { certId: 'certS', purpose: 'print' }, await idToken('parentS'))).status, 400);
+  assert.equal((await callable('getCertificateUrl', { certId: 'certS' }, await idToken('admin1', { admin: true }))).status, 403);
+  assert.equal((await callable('getCertificateUrl', { certId: 'certS' }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }))).status, 403);
+  const log = (await db.collection('certificateAccessLog').where('certId', '==', 'certS').get()).docs.map((d) => d.data());
+  assert.equal(log.length, 2);
+  const dl = log.find((e) => e.purpose === 'download');
+  assert.deepEqual([dl.viewerId, dl.viewerRole, dl.childId], ['parentS', 'parent', 'childS']);
+  assert.ok(log.some((e) => e.purpose === 'view' && e.viewerRole === 'coach'));
+  assert.equal((await db.collection('auditLog').where('action', '==', 'certificate.download').where('targetId', '==', 'certS').get()).size, 1);
+  assert.equal((await db.collection('auditLog').where('action', '==', 'certificate.view').where('targetId', '==', 'certS').get()).size, 1);
+});
+
+await step('v1.3: adminCompliance returns per-group counts only, scoped to the admin', async () => {
+  const r = await callable('adminCompliance', {}, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const g = r.body.result.groups.find((x) => x.groupId === E2E.groupId);
+  assert.deepEqual(g, { groupId: E2E.groupId, groupName: 'U11', clubId: 'clubS', valid: 1, expiring: 0, expired: 0, missing: 0 });
+  assert.ok(r.body.result.groups.every((x) => x.clubId === 'clubS'));
+  assert.ok(!JSON.stringify(r.body).includes('childS'), 'no child ids');
+  await db.doc('medicalCertificates/certS').update({ validUntil: ts(new Date(Date.now() - 86400000)) });
+  const r2 = await callable('adminCompliance', { clubId: 'clubS' }, await idToken('admin1', { admin: true }));
+  assert.equal(r2.status, 200, JSON.stringify(r2.body));
+  assert.equal(r2.body.result.groups.find((x) => x.groupId === E2E.groupId).expired, 1);
+  assert.equal((await callable('adminCompliance', { clubId: 'clubS' }, await idToken('clubAdminX', { clubAdmin: ['club1'] }))).status, 403);
+  assert.equal((await callable('adminCompliance', {}, await idToken('parentS'))).status, 403);
+});
+
+await step('v1.3: certificate reminder at 3 days, localized, sent once (reminders.d3SentAt)', async () => {
+  const { runCertificateReminders } = require('../lib/triggers/certificates.js');
+  await db.doc('medicalCertificates/certS').update({ validUntil: ts(new Date(Date.now() + 2.5 * 86400000)) });
+  await db.doc('medicalCertificates/certOld').set({
+    childId: 'childS', uploadedBy: 'parentS', storagePath: 'medical/childS/certOld', issuedAt: ts(new Date('2025-01-01')),
+    validUntil: ts(new Date(Date.now() + 2 * 86400000)), consentAt: ts(new Date()), status: 'valid', replacedBy: 'certS', replacedAt: ts(new Date()),
+  });
+  await runCertificateReminders(new Date());
+  await runCertificateReminders(new Date());
+  const c = (await db.doc('medicalCertificates/certS').get()).data();
+  assert.ok(c.reminders?.d3SentAt && c.reminders?.d14SentAt);
+  assert.ok(!c.reminders?.d0SentAt);
+  const ns = await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'certificateExpiry').get();
+  assert.equal(ns.size, 1, 'one reminder; the replaced certificate is not reminded');
+  assert.match(ns.docs[0].get('title'), /Certificate expiring soon/);
+  assert.equal(ns.docs[0].get('args.stage'), '3');
+  assert.equal(((await db.doc('medicalCertificates/certOld').get()).get('reminders') ?? {}).d3SentAt, undefined);
+});
+
+await step('v1.3: system chat messages carry systemKey + systemArgs (text stays Georgian)', async () => {
+  const m = (await db.doc(`chats/${E2E.groupId}/messages/system_match_matchS_cancelled`).get()).data();
+  assert.equal(m.systemKey, 'matchCancelled');
+  assert.deepEqual(Object.keys(m.systemArgs).sort(), ['date', 'opponent', 'reason', 'reasonCode', 'time']);
+  assert.equal(m.systemArgs.reasonCode, 'weather');
+  assert.match(m.text, /მატჩი/);
+});
+
 console.log(`${passed} smoke steps passed${process.exitCode ? ' (with failures)' : ''}`);

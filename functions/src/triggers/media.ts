@@ -4,7 +4,7 @@ import { onObjectFinalized } from 'firebase-functions/v2/storage';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { bucket, db, isEmulator } from '../admin';
 import { groupFrom, loadUser, loadUsers } from '../convert';
-import { renderPush } from '../i18n/ka';
+import { pushText } from '../i18n';
 import { canViewMediaPost, computeReaderIds, parseMediaPath, validateMediaUpload } from '../lib/media';
 import { groupParentUsers } from '../lib/recipients';
 import { GroupLite } from '../lib/types';
@@ -57,7 +57,7 @@ export const onMediaPostWritten = onDocumentWritten('mediaPosts/{postId}', async
   for (const g of groups) {
     const parents = groupParentUsers(g, await loadUsers(g.parentIds));
     await notify(parents, {
-      type: 'newMedia', ...renderPush('newMedia', { group: g.name ?? '', count: 1 }),
+      type: 'newMedia', ...pushText('newMedia', { group: g.name ?? '', count: 1 }),
       route: `/media/${postId}`, args: { postId, groupId: g.id }, groupId: g.id,
       dedupeKey: `media:${postId}:${g.id}`, data: { postId },
     });
@@ -85,7 +85,7 @@ export const onMediaUpload = onObjectFinalized(async (event) => {
   }
 });
 
-function signedOrEmulatorUrl(path: string, expiresAt: number): Promise<string> {
+export function signedOrEmulatorUrl(path: string, expiresAt: number): Promise<string> {
   if (isEmulator) {
     const host = process.env.FIREBASE_STORAGE_EMULATOR_HOST ?? '127.0.0.1:9199';
     return Promise.resolve(`http://${host}/v0/b/${bucket().name}/o/${encodeURIComponent(path)}?alt=media`);

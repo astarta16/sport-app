@@ -14,6 +14,7 @@ import '../../features/clubs/domain/club.dart';
 import '../../features/medical_certificates/domain/medical_certificate.dart';
 import '../../features/notifications/domain/notification_models.dart';
 import '../../features/payments/domain/payment.dart';
+import '../../features/trainings/domain/series.dart';
 import '../../features/trainings/domain/training.dart';
 import '../l10n/l10n.dart';
 import '../theme/app_theme.dart';
@@ -234,6 +235,11 @@ IconData notificationCategoryIcon(NotificationCategory c) => switch (c) {
   NotificationCategory.announcements => Icons.campaign_rounded,
 };
 
+/// Free-text cancel reason; the fixed system reason written by the series
+/// engine is shown in the reader's language.
+String cancelReasonText(BuildContext context, String reason) =>
+    reason == RecurrenceEngine.scheduleChangedReason ? context.l10n.sysScheduleReason : reason;
+
 String cancelReasonLabel(BuildContext context, CancelReasonCode c) {
   final l = context.l10n;
   return switch (c) {
@@ -350,15 +356,25 @@ String weekdayShortName(BuildContext context, int weekday) =>
     Fmt.of(context).weekdayShort(DateTime.utc(2024, 1, weekday)); // 2024-01-01 is a Monday
 
 /// System chat line in the reader's language (server/demo store a key + args).
+/// Renders a system chat message in the reader's language. Accepts both the
+/// demo argument shape (`when`/`from`/`to`) and the Cloud Functions shape
+/// (`date`/`time`/`opponent`/`reasonCode`/`reason`, key `newMatch`).
 String systemMessageText(BuildContext context, ChatMessage m) {
   final l = context.l10n;
   final a = m.systemArgs;
+  final serverWhen = [a['date'], a['time']].whereType<String>().where((x) => x.isNotEmpty).join(' ');
+  final when = a['when'] ?? serverWhen;
+  final code = CancelReasonCode.fromName(a['reasonCode']);
+  final reason = [
+    if (code != null && code != CancelReasonCode.other) cancelReasonLabel(context, code),
+    if ((a['reason'] ?? '').isNotEmpty) cancelReasonText(context, a['reason']!),
+  ].join(' — ');
   return switch (m.systemKey) {
-    'trainingCancelled' => l.sysTrainingCancelled(a['when'] ?? '', a['reason'] ?? ''),
-    'trainingMoved' => l.sysTrainingMoved(a['from'] ?? '', a['to'] ?? ''),
-    'matchCreated' => l.sysMatchCreated(a['opponent'] ?? '', a['when'] ?? ''),
-    'matchMoved' => l.sysMatchMoved(a['from'] ?? '', a['to'] ?? ''),
-    'matchCancelled' => l.sysMatchCancelled(a['opponent'] ?? '', a['reason'] ?? ''),
+    'trainingCancelled' => l.sysTrainingCancelled(when, reason),
+    'trainingMoved' => l.sysTrainingMoved(a['from'] ?? '', a['to'] ?? when),
+    'matchCreated' || 'newMatch' => l.sysMatchCreated(a['opponent'] ?? '', when),
+    'matchMoved' => l.sysMatchMoved(a['from'] ?? a['opponent'] ?? '', a['to'] ?? when),
+    'matchCancelled' => l.sysMatchCancelled(a['opponent'] ?? '', reason),
     'scheduleCreated' => l.sysScheduleCreated,
     'scheduleChanged' => l.sysScheduleChanged(a['from'] ?? ''),
     'planPublished' => l.sysPlanPublished(a['title'] ?? ''),

@@ -10,7 +10,7 @@ rules, Cloud Functions (2nd gen, TypeScript) and the tests that cover them.
 | `firestore.indexes.json` | Composite indexes used by the app and functions. |
 | `functions/` | Cloud Functions (firebase-functions 6, firebase-admin 13, Node 22, region `europe-west1`, schedules in `Asia/Tbilisi`). |
 | `functions/src/lib/` | Pure business logic (dates, recipient selection, reminder decisions, certificate status, templates, SMS providers). Unit-tested. |
-| `functions/src/i18n/ka.ts` | Georgian SMS + push templates. |
+| `functions/src/i18n/` | Server texts: `ka.ts` (reference + fallback), `en.ts`, `ru.ts`, and `index.ts` with `t(locale, key, args)`, `pushText()`, localized weekday/cancel-reason helpers (v1.3). |
 | `functions/test/` | Vitest unit tests for `src/lib`. |
 | `functions/test-integration/emulator.smoke.mjs` | End-to-end smoke test of triggers/callables in the emulator (v1.0 + the v1.1/v1.2 flow). |
 | `functions/scripts/grant-platform-admin.mjs` | One-off bootstrap of the first platform admin (emulator by default). |
@@ -93,7 +93,7 @@ Helpers: `isPlatformAdmin()` (= claim `admin == true`), `isClubAdmin(clubId)` (c
 - **chat**: `type` from clients is `text` or `announcement` (announcement and `pinned: true` only for approved group coaches; `system` never); `hidden`/`reportCount` cannot be set; approved group coaches may update `pinned` only. **Hidden messages remain readable by members; the app filters `hidden == true`** (keeps list queries simple). `members/{uid}`: only the member writes their own `{lastReadAt}`. `userUnread/{uid}`: owner read.
 - **notifications**: owner reads; owner may only flip `read` from false to true; no client create/delete.
 - **mediaPosts**: create by an approved coach of **every** listed group (1–5 groups), `coachId == uid`, `consentConfirmed == true`, `clubId` = the first group's club, `storagePath`/`thumbPath` under `media/{uid}/{postId}/`. No client update (`hidden`, `reportCount`, `readerIds` are server-managed); the owner deletes. Read: owner, platform/club admin, or a parent / approved coach in `readerIds`.
-- **payments**: parents never write. The group coach may change only `status`, `paidAt`, `cancelledReason` and `updatedBy`/`updatedAt`; `updatedBy`, when present, must be the caller. **paymentAudit**: read by group coaches, the club admin of `clubId`, platform admins.
+- **payments**: parents never write. *(v1.2 — superseded in v1.3, see below.)* The group coach may change only `status`, `paidAt`, `cancelledReason` and `updatedBy`/`updatedAt`; `updatedBy`, when present, must be the caller. **paymentAudit**: read by group coaches, the club admin of `clubId`, platform admins.
 - **reports**: a group member creates their own `open` report (`clubId` must be the group's club); read by the reporter, club admins of `clubId` and platform admins; updates via `moderate` only. The client path has no rate limit — the app should use the `createReport` callable (rate-limited); see *Known gaps*.
 - **auditLog**: platform admins read all, club admins entries with their `clubId`; append-only, server only.
 - **sports**, **clubs** create/delete, **venues** verify: platform admin. **venues** create: approved coach with `verified == false`, `createdBy == uid`.
@@ -181,6 +181,94 @@ the claim, it is logged (`status: failed`) and not retried automatically.
 
 Push in the emulator (or with `PUSH_DISABLED=true`) is logged, not sent.
 
+
+## v1.3 (beta)
+
+Authoritative contract: [`docs/data-model-v1.3.md`](data-model-v1.3.md). Everything below is
+in addition to v1.2; nothing from v1.2 was removed except the coach payment
+right described in *Behaviour change*.
+
+### Behaviour change: coaches and payment status
+
+**A coach can no longer change a payment's status just by being a coach of the
+group.** `payments` updates (`status`, `paidAt`, `cancelledReason`,
+`updatedBy`, `updatedAt`) are now allowed only for *payment reviewers*: an
+approved coach listed in `groups/{id}.paymentManagerIds`, a club admin of the
+group's club, or a platform admin. Group coaches still **read** their groups'
+payments. `verification`, `verifiedBy` and `verifiedAt` are server-only, even
+for platform admins. Existing groups have no `paymentManagerIds`, so until a
+club admin assigns managers (`updateGroup {groupId, paymentManagerIds}`), only
+club/platform admins can mark payments paid or review proofs.
+
+### New / changed collections
+
+- **users/{uid}** (+) `locale: 'ka' | 'en' | 'ru'` — client-writable (rules accept only these three values). Missing/invalid → `ka`. New `notificationPrefs` keys: `paymentProofSubmitted`, `paymentProofApproved`, `paymentProofRejected`, `trainingPlanPublished`.
+- **groups/{id}** (+) `paymentManagerIds: uid[]` — server-only (not even a platform admin can write it directly; `updateGroup` validates and audits it).
+- **chats/{groupId}/messages/{id}** (system messages) (+) `systemKey` (`trainingCancelled`, `matchCancelled`, `newMatch`, `matchMoved`) and `systemArgs` (`date`, `time`, `opponent?`, `reasonCode`, `reason` = the free text only). `text` stays the Georgian rendering. To render `{reason}` the app uses `"<label(reasonCode)> — <reason>"` (or whichever part is present), exactly like `cancelReasonTextL()`. Clients can never write these fields (system messages are server-only).
+- **medicalCertificates/{id}** (+) optional `groupId`, `sportId` (null = general); `replacedBy`, `replacedAt` — a parent of the child may update **only** these two fields on an older certificate, and `replacedBy` must be another certificate of the same child. Server-managed (+) `reminders.d14SentAt / d3SentAt / d0SentAt`.
+- **certificateAccessLog/{id}** — now `certId, childId, viewerId, viewerRole, purpose ('view'|'download'|null), at` plus the v1.2 `userId`, `action` (`view`, `download`, `delete`, `file_deleted`). Admin read only.
+- **payments/{id}** (+) server-only `verification {state: none|proof_submitted|under_review|rejected, proofId, rejectionReason, updatedAt}`, `verifiedBy`, `verifiedAt`.
+- **paymentProofs/{proofId}** — contract fields plus `decidedByName` (reviewer's display name), `reviewStartedBy/At`, `supersededBy/At`. Server-only writes. Read: owning parent, approved coaches in the group's `paymentManagerIds`, club admins of `clubId`, platform admins.
+- **paymentVerificationEvents/{id}** — contract fields plus denormalized `groupId`, `clubId`, `parentId`. Server-only. Read (resolved through the payment, so `where paymentId == X` works): the payment's parent, payment reviewers of its group, club admins, platform admins.
+- **trainingPlans/{planId}** — contract fields plus `coachName` (client) and server-managed **`coachIds`** (coaches of all `groupIds`, all statuses), `readerIds` (parents + coaches while *published and valid*), `validationErrors` (see quarantine).
+- **exerciseProgress/{planId}_{exerciseId}_{childId}**, **planViews/{planId}_{parentId}** — as in the contract.
+- **rateLimits** (+) bucket `paymentProofs` 10 / 24 h per parent.
+
+### v1.3 rules
+
+- **paymentProofs / paymentVerificationEvents**: no client writes. List queries must be provable: reviewers query `where groupId == G` (or `groupId in [...]` — every listed group must be one they manage) + `status in [...]`, club admins `where clubId == C`; parents `where paymentId == X && parentId == uid`; events `where paymentId == X`. A bare `where status in [...]` is rejected for coaches.
+- **Storage `receipts/{parentId}/{proofId}/{file}`**: create by that parent (role parent), JPEG/PNG/PDF, ≤ 10 MB, only while no `paymentProofs/{proofId}` exists (afterwards the file is evidence: no overwrite/delete). Read: the owner only — reviewers use `getReceiptUrl`.
+- **trainingPlans**: create/update by an approved coach in `coachIds` of **every** listed group (old and new list on update); `createdBy == uid`; `clubId` = first group's club; create as `draft` or `published`; transitions draft→published, published→draft, published→archived (archived is final); `readerIds`, `coachIds`, `validationErrors`, `createdBy`, `createdAt`, `clubId` immutable for clients; delete only drafts. Top-level fields are validated (title 1–120, description ≤ 4000, type, groupIds unique, dates `YYYY-MM-DD` with end ≥ start, status, timestamps, `exercises` a list of ≤ 50). Read: parents with `status == published && uid in readerIds` (query `readerIds array-contains uid` + `status == published`), coaches in `coachIds` (query `coachIds array-contains uid`), the creator, platform/club admins.
+- **Exercise contents are validated server-side** (see *Known limits*): `onTrainingPlanWritten` runs `validatePlan` (exercise ids/names/numbers, ≤ 10 media, kinds, `plans/{planId}/…` paths, **https-only links** `^https://\S+$`). An invalid plan is **quarantined**: `readerIds: []`, `validationErrors: [...]`, a published plan is forced back to `draft`, no publish audit/notification. A bad link therefore never reaches a parent.
+- **exerciseProgress**: written by a parent of the child (`parentId == uid`, id `{planId}_{exerciseId}_{childId}`) when the plan is published, the parent is in `readerIds`, `groupId` is one of the plan's groups and the child is a member of it; status `not_started|in_progress|completed`. Read: that parent / parents of the child, coaches in the plan's `coachIds` (query `where planId == X`), coaches of `groupId`.
+- **planViews**: the parent writes `{planId}_{uid}` for a published plan they read (`firstViewedAt` immutable); coaches in the plan's `coachIds` read (`where planId == X`).
+- **Storage `plans/{planId}/{file}`**: write by the plan's creator (approved coach): `image/*` ≤ 10 MB, `video/*` ≤ 100 MB, `application/pdf` ≤ 10 MB. Read: users in the plan's `readerIds`, approved coaches in `coachIds`, the creator.
+- **medical files**: still no client read at all (platform and club admins included).
+
+### v1.3 functions
+
+| Function | Type | Purpose |
+| --- | --- | --- |
+| `submitPaymentProof` | callable `{proofId, paymentId, paidOn, reference?, note?, receiptPath, receiptMime, receiptSize}` → `{proofId, action, state}` | Parent of the payment; `proofId` must equal the path segment of `receipts/{uid}/{proofId}/{file}`; the stored object must exist and match mime/size. Transaction: payment must be `pending` (paid/cancelled → `failed-precondition`), no other `submitted`/`under_review` proof (`already-exists`); previous `rejected` proofs → `superseded`. Sets `payment.verification`, writes an event (`submitted`/`resubmitted`) and audit `payment.proofSubmitted`/`proofResubmitted`, notifies reviewers (`paymentProofSubmitted`: approved coaches in `paymentManagerIds` + `clubs/{clubId}.adminIds`). 10 / 24 h per parent. |
+| `startPaymentReview` | callable `{proofId}` | Reviewer; `submitted → under_review` (idempotent), `verification.state = under_review`, event `review_started`. |
+| `reviewPaymentProof` | callable `{proofId, decision: approve\|reject, reason?}` | Reviewer (payment manager, club admin of the club, platform admin). One transaction: proof must be `submitted`/`under_review` and the payment `pending`, else `failed-precondition` (so a second/concurrent decision fails). Reject needs a reason ≥ 5 chars. Approve → `status: paid`, `paidAt`, `verifiedBy`, `verifiedAt`, `updatedBy`, `verification.state: none` (proofId kept). Event + audit `payment.proofApproved`/`proofRejected`; parent notified (`paymentProofApproved` / `paymentProofRejected` with the reason). `onPaymentWritten` still writes `paymentAudit`. |
+| `getReceiptUrl` | callable `{proofId}` → `{url, mimeType, expiresAt}` | Owning parent or reviewer; 5-min URL; event `viewed` + audit `receipt.view`. |
+| `getCertificateUrl` (extended) | callable `{certId, purpose: view\|download}` → `{url, expiresAt, purpose}` | Parent of the child or an approved coach currently in a group containing the child (live query). **Any caller with admin claims is denied.** Logs `certificateAccessLog` with purpose and audit `certificate.view` / `certificate.download`. Download URLs carry `Content-Disposition: attachment`. |
+| `adminCompliance` | callable `{clubId?}` → `{groups: [{groupId, groupName, clubId, valid, expiring, expired, missing}]}` | Platform admin (all clubs, or `clubId`) / club admin (own clubs). Active groups; per member child the *current* certificate for the group's sport (`selectCurrentCertificate`: non-replaced, matching sport or general, latest `validUntil`). Counts only. |
+| `certificateExpiryCheck` (extended) | daily 09:00 | Reminders at 14 / 3 / 0 days, idempotent via `reminders.dXSentAt` (legacy `notifiedXAt` still honoured and written); replaced or superseded certificates are skipped; text in each parent's locale (`certificateExpiring` / `certificateExpiresToday` / `certificateExpired`). `runCertificateReminders(now)` exported. |
+| `updateGroup` (extended) | callable `{groupId, paymentManagerIds}` | Platform admin or club admin of the group's club; ≤ 20 approved coaches assigned to the club. Audit `group.paymentManagers {from, to}`. |
+| `onTrainingPlanWritten` | Firestore `trainingPlans/{id}` | Validates/quarantines; maintains `readerIds`/`coachIds`; on publish sets `publishedAt` if missing, audit `plan.publish`, notifies the groups' parents once (`trainingPlanPublished`, dedupe `plan:{id}:published` — re-publishing never repeats it); on archive audit `plan.archive`; on delete removes `plans/{id}/`. Audit actor = the plan's `createdBy`. |
+| `onGroupWritten` (extended) | Firestore | Also recomputes `readerIds`/`coachIds` of every plan listing the group when parents/coaches change (removing a child revokes the family's plan + media access). |
+| `getPlanMediaUrl` | callable `{planId, path}` → `{url, expiresAt}` | `path` must be under `plans/{planId}/` and referenced by the plan; live check: creator, approved coach of a plan group, or (published only) a parent of a plan group. 15-min URL. |
+
+### Localization
+
+`notify()` takes `localized: (locale) => {title, body}` (spread `...pushText(key, vars)`)
+and renders the inbox entry and push per recipient from `users/{uid}.locale`
+(one FCM multicast per language). Payment-reminder SMS use the parent's locale;
+invite SMS to an unregistered phone default to Georgian (the coach may pass
+`smsLocale` to `createInvite`). Chat pushes are localized per recipient.
+`test/v13.test.ts` checks that en/ru have exactly the ka keys and identical
+placeholders. English SMS use "GEL" instead of "₾" so they stay GSM-7.
+
+### Migration notes
+
+- Existing payments have no `verification` → treated as state `none` (`verificationStateOf`); display falls back to `pending`/`paid`/`cancelled`.
+- Existing certificates without `sportId` are **general** (apply to every sport); without `replacedBy` they are candidates for "current". Old `notifiedXAt` flags still prevent duplicate reminders.
+- Existing groups have no `paymentManagerIds` → **no coach reviewers**; a club admin must assign them. Until then coaches cannot change payment status (see *Behaviour change*).
+- Users without `locale` get Georgian.
+- New composite indexes (`firestore.indexes.json`): paymentProofs (groupId+status[+submittedAt], clubId+status+submittedAt, parentId+submittedAt, paymentId+parentId), paymentVerificationEvents (paymentId+at), trainingPlans (readerIds+status, groupIds+status, coachIds+updatedAt), exerciseProgress (planId+childId, childId+planId), certificateAccessLog (childId+at), medicalCertificates (childId+validUntil).
+
+### Known limits (v1.3)
+
+- **Firestore rules budget.** Rules stop after 1000 evaluated expressions and 10 document reads per request (measured in the emulator, also inside a batch). Per-exercise/per-link checks exhausted the budget at ~10–20 exercises, so exercise contents and links are enforced by the server (quarantine), not by the rules. A client write can list **at most 9 groups** in a training plan (caller's user doc + 9 group reads); the contract allows 10 — a 10-group plan must be written by an admin/server.
+- Training-plan audit entries use the plan's `createdBy` as actor (the trigger cannot see who flipped the status).
+- `paymentAudit` written by `onPaymentWritten` still labels the actor role `coach` for any `updatedBy` (unchanged v1.2 behaviour); the precise reviewer role is in the `payment.proofApproved` audit entry.
+
+### Production configuration (v1.3)
+
+Nothing new beyond v1.2: `getReceiptUrl`, `getPlanMediaUrl` and `getCertificateUrl` need the **Service Account Token Creator** role for V4 signed URLs; Storage → Firestore cross-service rules (now also used by `receipts/**` and `plans/**`); deploy the new indexes. Run `npm run build` and the three suites before deploying.
+
 ## Running locally
 
 Prerequisites: Node 20+ (22 recommended), Java 17+. Nothing is installed
@@ -246,6 +334,9 @@ node scripts/grant-platform-admin.mjs <uid> --production --project <real-project
 The script sets the `admin: true` claim (keeping other claims), mirrors
 `users/{uid}.adminRole`, and writes an auditLog `role.set` entry. Everything
 after that goes through `setAdminRole`.
+
+Port 8080 taken? Copy `firebase.json` to a throw-away `firebase.alt.local.json` in the project root with another Firestore port (e.g. 8181), `ui.enabled: false` (and, if needed, other hub/logging ports), run from `rules-tests/`:
+`npx firebase emulators:exec --config ../firebase.alt.local.json --only firestore,storage --project demo-sport-parent "npx vitest run"` (rules) or `... --only functions,firestore,storage,auth ... "node ../functions/test-integration/emulator.smoke.mjs"` (smoke), then delete the file.
 
 Flutter: connect to the emulators with `useFirestoreEmulator('127.0.0.1', 8080)`,
 `useStorageEmulator('127.0.0.1', 9199)`, `useAuthEmulator('127.0.0.1', 9099)`,
