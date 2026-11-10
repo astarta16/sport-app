@@ -97,7 +97,10 @@ void main() {
       c.listen(myChildrenProvider, (_, _) {});
       c.listen(myGroupsProvider, (_, _) {});
       c.listen(myTrainingsProvider, (_, _) {});
-      await settle();
+      // Wait for the streams instead of a fixed delay (robust under CPU load).
+      for (var i = 0; i < 200 && c.read(parentSelectionProvider).value == null; i++) {
+        await settle();
+      }
 
       final initial = c.read(parentSelectionProvider).value!;
       expect(initial.children.length, 3);
