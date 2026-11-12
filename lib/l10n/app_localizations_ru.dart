@@ -3438,4 +3438,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adminMonth => 'Месяц';
+
+  @override
+  String get addToCalendar => 'Добавить в календарь';
+
+  @override
+  String get exportSchedule => 'Экспорт расписания в календарь';
+
+  @override
+  String get calendarNothingToExport =>
+      'Нет предстоящих тренировок для экспорта';
 }

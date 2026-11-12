@@ -85,7 +85,8 @@ class FirebaseTrainingPlansRepository implements TrainingPlansRepository {
     );
     Map<String, dynamic> dataOf(TrainingPlan p) => p.toMap()
       ..remove('publishedAt')
-      ..['createdAt'] = old?['createdAt'] ?? now;
+      ..['createdAt'] = old?['createdAt'] ?? now
+      ..['updatedBy'] = uid;
     // Storage rules authorize plan media through the plan doc (createdBy), so
     // a new plan is written first without its pending uploads.
     if (old == null && d.newFiles.isNotEmpty) {
@@ -124,6 +125,7 @@ class FirebaseTrainingPlansRepository implements TrainingPlansRepository {
   Future<void> setStatus(String planId, PlanStatus status) => guardFirebase(
     () => _col.doc(planId).update({
       'status': status.name,
+      'updatedBy': requireUid(auth),
       'updatedAt': DateTime.now(),
       if (status == PlanStatus.published) 'publishedAt': DateTime.now(),
     }),

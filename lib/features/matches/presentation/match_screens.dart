@@ -19,6 +19,7 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../domain/match.dart';
 import 'matches_providers.dart';
+import '../../calendar/presentation/add_to_calendar.dart';
 
 /// Coach adds / edits a match (v1.1 §8): group, date & time, venue,
 /// opponent, type, home/away, comment.
@@ -289,6 +290,13 @@ class _MatchBody extends ConsumerWidget {
               ),
             ),
           ),
+          if (!cancelled)
+            AddToCalendarButton(
+              key: const Key('match-add-calendar'),
+              event: matchIcsEvent(context, match, group, venue),
+              kind: 'match',
+              slug: match.id,
+            ),
           if (cancelled && match.cancelReason != null) ...[
             const SizedBox(height: AppSpacing.sm),
             AppCard(

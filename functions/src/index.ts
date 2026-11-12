@@ -31,3 +31,4 @@ export {
 // v1.3
 export { getReceiptUrl, reviewPaymentProof, startPaymentReview, submitPaymentProof } from './triggers/paymentProofs';
 export { getPlanMediaUrl, onTrainingPlanWritten } from './triggers/trainingPlans';
+export { onAttendanceWritten, onFeedbackWritten } from './triggers/progress';

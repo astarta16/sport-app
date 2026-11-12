@@ -24,6 +24,7 @@ import '../../groups/presentation/groups_providers.dart';
 import '../../media/presentation/media_providers.dart';
 import '../domain/training.dart';
 import 'trainings_providers.dart';
+import '../../calendar/presentation/add_to_calendar.dart';
 
 class TrainingDetailScreen extends ConsumerWidget {
   const TrainingDetailScreen({super.key, required this.trainingId, this.embedded = false});
@@ -148,6 +149,13 @@ class _Body extends ConsumerWidget {
                 : l.cancelledWithReason(cancelReasonText(context, training.cancelReason!)),
           ),
         ],
+        if (!cancelled)
+          AddToCalendarButton(
+            key: const Key('training-add-calendar'),
+            event: trainingIcsEvent(context, training, group, venue),
+            kind: 'training',
+            slug: training.id,
+          ),
         if (canManage) _CoachActions(training: training, group: group!),
         if (canManage) CoachAttendanceSummary(training: training, group: group!),
         if (user != null && user.isParent && group != null) RsvpSection(training: training, group: group!),

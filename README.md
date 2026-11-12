@@ -79,11 +79,18 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.3.0 --build-number=14
+  --build-name=1.3.1 --build-number=15
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.3.1
+
+- **Add to calendar:** a training or match can be added to the phone's calendar (Google, Apple, Outlook) as an `.ics` file with a 1-hour reminder; the Calendar tab exports the next 60 days of the selected child's trainings in one file.
+- **Server notifications for attendance and coach feedback**, in each parent's language, once per status change.
+- **Chat lines when a training is moved or the schedule changes**, sent by the server (before, only the demo did this).
+- **Plan audit names the person who published or archived the plan**, not its creator.
 
 ## What's new in v1.3
 
@@ -145,10 +152,10 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 215 tests (responsive, security, workflows, admin, l10n, v1.3 flows)
-cd functions && npm install && npm run build && npm test      # 185 tests
-cd rules-tests && npm install && npm run test:emulator        # 135 rules tests (Java 17+)
-cd rules-tests && npm run smoke:functions                     # 32 end-to-end steps
+flutter test                                   # 221 tests (responsive, security, workflows, admin, l10n, v1.3 flows)
+cd functions && npm install && npm run build && npm test      # 193 tests
+cd rules-tests && npm install && npm run test:emulator        # 136 rules tests (Java 17+)
+cd rules-tests && npm run smoke:functions                     # 37 end-to-end steps
 ```
 
 ## Security model (summary)

@@ -1947,5 +1947,8 @@
   "adminSetReviewers": "დამდასტურებლების მინიჭება",
   "adminLanguage": "ინტერფეისის ენა",
   "adminRosterNote": "მოსწავლეთა რაოდენობა ჯგუფების მიხედვით — სახელების გარეშე.",
-  "adminMonth": "თვე"
+  "adminMonth": "თვე",
+  "addToCalendar": "კალენდარში დამატება",
+  "exportSchedule": "განრიგის კალენდარში გატანა",
+  "calendarNothingToExport": "გასატანი ვარჯიშები არ არის"
 }

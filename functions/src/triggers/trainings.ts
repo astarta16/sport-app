@@ -122,6 +122,16 @@ export const onTrainingWritten = onDocumentWritten('trainings/{trainingId}', asy
       const text = t('ka', 'system.trainingCancelled', { ...sysArgs, reason: cancelReasonTextL('ka', after.cancelReasonCode, after.cancelReason) || '—' });
       await postSystemMessage(group.id, `system_training_${trainingId}_cancelled`, text, { key: 'trainingCancelled', args: sysArgs });
     }
+    if (ev.type === 'trainingChanged' && ev.change === 'moved' && before) {
+      const at = (d: Date) => `${formatShortDate(d)} ${formatTime(d)}`;
+      const sysArgs = { from: at(before.startAt), to: at(after.startAt) };
+      await postSystemMessage(
+        group.id,
+        `system_training_${trainingId}_moved_${after.startAt.getTime()}`,
+        t('ka', 'system.trainingMoved', sysArgs),
+        { key: 'trainingMoved', args: sysArgs },
+      );
+    }
     logger.info('training notification', { type: ev.type, trainingId, recipients: recipients.length, ...res });
   }
 });

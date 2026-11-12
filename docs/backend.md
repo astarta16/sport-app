@@ -237,7 +237,11 @@ club/platform admins can mark payments paid or review proofs.
 | `adminCompliance` | callable `{clubId?}` → `{groups: [{groupId, groupName, clubId, valid, expiring, expired, missing}]}` | Platform admin (all clubs, or `clubId`) / club admin (own clubs). Active groups; per member child the *current* certificate for the group's sport (`selectCurrentCertificate`: non-replaced, matching sport or general, latest `validUntil`). Counts only. |
 | `certificateExpiryCheck` (extended) | daily 09:00 | Reminders at 14 / 3 / 0 days, idempotent via `reminders.dXSentAt` (legacy `notifiedXAt` still honoured and written); replaced or superseded certificates are skipped; text in each parent's locale (`certificateExpiring` / `certificateExpiresToday` / `certificateExpired`). `runCertificateReminders(now)` exported. |
 | `updateGroup` (extended) | callable `{groupId, paymentManagerIds}` | Platform admin or club admin of the group's club; ≤ 20 approved coaches assigned to the club. Audit `group.paymentManagers {from, to}`. |
-| `onTrainingPlanWritten` | Firestore `trainingPlans/{id}` | Validates/quarantines; maintains `readerIds`/`coachIds`; on publish sets `publishedAt` if missing, audit `plan.publish`, notifies the groups' parents once (`trainingPlanPublished`, dedupe `plan:{id}:published` — re-publishing never repeats it); on archive audit `plan.archive`; on delete removes `plans/{id}/`. Audit actor = the plan's `createdBy`. |
+| `onTrainingPlanWritten` | Firestore `trainingPlans/{id}` | Validates/quarantines; maintains `readerIds`/`coachIds`; on publish sets `publishedAt` if missing, audit `plan.publish`, notifies the groups' parents once (`trainingPlanPublished`, dedupe `plan:{id}:published` — re-publishing never repeats it); on archive audit `plan.archive`; on delete removes `plans/{id}/`. Audit actor = `updatedBy` (v1.3.1; the rules pin it to the writer), falling back to `createdBy`. |
+| `onAttendanceWritten` (v1.3.1) | Firestore `attendance/{trainingId_childId}` | When a mark is created or its status changes, notifies the child's parents (`attendanceRecorded`, category *attendance*, honours prefs, localized status word and training date). Dedupe `att:{id}:{status}`, so re-saving a sheet never repeats it; note-only edits and un-marking are silent. |
+| `onFeedbackWritten` (v1.3.1) | Firestore `feedback/{id}` | New parent-visible feedback → `feedbackAdded` to the child's parents (dedupe `fb:{id}`). |
+| `onTrainingWritten` (extended, v1.3.1) | Firestore | A moved one-off training also posts a system chat message `trainingMoved {from, to}`. |
+| `onSeriesWritten` (extended, v1.3.1) | Firestore | Each series create / rule change also posts one system chat message: `scheduleCreated`, or `scheduleChanged {from}` (the later of the new start date and today). These lines count as unread chat messages. |
 | `onGroupWritten` (extended) | Firestore | Also recomputes `readerIds`/`coachIds` of every plan listing the group when parents/coaches change (removing a child revokes the family's plan + media access). |
 | `getPlanMediaUrl` | callable `{planId, path}` → `{url, expiresAt}` | `path` must be under `plans/{planId}/` and referenced by the plan; live check: creator, approved coach of a plan group, or (published only) a parent of a plan group. 15-min URL. |
 
@@ -257,12 +261,13 @@ placeholders. English SMS use "GEL" instead of "₾" so they stay GSM-7.
 - Existing certificates without `sportId` are **general** (apply to every sport); without `replacedBy` they are candidates for "current". Old `notifiedXAt` flags still prevent duplicate reminders.
 - Existing groups have no `paymentManagerIds` → **no coach reviewers**; a club admin must assign them. Until then coaches cannot change payment status (see *Behaviour change*).
 - Users without `locale` get Georgian.
+- v1.3.1: plan updates must include `updatedBy == auth.uid` (the v1.3.1 app sends it; a v1.3.0 client's plan edits are rejected until it updates). Plans written earlier keep working, and their audit falls back to `createdBy`.
 - New composite indexes (`firestore.indexes.json`): paymentProofs (groupId+status[+submittedAt], clubId+status+submittedAt, parentId+submittedAt, paymentId+parentId), paymentVerificationEvents (paymentId+at), trainingPlans (readerIds+status, groupIds+status, coachIds+updatedAt), exerciseProgress (planId+childId, childId+planId), certificateAccessLog (childId+at), medicalCertificates (childId+validUntil).
 
 ### Known limits (v1.3)
 
 - **Firestore rules budget.** Rules stop after 1000 evaluated expressions and 10 document reads per request (measured in the emulator, also inside a batch). Per-exercise/per-link checks exhausted the budget at ~10–20 exercises, so exercise contents and links are enforced by the server (quarantine), not by the rules. A client write can list **at most 9 groups** in a training plan (caller's user doc + 9 group reads); the contract allows 10 — a 10-group plan must be written by an admin/server.
-- Training-plan audit entries use the plan's `createdBy` as actor (the trigger cannot see who flipped the status).
+- ~~Training-plan audit entries use the plan's `createdBy` as actor.~~ Fixed in v1.3.1: plans carry `updatedBy`, which the rules require to equal the writer on every update.
 - `paymentAudit` written by `onPaymentWritten` still labels the actor role `coach` for any `updatedBy` (unchanged v1.2 behaviour); the precise reviewer role is in the `payment.proofApproved` audit entry.
 
 ### Production configuration (v1.3)

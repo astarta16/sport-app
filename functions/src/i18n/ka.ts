@@ -50,6 +50,8 @@ export const PUSH_TEMPLATES_KA = {
   paymentProofApproved: { title: 'გადახდა დადასტურდა', body: '{child}: {amount} ₾ — გადახდა დადასტურებულია.' },
   paymentProofRejected: { title: 'გადახდა ვერ დადასტურდა', body: '{child}: {amount} ₾. მიზეზი: {reason}' },
   trainingPlanPublished: { title: 'ახალი სავარჯიშო გეგმა', body: '{group}: {title}' },
+  attendanceRecorded: { title: 'დასწრება აღირიცხა', body: '{child}: {status} ({date})' },
+  feedbackAdded: { title: 'მწვრთნელის შეფასება', body: '{child}: ახალი შეფასება — {coach}' },
 } as const;
 
 /** Server-written chat messages (type 'system'). */
@@ -58,6 +60,9 @@ export const SYSTEM_MESSAGES_KA = {
   matchCancelled: 'მატჩი {opponent}-თან ({date}, {time}) გაუქმდა. მიზეზი: {reason}',
   newMatch: 'ახალი მატჩი: {opponent} — {date}, {time}',
   matchMoved: 'მატჩი {opponent}-თან გადაიდო: {date}, {time}',
+  trainingMoved: 'ვარჯიში გადაიდო: {from} → {to}',
+  scheduleCreated: 'ვარჯიშების ახალი განრიგი დაემატა',
+  scheduleChanged: 'ვარჯიშების განრიგი იცვლება {from}-დან',
 } as const;
 
 export const WEEKDAYS_SHORT_KA = ['ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ', 'კვი'] as const;
@@ -67,6 +72,9 @@ export const WORDS_KA = {
   inviteAccepted: 'მიიღო',
   inviteDeclined: 'უარყო',
   seriesEnded: 'სერია დასრულდა',
+  attendancePresent: 'დაესწრო',
+  attendanceAbsent: 'არ დაესწრო',
+  attendanceExcused: 'საპატიო მიზეზით არ დაესწრო',
 } as const;
 
 /** "ორშ, ოთხ 18:00" — schedule summary for the series notification. */

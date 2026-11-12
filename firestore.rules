@@ -976,7 +976,7 @@ service cloud.firestore {
         return d.keys().hasOnly([
                  'title', 'description', 'type', 'groupIds', 'clubId', 'startDate', 'endDate',
                  'status', 'exercises', 'createdBy', 'coachName', 'createdAt', 'updatedAt',
-                 'publishedAt', 'readerIds', 'coachIds', 'validationErrors'])
+                 'publishedAt', 'readerIds', 'coachIds', 'validationErrors', 'updatedBy'])
           && d.title is string && d.title.size() > 0 && d.title.size() <= 120
           && optString(d, 'description', 4000)
           && optString(d, 'coachName', 200)
@@ -1015,6 +1015,7 @@ service cloud.firestore {
         && coachOfAll(request.resource.data.groupIds)
         && request.resource.data.clubId == groupDoc(request.resource.data.groupIds[0]).clubId
         && request.resource.data.createdBy == uid()
+        && request.resource.data.get('updatedBy', uid()) == uid()
         && request.resource.data.status in ['draft', 'published']
         && !('readerIds' in request.resource.data)
         && !('coachIds' in request.resource.data)
@@ -1026,6 +1027,8 @@ service cloud.firestore {
         && coachOfAll(request.resource.data.groupIds)
         && (request.resource.data.groupIds == resource.data.groupIds || coachOfAll(resource.data.groupIds))
         && !changed(['createdBy', 'createdAt', 'clubId', 'readerIds', 'coachIds', 'validationErrors'])
+        // The audit actor (plan.publish / plan.archive) is whoever wrote last.
+        && request.resource.data.get('updatedBy', '') == uid()
         && okTransition(resource.data.status, request.resource.data.status);
 
       // Only drafts are deleted (published plans are archived).

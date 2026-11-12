@@ -13,7 +13,9 @@ import {
   ExistingOccurrence, HORIZON_DAYS, SeriesDraft, SeriesPlan, SeriesRule, horizonEnd, occurrencesInScope,
   reconcileSeries, ruleChanged, splitSeries, tbilisiDateKey, validateSeries,
 } from '../lib/series';
+import { scheduleSystemMessage } from '../lib/progressNotices';
 import { notify } from '../notify';
+import { postSystemMessage } from './chat';
 
 export function seriesFrom(id: string, d: DocumentData): SeriesRule {
   return {
@@ -193,6 +195,9 @@ export const onSeriesWritten = onDocumentWritten('trainingSeries/{seriesId}', as
     dedupeKey: `series:${seriesId}:${ruleHash(after)}`,
     data: { seriesId },
   });
+  // One chat line per create / rule change, in each reader's language (systemKey).
+  const sys = scheduleSystemMessage(before, after, tbilisiDateKey(new Date()));
+  await postSystemMessage(group.id, `system_series_${seriesId}_${ruleHash(after)}`, t('ka', `system.${sys.key}`, sys.args), sys);
 });
 
 export async function runExtendTrainingSeries(now = new Date()): Promise<{ series: number }> {

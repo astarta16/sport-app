@@ -17,6 +17,8 @@ import '../../trainings/presentation/training_detail_screen.dart';
 import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/calendar_logic.dart';
+import '../../clubs/presentation/clubs_providers.dart';
+import 'add_to_calendar.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -57,6 +59,25 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       appBar: AppBar(
         title: Text(l.navCalendar),
         actions: [
+          IconButton(
+            key: const Key('calendar-export'),
+            tooltip: l.exportSchedule,
+            icon: const Icon(Icons.ios_share_rounded),
+            onPressed: () {
+              final all = trainings.value ?? const <Training>[];
+              final venues = ref.read(venuesByIdProvider);
+              final horizon = now.add(const Duration(days: 60));
+              final events = [
+                for (final t in all)
+                  if ((groupFilter == null || groupFilter.contains(t.groupId)) &&
+                      t.status != TrainingStatus.cancelled &&
+                      t.startAt.isAfter(now) &&
+                      t.startAt.isBefore(horizon))
+                    trainingIcsEvent(context, t, groups[t.groupId], venues[t.venueId]),
+              ]..sort((a, b) => a.start.compareTo(b.start));
+              shareIcs(context, ref, events, kind: 'schedule', slug: user?.id ?? 'me');
+            },
+          ),
           if (user?.isParent ?? false)
             Padding(
               padding: const EdgeInsets.only(right: AppSpacing.sm),

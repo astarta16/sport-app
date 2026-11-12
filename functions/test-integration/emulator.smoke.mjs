@@ -339,6 +339,11 @@ await step('v1.2: payment status change writes paymentAudit with the actor', asy
 });
 
 await step('v1.2: chat unread counters, then report + moderate hides the message', async () => {
+  // v1.3.1 series system messages are unread too: start from a read chat.
+  for (const u of ['coachS', 'parentS']) await db.doc(`chats/${E2E.groupId}/members/${u}`).set({ lastReadAt: ts(new Date()) });
+  for (const u of ['coachS', 'parentS']) {
+    await waitFor(async () => ((await db.doc(`userUnread/${u}`).get()).get(`byGroup.${E2E.groupId}`) ?? 0) === 0, `${u} read`);
+  }
   await db.doc(`chats/${E2E.groupId}/messages/msgS`).set({ senderId: 'parentS', senderName: 'parent T', senderRole: 'parent', type: 'text', pinned: false, text: 'spam spam', createdAt: ts(new Date()) });
   await waitFor(async () => ((await db.doc('userUnread/coachS').get()).get(`byGroup.${E2E.groupId}`) ?? 0) >= 1, 'unread incremented');
   assert.equal((await db.doc('userUnread/parentS').get()).get(`byGroup.${E2E.groupId}`) ?? 0, 0, 'sender not counted');
@@ -665,6 +670,58 @@ await step('v1.3: system chat messages carry systemKey + systemArgs (text stays 
   assert.deepEqual(Object.keys(m.systemArgs).sort(), ['date', 'opponent', 'reason', 'reasonCode', 'time']);
   assert.equal(m.systemArgs.reasonCode, 'weather');
   assert.match(m.text, /მატჩი/);
+});
+
+await step('v1.3.1: attendance mark notifies the parent once per status (localized, attendance category)', async () => {
+  const att = (await db.collection('attendance').where('childId', '==', 'childS').limit(1).get()).docs[0];
+  assert.ok(att, 'attendance doc from the RSVP step');
+  const n = await waitFor(async () => (await db.doc(`notifications/${sha1(`parentS|att:${att.id}:present`)}`).get()).data(), 'attendance notification');
+  assert.equal(n.type, 'attendanceRecorded');
+  assert.equal(n.category, 'attendance');
+  assert.equal(n.title, 'დასწრება აღირიცხა', 'rendered in the locale at the time (ka, before the en switch)');
+  await att.ref.update({ note: 'late', markedAt: ts(new Date()) });
+  await att.ref.update({ status: 'excused', markedAt: ts(new Date()) });
+  const n2 = await waitFor(async () => (await db.doc(`notifications/${sha1(`parentS|att:${att.id}:excused`)}`).get()).data(), 'status change notification');
+  assert.match(n2.body, /excused/, 'en status word');
+  const all = await db.collection('notifications').where('userId', '==', 'parentS').where('type', '==', 'attendanceRecorded').get();
+  assert.equal(all.size, 2, 'note-only edit is silent');
+});
+
+await step('v1.3.1: coach feedback notifies the parent', async () => {
+  await db.doc('feedback/fbS').set({
+    childId: 'childS', groupId: E2E.groupId, coachId: 'coachS', coachName: 'Coach S', createdAt: ts(new Date()),
+    ratings: { technique: 4 }, comment: 'Good', visibleToParent: true,
+  });
+  const n = await waitFor(async () => (await db.doc(`notifications/${sha1('parentS|fb:fbS')}`).get()).data(), 'feedback notification');
+  assert.equal(n.type, 'feedbackAdded');
+  assert.match(n.body, /Coach S/);
+});
+
+await step('v1.3.1: moving a one-off training posts a trainingMoved system message', async () => {
+  const start = new Date(Date.now() + 4 * 86400000);
+  await db.doc('trainings/tmS').set({ groupId: E2E.groupId, venueId: 'v1', startAt: ts(start), durationMin: 60, focus: [], description: '', photoUrls: [], status: 'scheduled', createdBy: 'coachS', updatedAt: ts(new Date()) });
+  await new Promise((r) => setTimeout(r, 1000));
+  const next = new Date(start.getTime() + 86400000);
+  await db.doc('trainings/tmS').update({ startAt: ts(next) });
+  const m = await waitFor(async () => (await db.doc(`chats/${E2E.groupId}/messages/system_training_tmS_moved_${next.getTime()}`).get()).data(), 'moved message');
+  assert.equal(m.systemKey, 'trainingMoved');
+  assert.deepEqual(Object.keys(m.systemArgs).sort(), ['from', 'to']);
+  assert.notEqual(m.systemArgs.from, m.systemArgs.to);
+});
+
+await step('v1.3.1: series create/change post scheduleCreated / scheduleChanged chat messages', async () => {
+  const q = await db.collection(`chats/${E2E.groupId}/messages`).where('type', '==', 'system').get();
+  const keys = q.docs.map((d) => d.get('systemKey'));
+  assert.ok(keys.includes('scheduleCreated'), keys.join());
+  assert.ok(keys.includes('scheduleChanged'), keys.join());
+});
+
+await step('v1.3.1: plan archive is audited with the actual actor (updatedBy)', async () => {
+  await db.doc('trainingPlans/planAud').set(planDoc({ status: 'published', updatedBy: 'coachS' }, 'planAud'));
+  await waitFor(async () => (await db.collection('auditLog').where('action', '==', 'plan.publish').where('targetId', '==', 'planAud').get()).size === 1, 'publish audit');
+  await db.doc('trainingPlans/planAud').update({ status: 'archived', updatedBy: 'coachOtherS', updatedAt: ts(new Date()) });
+  const a = await waitFor(async () => (await db.collection('auditLog').where('action', '==', 'plan.archive').where('targetId', '==', 'planAud').get()).docs[0], 'archive audit');
+  assert.equal(a.get('actorId'), 'coachOtherS');
 });
 
 console.log(`${passed} smoke steps passed${process.exitCode ? ' (with failures)' : ''}`);

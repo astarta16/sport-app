@@ -1003,5 +1003,8 @@
   "adminSetReviewers": "Назначить проверяющих",
   "adminLanguage": "Язык интерфейса",
   "adminRosterNote": "Количество учеников по группам — без имён.",
-  "adminMonth": "Месяц"
+  "adminMonth": "Месяц",
+  "addToCalendar": "Добавить в календарь",
+  "exportSchedule": "Экспорт расписания в календарь",
+  "calendarNothingToExport": "Нет предстоящих тренировок для экспорта"
 }

@@ -1,5 +1,6 @@
 // v1.3 training plans: server-managed readerIds / coachIds, publish
 // notification, audit, media URLs.
+import { planActor } from '../lib/progressNotices';
 import { logger } from 'firebase-functions';
 import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
@@ -79,8 +80,8 @@ export async function refreshPlansForGroup(groupId: string): Promise<number> {
  * refreshPlanAccess), maintain readerIds/coachIds; on the first
  * publish notify the groups' parents once (trainingPlanPublished, dedupe
  * plan:{id}:published) and set publishedAt if missing; audit plan.publish /
- * plan.archive (actor = plan creator; the rules allow only coaches of every
- * listed group to change status); on delete remove plans/{planId}/.
+ * plan.archive (actor = updatedBy, which the rules pin to the writer; plans
+ * written before v1.3.1 fall back to the creator); on delete remove plans/{planId}/.
  */
 export const onTrainingPlanWritten = onDocumentWritten('trainingPlans/{planId}', async (event) => {
   const planId = event.params.planId;
@@ -99,7 +100,7 @@ export const onTrainingPlanWritten = onDocumentWritten('trainingPlans/{planId}',
     if (ev === 'publish') {
       if (!after.publishedAt) await event.data!.after.ref.update({ publishedAt: FieldValue.serverTimestamp() });
       await writeAudit({
-        action: 'plan.publish', actorId: String(after.createdBy ?? 'unknown'), actorRole: 'coach', targetType: 'trainingPlan', targetId: planId,
+        action: 'plan.publish', actorId: planActor(after), actorRole: 'coach', targetType: 'trainingPlan', targetId: planId,
         clubId, details: { groupIds: after.groupIds ?? [], from: before?.status ?? null },
       });
       const groups = await loadGroups(after.groupIds);
@@ -118,7 +119,7 @@ export const onTrainingPlanWritten = onDocumentWritten('trainingPlans/{planId}',
       }
     } else if (ev === 'archive') {
       await writeAudit({
-        action: 'plan.archive', actorId: String(after.createdBy ?? 'unknown'), actorRole: 'coach', targetType: 'trainingPlan', targetId: planId,
+        action: 'plan.archive', actorId: planActor(after), actorRole: 'coach', targetType: 'trainingPlan', targetId: planId,
         clubId, details: { groupIds: after.groupIds ?? [], from: before?.status ?? null },
       });
     }

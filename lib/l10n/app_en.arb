@@ -1003,5 +1003,8 @@
   "adminSetReviewers": "Assign reviewers",
   "adminLanguage": "Interface language",
   "adminRosterNote": "Student counts per group — without names.",
-  "adminMonth": "Month"
+  "adminMonth": "Month",
+  "addToCalendar": "Add to calendar",
+  "exportSchedule": "Export schedule to calendar",
+  "calendarNothingToExport": "No upcoming trainings to export"
 }

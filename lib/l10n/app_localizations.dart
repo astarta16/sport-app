@@ -6123,6 +6123,24 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'თვე'**
   String get adminMonth;
+
+  /// No description provided for @addToCalendar.
+  ///
+  /// In ka, this message translates to:
+  /// **'კალენდარში დამატება'**
+  String get addToCalendar;
+
+  /// No description provided for @exportSchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგის კალენდარში გატანა'**
+  String get exportSchedule;
+
+  /// No description provided for @calendarNothingToExport.
+  ///
+  /// In ka, this message translates to:
+  /// **'გასატანი ვარჯიშები არ არის'**
+  String get calendarNothingToExport;
 }
 
 class _AppLocalizationsDelegate

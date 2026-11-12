@@ -3405,4 +3405,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminMonth => 'Month';
+
+  @override
+  String get addToCalendar => 'Add to calendar';
+
+  @override
+  String get exportSchedule => 'Export schedule to calendar';
+
+  @override
+  String get calendarNothingToExport => 'No upcoming trainings to export';
 }

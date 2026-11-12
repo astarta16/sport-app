@@ -341,13 +341,23 @@ describe('training plans', () => {
 
   it('status transitions: draft→published→archived, published→draft; readerIds untouchable', async () => {
     const db = as(UID.coach);
-    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'published', publishedAt: now, updatedAt: now }));
-    await assertFails(updateDoc(doc(db, 'trainingPlans/plan2'), { readerIds: [UID.parentA] }));
-    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan1'), { status: 'draft', updatedAt: now }));
-    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'archived', updatedAt: now }));
+    const by = { updatedBy: UID.coach };
+    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'published', publishedAt: now, updatedAt: now, ...by }));
+    await assertFails(updateDoc(doc(db, 'trainingPlans/plan2'), { readerIds: [UID.parentA], ...by }));
+    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan1'), { status: 'draft', updatedAt: now, ...by }));
+    await assertSucceeds(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'archived', updatedAt: now, ...by }));
     await assertFails(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'published', updatedAt: now }));
     await assertFails(updateDoc(doc(as(UID.parentA), 'trainingPlans/plan1'), { status: 'archived' }));
     await assertFails(updateDoc(doc(as(UID.coachOther), 'trainingPlans/plan1'), { status: 'archived' }));
+  });
+
+  it('updatedBy (the audit actor) must be the writer on every update', async () => {
+    const db = as(UID.coach);
+    await assertFails(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'published', updatedAt: now }));
+    await assertFails(updateDoc(doc(db, 'trainingPlans/plan2'), { status: 'published', updatedAt: now, updatedBy: UID.coachNoPay }));
+    await assertSucceeds(updateDoc(doc(as(UID.coachNoPay), 'trainingPlans/plan2'), { status: 'published', updatedAt: now, updatedBy: UID.coachNoPay }));
+    await assertFails(setDoc(doc(db, 'trainingPlans/p9'), plan({ updatedBy: UID.coachNoPay })));
+    await assertSucceeds(setDoc(doc(db, 'trainingPlans/p9'), plan({ updatedBy: UID.coach })));
   });
 
   it('draft → archived is not allowed; only drafts are deleted', async () => {

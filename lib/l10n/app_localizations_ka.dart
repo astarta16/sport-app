@@ -3367,4 +3367,13 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get adminMonth => 'თვე';
+
+  @override
+  String get addToCalendar => 'კალენდარში დამატება';
+
+  @override
+  String get exportSchedule => 'განრიგის კალენდარში გატანა';
+
+  @override
+  String get calendarNothingToExport => 'გასატანი ვარჯიშები არ არის';
 }

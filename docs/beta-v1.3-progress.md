@@ -48,11 +48,18 @@ Contract: [data-model-v1.3.md](data-model-v1.3.md). Backend: [backend.md](backen
 | Rules emulator tests | **135 passed** (41 new); run on Firestore port 8181 because another project occupies 8080 |
 | Functions smoke test (emulators) | **32 steps passed** (10 new) |
 
+## v1.3.1 additions (2026-11-12)
+
+| Item | Status |
+|---|---|
+| Add to calendar (`.ics`, UTC, 1-hour reminder, folded Georgian lines) on training and match detail; Calendar tab exports the next 60 days | ✅ unit + widget tests |
+| Server `attendanceRecorded` / `feedbackAdded` notifications (localized, once per status) | ✅ functions + smoke · 🟢 production |
+| Server chat lines for a moved training and for schedule create/change | ✅ functions + smoke · 🟢 production |
+| Plan publish/archive audit names the actual actor (`updatedBy`, enforced by rules) | ✅ rules + smoke |
+
 ## Known gaps
 
 - Video transcoding/thumbnails ⛔ (carried over from v1.2). Plan videos are capped by size only.
 - Plan video playback in the app downloads at most 10 MB through Storage; larger videos need the `getPlanMediaUrl` signed-URL path in the client ⛔.
-- The `plan.publish` / `plan.archive` audit entries name the plan creator, not the person who published or archived it (a trigger limitation).
-- The server posts no system chat messages for "training moved" or "schedule changed". Only the demo does.
-- Map layers for trainings and matches ⛔, and server `attendanceRecorded` / `feedbackAdded` notifications ⛔ (both carried over from v1.2).
+- Map layers for trainings and matches ⛔ (carried over from v1.2).
 - Everything production-related 🔧: Firebase project, APNs/FCM, App Check, signed URLs (needs the Service Account Token Creator role), SMS provider, store signing, admin web phone sign-in.

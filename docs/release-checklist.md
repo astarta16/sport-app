@@ -1,5 +1,16 @@
 # Release checklist: beta v1.3
 
+## v1.3.1 local verification (done 2026-11-12)
+- [x] `dart format`, `flutter analyze`: no issues
+- [x] `flutter test`: 221 passed (6 new: `.ics` builder, add-to-calendar on training/match/calendar screens)
+- [x] Functions build, typecheck, `npm test`: 193 passed (8 new)
+- [x] Rules emulator tests: 136 passed (1 new: plan `updatedBy`)
+- [x] Functions smoke test (emulators): 37 steps passed (5 new: attendance and feedback notifications, moved-training and schedule chat lines, plan audit actor)
+- [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.3.1.apk`, versionName 1.3.1, versionCode 15
+- [x] APK install test: installed on the Pixel 6 API 33 emulator (package manager: versionName 1.3.1, versionCode 15), launched, signed in as the demo parent, opened a training and tapped *Add to calendar*; the system share sheet offered `training_…_20261112-2104.ics` (nothing was shared)
+- [x] Admin web rebuilt (`build/admin_web`)
+- iOS simulator and iPad were not re-checked for 1.3.1 (widget tests only)
+
 ## Local verification (done 2026-11-11)
 - [x] `dart format lib test --line-length 120`
 - [x] `flutter analyze`: no issues
@@ -17,8 +28,8 @@
 ```bash
 # Android beta APK (demo data, debug-signed)
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.3.0 --build-number=14
-cp build/app/outputs/flutter-apk/app-release.apk ~/Desktop/SportParentApp-Beta-v1.3.apk
+  --build-name=1.3.1 --build-number=15
+cp build/app/outputs/flutter-apk/app-release.apk ~/Desktop/SportParentApp-Beta-v1.3.1.apk
 
 # iOS simulator (demo)
 flutter build ios --simulator --debug --dart-define=APP_MODE=demo
