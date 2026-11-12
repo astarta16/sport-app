@@ -79,11 +79,19 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.3.1 --build-number=15
+  --build-name=1.4.0 --build-number=16
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.4
+
+- **Contacts:** coaches see and call the parents/guardians of their students (chat, roster, student details); parents see and call their child's coach. Parents never see other parents.
+- **Read receipts:** "Seen by 8 of 12 parents" under the coach's messages, with a per-parent detail screen. A message counts as seen only when it is actually shown in the open chat.
+- **Acknowledgments:** the coach can tick *Require acknowledgment*; parents confirm with "გავეცანი". The coach sees Seen and Acknowledged counters, and the parent dashboard lists open requests.
+- **Video player** with play/pause, ±10 s, a seek bar, times, fullscreen, buffering and retry.
+- **Downloads** of authorized coach photos and videos, with progress, cancel and retry, through the phone's share/save sheet. Admins can turn downloads off per group and see a download log.
 
 ## What's new in v1.3.1
 
@@ -152,10 +160,10 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 221 tests (responsive, security, workflows, admin, l10n, v1.3 flows)
-cd functions && npm install && npm run build && npm test      # 193 tests
-cd rules-tests && npm install && npm run test:emulator        # 136 rules tests (Java 17+)
-cd rules-tests && npm run smoke:functions                     # 37 end-to-end steps
+flutter test                                   # 246 tests (responsive, security, workflows, admin, l10n, v1.3/v1.4 flows)
+cd functions && npm install && npm run build && npm test      # 206 tests
+cd rules-tests && npm install && npm run test:emulator        # 150 rules tests (Java 17+)
+cd rules-tests && npm run smoke:functions                     # 40 end-to-end steps
 ```
 
 ## Security model (summary)

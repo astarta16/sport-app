@@ -74,10 +74,19 @@ Server rate limits per user per day: invites 30, reports 20, join-by-code 20, ve
 - **Language preference** (`users.locale`) is the only new client-writable user field and is validated to `ka | en | ru`.
 - **Demo mode** contains only fictional people, payments and receipts, and never initializes Firebase.
 
+## v1.4 additions
+
+- **Phone numbers** are never in public profiles and other users' `users` docs stay unreadable (rules test). Numbers come only from `getContactPhone` / `getGroupContacts`, which check current, active group relationships on every call: coach ↔ parents of the coach's groups, parent → approved coaches. Parents never see other parents; pending/suspended coaches and archived groups get nothing. Numbers are not logged and admins get no contact list through this path.
+- **Read receipts** use a server snapshot of the recipients, taken when the message is created (`chats/{g}/receipts/{m}`). Marks (`msgReads`, `msgAcks`) can be created once, only by that parent, only while still a group parent, only when listed in the snapshot, with `request.time`, so a client clock is never trusted. They can't be updated or deleted. Only the sending coach, while still a coach of the group, can read them; other parents and admins cannot (rules tests). New members are not counted for older messages, and removed members can no longer mark.
+- **Acknowledgments** are explicit: the button writes `msgAcks/{uid}`, and reading never does. The server writes an immutable `auditLog` entry (`chat.acknowledge`) and keeps the acknowledgment when a message is deleted.
+- **Media downloads** go through `getMediaDownload` only. It checks active membership, moderation (hidden posts), the consent-confirmed post and the group media policy. It returns a 5-minute attachment URL and logs `mediaDownloads` + `media.download`. No public URL is stored. The app explains that a downloaded copy cannot be revoked and does not claim it can't be shared. Medical certificates are not reachable through this path.
+- **Video playback** uses short-lived URLs that are re-requested on retry and never logged.
+
 ## Open items before production
 
 1. App Check enforcement (Firestore, Storage, Functions).
 2. A legal review of retention periods and of the 14–17 child-account policy (still disabled).
 3. A penetration test against a staging project, with real Phone Auth.
 4. Video transcoding worker, and server-side EXIF/geo stripping for photos.
-5. The server does not yet send `attendanceRecorded` / `feedbackAdded` notifications (the demo does).
+5. ~~Server attendance / feedback notifications~~ (done in v1.3.1).
+6. Deploy the v1.4 indexes (collection-group `msgReads` / `msgAcks`, `receipts`, `mediaDownloads`).

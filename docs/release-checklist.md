@@ -1,3 +1,22 @@
+# Release checklist: beta v1.4
+
+## v1.4 local verification (done 2026-11-12)
+- [x] `dart format`, `flutter analyze`: no issues
+- [x] `flutter test`: 246 passed
+- [x] Functions build, typecheck, `npm test`: 206 passed
+- [x] Rules emulator tests: 150 passed (Firestore on port 8181)
+- [x] Functions smoke test (emulators): 40 steps passed
+- [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.4.apk`, 78,434,905 bytes (78.4 MB), versionName 1.4.0, versionCode 16
+- [x] Installed on the Pixel 6 API 33 emulator (package manager: 1.4.0 / 16). Checked by hand: dashboard acknowledgment banner → chat → "გავეცანი" → "დადასტურებულია"; contacts (coach only, privacy note); call button opens the dialer without calling; the real video player plays and seeks; download progress → share sheet (nothing shared)
+- [x] iOS simulator build (demo, debug) succeeded and was installed and launched on the iPhone 16 Pro simulator (onboarding shown). The v1.4 flows were **not** tapped through on iOS: the simulator tool needs permission granted in its panel. They are covered by widget tests and were checked on the Android emulator. The iPad was not checked by eye.
+- [x] Admin web rebuilt (`build/admin_web`) and checked in the browser (Russian UI): media downloads page lists the demo download; the per-group download switch toggles
+
+## v1.4 production steps
+1. Deploy rules, indexes (new collection-group indexes for `msgReads` / `msgAcks`) and functions together. The app needs the new callables `getContactPhone`, `getGroupContacts`, `getMediaDownload`.
+2. Signed URLs need the Service Account Token Creator role (already required by v1.3).
+3. Existing groups have no `mediaDownloadsEnabled` → downloads are **on** by default; club admins can switch them off per group.
+4. Coach messages sent before the v1.4 functions are deployed have no receipt snapshot and show no counters (by design: no retroactive recipients).
+
 # Release checklist: beta v1.3
 
 ## v1.3.1 local verification (done 2026-11-12)
@@ -28,8 +47,8 @@
 ```bash
 # Android beta APK (demo data, debug-signed)
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.3.1 --build-number=15
-cp build/app/outputs/flutter-apk/app-release.apk ~/Desktop/SportParentApp-Beta-v1.3.1.apk
+  --build-name=1.4.0 --build-number=16
+cp build/app/outputs/flutter-apk/app-release.apk ~/Desktop/SportParentApp-Beta-v1.4.apk
 
 # iOS simulator (demo)
 flutter build ios --simulator --debug --dart-define=APP_MODE=demo
