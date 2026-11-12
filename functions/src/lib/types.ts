@@ -49,6 +49,10 @@ export interface GroupLite {
   coachIds: string[];
   parentIds: string[];
   memberChildIds: string[];
+  /** v1.4: 'archived' groups grant no contact / media access. */
+  status?: string;
+  /** v1.4 media policy (club admin): false disables parent downloads. Missing = enabled. */
+  mediaDownloadsEnabled?: boolean;
 }
 
 export interface ChildLite {

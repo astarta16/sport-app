@@ -389,7 +389,7 @@ service cloud.firestore {
       // may only REMOVE members. Adding members happens server-side (approved
       // membership request / accepted invite). parentIds is recomputed by
       // the onGroupWritten trigger.
-      allow update: if (isAdmin() && !changed(['inviteCode', 'paymentManagerIds']))
+      allow update: if (isAdmin() && !changed(['inviteCode', 'paymentManagerIds', 'mediaDownloadsEnabled']))
         || (isApprovedCoach()
             && uid() in resource.data.get('coachIds', [])
             && changedOnly(['memberChildIds'])
@@ -470,7 +470,10 @@ service cloud.firestore {
         allow create: if isChatMember()
           && request.resource.data.keys().hasOnly([
                'senderId', 'senderName', 'senderRole', 'text',
-               'attachments', 'createdAt', 'type', 'pinned', 'hidden'])
+               'attachments', 'createdAt', 'type', 'pinned', 'hidden', 'requiresAck'])
+          // v1.4: only an approved group coach may ask for acknowledgment.
+          && (request.resource.data.get('requiresAck', false) == false
+              || (request.resource.data.requiresAck == true && isGroupCoach(groupId)))
           && request.resource.data.get('type', 'text') in ['text', 'announcement']
           && request.resource.data.get('hidden', false) == false
           && (request.resource.data.get('pinned', false) == false || isGroupCoach(groupId))
@@ -493,6 +496,50 @@ service cloud.firestore {
           && changedOnly(['pinned'])
           && request.resource.data.pinned is bool;
         allow delete: if signedIn() && resource.data.senderId == uid();
+
+        // v1.4 read receipts / acknowledgments. One immutable doc per parent
+        // (id = uid), written only by that parent while still a group parent,
+        // only if they are in the recipient snapshot taken by the server when
+        // the message was created. The time is the server's (request.time),
+        // never a client clock. Only the sending coach (still an approved
+        // coach of the group) and the parent themselves can read them.
+        function receipt() {
+          return get(/databases/$(database)/documents/chats/$(groupId)/receipts/$(messageId)).data;
+        }
+        function validMark(d, readerId, field) {
+          return readerId == uid()
+            && d.keys().hasOnly(['uid', 'groupId', 'messageId', field])
+            && d.uid == uid() && d.groupId == groupId && d.messageId == messageId
+            && d[field] == request.time;
+        }
+        function canMark(readerId) {
+          return isGroupParent(groupId)
+            && exists(/databases/$(database)/documents/chats/$(groupId)/receipts/$(messageId))
+            && readerId in receipt().recipientIds;
+        }
+        function isSenderCoach() {
+          return isGroupCoach(groupId) && receipt().senderId == uid();
+        }
+
+        match /msgReads/{readerId} {
+          allow read: if signedIn() && (resource.data.uid == uid() || isSenderCoach());
+          allow create: if validMark(request.resource.data, readerId, 'readAt') && canMark(readerId);
+          allow update, delete: if false;
+        }
+
+        match /msgAcks/{readerId} {
+          allow read: if signedIn() && (resource.data.uid == uid() || isSenderCoach());
+          allow create: if validMark(request.resource.data, readerId, 'ackAt') && canMark(readerId)
+            && receipt().requiresAck == true;
+          allow update, delete: if false;
+        }
+      }
+
+      // Recipient snapshot + counters, server-written (onChatMessageCreated);
+      // readable only by the sending coach while still coach of the group.
+      match /receipts/{messageId} {
+        allow read: if isGroupCoach(groupId) && resource.data.senderId == uid();
+        allow write: if false;
       }
 
       // Read receipts: each chat member writes only their own lastReadAt.
@@ -506,6 +553,22 @@ service cloud.firestore {
           && request.resource.data.lastReadAt is timestamp;
         allow delete: if false;
       }
+    }
+
+    // v1.4: a parent lists their OWN read / acknowledgment marks (collection
+    // group query by uid + groupId) so the app never re-writes them.
+    match /{path=**}/msgReads/{readerId} {
+      allow read: if signedIn() && resource.data.uid == uid();
+    }
+    match /{path=**}/msgAcks/{readerId} {
+      allow read: if signedIn() && resource.data.uid == uid();
+    }
+
+    // v1.4 media download events (getMediaDownload): server-written; the
+    // platform admin and the club's admins read them for audit.
+    match /mediaDownloads/{id} {
+      allow read: if isPlatformAdmin() || isClubAdmin(resource.data.get('clubId', ''));
+      allow write: if false;
     }
 
     // Unread counters maintained by onChatMessageCreated / onChatMemberWritten.

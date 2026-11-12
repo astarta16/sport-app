@@ -41,6 +41,8 @@ export function groupFrom(id: string, d: DocumentData): GroupLite {
     coachIds: arr(d.coachIds),
     parentIds: arr(d.parentIds),
     memberChildIds: arr(d.memberChildIds),
+    status: d.status === 'archived' ? 'archived' : 'active',
+    mediaDownloadsEnabled: d.mediaDownloadsEnabled !== false,
   };
 }
 

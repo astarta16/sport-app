@@ -1,3 +1,4 @@
+import { createReceipt } from './v14';
 import { logger } from 'firebase-functions';
 import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { FieldValue } from 'firebase-admin/firestore';
@@ -74,6 +75,9 @@ export const onChatMessageCreated = onDocumentCreated('chats/{groupId}/messages/
     }
     await batch.commit();
   }
+
+  // v1.4: recipient snapshot for read receipts / acknowledgments.
+  await createReceipt(groupId, messageId, data, group, users);
 
   if (type === 'announcement') {
     if (data.pinned !== true) await snap.ref.update({ pinned: true });

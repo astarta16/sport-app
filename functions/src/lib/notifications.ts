@@ -16,7 +16,7 @@ export const CATEGORY_TYPES: Record<NotificationCategory, readonly string[]> = {
   payments: ['paymentReminder', 'paymentSms', 'paymentProofSubmitted', 'paymentProofApproved', 'paymentProofRejected'],
   chat: ['chatMessage'],
   certificates: ['certificateExpiry'],
-  announcements: ['announcement', 'newPhotos', 'newMedia'],
+  announcements: ['announcement', 'newPhotos', 'newMedia', 'ackRequested'],
 };
 
 export const INBOX_TYPES = Object.values(CATEGORY_TYPES).flat();

@@ -724,4 +724,96 @@ await step('v1.3.1: plan archive is audited with the actual actor (updatedBy)', 
   assert.equal(a.get('actorId'), 'coachOtherS');
 });
 
+// ─── v1.4 ─────────────────────────────────────────────────────────────────
+await step('v1.4: second guardian joins via the child; contacts are scoped both ways', async () => {
+  await db.doc('users/parentS2').set(user('parent', { phone: '+995599777002', firstName: 'Guardian', lastName: 'Two' }));
+  await db.doc('children/childS').update({ parentIds: ['parentS', 'parentS2'], guardianRelations: { parentS: 'mother', parentS2: 'father' } });
+  await db.doc(`groups/${E2E.groupId}`).update({ memberChildIds: FieldValue.arrayRemove('childS') });
+  await waitFor(async () => !((await db.doc(`groups/${E2E.groupId}`).get()).get('parentIds') ?? []).includes('parentS'), 'parents removed', 30000);
+  await db.doc(`groups/${E2E.groupId}`).update({ memberChildIds: FieldValue.arrayUnion('childS') });
+  await waitFor(async () => {
+    const ids = (await db.doc(`groups/${E2E.groupId}`).get()).get('parentIds') ?? [];
+    return ids.includes('parentS') && ids.includes('parentS2');
+  }, 'both guardians in parentIds', 30000);
+
+  const coachTok = await idToken('coachS');
+  const r = await callable('getGroupContacts', { groupId: E2E.groupId }, coachTok);
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const byId = Object.fromEntries(r.body.result.contacts.map((c) => [c.uid, c]));
+  assert.equal(byId.parentS2.phone, '+995599777002');
+  assert.equal(byId.parentS2.children[0].relation, 'father');
+  const p = await callable('getGroupContacts', { groupId: E2E.groupId }, await idToken('parentS'));
+  assert.equal(p.status, 200, JSON.stringify(p.body));
+  assert.deepEqual(p.body.result.contacts.map((c) => c.role), ['coach'], 'parents only see coaches');
+  assert.equal((await callable('getContactPhone', { uid: 'coachS' }, await idToken('parentS'))).status, 200);
+  assert.equal((await callable('getContactPhone', { uid: 'parentS2' }, await idToken('parentS'))).status, 403, 'parent → parent denied');
+  assert.equal((await callable('getContactPhone', { uid: 'parentS' }, await idToken('p1'))).status, 403);
+  assert.equal((await callable('getGroupContacts', { groupId: E2E.groupId }, await idToken('p1'))).status, 403);
+});
+
+await step('v1.4: coach message requiring acknowledgment → recipient snapshot, inbox entry, read/ack counters, audit', async () => {
+  await db.doc(`chats/${E2E.groupId}/messages/ackS`).set({
+    senderId: 'coachS', senderName: 'Coach S', senderRole: 'coach', type: 'announcement', pinned: true,
+    text: 'Training moved to the indoor hall', createdAt: ts(new Date()), requiresAck: true,
+  });
+  const r = await waitFor(async () => (await db.doc(`chats/${E2E.groupId}/receipts/ackS`).get()).data(), 'receipt');
+  assert.deepEqual(r.recipientIds, ['parentS', 'parentS2']);
+  assert.equal(r.requiresAck, true);
+  const n = await waitFor(async () => (await db.doc(`notifications/${sha1(`parentS2|ack:${E2E.groupId}:ackS`)}`).get()).data(), 'ack inbox');
+  assert.equal(n.type, 'ackRequested');
+  const msg = db.doc(`chats/${E2E.groupId}/messages/ackS`);
+  await msg.collection('msgReads').doc('parentS').set({ uid: 'parentS', groupId: E2E.groupId, messageId: 'ackS', readAt: ts(new Date()) });
+  await waitFor(async () => (await db.doc(`chats/${E2E.groupId}/receipts/ackS`).get()).get('readCount') === 1, 'read 1/2');
+  assert.equal((await db.doc(`chats/${E2E.groupId}/receipts/ackS`).get()).get('ackCount'), 0, 'reading is not acknowledging');
+  await msg.collection('msgAcks').doc('parentS2').set({ uid: 'parentS2', groupId: E2E.groupId, messageId: 'ackS', ackAt: ts(new Date()) });
+  await waitFor(async () => {
+    const d = (await db.doc(`chats/${E2E.groupId}/receipts/ackS`).get()).data();
+    return d.readCount === 2 && d.ackCount === 1;
+  }, 'ack implies seen: 2/2 seen, 1/2 acknowledged');
+  const audit = await waitFor(async () => (await db.collection('auditLog').where('action', '==', 'chat.acknowledge').where('actorId', '==', 'parentS2').get()).docs[0], 'ack audit');
+  assert.equal(audit.get('targetId'), `${E2E.groupId}/ackS`);
+  // A parent message gets no receipt.
+  await db.doc(`chats/${E2E.groupId}/messages/parMsg`).set({ senderId: 'parentS', senderName: 'P', senderRole: 'parent', type: 'text', text: 'ok', createdAt: ts(new Date()) });
+  await new Promise((res) => setTimeout(res, 1500));
+  assert.equal((await db.doc(`chats/${E2E.groupId}/receipts/parMsg`).get()).exists, false);
+  // Deleting the message drops receipts and reads, keeps acknowledgments.
+  await msg.delete();
+  await waitFor(async () => !(await db.doc(`chats/${E2E.groupId}/receipts/ackS`).get()).exists, 'receipt deleted');
+  assert.equal((await msg.collection('msgReads').get()).size, 0);
+  assert.equal((await msg.collection('msgAcks').get()).size, 1, 'acknowledgment kept as audit');
+});
+
+await step('v1.4: media download is authorized live, logged, and refused to outsiders / hidden posts / disabled policy', async () => {
+  const path = 'media/coachS/postDl/clip.mp4';
+  await getStorage().bucket().file(path).save(Buffer.from([0, 0, 0, 24, 102, 116, 121, 112]), { contentType: 'video/mp4' });
+  await db.doc('mediaPosts/postDl').set({
+    coachId: 'coachS', coachName: 'Coach S', groupIds: [E2E.groupId], clubId: 'clubS', type: 'video', storagePath: path,
+    thumbPath: null, caption: 'Drill', durationSec: 5, createdAt: ts(new Date()), consentConfirmed: true,
+  });
+  const parentTok = await idToken('parentS2');
+  const ok = await callable('getMediaDownload', { postId: 'postDl' }, parentTok);
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  assert.equal(ok.body.result.fileName, 'sportparent_video_postDl.mp4');
+  assert.equal(ok.body.result.mimeType, 'video/mp4');
+  assert.equal(ok.body.result.sizeBytes, 8);
+  // Production returns a V4 signed URL; the emulator returns a direct link that
+  // the Storage emulator still guards with rules, so only its target is checked here.
+  assert.ok(ok.body.result.url.includes(encodeURIComponent(path)));
+  const log = await db.collection('mediaDownloads').where('postId', '==', 'postDl').get();
+  assert.equal(log.size, 1);
+  assert.equal(log.docs[0].get('userId'), 'parentS2');
+  assert.equal((await db.collection('auditLog').where('action', '==', 'media.download').where('targetId', '==', 'postDl').get()).size, 1);
+
+  assert.equal((await callable('getMediaDownload', { postId: 'postDl' }, await idToken('p1'))).status, 403, 'outsider');
+  assert.equal((await callable('getMediaDownload', { postId: 'nope' }, parentTok)).status, 404);
+  assert.equal((await callable('getMediaDownload', { postId: 'medical' }, parentTok)).status, 404, 'no generic access to other collections');
+  const admin = await callable('updateGroup', { groupId: E2E.groupId, mediaDownloadsEnabled: false }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  assert.equal(admin.status, 200, JSON.stringify(admin.body));
+  assert.equal((await callable('getMediaDownload', { postId: 'postDl' }, parentTok)).status, 403, 'policy off');
+  assert.equal((await callable('updateGroup', { groupId: E2E.groupId, mediaDownloadsEnabled: true }, await idToken('coachS'))).status, 403, 'coach cannot change policy');
+  await callable('updateGroup', { groupId: E2E.groupId, mediaDownloadsEnabled: true }, await idToken('clubAdminS', { clubAdmin: ['clubS'] }));
+  await db.doc('mediaPosts/postDl').update({ hidden: true });
+  assert.equal((await callable('getMediaDownload', { postId: 'postDl' }, parentTok)).status, 403, 'hidden by moderation');
+});
+
 console.log(`${passed} smoke steps passed${process.exitCode ? ' (with failures)' : ''}`);

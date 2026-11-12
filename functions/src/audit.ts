@@ -10,7 +10,8 @@ export type AuditAction =
   // v1.3
   | 'certificate.view' | 'certificate.download' | 'receipt.view'
   | 'payment.proofSubmitted' | 'payment.proofResubmitted' | 'payment.proofApproved' | 'payment.proofRejected'
-  | 'plan.publish' | 'plan.archive' | 'group.paymentManagers';
+  | 'plan.publish' | 'plan.archive' | 'group.paymentManagers'
+  | 'chat.acknowledge' | 'media.download' | 'group.mediaPolicy';
 
 export interface AuditEntry {
   action: AuditAction;

@@ -324,6 +324,11 @@ export const updateGroup = onCall(async (request) => {
       if (!ok) throw new HttpsError('failed-precondition', 'every payment manager must be an approved coach of the club');
     }
   }
+  if (d.mediaDownloadsEnabled !== undefined) {
+    if (!isAdminOfClub) throw new HttpsError('permission-denied', 'only club admins change the media policy');
+    if (typeof d.mediaDownloadsEnabled !== 'boolean') throw new HttpsError('invalid-argument', 'mediaDownloadsEnabled');
+    patch.mediaDownloadsEnabled = d.mediaDownloadsEnabled;
+  }
   if (!Object.keys(patch).length && managers === null) throw new HttpsError('invalid-argument', 'nothing to update');
   await ref.update({ ...patch, ...(managers !== null ? { paymentManagerIds: managers } : {}), updatedAt: FieldValue.serverTimestamp() });
   const actorRole = actorRoleOf(request.auth.token as Record<string, unknown>, user?.role);
