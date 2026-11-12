@@ -6,12 +6,9 @@ import '../../../app/di.dart';
 import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
-import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
-import '../../authentication/presentation/session_providers.dart';
 import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
@@ -19,6 +16,7 @@ import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../medical_certificates/presentation/certificates_providers.dart';
 import 'coach_home_screen.dart';
 import 'group_management.dart';
+import '../../contacts/presentation/contacts_screens.dart';
 
 /// Group roster with certificate status, parents (phone visible to the
 /// group's coach only) and member management.
@@ -94,7 +92,7 @@ class GroupRosterScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
-                    _ParentsList(parentIds: c.parentIds),
+                    GuardianContactsSection(groupId: groupId, childId: c.id),
                     Wrap(
                       alignment: WrapAlignment.end,
                       spacing: AppSpacing.xs,
@@ -170,38 +168,6 @@ class GroupRosterScreen extends ConsumerWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _ParentsList extends ConsumerWidget {
-  const _ParentsList({required this.parentIds});
-
-  final List<String> parentIds;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        for (final id in parentIds)
-          Builder(
-            builder: (context) {
-              final p = ref.watch(publicProfileProvider(id)).value;
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.family_restroom_rounded),
-                title: Text(p?.fullName ?? '…'),
-                subtitle: p?.phone == null ? null : Text(Validators.formatPhone(p!.phone!)),
-                trailing: p?.phone == null
-                    ? null
-                    : IconButton.filledTonal(
-                        onPressed: () => callPhone(p!.phone!),
-                        icon: const Icon(Icons.call_rounded),
-                      ),
-              );
-            },
-          ),
-      ],
     );
   }
 }

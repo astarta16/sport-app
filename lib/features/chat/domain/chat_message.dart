@@ -28,6 +28,7 @@ class ChatMessage {
     this.hidden = false,
     this.systemKey,
     this.systemArgs = const {},
+    this.requiresAck = false,
   });
 
   final String id;
@@ -49,6 +50,9 @@ class ChatMessage {
   final String? systemKey;
   final Map<String, String> systemArgs;
 
+  /// v1.4: the coach asked parents to explicitly acknowledge this message.
+  final bool requiresAck;
+
   bool get isSystem => type == ChatMessageType.system;
   bool get isAnnouncement => type == ChatMessageType.announcement;
 
@@ -66,6 +70,7 @@ class ChatMessage {
     hidden: hidden ?? this.hidden,
     systemKey: systemKey,
     systemArgs: systemArgs,
+    requiresAck: requiresAck,
   );
 
   Map<String, dynamic> toMap() => {
@@ -77,6 +82,7 @@ class ChatMessage {
     'text': text,
     'attachments': attachments,
     'createdAt': createdAt,
+    if (requiresAck) 'requiresAck': true,
   };
 
   factory ChatMessage.fromMap(String groupId, String id, Map<String, dynamic> m) => ChatMessage(
@@ -93,6 +99,7 @@ class ChatMessage {
     hidden: m['hidden'] as bool? ?? false,
     systemKey: m['systemKey'] as String?,
     systemArgs: (m['systemArgs'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? const {},
+    requiresAck: m['requiresAck'] as bool? ?? false,
   );
 }
 

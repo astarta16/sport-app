@@ -3,6 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/firebase/firebase_utils.dart';
+import '../../../core/utils/dates.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../clubs/domain/club.dart';
 import '../../groups/domain/group.dart';
@@ -223,4 +224,43 @@ class FirebaseAdminRepository implements AdminRepository {
   @override
   Future<void> setPaymentManagers(String groupId, List<String> coachIds) =>
       callFunction(functions, 'updateGroup', {'groupId': groupId, 'paymentManagerIds': coachIds});
+
+  @override
+  Future<void> setMediaDownloads(String groupId, {required bool enabled}) =>
+      callFunction(functions, 'updateGroup', {'groupId': groupId, 'mediaDownloadsEnabled': enabled});
+
+  @override
+  Stream<List<MediaDownloadRow>> watchMediaDownloads() async* {
+    final s = await _scope();
+    final q = s.platform
+        ? db.collection('mediaDownloads').orderBy('at', descending: true).limit(200)
+        : db
+              .collection('mediaDownloads')
+              .where('clubId', whereIn: s.clubs.isEmpty ? ['-'] : s.clubs.take(30).toList())
+              .limit(200);
+    final names = <String, String>{};
+    yield* q.snapshots().asyncMap((snap) async {
+      final rows = <MediaDownloadRow>[];
+      for (final d in snap.docs) {
+        final m = d.data();
+        final uid = m['userId'] as String? ?? '';
+        if (!names.containsKey(uid)) {
+          final p = (await db.collection('publicProfiles').doc(uid).get()).data();
+          names[uid] = p == null ? uid : '${p['firstName'] ?? ''} ${p['lastName'] ?? ''}'.trim();
+        }
+        rows.add(
+          MediaDownloadRow(
+            postId: m['postId'] as String? ?? '',
+            userId: uid,
+            userName: names[uid]!,
+            role: m['role'] as String? ?? '',
+            groupId: m['groupId'] as String?,
+            mediaType: m['mediaType'] as String? ?? 'photo',
+            at: readDateOrNull(m['at']) ?? DateTime.now(),
+          ),
+        );
+      }
+      return rows..sort((a, b) => b.at.compareTo(a.at));
+    }).mapFirebaseErrors();
+  }
 }

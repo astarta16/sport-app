@@ -7,10 +7,12 @@ import '../features/authentication/data/demo_auth_repository.dart';
 import '../features/chat/data/demo_chat_repository.dart';
 import '../features/children/data/demo_children_repository.dart';
 import '../features/clubs/data/demo_clubs_repository.dart';
+import '../features/contacts/data/demo_contacts_repository.dart';
 import '../features/demo/data/demo_backend.dart';
 import '../features/groups/data/demo_groups_repository.dart';
 import '../features/maps/data/demo_location_repository.dart';
 import '../features/matches/data/demo_matches_repository.dart';
+import '../features/media/data/demo_media_access_repository.dart';
 import '../features/media/data/demo_media_repository.dart';
 import '../features/medical_certificates/data/demo_certificates_repository.dart';
 import '../features/moderation/data/demo_moderation_repository.dart';
@@ -49,4 +51,7 @@ List<Override> demoOverrides(DemoBackend db) => [
   accountRepositoryProvider.overrideWithValue(DemoAccountRepository(db)),
   paymentProofsRepositoryProvider.overrideWithValue(DemoPaymentProofsRepository(db)),
   trainingPlansRepositoryProvider.overrideWithValue(DemoTrainingPlansRepository(db)),
+  contactsRepositoryProvider.overrideWithValue(DemoContactsRepository(db)),
+  mediaAccessRepositoryProvider.overrideWithValue(DemoMediaAccessRepository(db)),
+  mediaDownloaderProvider.overrideWithValue(DemoMediaDownloader(db)),
 ];

@@ -63,15 +63,31 @@ class AccessPolicy {
 
   /// Phone visibility: coach ↔ parents of the same group only; parents
   /// never see each other's numbers.
+  /// v1.4: only CURRENT relationships in ACTIVE groups. Coach ↔ parents of
+  /// the coach's groups; parent ↔ APPROVED coaches of the child's groups.
+  /// Parents never see other parents; pending/suspended coaches see nothing.
+  /// Mirrors functions/src/lib/v14.ts canSeeContactPhone.
   static bool canSeePhone(AppUser viewer, AppUser target, Iterable<Group> groups) {
-    if (viewer.id == target.id || viewer.isPlatformAdmin) return true;
+    if (viewer.id == target.id) return true;
+    final live = groups.where((g) => g.isActive);
     if (viewer.isApprovedCoach && target.isParent) {
-      return groups.any((g) => g.hasCoach(viewer.id) && g.hasParent(target.id));
+      return live.any((g) => g.hasCoach(viewer.id) && g.hasParent(target.id));
     }
-    if (viewer.isParent && target.isCoach) {
-      return groups.any((g) => g.hasParent(viewer.id) && g.hasCoach(target.id));
+    if (viewer.isParent && target.isApprovedCoach) {
+      return live.any((g) => g.hasParent(viewer.id) && g.hasCoach(target.id));
     }
     return false;
+  }
+
+  /// v1.4 parent media download (mirrors mediaDownloadDecision on the
+  /// server): the owning coach always; a parent only with a child in an
+  /// ACTIVE group of the post whose media policy allows downloads, and only
+  /// for posts not hidden by moderation.
+  static bool canDownloadMedia(AppUser u, MediaPost post, Iterable<Group> groups) {
+    if (u.id == post.coachId) return true;
+    if (post.hidden || !u.isParent) return false;
+    final mine = groups.where((g) => g.isActive && post.groupIds.contains(g.id) && g.hasParent(u.id));
+    return mine.any((g) => g.mediaDownloadsEnabled);
   }
 
   static bool canViewPayment(AppUser u, Payment p, Group? g) =>

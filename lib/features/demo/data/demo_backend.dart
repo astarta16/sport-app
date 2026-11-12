@@ -71,6 +71,26 @@ class DemoBackend {
   final exerciseProgress = <String, ExerciseProgress>{};
   final planViews = <String, PlanView>{};
 
+  // v1.4
+  /// childId → parentUid → relation name (`children/{id}.guardianRelations`).
+  final guardianRelations = <String, Map<String, String>>{};
+
+  /// messageId → recipient snapshot taken when a coach message is created
+  /// (`chats/{g}/receipts/{m}.recipientIds`).
+  final msgRecipients = <String, List<String>>{};
+
+  /// messageId → uid → server time of the read / acknowledgment mark
+  /// (`…/msgReads/{uid}`, `…/msgAcks/{uid}`; create-only).
+  final msgReads = <String, Map<String, DateTime>>{};
+  final msgAcks = <String, Map<String, DateTime>>{};
+
+  /// Media download events (`mediaDownloads`) and the acknowledgment audit.
+  final mediaDownloads = <MediaDownloadEvent>[];
+
+  /// Demo transfer simulation: delay per 10 % chunk, and a one-shot failure.
+  Duration downloadChunkDelay = const Duration(milliseconds: 40);
+  bool failNextDownload = false;
+
   /// groupId → uid → lastReadAt (`chats/{groupId}/members/{uid}`).
   final chatReads = <String, Map<String, DateTime>>{};
 
@@ -288,4 +308,25 @@ extension TbilisiTimeX on DateTime {
     final w = d.toUtc().add(const Duration(hours: 4));
     return '${w.year}-${w.month}-${w.day}';
   }
+}
+
+/// A logged, authorized media download (v1.4, `mediaDownloads/{id}`).
+class MediaDownloadEvent {
+  const MediaDownloadEvent({
+    required this.postId,
+    required this.userId,
+    required this.role,
+    required this.groupId,
+    required this.clubId,
+    required this.mediaType,
+    required this.at,
+  });
+
+  final String postId;
+  final String userId;
+  final String role;
+  final String? groupId;
+  final String clubId;
+  final String mediaType;
+  final DateTime at;
 }

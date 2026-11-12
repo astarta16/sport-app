@@ -39,6 +39,7 @@ import '../../trainings/domain/training.dart';
 import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import 'parent_context.dart';
+import '../../chat/presentation/chat_providers.dart';
 
 /// Sports dashboard for the selected child and sport (spec §6.1).
 class ParentHomeScreen extends ConsumerWidget {
@@ -150,6 +151,7 @@ class ParentHomeScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const _InvitesBanner(),
+                    const _PendingAcksBanner(),
                     const SizedBox(height: AppSpacing.md),
                     if (group == null) noGroup else _NextTrainingSection(group: group),
                     if (group != null) _NextMatch(groupIds: {group.id}),
@@ -184,6 +186,7 @@ class ParentHomeScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const _InvitesBanner(),
+                          const _PendingAcksBanner(),
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
                             _NextMatch(groupIds: {group.id}),
@@ -592,6 +595,51 @@ class _NotificationsPreview extends ConsumerWidget {
 }
 
 /// Open group invitations for this parent (v1.1 §2).
+/// v1.4: outstanding acknowledgment requests. Shows only counts and group
+/// names (no message text); tapping opens the group chat.
+class _PendingAcksBanner extends ConsumerWidget {
+  const _PendingAcksBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pending = ref.watch(pendingAcksProvider).value ?? const [];
+    if (pending.isEmpty) return const SizedBox.shrink();
+    final groups = ref.watch(groupsByIdProvider);
+    final groupIds = pending.map((p) => p.groupId).toSet().toList();
+    final names = groupIds.map((g) => groups[g]?.name).whereType<String>().join(', ');
+    final l = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: AppCard(
+        key: const Key('dashboard-acks'),
+        color: AppColors.coral.withValues(alpha: 0.14),
+        onTap: () => context.push('/chat/${groupIds.first}'),
+        child: Row(
+          children: [
+            const Icon(Icons.task_alt_rounded, color: AppColors.coral),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.dashboardAcksTitle, style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    l.dashboardAcksBody(pending.length, names),
+                    style: Theme.of(context).textTheme.bodySmall,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _InvitesBanner extends ConsumerWidget {
   const _InvitesBanner();
 

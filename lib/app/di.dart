@@ -12,6 +12,8 @@ import '../features/clubs/domain/clubs_repository.dart';
 import '../features/groups/domain/groups_repository.dart';
 import '../features/maps/domain/location_repository.dart';
 import '../features/matches/domain/match.dart';
+import '../features/contacts/domain/contact.dart';
+import '../features/media/domain/media_access.dart';
 import '../features/media/domain/media_post.dart';
 import '../features/media/domain/media_repository.dart';
 import '../features/medical_certificates/domain/certificates_repository.dart';
@@ -60,3 +62,8 @@ final demoBackendProvider = Provider<DemoBackend?>((_) => null);
 // v1.3
 final paymentProofsRepositoryProvider = Provider<PaymentProofsRepository>((_) => _unbound('PaymentProofsRepository'));
 final trainingPlansRepositoryProvider = Provider<TrainingPlansRepository>((_) => _unbound('TrainingPlansRepository'));
+
+// v1.4
+final contactsRepositoryProvider = Provider<ContactsRepository>((_) => _unbound('ContactsRepository'));
+final mediaAccessRepositoryProvider = Provider<MediaAccessRepository>((_) => _unbound('MediaAccessRepository'));
+final mediaDownloaderProvider = Provider<MediaDownloader>((_) => _unbound('MediaDownloader'));

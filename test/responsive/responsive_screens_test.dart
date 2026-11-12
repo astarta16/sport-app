@@ -8,7 +8,11 @@ import 'package:sport_parent_app/features/demo/data/demo_backend.dart';
 import 'package:sport_parent_app/features/demo/data/demo_seed.dart';
 import 'package:sport_parent_app/features/trainings/domain/training.dart';
 
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:sport_parent_app/features/media/presentation/video_engine.dart';
+
 import '../helpers.dart';
+import '../v14/fake_video_engine.dart';
 
 /// Representative logical window sizes (width x height).
 const sizes = <String, Size>{
@@ -69,6 +73,7 @@ Future<DemoBackend> boot(
   double textScale = 1,
   bool onboarded = true,
   String? locale,
+  List<Override> extra = const [],
 }) async {
   currentLabel = '${size.width.toInt()}x${size.height.toInt()} boot';
   tester.view.physicalSize = size * 2;
@@ -78,7 +83,14 @@ Future<DemoBackend> boot(
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   final (db, overrides) = await demoSetup(prefs: {'settings.onboardingSeen': onboarded, 'settings.locale': ?locale});
   await collecting(
-    () => tester.pumpWidget(ProviderScope(overrides: overrides, retry: (_, _) => null, child: const SportParentApp())),
+    () => tester.pumpWidget(
+      ProviderScope(
+        // Widget tests have no video plugin: a deterministic fake engine.
+        overrides: [...overrides, videoEngineFactoryProvider.overrideWithValue(FakeVideoEngine.new), ...extra],
+        retry: (_, _) => null,
+        child: const SportParentApp(),
+      ),
+    ),
   );
   await pumpFrames(tester);
   return db;
@@ -108,6 +120,24 @@ const parentV13 = [
   '/payments/pay-l-s-0/proof',
   '/certificates/child-1',
   '/certificates/child-1/upload?replace=cert-1',
+];
+
+const parentV14 = [
+  '/group/g-football-u10/contacts',
+  '/chat/g-football-u10',
+  '/media/post-1',
+  '/media/post-2',
+  '/media/post-3',
+  '/children/child-1',
+];
+
+const coachV14 = [
+  '/group/g-football-u10/contacts',
+  '/group/g-football-u10/contacts?childId=child-1',
+  '/chat/g-football-u10',
+  '/chat/g-football-u10/receipts/msg-ack-1',
+  '/children/child-1/progress',
+  '/media/post-2',
 ];
 
 const coachV13 = [
@@ -159,6 +189,7 @@ void main() {
         '/account/privacy',
         // v1.3
         ...parentV13,
+        ...parentV14,
       ]);
       expectNoLayoutErrors();
     });
@@ -195,6 +226,7 @@ void main() {
         '/account',
         // v1.3
         ...coachV13,
+        ...coachV14,
       ]);
       expectNoLayoutErrors();
     });
@@ -224,9 +256,15 @@ void main() {
       for (final locale in ['ru', 'en']) {
         final db = await boot(tester, sizes[name]!, locale: locale);
         await signInAs(tester, db, DemoIds.parent);
-        await visit(tester, '$name $locale parent', ['/parent/home', '/parent/profile', '/settings', ...parentV13]);
+        await visit(tester, '$name $locale parent', [
+          '/parent/home',
+          '/parent/profile',
+          '/settings',
+          ...parentV13,
+          ...parentV14,
+        ]);
         await signInAs(tester, db, DemoIds.coach);
-        await visit(tester, '$name $locale coach', ['/coach/home', '/group/g-football-u10', ...coachV13]);
+        await visit(tester, '$name $locale coach', ['/coach/home', '/group/g-football-u10', ...coachV13, ...coachV14]);
       }
       expectNoLayoutErrors();
     });

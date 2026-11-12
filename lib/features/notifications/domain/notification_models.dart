@@ -26,7 +26,10 @@ enum NotificationType {
   paymentProofSubmitted,
   paymentProofApproved,
   paymentProofRejected,
-  trainingPlanPublished;
+  trainingPlanPublished,
+
+  /// v1.4: a coach message asks the parent to confirm they read it.
+  ackRequested;
 
   static NotificationType fromName(String name) =>
       NotificationType.values.firstWhere((t) => t.name == name, orElse: () => NotificationType.newTraining);
@@ -47,7 +50,7 @@ enum NotificationType {
     paymentProofRejected => NotificationCategory.payments,
     chatMessage => NotificationCategory.chat,
     certificateExpiry => NotificationCategory.certificates,
-    announcement || newPhotos || newMedia => NotificationCategory.announcements,
+    announcement || newPhotos || newMedia || ackRequested => NotificationCategory.announcements,
   };
 }
 

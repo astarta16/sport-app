@@ -1950,5 +1950,147 @@
   "adminMonth": "თვე",
   "addToCalendar": "კალენდარში დამატება",
   "exportSchedule": "განრიგის კალენდარში გატანა",
-  "calendarNothingToExport": "გასატანი ვარჯიშები არ არის"
+  "calendarNothingToExport": "გასატანი ვარჯიშები არ არის",
+  "contactsTitle": "კონტაქტები",
+  "contactsCoachTitle": "მწვრთნელის კონტაქტი",
+  "contactsParentsTitle": "მშობლები და მეურვეები",
+  "contactCallName": "დარეკვა: {name}",
+  "@contactCallName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactNoPhone": "ტელეფონის ნომერი არ არის",
+  "contactCoachAction": "მწვრთნელთან დაკავშირება",
+  "contactParentsAction": "მშობლების კონტაქტები",
+  "contactPrivacyCoach": "ამ ნომრებს მხოლოდ ამ ჯგუფის მწვრთნელები ხედავენ. გამოიყენეთ ისინი მხოლოდ გუნდის საკითხებისთვის.",
+  "contactPrivacyParent": "თქვენი შვილის ჯგუფის მწვრთნელის კონტაქტი. სხვა მშობლების ნომრები არ ჩანს.",
+  "contactParentOf": "მშობელი: {names}",
+  "@contactParentOf": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "contactsEmpty": "კონტაქტები არ არის",
+  "relationMother": "დედა",
+  "relationFather": "მამა",
+  "relationGuardian": "მეურვე",
+  "relationGrandparent": "ბებია ან ბაბუა",
+  "relationOther": "სხვა ნათესავი",
+  "receiptSeenBy": "ნახა {read}/{total} მშობელმა",
+  "@receiptSeenBy": {
+    "placeholders": {
+      "read": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptSeenShort": "ნანახია: {read}/{total}",
+  "@receiptSeenShort": {
+    "placeholders": {
+      "read": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptAckShort": "დადასტურებულია: {acked}/{total}",
+  "@receiptAckShort": {
+    "placeholders": {
+      "acked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptsTitle": "შეტყობინების სტატუსი",
+  "receiptNotSeen": "არ უნახავს",
+  "receiptSeen": "ნანახია",
+  "receiptAcknowledged": "დადასტურებულია",
+  "receiptSeenAt": "ნანახია {time}",
+  "@receiptSeenAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptAckAt": "დადასტურდა {time}",
+  "@receiptAckAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptPrivacy": "ვინ ნახა ეს შეტყობინება, მხოლოდ თქვენ ხედავთ. მოგვიანებით დამატებული მშობლები არ ითვლება.",
+  "chatAckToggle": "გაცნობის დადასტურების მოთხოვნა",
+  "chatAckRequired": "საჭიროა გაცნობის დადასტურება",
+  "chatAckButton": "გავეცანი",
+  "chatAckDone": "დადასტურებულია",
+  "chatAckSent": "დადასტურება გაიგზავნა",
+  "dashboardAcksTitle": "თქვენს დადასტურებას ელოდება",
+  "dashboardAcksBody": "{count} შეტყობინება · {groups}",
+  "@dashboardAcksBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
+  "notifAckRequested": "გთხოვთ, დაადასტუროთ გაცნობა",
+  "videoPlay": "დაკვრა",
+  "videoPause": "პაუზა",
+  "videoBack10": "10 წამით უკან",
+  "videoForward10": "10 წამით წინ",
+  "videoFullscreen": "სრულ ეკრანზე",
+  "videoExitFullscreen": "სრული ეკრანიდან გასვლა",
+  "videoLoading": "ვიდეო იტვირთება…",
+  "videoBuffering": "ბუფერიზაცია…",
+  "videoError": "ვიდეოს დაკვრა ვერ მოხერხდა.",
+  "videoPosition": "ვიდეოს პოზიცია",
+  "downloadAction": "ჩამოტვირთვა",
+  "downloadTitle": "მედიის ჩამოტვირთვა",
+  "downloadNotice": "ჩამოტვირთვისას ფაილის ასლი შეინახება თქვენს მოწყობილობაზე. მისი დისტანციურად წაშლა შეუძლებელია, ამიტომ გაუზიარეთ პასუხისმგებლობით.",
+  "downloadProgress": "იტვირთება… {percent}%",
+  "@downloadProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadCancelled": "ჩამოტვირთვა გაუქმდა",
+  "downloadFailed": "ჩამოტვირთვა ვერ მოხერხდა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.",
+  "downloadDone": "მზადაა: {name}. აირჩიეთ, სად შეინახოთ.",
+  "@downloadDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadDenied": "ამ ფაილზე წვდომა აღარ გაქვთ.",
+  "downloadStorageError": "ფაილის შენახვა ამ მოწყობილობაზე ვერ მოხერხდა.",
+  "downloadPolicyOff": "ამ ჯგუფისთვის ჩამოტვირთვა გამორთულია.",
+  "adminNavMediaDownloads": "მედიის ჩამოტვირთვები",
+  "adminMediaPolicy": "მშობლებს შეუძლიათ ფოტოებისა და ვიდეოების ჩამოტვირთვა",
+  "adminMediaDownloadsNote": "მწვრთნელების ფოტოებისა და ვიდეოების ავტორიზებული ჩამოტვირთვები. ჩამოტვირთული ასლის გაუქმება შეუძლებელია.",
+  "adminColPost": "პოსტი",
+  "adminColUser": "მომხმარებელი",
+  "adminColDownloads": "ჩამოტვირთვა"
 }

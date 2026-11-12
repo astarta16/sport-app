@@ -266,6 +266,27 @@ class PlanOverview {
   final DateTime startDate;
 }
 
+/// v1.4: one authorized parent/coach download of a coach media post.
+class MediaDownloadRow {
+  const MediaDownloadRow({
+    required this.postId,
+    required this.userId,
+    required this.userName,
+    required this.role,
+    required this.groupId,
+    required this.mediaType,
+    required this.at,
+  });
+
+  final String postId;
+  final String userId;
+  final String userName;
+  final String role;
+  final String? groupId;
+  final String mediaType;
+  final DateTime at;
+}
+
 abstract interface class AdminRepository {
   Future<List<GroupCompliance>> compliance();
   Future<List<GroupAttendanceRow>> attendanceReport({required int year, required int month});
@@ -273,6 +294,12 @@ abstract interface class AdminRepository {
 
   /// Club admin of the group's club / platform admin (financial permissions).
   Future<void> setPaymentManagers(String groupId, List<String> coachIds);
+
+  /// v1.4 media policy: club admin of the group's club / platform admin.
+  Future<void> setMediaDownloads(String groupId, {required bool enabled});
+
+  /// v1.4 media download audit (scoped to the admin's clubs).
+  Stream<List<MediaDownloadRow>> watchMediaDownloads();
 
   Future<AdminStats> stats();
 

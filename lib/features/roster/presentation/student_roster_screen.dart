@@ -267,6 +267,12 @@ class _RosterRow extends ConsumerWidget {
                   ],
                 ),
               ),
+              IconButton(
+                key: Key('roster-contacts-${c.id}'),
+                tooltip: l.contactParentsAction,
+                onPressed: () => context.push('/group/${entry.groupId}/contacts?childId=${c.id}'),
+                icon: const Icon(Icons.contact_phone_rounded),
+              ),
               const Icon(Icons.chevron_right_rounded),
             ],
           ),

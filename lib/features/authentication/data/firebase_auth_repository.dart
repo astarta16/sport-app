@@ -167,8 +167,8 @@ class FirebaseUserDirectoryRepository implements UserDirectoryRepository {
   final FirebaseFirestore db;
   final FirebaseFunctions functions;
 
-  /// Names come from `publicProfiles`; a parent's phone is only returned by
-  /// the `getParentPhone` callable after a shared-group check.
+  /// Names come from `publicProfiles`; a phone is only returned by the
+  /// `getContactPhone` callable after a live active-group check.
   @override
   Future<PublicProfile?> profile(String uid) => guardFirebase(() async {
     final snap = await db.collection('publicProfiles').doc(uid).get();
@@ -176,9 +176,10 @@ class FirebaseUserDirectoryRepository implements UserDirectoryRepository {
     if (d == null) return null;
     final role = UserRole.fromName(d['role'] as String?);
     String? phone;
-    if (role == UserRole.parent && uid != auth.currentUser?.uid) {
+    // v1.4: coach ↔ parent in both directions through one scoped callable.
+    if ((role == UserRole.parent || role == UserRole.coach) && uid != auth.currentUser?.uid) {
       try {
-        final r = await functions.httpsCallable('getParentPhone').call<Map<String, dynamic>>({'parentUid': uid});
+        final r = await functions.httpsCallable('getContactPhone').call<Map<String, dynamic>>({'uid': uid});
         phone = r.data['phone'] as String?;
       } on FirebaseFunctionsException {
         phone = null; // Not permitted — expected for parents/other groups.

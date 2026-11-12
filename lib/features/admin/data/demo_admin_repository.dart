@@ -398,4 +398,33 @@ class DemoAdminRepository implements AdminRepository {
     db.auditLog('group.paymentManagers', 'group', groupId, clubId: g.clubId, details: {'coaches': valid.join(',')});
     db.commit();
   }
+
+  @override
+  Future<void> setMediaDownloads(String groupId, {required bool enabled}) async {
+    db.requireOnline();
+    final me = _admin();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManageClub(me, g.clubId)) throw const PermissionDeniedException('club scope');
+    db.groups[groupId] = g.copyWith(mediaDownloadsEnabled: enabled);
+    db.auditLog('group.mediaPolicy', 'group', groupId, clubId: g.clubId, details: {'downloads': '$enabled'});
+    db.commit();
+  }
+
+  @override
+  Stream<List<MediaDownloadRow>> watchMediaDownloads() => db.watch(() {
+    final me = _admin();
+    return [
+      for (final e in db.mediaDownloads)
+        if (_inScope(me, e.clubId))
+          MediaDownloadRow(
+            postId: e.postId,
+            userId: e.userId,
+            userName: db.users[e.userId]?.fullName ?? e.userId,
+            role: e.role,
+            groupId: e.groupId,
+            mediaType: e.mediaType,
+            at: e.at,
+          ),
+    ]..sort((a, b) => b.at.compareTo(a.at));
+  });
 }

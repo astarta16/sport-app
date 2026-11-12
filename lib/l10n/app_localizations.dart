@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -6141,10 +6134,369 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'გასატანი ვარჯიშები არ არის'**
   String get calendarNothingToExport;
+
+  /// No description provided for @contactsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონტაქტები'**
+  String get contactsTitle;
+
+  /// No description provided for @contactsCoachTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის კონტაქტი'**
+  String get contactsCoachTitle;
+
+  /// No description provided for @contactsParentsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლები და მეურვეები'**
+  String get contactsParentsTitle;
+
+  /// No description provided for @contactCallName.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარეკვა: {name}'**
+  String contactCallName(String name);
+
+  /// No description provided for @contactNoPhone.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტელეფონის ნომერი არ არის'**
+  String get contactNoPhone;
+
+  /// No description provided for @contactCoachAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელთან დაკავშირება'**
+  String get contactCoachAction;
+
+  /// No description provided for @contactParentsAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლების კონტაქტები'**
+  String get contactParentsAction;
+
+  /// No description provided for @contactPrivacyCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ნომრებს მხოლოდ ამ ჯგუფის მწვრთნელები ხედავენ. გამოიყენეთ ისინი მხოლოდ გუნდის საკითხებისთვის.'**
+  String get contactPrivacyCoach;
+
+  /// No description provided for @contactPrivacyParent.
+  ///
+  /// In ka, this message translates to:
+  /// **'თქვენი შვილის ჯგუფის მწვრთნელის კონტაქტი. სხვა მშობლების ნომრები არ ჩანს.'**
+  String get contactPrivacyParent;
+
+  /// No description provided for @contactParentOf.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობელი: {names}'**
+  String contactParentOf(String names);
+
+  /// No description provided for @contactsEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონტაქტები არ არის'**
+  String get contactsEmpty;
+
+  /// No description provided for @relationMother.
+  ///
+  /// In ka, this message translates to:
+  /// **'დედა'**
+  String get relationMother;
+
+  /// No description provided for @relationFather.
+  ///
+  /// In ka, this message translates to:
+  /// **'მამა'**
+  String get relationFather;
+
+  /// No description provided for @relationGuardian.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეურვე'**
+  String get relationGuardian;
+
+  /// No description provided for @relationGrandparent.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბებია ან ბაბუა'**
+  String get relationGrandparent;
+
+  /// No description provided for @relationOther.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა ნათესავი'**
+  String get relationOther;
+
+  /// No description provided for @receiptSeenBy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნახა {read}/{total} მშობელმა'**
+  String receiptSeenBy(int read, int total);
+
+  /// No description provided for @receiptSeenShort.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნანახია: {read}/{total}'**
+  String receiptSeenShort(int read, int total);
+
+  /// No description provided for @receiptAckShort.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურებულია: {acked}/{total}'**
+  String receiptAckShort(int acked, int total);
+
+  /// No description provided for @receiptsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინების სტატუსი'**
+  String get receiptsTitle;
+
+  /// No description provided for @receiptNotSeen.
+  ///
+  /// In ka, this message translates to:
+  /// **'არ უნახავს'**
+  String get receiptNotSeen;
+
+  /// No description provided for @receiptSeen.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნანახია'**
+  String get receiptSeen;
+
+  /// No description provided for @receiptAcknowledged.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურებულია'**
+  String get receiptAcknowledged;
+
+  /// No description provided for @receiptSeenAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნანახია {time}'**
+  String receiptSeenAt(String time);
+
+  /// No description provided for @receiptAckAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურდა {time}'**
+  String receiptAckAt(String time);
+
+  /// No description provided for @receiptPrivacy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვინ ნახა ეს შეტყობინება, მხოლოდ თქვენ ხედავთ. მოგვიანებით დამატებული მშობლები არ ითვლება.'**
+  String get receiptPrivacy;
+
+  /// No description provided for @chatAckToggle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაცნობის დადასტურების მოთხოვნა'**
+  String get chatAckToggle;
+
+  /// No description provided for @chatAckRequired.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჭიროა გაცნობის დადასტურება'**
+  String get chatAckRequired;
+
+  /// No description provided for @chatAckButton.
+  ///
+  /// In ka, this message translates to:
+  /// **'გავეცანი'**
+  String get chatAckButton;
+
+  /// No description provided for @chatAckDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურებულია'**
+  String get chatAckDone;
+
+  /// No description provided for @chatAckSent.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურება გაიგზავნა'**
+  String get chatAckSent;
+
+  /// No description provided for @dashboardAcksTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'თქვენს დადასტურებას ელოდება'**
+  String get dashboardAcksTitle;
+
+  /// No description provided for @dashboardAcksBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count} შეტყობინება · {groups}'**
+  String dashboardAcksBody(int count, String groups);
+
+  /// No description provided for @notifAckRequested.
+  ///
+  /// In ka, this message translates to:
+  /// **'გთხოვთ, დაადასტუროთ გაცნობა'**
+  String get notifAckRequested;
+
+  /// No description provided for @videoPlay.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაკვრა'**
+  String get videoPlay;
+
+  /// No description provided for @videoPause.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაუზა'**
+  String get videoPause;
+
+  /// No description provided for @videoBack10.
+  ///
+  /// In ka, this message translates to:
+  /// **'10 წამით უკან'**
+  String get videoBack10;
+
+  /// No description provided for @videoForward10.
+  ///
+  /// In ka, this message translates to:
+  /// **'10 წამით წინ'**
+  String get videoForward10;
+
+  /// No description provided for @videoFullscreen.
+  ///
+  /// In ka, this message translates to:
+  /// **'სრულ ეკრანზე'**
+  String get videoFullscreen;
+
+  /// No description provided for @videoExitFullscreen.
+  ///
+  /// In ka, this message translates to:
+  /// **'სრული ეკრანიდან გასვლა'**
+  String get videoExitFullscreen;
+
+  /// No description provided for @videoLoading.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვიდეო იტვირთება…'**
+  String get videoLoading;
+
+  /// No description provided for @videoBuffering.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბუფერიზაცია…'**
+  String get videoBuffering;
+
+  /// No description provided for @videoError.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვიდეოს დაკვრა ვერ მოხერხდა.'**
+  String get videoError;
+
+  /// No description provided for @videoPosition.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვიდეოს პოზიცია'**
+  String get videoPosition;
+
+  /// No description provided for @downloadAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა'**
+  String get downloadAction;
+
+  /// No description provided for @downloadTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მედიის ჩამოტვირთვა'**
+  String get downloadTitle;
+
+  /// No description provided for @downloadNotice.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვისას ფაილის ასლი შეინახება თქვენს მოწყობილობაზე. მისი დისტანციურად წაშლა შეუძლებელია, ამიტომ გაუზიარეთ პასუხისმგებლობით.'**
+  String get downloadNotice;
+
+  /// No description provided for @downloadProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'იტვირთება… {percent}%'**
+  String downloadProgress(int percent);
+
+  /// No description provided for @downloadCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა გაუქმდა'**
+  String get downloadCancelled;
+
+  /// No description provided for @downloadFailed.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა ვერ მოხერხდა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.'**
+  String get downloadFailed;
+
+  /// No description provided for @downloadDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'მზადაა: {name}. აირჩიეთ, სად შეინახოთ.'**
+  String downloadDone(String name);
+
+  /// No description provided for @downloadDenied.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ფაილზე წვდომა აღარ გაქვთ.'**
+  String get downloadDenied;
+
+  /// No description provided for @downloadStorageError.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილის შენახვა ამ მოწყობილობაზე ვერ მოხერხდა.'**
+  String get downloadStorageError;
+
+  /// No description provided for @downloadPolicyOff.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ჯგუფისთვის ჩამოტვირთვა გამორთულია.'**
+  String get downloadPolicyOff;
+
+  /// No description provided for @adminNavMediaDownloads.
+  ///
+  /// In ka, this message translates to:
+  /// **'მედიის ჩამოტვირთვები'**
+  String get adminNavMediaDownloads;
+
+  /// No description provided for @adminMediaPolicy.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლებს შეუძლიათ ფოტოებისა და ვიდეოების ჩამოტვირთვა'**
+  String get adminMediaPolicy;
+
+  /// No description provided for @adminMediaDownloadsNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელების ფოტოებისა და ვიდეოების ავტორიზებული ჩამოტვირთვები. ჩამოტვირთული ასლის გაუქმება შეუძლებელია.'**
+  String get adminMediaDownloadsNote;
+
+  /// No description provided for @adminColPost.
+  ///
+  /// In ka, this message translates to:
+  /// **'პოსტი'**
+  String get adminColPost;
+
+  /// No description provided for @adminColUser.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომხმარებელი'**
+  String get adminColUser;
+
+  /// No description provided for @adminColDownloads.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩამოტვირთვა'**
+  String get adminColDownloads;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -6153,8 +6505,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

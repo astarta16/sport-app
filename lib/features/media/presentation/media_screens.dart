@@ -23,6 +23,9 @@ import '../../moderation/presentation/report_dialog.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/media_post.dart';
 import 'media_providers.dart';
+import '../../authentication/domain/access_policy.dart';
+import 'app_video_player.dart';
+import 'media_download_sheet.dart';
 
 /// Coach publishes a photo or video to selected groups (v1.1 §5).
 class MediaPublishScreen extends ConsumerStatefulWidget {
@@ -319,28 +322,20 @@ class MediaViewerScreen extends ConsumerWidget {
           : ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
-                AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      MediaPhoto(
-                        refPath: post.storagePath,
-                        sportKey: groups[post.groupIds.first]?.sportId ?? 'football',
-                      ),
-                      if (post.type == MediaType.video)
-                        Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.play_circle_fill_rounded, color: Colors.white, size: 64),
-                              Text(l.mediaVideo(post.durationSec ?? 0), style: const TextStyle(color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                    ],
+                if (post.type == MediaType.video)
+                  // v1.4: real playback through a server-checked, short-lived source.
+                  AppVideoPlayer(
+                    key: ValueKey('player-${post.id}'),
+                    resolve: () => ref.read(mediaAccessRepositoryProvider).playbackSource(post),
+                  )
+                else
+                  AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: MediaPhoto(
+                      refPath: post.storagePath,
+                      sportKey: groups[post.groupIds.first]?.sportId ?? 'football',
+                    ),
                   ),
-                ),
                 const SizedBox(height: AppSpacing.sm),
                 if (post.caption != null) Text(post.caption!, style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: AppSpacing.xs),
@@ -353,7 +348,22 @@ class MediaViewerScreen extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                DemoBanner(text: l.mediaNoDownload),
+                if (me != null && AccessPolicy.canDownloadMedia(me, post, groups.values))
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FilledButton.icon(
+                        key: const Key('media-download'),
+                        onPressed: () => showMediaDownloadSheet(context, post),
+                        icon: const Icon(Icons.download_rounded),
+                        label: Text(l.downloadAction),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(l.downloadNotice, style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  )
+                else if (me != null && me.isParent)
+                  DemoBanner(key: const Key('media-download-off'), text: l.downloadPolicyOff),
               ],
             ),
     );

@@ -1,3 +1,7 @@
+import '../features/contacts/data/firebase_contacts_repository.dart';
+import '../features/media/data/firebase_media_access_repository.dart';
+import '../features/media/data/http_media_downloader.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,5 +81,8 @@ Future<List<Override>> firebaseOverrides() async {
     accountRepositoryProvider.overrideWithValue(FirebaseAccountRepository(auth, db, functions)),
     paymentProofsRepositoryProvider.overrideWithValue(FirebasePaymentProofsRepository(auth, db, storage, functions)),
     trainingPlansRepositoryProvider.overrideWithValue(FirebaseTrainingPlansRepository(auth, db, storage, functions)),
+    contactsRepositoryProvider.overrideWithValue(FirebaseContactsRepository(functions)),
+    mediaAccessRepositoryProvider.overrideWithValue(FirebaseMediaAccessRepository(functions)),
+    mediaDownloaderProvider.overrideWithValue(HttpMediaDownloader()),
   ];
 }

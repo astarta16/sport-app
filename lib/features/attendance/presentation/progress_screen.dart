@@ -17,6 +17,7 @@ import '../../trainings/domain/training.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/attendance.dart';
 import 'attendance_providers.dart';
+import '../../contacts/presentation/contacts_screens.dart';
 
 /// Child progress (v1.2): recorded attendance only (never RSVPs), monthly
 /// trend, achievements, coach feedback and history. Visible to the child's
@@ -64,6 +65,12 @@ class ProgressScreen extends ConsumerWidget {
               children: [
                 Text(l.progressPrivacyNote, style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: AppSpacing.sm),
+                // v1.4: the coach sees this child's guardians with a call button.
+                if (coachGroups.isNotEmpty) ...[
+                  SectionHeader(l.contactsParentsTitle),
+                  GuardianContactsSection(groupId: coachGroups.first.id, childId: childId),
+                  const SizedBox(height: AppSpacing.sm),
+                ],
                 Row(
                   children: [
                     Expanded(

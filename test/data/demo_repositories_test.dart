@@ -330,7 +330,11 @@ void main() {
       await auth.deleteAccount();
       expect(db.users.containsKey(DemoIds.parent), isFalse);
       expect(db.children.values.any((c) => c.parentIds.contains(DemoIds.parent)), isFalse);
-      expect(db.certificateFiles.keys.any((k) => k.contains('child-1') || k.contains('child-2')), isFalse);
+      expect(db.certificateFiles.keys.any((k) => k.contains('child-2')), isFalse);
+      // v1.4: Luka also has a second guardian, so he is unlinked, not deleted,
+      // and his certificates stay with the remaining guardian.
+      expect(db.children['child-1']!.parentIds, ['parent-5']);
+      expect(db.certificateFiles.keys.any((k) => k.contains('child-1')), isTrue);
       expect(db.session, isNull);
     });
   });

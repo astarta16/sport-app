@@ -72,6 +72,18 @@ class GroupsPage extends ConsumerWidget {
                       child: const Icon(Icons.price_check_rounded),
                     ),
                   ),
+                  Tooltip(
+                    message: l.adminMediaPolicy,
+                    child: Switch(
+                      key: Key('media-policy-${g.group.id}'),
+                      value: g.group.mediaDownloadsEnabled,
+                      onChanged: (v) => runGuarded(
+                        context,
+                        () => ref.read(adminRepositoryProvider).setMediaDownloads(g.group.id, enabled: v),
+                        success: l.adminSaved,
+                      ),
+                    ),
+                  ),
                   IconButton(
                     key: Key('archive-group-${g.group.id}'),
                     tooltip: g.group.isActive ? l.adminArchive : l.adminRestore,

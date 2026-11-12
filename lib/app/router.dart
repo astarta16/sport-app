@@ -45,6 +45,8 @@ import '../features/trainings/presentation/training_form_screen.dart';
 import 'routes.dart';
 import 'settings.dart';
 import 'shell.dart';
+import '../features/contacts/presentation/contacts_screens.dart';
+import '../features/chat/presentation/receipt_details_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -84,7 +86,8 @@ String? resolveRedirect({
     return home;
   }
   if (user.isParent &&
-      (location.startsWith('/group/') ||
+      ((location.startsWith('/group/') && !location.split('?').first.endsWith('/contacts')) ||
+          location.contains('/receipts/') ||
           location.startsWith('/series/') ||
           location == Routes.newMedia ||
           location.startsWith('/media/new') ||
@@ -260,6 +263,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/group/:groupId',
         builder: (_, s) => GroupRosterScreen(groupId: s.pathParameters['groupId']!),
+      ),
+      GoRoute(
+        path: '/group/:groupId/contacts',
+        builder: (_, s) =>
+            GroupContactsScreen(groupId: s.pathParameters['groupId']!, childId: s.uri.queryParameters['childId']),
+      ),
+      GoRoute(
+        path: '/chat/:groupId/receipts/:messageId',
+        builder: (_, s) =>
+            ReceiptDetailsScreen(groupId: s.pathParameters['groupId']!, messageId: s.pathParameters['messageId']!),
       ),
       GoRoute(
         path: '/group/:groupId/payments',

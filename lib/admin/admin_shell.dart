@@ -34,6 +34,7 @@ class AdminShell extends ConsumerWidget {
       (AdminRoutes.attendance, Icons.fact_check_rounded, l.adminNavAttendance),
       (AdminRoutes.plans, Icons.assignment_rounded, l.adminNavPlans),
       (AdminRoutes.payments, Icons.receipt_long_rounded, l.adminNavPayments),
+      (AdminRoutes.mediaDownloads, Icons.download_for_offline_rounded, l.adminNavMediaDownloads),
       (AdminRoutes.moderation, Icons.flag_rounded, l.adminNavModeration),
       (AdminRoutes.audit, Icons.history_edu_rounded, l.adminNavAudit),
       if (user.isPlatformAdmin) (AdminRoutes.admins, Icons.admin_panel_settings_rounded, l.adminNavAdmins),

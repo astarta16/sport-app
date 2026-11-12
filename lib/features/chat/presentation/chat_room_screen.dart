@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
@@ -13,6 +17,7 @@ import '../../authentication/presentation/session_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../media/presentation/media_providers.dart';
 import '../domain/chat_message.dart';
+import '../domain/receipts.dart';
 import '../../moderation/domain/report.dart';
 import '../../moderation/presentation/report_dialog.dart';
 import 'chat_providers.dart';
@@ -34,11 +39,36 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final _text = TextEditingController();
   bool _sending = false;
   bool _announcement = false;
+  bool _requiresAck = false;
 
   /// Messages that failed to send — kept with a retry action (never shown
   /// as sent when the backend rejected them).
-  final _failed = <({String text, bool announcement})>[];
+  final _failed = <({String text, bool announcement, bool requiresAck})>[];
   int _lastSeenCount = -1;
+
+  // v1.4 read marks: messages actually shown on screen are queued and sent
+  // in one debounced batch; failures are retried on the next sighting.
+  final _seenQueue = <String>{};
+  final _seenSent = <String>{};
+  Timer? _seenTimer;
+  final _scrollTick = ValueNotifier<int>(0);
+  static const seenDebounce = Duration(milliseconds: 600);
+
+  void _onSeen(String messageId) {
+    if (_seenSent.contains(messageId) || !_seenQueue.add(messageId)) return;
+    _seenTimer?.cancel();
+    _seenTimer = Timer(seenDebounce, _flushSeen);
+  }
+
+  void _flushSeen() {
+    if (_seenQueue.isEmpty) return;
+    final ids = _seenQueue.toList();
+    _seenQueue.clear();
+    _seenSent.addAll(ids);
+    ref.read(chatRepositoryProvider).markSeen(widget.groupId, ids).catchError((Object _) {
+      _seenSent.removeAll(ids); // e.g. offline — retried when seen again
+    });
+  }
 
   @override
   void initState() {
@@ -48,6 +78,8 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   void dispose() {
+    _seenTimer?.cancel();
+    _scrollTick.dispose();
     _text.dispose();
     super.dispose();
   }
@@ -57,22 +89,26 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     ref.read(chatRepositoryProvider).markRead(widget.groupId).catchError((_) {});
   }
 
-  Future<void> _send({String? retryText, bool? retryAnnouncement}) async {
+  Future<void> _send({String? retryText, bool? retryAnnouncement, bool? retryAck}) async {
     final text = retryText ?? _text.text;
     final announcement = retryAnnouncement ?? _announcement;
+    final requiresAck = retryAck ?? _requiresAck;
     if (text.trim().isEmpty) return;
     setState(() => _sending = true);
     try {
-      await ref.read(chatRepositoryProvider).send(widget.groupId, text, announcement: announcement);
+      await ref
+          .read(chatRepositoryProvider)
+          .send(widget.groupId, text, announcement: announcement, requiresAck: requiresAck);
       if (!mounted) return;
       if (retryText == null) {
         _text.clear();
         _announcement = false;
+        _requiresAck = false;
       }
     } catch (e) {
       if (!mounted) return;
       if (retryText == null) {
-        _failed.add((text: text, announcement: announcement));
+        _failed.add((text: text, announcement: announcement, requiresAck: requiresAck));
         _text.clear();
       }
       showAppSnack(context, errorText(context, e), error: true);
@@ -84,7 +120,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final f = _failed[i];
     setState(() => _failed.removeAt(i));
     try {
-      await ref.read(chatRepositoryProvider).send(widget.groupId, f.text, announcement: f.announcement);
+      await ref
+          .read(chatRepositoryProvider)
+          .send(widget.groupId, f.text, announcement: f.announcement, requiresAck: f.requiresAck);
     } catch (e) {
       if (!mounted) return;
       setState(() => _failed.insert(i, f));
@@ -139,6 +177,16 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     await runGuarded(context, () => ref.read(chatRepositoryProvider).send(widget.groupId, '', attachments: [photo]));
   }
 
+  /// Explicit acknowledgment — only from the button, never on open/read.
+  Future<void> _acknowledge(ChatMessage m) async {
+    final l = context.l10n;
+    await runGuarded(
+      context,
+      () => ref.read(chatRepositoryProvider).acknowledge(widget.groupId, m.id),
+      success: l.chatAckSent,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -147,8 +195,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final me = ref.watch(currentUserProvider);
     final isCoach = group != null && me != null && group.hasCoach(me.id) && me.isApprovedCoach;
     final receipts = isCoach
-        ? (ref.watch(readReceiptsProvider(widget.groupId)).value ?? const {})
-        : const <String, DateTime>{};
+        ? (ref.watch(sentReceiptsProvider(widget.groupId)).value ?? const <String, MessageReceipt>{})
+        : const <String, MessageReceipt>{};
+    final isParentMember = me != null && me.isParent && group != null && group.hasParent(me.id);
+    final marks = isParentMember ? ref.watch(myMarksProvider(widget.groupId)).value : null;
     final limit = ref.watch(chatLimitProvider(widget.groupId));
     // Mark as read whenever new messages arrive while the room is open.
     final count = messages.value?.length ?? -1;
@@ -177,55 +227,81 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               }
               final reversed = list.reversed.toList();
               final canLoadMore = list.length >= limit;
-              return ListView.builder(
-                reverse: true,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                itemCount: reversed.length + _failed.length + (canLoadMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < _failed.length) {
-                    final fi = _failed.length - 1 - index;
-                    return _FailedBubble(
-                      text: _failed[fi].text,
-                      onRetry: () => _retry(fi),
-                      onDiscard: () => setState(() => _failed.removeAt(fi)),
-                    );
-                  }
-                  final i = index - _failed.length;
-                  if (i == reversed.length) {
-                    return Center(
-                      child: TextButton.icon(
-                        key: const Key('chat-load-earlier'),
-                        onPressed: () => ref.read(chatLimitProvider(widget.groupId).notifier).state = limit + 50,
-                        icon: const Icon(Icons.history_rounded),
-                        label: Text(l.loadEarlier),
-                      ),
-                    );
-                  }
-                  final m = reversed[i];
-                  final older = i + 1 < reversed.length ? reversed[i + 1] : null;
-                  final showDay = older == null || !isSameDay(older.createdAt, m.createdAt);
-                  final showName = older == null || older.senderId != m.senderId || showDay;
-                  return Column(
-                    children: [
-                      if (showDay) _DayDivider(date: m.createdAt),
-                      if (m.isSystem)
-                        _SystemLine(message: m)
-                      else
-                        GestureDetector(
-                          onLongPress: () => _messageActions(m, isCoach: isCoach, mine: m.senderId == me?.id),
-                          child: _Bubble(
-                            message: m,
-                            mine: m.senderId == me?.id,
-                            showName: showName,
-                            sportKey: group?.sportId ?? '',
-                            readBy: m.senderId == me?.id && isCoach
-                                ? receipts.entries.where((e) => e.key != me.id && !e.value.isBefore(m.createdAt)).length
-                                : null,
-                          ),
-                        ),
-                    ],
-                  );
+              return NotificationListener<ScrollNotification>(
+                onNotification: (n) {
+                  if (n is ScrollEndNotification || n is ScrollUpdateNotification) _scrollTick.value++;
+                  return false;
                 },
+                child: ListView.builder(
+                  reverse: true,
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                  itemCount: reversed.length + _failed.length + (canLoadMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < _failed.length) {
+                      final fi = _failed.length - 1 - index;
+                      return _FailedBubble(
+                        text: _failed[fi].text,
+                        onRetry: () => _retry(fi),
+                        onDiscard: () => setState(() => _failed.removeAt(fi)),
+                      );
+                    }
+                    final i = index - _failed.length;
+                    if (i == reversed.length) {
+                      return Center(
+                        child: TextButton.icon(
+                          key: const Key('chat-load-earlier'),
+                          onPressed: () => ref.read(chatLimitProvider(widget.groupId).notifier).state = limit + 50,
+                          icon: const Icon(Icons.history_rounded),
+                          label: Text(l.loadEarlier),
+                        ),
+                      );
+                    }
+                    final m = reversed[i];
+                    final older = i + 1 < reversed.length ? reversed[i + 1] : null;
+                    final showDay = older == null || !isSameDay(older.createdAt, m.createdAt);
+                    final showName = older == null || older.senderId != m.senderId || showDay;
+                    final mine = m.senderId == me?.id;
+                    Widget bubble = _Bubble(
+                      message: m,
+                      mine: mine,
+                      showName: showName,
+                      sportKey: group?.sportId ?? '',
+                      receipt: mine && isCoach ? receipts[m.id] : null,
+                      onOpenReceipt: () => context.push('/chat/${widget.groupId}/receipts/${m.id}'),
+                      ackState: marks == null || !m.requiresAck || !marks.ackRequested.contains(m.id)
+                          ? null
+                          : (marks.acked.containsKey(m.id) ? true : false),
+                      onAcknowledge: () => _acknowledge(m),
+                    );
+                    // Parents: a coach message becomes "seen" only once it is
+                    // actually visible in this open conversation.
+                    if (marks != null &&
+                        !mine &&
+                        !m.hidden &&
+                        !m.isSystem &&
+                        m.senderRole == UserRole.coach &&
+                        !marks.read.contains(m.id)) {
+                      bubble = SeenReporter(
+                        key: ValueKey('seen-${m.id}'),
+                        tick: _scrollTick,
+                        onSeen: () => _onSeen(m.id),
+                        child: bubble,
+                      );
+                    }
+                    return Column(
+                      children: [
+                        if (showDay) _DayDivider(date: m.createdAt),
+                        if (m.isSystem)
+                          _SystemLine(message: m)
+                        else
+                          GestureDetector(
+                            onLongPress: () => _messageActions(m, isCoach: isCoach, mine: mine),
+                            child: bubble,
+                          ),
+                      ],
+                    );
+                  },
+                ),
               );
             },
           ),
@@ -244,12 +320,25 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 if (isCoach)
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: FilterChip(
-                      key: const Key('chat-announcement-toggle'),
-                      avatar: const Icon(Icons.campaign_rounded, size: 18),
-                      label: Text(l.chatAnnouncementToggle),
-                      selected: _announcement,
-                      onSelected: (v) => setState(() => _announcement = v),
+                    child: Wrap(
+                      spacing: AppSpacing.xs,
+                      runSpacing: 4,
+                      children: [
+                        FilterChip(
+                          key: const Key('chat-announcement-toggle'),
+                          avatar: const Icon(Icons.campaign_rounded, size: 18),
+                          label: Text(l.chatAnnouncementToggle),
+                          selected: _announcement,
+                          onSelected: (v) => setState(() => _announcement = v),
+                        ),
+                        FilterChip(
+                          key: const Key('chat-ack-toggle'),
+                          avatar: const Icon(Icons.task_alt_rounded, size: 18),
+                          label: Text(l.chatAckToggle),
+                          selected: _requiresAck,
+                          onSelected: (v) => setState(() => _requiresAck = v),
+                        ),
+                      ],
                     ),
                   ),
                 Row(
@@ -311,7 +400,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       );
     }
     return Scaffold(
-      appBar: AppBar(titleSpacing: 0, title: title),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: title,
+        actions: [
+          IconButton(
+            key: const Key('chat-contacts'),
+            tooltip: l.contactsTitle,
+            onPressed: () => context.push('/group/${widget.groupId}/contacts'),
+            icon: const Icon(Icons.contact_phone_rounded),
+          ),
+        ],
+      ),
       body: body,
     );
   }
@@ -346,7 +446,10 @@ class _Bubble extends StatelessWidget {
     required this.mine,
     required this.showName,
     required this.sportKey,
-    this.readBy,
+    this.receipt,
+    this.onOpenReceipt,
+    this.ackState,
+    this.onAcknowledge,
   });
 
   final ChatMessage message;
@@ -354,8 +457,14 @@ class _Bubble extends StatelessWidget {
   final bool showName;
   final String sportKey;
 
-  /// Read receipts (coach's own messages only).
-  final int? readBy;
+  /// v1.4 receipt summary (the coach's own messages only).
+  final MessageReceipt? receipt;
+  final VoidCallback? onOpenReceipt;
+
+  /// Parent recipient of an acknowledgment request: false = pending,
+  /// true = acknowledged, null = not asked.
+  final bool? ackState;
+  final VoidCallback? onAcknowledge;
 
   @override
   Widget build(BuildContext context) {
@@ -431,6 +540,24 @@ class _Bubble extends StatelessWidget {
                           ],
                         ),
                       ),
+                    if (message.requiresAck && !message.hidden)
+                      Padding(
+                        key: Key('ack-required-${message.id}'),
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.task_alt_rounded, size: 16, color: fg),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                context.l10n.chatAckRequired,
+                                style: t.labelSmall?.copyWith(color: fg, fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     if (message.hidden)
                       Text(
                         context.l10n.messageHidden,
@@ -444,16 +571,64 @@ class _Bubble extends StatelessWidget {
                         ),
                       if (message.text.isNotEmpty) Text(message.text, style: t.bodyMedium?.copyWith(color: fg)),
                     ],
+                    if (ackState == false && !message.hidden)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: FilledButton.icon(
+                          key: Key('ack-${message.id}'),
+                          onPressed: onAcknowledge,
+                          icon: const Icon(Icons.check_rounded, size: 18),
+                          label: Text(context.l10n.chatAckButton),
+                        ),
+                      ),
+                    if (ackState == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Row(
+                          key: Key('acked-${message.id}'),
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.verified_rounded, size: 16, color: AppColors.success),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                context.l10n.chatAckDone,
+                                style: t.labelMedium?.copyWith(color: AppColors.success, fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     const SizedBox(height: 2),
                     Text(
-                      readBy == null
-                          ? Fmt.of(context).time(message.createdAt)
-                          : '${Fmt.of(context).time(message.createdAt)} · ${context.l10n.chatReadBy(readBy!)}',
+                      Fmt.of(context).time(message.createdAt),
                       style: t.labelSmall?.copyWith(
                         color: mine && !announcement ? Colors.white70 : scheme.onSurfaceVariant,
                         fontSize: 10,
                       ),
                     ),
+                    if (receipt != null)
+                      InkWell(
+                        key: Key('receipt-${message.id}'),
+                        onTap: onOpenReceipt,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            [
+                              context.l10n.receiptSeenBy(receipt!.readCount, receipt!.recipientCount),
+                              if (receipt!.requiresAck)
+                                context.l10n.receiptAckShort(receipt!.ackCount, receipt!.recipientCount),
+                            ].join(' · '),
+                            textAlign: TextAlign.end,
+                            style: t.labelSmall?.copyWith(
+                              color: mine && !announcement ? Colors.white : scheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w700,
+                              decoration: TextDecoration.underline,
+                              decorationColor: mine && !announcement ? Colors.white70 : scheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -561,5 +736,78 @@ class _FailedBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Reports once when its child is at least 60 % visible in the enclosing
+/// scrollable, the route is current and the app is in the foreground.
+/// Re-checked after layout and whenever [tick] changes (scrolling).
+class SeenReporter extends StatefulWidget {
+  const SeenReporter({super.key, required this.tick, required this.onSeen, required this.child});
+
+  final ValueListenable<int> tick;
+  final VoidCallback onSeen;
+  final Widget child;
+
+  static const minVisibleFraction = 0.6;
+
+  @override
+  State<SeenReporter> createState() => _SeenReporterState();
+}
+
+class _SeenReporterState extends State<SeenReporter> {
+  bool _reported = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.tick.addListener(_schedule);
+  }
+
+  @override
+  void didUpdateWidget(SeenReporter old) {
+    super.didUpdateWidget(old);
+    if (old.tick != widget.tick) {
+      old.tick.removeListener(_schedule);
+      widget.tick.addListener(_schedule);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.tick.removeListener(_schedule);
+    super.dispose();
+  }
+
+  void _schedule() {
+    if (_reported) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _check());
+  }
+
+  void _check() {
+    if (_reported || !mounted) return;
+    final life = WidgetsBinding.instance.lifecycleState;
+    if (life != null && life != AppLifecycleState.resumed) return;
+    if (!TickerMode.valuesOf(context).enabled) return;
+    if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
+    final box = context.findRenderObject();
+    final scrollable = Scrollable.maybeOf(context);
+    final viewport = scrollable?.context.findRenderObject();
+    if (box is! RenderBox || viewport is! RenderBox || !box.attached || !viewport.attached || !box.hasSize) return;
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    final view = viewport.localToGlobal(Offset.zero) & viewport.size;
+    final visible = rect.intersect(view);
+    if (visible.isEmpty || visible.height <= 0 || visible.width <= 0) return;
+    final needed = (rect.height < view.height ? rect.height : view.height) * SeenReporter.minVisibleFraction;
+    if (visible.height >= needed) {
+      _reported = true;
+      widget.onSeen();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _schedule();
+    return widget.child;
   }
 }

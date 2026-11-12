@@ -23,6 +23,7 @@ class Group {
     this.createdBy,
     this.status = GroupStatus.active,
     this.paymentManagerIds = const [],
+    this.mediaDownloadsEnabled = true,
   });
 
   final String id;
@@ -46,6 +47,11 @@ class Group {
   /// Coaches explicitly allowed to verify payments (v1.3). Set by admins only.
   final List<String> paymentManagerIds;
 
+  /// v1.4 media policy, set by club admins through the server (updateGroup):
+  /// false = parents cannot download this group's photos/videos.
+  /// Server-managed, therefore not part of [toMap].
+  final bool mediaDownloadsEnabled;
+
   bool hasCoach(String uid) => coachIds.contains(uid);
   bool hasParent(String uid) => parentIds.contains(uid);
   bool hasChild(String childId) => memberChildIds.contains(childId);
@@ -62,6 +68,7 @@ class Group {
     String? inviteCode,
     GroupStatus? status,
     List<String>? paymentManagerIds,
+    bool? mediaDownloadsEnabled,
   }) => Group(
     id: id,
     clubId: clubId,
@@ -77,6 +84,7 @@ class Group {
     createdBy: createdBy,
     status: status ?? this.status,
     paymentManagerIds: paymentManagerIds ?? this.paymentManagerIds,
+    mediaDownloadsEnabled: mediaDownloadsEnabled ?? this.mediaDownloadsEnabled,
   );
 
   Map<String, dynamic> toMap() => {
@@ -110,6 +118,7 @@ class Group {
     createdBy: m['createdBy'] as String?,
     status: GroupStatus.fromName(m['status'] as String?),
     paymentManagerIds: readStringList(m['paymentManagerIds']),
+    mediaDownloadsEnabled: m['mediaDownloadsEnabled'] as bool? ?? true,
   );
 }
 

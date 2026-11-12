@@ -82,8 +82,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationRequired => 'Required';
 
   @override
-  String get validationInvalidPhone =>
-      'Enter a valid mobile number (5XX XXX XXX)';
+  String get validationInvalidPhone => 'Enter a valid mobile number (5XX XXX XXX)';
 
   @override
   String get validationInvalidOtp => 'The code must be 6 digits';
@@ -131,8 +130,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationStartInPast => 'That time has already passed';
 
   @override
-  String get validationPhotoConsentRequired =>
-      'Confirm the photo consent condition';
+  String get validationPhotoConsentRequired => 'Confirm the photo consent condition';
 
   @override
   String get validationFileType => 'Only JPG, PNG or PDF are allowed';
@@ -171,22 +169,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle1 => 'Every training in one calendar';
 
   @override
-  String get onboardingBody1 =>
-      'Time, place and coach — always at hand. Hear about changes instantly.';
+  String get onboardingBody1 => 'Time, place and coach — always at hand. Hear about changes instantly.';
 
   @override
   String get onboardingTitle2 => 'A direct line to the coach';
 
   @override
-  String get onboardingBody2 =>
-      'Group chat for parents and coaches, photos from every session.';
+  String get onboardingBody2 => 'Group chat for parents and coaches, photos from every session.';
 
   @override
   String get onboardingTitle3 => 'Certificates and payments, safely';
 
   @override
-  String get onboardingBody3 =>
-      'Medical certificates in private storage, reminders for expiry dates and fees.';
+  String get onboardingBody3 => 'Medical certificates in private storage, reminders for expiry dates and fees.';
 
   @override
   String get onboardingStart => 'Get started';
@@ -198,8 +193,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneTitle => 'Sign in with your phone';
 
   @override
-  String get phoneSubtitle =>
-      'We\'ll text you a one-time code. No password needed.';
+  String get phoneSubtitle => 'We\'ll text you a one-time code. No password needed.';
 
   @override
   String get phoneLabel => 'Mobile number';
@@ -233,8 +227,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get demoAccountsTitle => 'Quick demo sign-in';
 
   @override
-  String get demoAccountsSubtitle =>
-      'Fictional data — no real SMS, payments or medical information.';
+  String get demoAccountsSubtitle => 'Fictional data — no real SMS, payments or medical information.';
 
   @override
   String get demoPendingCoach => 'Coach (pending approval)';
@@ -243,8 +236,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guestBrowse => 'Browse clubs without signing in';
 
   @override
-  String get termsNote =>
-      'By continuing you agree to the Terms and Privacy Policy.';
+  String get termsNote => 'By continuing you agree to the Terms and Privacy Policy.';
 
   @override
   String get registerTitle => 'Create your profile';
@@ -256,22 +248,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleParent => 'Parent';
 
   @override
-  String get roleParentDesc =>
-      'Children\'s trainings, coach chat, certificates and payments';
+  String get roleParentDesc => 'Children\'s trainings, coach chat, certificates and payments';
 
   @override
   String get roleCoach => 'Coach';
 
   @override
-  String get roleCoachDesc =>
-      'Manage groups and plan trainings. Requires club approval.';
+  String get roleCoachDesc => 'Manage groups and plan trainings. Requires club approval.';
 
   @override
   String get roleChild => 'Child';
 
   @override
-  String get roleChildDesc =>
-      'Parents create profiles for under-14s. Accounts for ages 14–17 are coming soon.';
+  String get roleChildDesc => 'Parents create profiles for under-14s. Accounts for ages 14–17 are coming soon.';
 
   @override
   String get soon => 'Soon';
@@ -323,8 +312,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachRejectedBody => 'Please contact the club administration.';
 
   @override
-  String get childAccountUnsupported =>
-      'Independent child accounts aren\'t available yet. Use a parent\'s account.';
+  String get childAccountUnsupported => 'Independent child accounts aren\'t available yet. Use a parent\'s account.';
 
   @override
   String get signOut => 'Sign out';
@@ -393,8 +381,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noChildrenTitle => 'Add your first child';
 
   @override
-  String get noChildrenBody =>
-      'Create a profile and pick a sport — we\'ll take care of the rest.';
+  String get noChildrenBody => 'Create a profile and pick a sport — we\'ll take care of the rest.';
 
   @override
   String get addChild => 'Add child';
@@ -405,8 +392,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noGroupBody =>
-      'Find a club on the map and send a membership request.';
+  String get noGroupBody => 'Find a club on the map and send a membership request.';
 
   @override
   String get findClub => 'Find a club';
@@ -446,12 +432,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String yearsOld(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count years old',
-      one: '1 year old',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count years old', one: '1 year old');
     return '$_temp0';
   }
 
@@ -517,8 +498,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelTraining => 'Cancel training';
 
   @override
-  String get cancelTrainingConfirm =>
-      'Cancel this training? Parents in the group will be notified.';
+  String get cancelTrainingConfirm => 'Cancel this training? Parents in the group will be notified.';
 
   @override
   String get keepTraining => 'No, keep it';
@@ -562,19 +542,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get photoConsentAllGiven =>
-      'Every child in the group has parental photo consent.';
+  String get photoConsentAllGiven => 'Every child in the group has parental photo consent.';
 
   @override
-  String get photoConsentConfirm =>
-      'I confirm no child without consent appears in these photos';
+  String get photoConsentConfirm => 'I confirm no child without consent appears in these photos';
 
   @override
   String get selectVenue => 'Choose a venue';
 
   @override
-  String get descriptionHint =>
-      'What will you practise? e.g. passing, shooting…';
+  String get descriptionHint => 'What will you practise? e.g. passing, shooting…';
 
   @override
   String get groupLabel => 'Group';
@@ -610,12 +587,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String groupMembers(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count children',
-      one: '1 child',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count children', one: '1 child');
     return '$_temp0';
   }
 
@@ -623,8 +595,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roster => 'Group roster';
 
   @override
-  String get noGroupsCoach =>
-      'No groups assigned yet. Contact your club administrator.';
+  String get noGroupsCoach => 'No groups assigned yet. Contact your club administrator.';
 
   @override
   String get membershipRequests => 'Membership requests';
@@ -763,12 +734,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String placesCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count places',
-      one: '1 place',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count places', one: '1 place');
     return '$_temp0';
   }
 
@@ -825,8 +791,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Delete it at any time. Deleting your account removes all certificates. Leaving a group ends the coach\'s access.';
 
   @override
-  String get certConsentAgree =>
-      'I consent to processing the certificate as described above';
+  String get certConsentAgree => 'I consent to processing the certificate as described above';
 
   @override
   String get takePhoto => 'Camera';
@@ -853,8 +818,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteCertificate => 'Delete certificate';
 
   @override
-  String get deleteCertificateConfirm =>
-      'Delete this certificate? The file is removed from storage permanently.';
+  String get deleteCertificateConfirm => 'Delete this certificate? The file is removed from storage permanently.';
 
   @override
   String get certDeleted => 'Certificate deleted';
@@ -922,8 +886,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get certRemindersNote =>
-      'You\'ll be reminded 14 and 3 days before expiry and on the day itself.';
+  String get certRemindersNote => 'You\'ll be reminded 14 and 3 days before expiry and on the day itself.';
 
   @override
   String fileSelected(String name) {
@@ -987,12 +950,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationSettings => 'Notification settings';
 
   @override
-  String get notificationSettingsHint =>
-      'Choose which notifications you receive.';
+  String get notificationSettingsHint => 'Choose which notifications you receive.';
 
   @override
-  String get pushDemoNote =>
-      'Demo mode sends no push notifications — they appear in-app instead.';
+  String get pushDemoNote => 'Demo mode sends no push notifications — they appear in-app instead.';
 
   @override
   String get paymentsTitle => 'Payments';
@@ -1035,8 +996,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chargeGroup => 'One-off charge';
 
   @override
-  String get chargeGroupHint =>
-      'A payment is created for every child in the group.';
+  String get chargeGroupHint => 'A payment is created for every child in the group.';
 
   @override
   String get recurringPlans => 'Monthly fee';
@@ -1081,8 +1041,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smsLog => 'SMS log';
 
   @override
-  String get smsMockNote =>
-      'Demo: a mock SMS provider is used. No real SMS is sent.';
+  String get smsMockNote => 'Demo: a mock SMS provider is used. No real SMS is sent.';
 
   @override
   String get noPayments => 'No payments yet';
@@ -1110,8 +1069,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get reminderSchedule =>
-      'SMS: 5 days before and the day before, 10:00 (Tbilisi)';
+  String get reminderSchedule => 'SMS: 5 days before and the day before, 10:00 (Tbilisi)';
 
   @override
   String get myChildren => 'My children';
@@ -1151,8 +1109,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyTitle => 'Privacy';
 
   @override
-  String get privacyBody =>
-      'Children\'s data is visible only to parents and approved coaches of their group.';
+  String get privacyBody => 'Children\'s data is visible only to parents and approved coaches of their group.';
 
   @override
   String get childProfile => 'Child profile';
@@ -1164,15 +1121,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ownAccountTitle => 'Own account (14+)';
 
   @override
-  String get ownAccountDisabled =>
-      'Will be enabled once the age and consent policy is legally confirmed.';
+  String get ownAccountDisabled => 'Will be enabled once the age and consent policy is legally confirmed.';
 
   @override
   String get photoConsentLabel => 'Consent to training photos';
 
   @override
-  String get photoConsentHelp =>
-      'Without consent your child must not appear in coach photos.';
+  String get photoConsentHelp => 'Without consent your child must not appear in coach photos.';
 
   @override
   String get removeChild => 'Remove child';
@@ -1210,12 +1165,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String groupsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count groups',
-      one: '1 group',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count groups', one: '1 group');
     return '$_temp0';
   }
 
@@ -1290,8 +1240,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusLabel => 'Status';
 
   @override
-  String get offlineBanner =>
-      'You\'re offline — showing saved data. Changes can\'t be saved.';
+  String get offlineBanner => 'You\'re offline — showing saved data. Changes can\'t be saved.';
 
   @override
   String get backOnline => 'Back online';
@@ -1300,15 +1249,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionDeniedTitle => 'Access restricted';
 
   @override
-  String get permissionDeniedBody =>
-      'You don\'t have permission to view this page.';
+  String get permissionDeniedBody => 'You don\'t have permission to view this page.';
 
   @override
   String get validationCancelReasonRequired => 'Choose a cancellation reason';
 
   @override
-  String get validationCancelReasonTooShort =>
-      'The reason must be at least 5 characters';
+  String get validationCancelReasonTooShort => 'The reason must be at least 5 characters';
 
   @override
   String get validationWeekdaysRequired => 'Choose at least one weekday';
@@ -1320,8 +1267,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationSeriesTooLong => 'A schedule can last at most 1 year';
 
   @override
-  String get validationSeriesOverlap =>
-      'This group already has a schedule on these days at this time';
+  String get validationSeriesOverlap => 'This group already has a schedule on these days at this time';
 
   @override
   String get validationOpponentRequired => 'Enter the opponent team';
@@ -1333,8 +1279,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationGroupAgeRange => 'Ages 3–18, minimum ≤ maximum';
 
   @override
-  String get validationInvalidGroupCode =>
-      'Invalid code or the group isn\'t active';
+  String get validationInvalidGroupCode => 'Invalid code or the group isn\'t active';
 
   @override
   String get validationInviteExists => 'An invitation is already pending';
@@ -1349,19 +1294,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationNotMember => 'The child isn\'t in this group';
 
   @override
-  String get validationRsvpClosed =>
-      'The training has started — the response can\'t be changed';
+  String get validationRsvpClosed => 'The training has started — the response can\'t be changed';
 
   @override
   String get validationTrainingCancelled => 'The training is cancelled';
 
   @override
-  String get validationAttendanceTooEarly =>
-      'Attendance can be marked from one hour before the start';
+  String get validationAttendanceTooEarly => 'Attendance can be marked from one hour before the start';
 
   @override
-  String get validationFeedbackEmpty =>
-      'Rate at least one category or write a comment';
+  String get validationFeedbackEmpty => 'Rate at least one category or write a comment';
 
   @override
   String get validationFeedbackRating => 'Rating must be 1–5';
@@ -1379,19 +1321,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationAvatarTooLarge => 'The photo is larger than 1 MB';
 
   @override
-  String get validationRateLimited =>
-      'Too many attempts. Please try again later.';
+  String get validationRateLimited => 'Too many attempts. Please try again later.';
 
   @override
   String get validationAlreadyReported => 'You\'ve already reported this';
 
   @override
-  String get validationReasonRequired =>
-      'Give a reason (at least 5 characters)';
+  String get validationReasonRequired => 'Give a reason (at least 5 characters)';
 
   @override
-  String get validationLocationOutsideGeorgia =>
-      'The location is outside Georgia';
+  String get validationLocationOutsideGeorgia => 'The location is outside Georgia';
 
   @override
   String get validationClubArchived => 'The club is archived';
@@ -1418,8 +1357,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelReasonTitle => 'Reason for cancelling';
 
   @override
-  String get cancelReasonHint =>
-      'A reason is required — parents will see it in the calendar and chat.';
+  String get cancelReasonHint => 'A reason is required — parents will see it in the calendar and chat.';
 
   @override
   String get cancelReasonIllness => 'Illness';
@@ -1576,8 +1514,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editScopeFuture => 'This and following trainings';
 
   @override
-  String get seriesHorizonNote =>
-      'Trainings are created 8 weeks ahead and extended automatically.';
+  String get seriesHorizonNote => 'Trainings are created 8 weeks ahead and extended automatically.';
 
   @override
   String seriesConflicts(int count) {
@@ -1603,12 +1540,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rsvpSaved => 'Response sent to the coach';
 
   @override
-  String get rsvpClosedNote =>
-      'The training has started — the response is final.';
+  String get rsvpClosedNote => 'The training has started — the response is final.';
 
   @override
-  String get rsvpNotice =>
-      'A response isn\'t attendance — the coach records actual attendance.';
+  String get rsvpNotice => 'A response isn\'t attendance — the coach records actual attendance.';
 
   @override
   String get attendanceTitle => 'Attendance';
@@ -1697,8 +1632,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressAchievements => 'Achievements';
 
   @override
-  String get progressPrivacyNote =>
-      'Only you and the child\'s coaches see this. No rankings are published.';
+  String get progressPrivacyNote => 'Only you and the child\'s coaches see this. No rankings are published.';
 
   @override
   String get feedbackTechnique => 'Technique';
@@ -1759,8 +1693,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteLinkTitle => 'Which child is this invitation for?';
 
   @override
-  String get inviteLinkHint =>
-      'If the child is already registered, pick them — no duplicate will be created.';
+  String get inviteLinkHint => 'If the child is already registered, pick them — no duplicate will be created.';
 
   @override
   String inviteAsNew(String name) {
@@ -1768,8 +1701,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get inviteMediaConsent =>
-      'I agree that my child may appear in team photos and videos';
+  String get inviteMediaConsent => 'I agree that my child may appear in team photos and videos';
 
   @override
   String get inviteAccepted => 'Child added to the group';
@@ -1801,8 +1733,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupCode => 'Group code';
 
   @override
-  String get groupCodeHint =>
-      'Parents enter the code in their child\'s profile — you approve the request.';
+  String get groupCodeHint => 'Parents enter the code in their child\'s profile — you approve the request.';
 
   @override
   String groupCodeShareText(String group, String code) {
@@ -1873,12 +1804,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addChildSearchHint => 'Child\'s first or last name';
 
   @override
-  String get addChildSearchNote =>
-      'The invitation goes to the parent. The child joins only after the parent confirms.';
+  String get addChildSearchNote => 'The invitation goes to the parent. The child joins only after the parent confirms.';
 
   @override
-  String get addChildManualNote =>
-      'The parent gets an invitation. Until they confirm you only see the name.';
+  String get addChildManualNote => 'The parent gets an invitation. Until they confirm you only see the name.';
 
   @override
   String get parentPhone => 'Parent\'s phone';
@@ -1925,8 +1854,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mediaGroups => 'Who can see it';
 
   @override
-  String get mediaConsentConfirm =>
-      'I confirm: children without parental consent don\'t appear in this media';
+  String get mediaConsentConfirm => 'I confirm: children without parental consent don\'t appear in this media';
 
   @override
   String get mediaPublish => 'Publish';
@@ -1943,8 +1871,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get mediaNoDownload =>
-      'Downloading is disabled to protect children\'s privacy.';
+  String get mediaNoDownload => 'Downloading is disabled to protect children\'s privacy.';
 
   @override
   String get mediaDelete => 'Delete media';
@@ -2123,8 +2050,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentsReminderPrefs => 'Reminder settings';
 
   @override
-  String get paymentsNoOnline =>
-      'Online payment isn\'t available yet — pay as your club instructs.';
+  String get paymentsNoOnline => 'Online payment isn\'t available yet — pay as your club instructs.';
 
   @override
   String get paymentCancelReason => 'Cancellation reason';
@@ -2169,8 +2095,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacySettingsTitle => 'Privacy';
 
   @override
-  String get privacyPhotoVisible =>
-      'Show my photo to my groups\' coaches/parents';
+  String get privacyPhotoVisible => 'Show my photo to my groups\' coaches/parents';
 
   @override
   String get privacyAnalytics => 'Anonymous diagnostics (crash reports)';
@@ -2233,8 +2158,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get deleteImpactPayments =>
-      'Payment history is kept anonymised for the club\'s accounting.';
+  String get deleteImpactPayments => 'Payment history is kept anonymised for the club\'s accounting.';
 
   @override
   String get retentionTitle => 'Retention and deletion';
@@ -2358,8 +2282,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSignInTitle => 'Admin dashboard';
 
   @override
-  String get adminSignInBody =>
-      'Administrators only. Permissions are checked on the server.';
+  String get adminSignInBody => 'Administrators only. Permissions are checked on the server.';
 
   @override
   String get adminDemoAccounts => 'Demo accounts';
@@ -2651,12 +2574,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminNotAdminTitle => 'You are not an administrator';
 
   @override
-  String get adminNotAdminBody =>
-      'This account can\'t use the admin dashboard. Please use the mobile app.';
+  String get adminNotAdminBody => 'This account can\'t use the admin dashboard. Please use the mobile app.';
 
   @override
-  String get adminChildDataNote =>
-      'Admins don\'t see children\'s names or medical data — only counts.';
+  String get adminChildDataNote => 'Admins don\'t see children\'s names or medical data — only counts.';
 
   @override
   String get adminEmpty => 'No records';
@@ -2741,12 +2662,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get certPdfPreview => 'PDF document';
 
   @override
-  String get certSavedTemp =>
-      'The file is stored temporarily and removed from the app after sharing.';
+  String get certSavedTemp => 'The file is stored temporarily and removed from the app after sharing.';
 
   @override
-  String get certNoAdminAccess =>
-      'Administrators can\'t see medical documents — only statuses.';
+  String get certNoAdminAccess => 'Administrators can\'t see medical documents — only statuses.';
 
   @override
   String get rosterTitle => 'Students';
@@ -2809,8 +2728,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attendanceDiscard => 'Discard';
 
   @override
-  String get attendanceEditNote =>
-      'You can edit recorded attendance — every change is saved.';
+  String get attendanceEditNote => 'You can edit recorded attendance — every change is saved.';
 
   @override
   String get attendanceByStudent => 'By student';
@@ -2845,8 +2763,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportFormat => 'Format';
 
   @override
-  String get exportIncludeCompliance =>
-      'Include certificate status (only if needed)';
+  String get exportIncludeCompliance => 'Include certificate status (only if needed)';
 
   @override
   String get exportWarning =>
@@ -2995,8 +2912,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get planSelfReported =>
-      'Completion is self-reported by parents — not verified by the coach.';
+  String get planSelfReported => 'Completion is self-reported by parents — not verified by the coach.';
 
   @override
   String planPeriod(String start, String end) {
@@ -3054,8 +2970,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseOpenLink => 'Open link';
 
   @override
-  String get exerciseExternalWarning =>
-      'The link opens in your browser. The app doesn\'t share your data with it.';
+  String get exerciseExternalWarning => 'The link opens in your browser. The app doesn\'t share your data with it.';
 
   @override
   String get exerciseMoveUp => 'Move up';
@@ -3120,8 +3035,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationTooManyMedia => 'At most 10 items per exercise';
 
   @override
-  String get validationPlanNotDraft =>
-      'Only drafts can be edited before publishing';
+  String get validationPlanNotDraft => 'Only drafts can be edited before publishing';
 
   @override
   String get payProofAction => 'Mark as paid / submit proof';
@@ -3211,8 +3125,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get payRejectReasonTitle => 'Reason for rejecting';
 
   @override
-  String get payNotReviewer =>
-      'Only assigned coaches and club admins can verify payments.';
+  String get payNotReviewer => 'Only assigned coaches and club admins can verify payments.';
 
   @override
   String get payHistory => 'History';
@@ -3244,12 +3157,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get validationProofExists =>
-      'A confirmation for this payment is already being reviewed';
+  String get validationProofExists => 'A confirmation for this payment is already being reviewed';
 
   @override
-  String get validationProofClosed =>
-      'This confirmation has already been decided';
+  String get validationProofClosed => 'This confirmation has already been decided';
 
   @override
   String get validationPaymentClosed => 'This payment is already closed';
@@ -3354,8 +3265,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminNavSettings => 'Settings';
 
   @override
-  String get adminComplianceNote =>
-      'Status counts only — no documents or children\'s names.';
+  String get adminComplianceNote => 'Status counts only — no documents or children\'s names.';
 
   @override
   String get adminColValid => 'Valid';
@@ -3391,8 +3301,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminColReviewers => 'Reviewers';
 
   @override
-  String get adminPaymentQueueNote =>
-      'Receipts open through a temporary link and every view is logged.';
+  String get adminPaymentQueueNote => 'Receipts open through a temporary link and every view is logged.';
 
   @override
   String get adminSetReviewers => 'Assign reviewers';
@@ -3414,4 +3323,207 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarNothingToExport => 'No upcoming trainings to export';
+
+  @override
+  String get contactsTitle => 'Contacts';
+
+  @override
+  String get contactsCoachTitle => 'Coach contact';
+
+  @override
+  String get contactsParentsTitle => 'Parents and guardians';
+
+  @override
+  String contactCallName(String name) {
+    return 'Call $name';
+  }
+
+  @override
+  String get contactNoPhone => 'No phone number';
+
+  @override
+  String get contactCoachAction => 'Contact coach';
+
+  @override
+  String get contactParentsAction => 'Parents\' contacts';
+
+  @override
+  String get contactPrivacyCoach => 'Only coaches of this group see these numbers. Use them for team matters only.';
+
+  @override
+  String get contactPrivacyParent => 'The coach of your child\'s group. Other parents\' numbers are never shown.';
+
+  @override
+  String contactParentOf(String names) {
+    return 'Parent of $names';
+  }
+
+  @override
+  String get contactsEmpty => 'No contacts available';
+
+  @override
+  String get relationMother => 'Mother';
+
+  @override
+  String get relationFather => 'Father';
+
+  @override
+  String get relationGuardian => 'Guardian';
+
+  @override
+  String get relationGrandparent => 'Grandparent';
+
+  @override
+  String get relationOther => 'Other relative';
+
+  @override
+  String receiptSeenBy(int read, int total) {
+    return 'Seen by $read of $total parents';
+  }
+
+  @override
+  String receiptSeenShort(int read, int total) {
+    return 'Seen: $read/$total';
+  }
+
+  @override
+  String receiptAckShort(int acked, int total) {
+    return 'Acknowledged: $acked/$total';
+  }
+
+  @override
+  String get receiptsTitle => 'Message status';
+
+  @override
+  String get receiptNotSeen => 'Not seen';
+
+  @override
+  String get receiptSeen => 'Seen';
+
+  @override
+  String get receiptAcknowledged => 'Acknowledged';
+
+  @override
+  String receiptSeenAt(String time) {
+    return 'Seen $time';
+  }
+
+  @override
+  String receiptAckAt(String time) {
+    return 'Acknowledged $time';
+  }
+
+  @override
+  String get receiptPrivacy => 'Only you can see who read this message. Parents who joined later are not counted.';
+
+  @override
+  String get chatAckToggle => 'Require acknowledgment';
+
+  @override
+  String get chatAckRequired => 'Acknowledgment required';
+
+  @override
+  String get chatAckButton => 'Acknowledged';
+
+  @override
+  String get chatAckDone => 'Confirmed';
+
+  @override
+  String get chatAckSent => 'Acknowledgment sent';
+
+  @override
+  String get dashboardAcksTitle => 'Waiting for your confirmation';
+
+  @override
+  String dashboardAcksBody(int count, String groups) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count messages', one: '1 message');
+    return '$_temp0 · $groups';
+  }
+
+  @override
+  String get notifAckRequested => 'Please confirm you have read this';
+
+  @override
+  String get videoPlay => 'Play';
+
+  @override
+  String get videoPause => 'Pause';
+
+  @override
+  String get videoBack10 => 'Back 10 seconds';
+
+  @override
+  String get videoForward10 => 'Forward 10 seconds';
+
+  @override
+  String get videoFullscreen => 'Full screen';
+
+  @override
+  String get videoExitFullscreen => 'Exit full screen';
+
+  @override
+  String get videoLoading => 'Loading video…';
+
+  @override
+  String get videoBuffering => 'Buffering…';
+
+  @override
+  String get videoError => 'The video could not be played.';
+
+  @override
+  String get videoPosition => 'Video position';
+
+  @override
+  String get downloadAction => 'Download';
+
+  @override
+  String get downloadTitle => 'Download media';
+
+  @override
+  String get downloadNotice =>
+      'Downloading saves a copy on your device. It cannot be removed remotely, so please share it responsibly.';
+
+  @override
+  String downloadProgress(int percent) {
+    return 'Downloading… $percent%';
+  }
+
+  @override
+  String get downloadCancelled => 'Download cancelled';
+
+  @override
+  String get downloadFailed => 'Download failed. Check your connection and try again.';
+
+  @override
+  String downloadDone(String name) {
+    return 'Ready: $name. Choose where to keep it.';
+  }
+
+  @override
+  String get downloadDenied => 'You no longer have access to this file.';
+
+  @override
+  String get downloadStorageError => 'The file could not be saved on this device.';
+
+  @override
+  String get downloadPolicyOff => 'Downloads are turned off for this group.';
+
+  @override
+  String get adminNavMediaDownloads => 'Media downloads';
+
+  @override
+  String get adminMediaPolicy => 'Parents may download photos and videos';
+
+  @override
+  String get adminMediaDownloadsNote =>
+      'Authorized downloads of coach photos and videos. A downloaded copy cannot be revoked.';
+
+  @override
+  String get adminColPost => 'Post';
+
+  @override
+  String get adminColUser => 'User';
+
+  @override
+  String get adminColDownloads => 'Downloads';
 }

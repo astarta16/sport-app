@@ -154,6 +154,7 @@ String notificationTitle(BuildContext context, NotificationType t) {
     NotificationType.paymentProofApproved => l.notifPaymentProofApproved,
     NotificationType.paymentProofRejected => l.notifPaymentProofRejected,
     NotificationType.trainingPlanPublished => l.notifTrainingPlanPublished,
+    NotificationType.ackRequested => l.notifAckRequested,
   };
 }
 
@@ -179,6 +180,7 @@ IconData notificationIcon(NotificationType t) => switch (t) {
   NotificationType.paymentProofApproved => Icons.verified_rounded,
   NotificationType.paymentProofRejected => Icons.report_gmailerrorred_rounded,
   NotificationType.trainingPlanPublished => Icons.assignment_rounded,
+  NotificationType.ackRequested => Icons.task_alt_rounded,
 };
 
 String notificationBody(BuildContext context, AppNotification n) {
@@ -206,6 +208,7 @@ String notificationBody(BuildContext context, AppNotification n) {
     NotificationType.inviteAnswered => l.notifBodyInvite(a['child'] ?? '', a['group'] ?? ''),
     NotificationType.attendanceRecorded || NotificationType.feedbackAdded => l.notifBodyChild(a['child'] ?? ''),
     NotificationType.newMedia => a['coach'] ?? l.notifBodyGroup(a['group'] ?? ''),
+    NotificationType.ackRequested when n.body.isNotEmpty => n.body,
     _ => l.notifBodyGroup(a['group'] ?? ''),
   };
 }

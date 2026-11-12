@@ -142,8 +142,17 @@ class _Body extends ConsumerWidget {
                   leading: SportBadge(sportKey: groups[gid]!.sportId, size: 40),
                   title: Text(groups[gid]!.name),
                   subtitle: Text(clubs[groups[gid]!.clubId]?.name ?? ''),
-                  trailing: canEdit
-                      ? IconButton(
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        key: Key('contact-coach-$gid'),
+                        tooltip: l.contactCoachAction,
+                        onPressed: () => context.push('/group/$gid/contacts'),
+                        icon: const Icon(Icons.contact_phone_rounded),
+                      ),
+                      if (canEdit)
+                        IconButton(
                           key: Key('leave-$gid'),
                           tooltip: l.leaveGroup,
                           icon: const Icon(Icons.logout_rounded),
@@ -163,8 +172,9 @@ class _Body extends ConsumerWidget {
                               );
                             }
                           },
-                        )
-                      : null,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),

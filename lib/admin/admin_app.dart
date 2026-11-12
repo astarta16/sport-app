@@ -19,6 +19,7 @@ import 'pages/moderation_page.dart';
 import 'pages/admins_page.dart';
 import 'pages/sports_page.dart';
 import 'pages/v13_pages.dart';
+import 'pages/v14_pages.dart';
 
 class AdminRoutes {
   AdminRoutes._();
@@ -38,6 +39,7 @@ class AdminRoutes {
   static const plans = '/plans';
   static const payments = '/payments';
   static const settings = '/settings';
+  static const mediaDownloads = '/media-downloads';
 
   /// Pages a club admin may not open (platform scope only).
   static const platformOnly = {admins};
@@ -83,6 +85,7 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.attendance, pageBuilder: (_, _) => page(const AttendanceReportPage())),
           GoRoute(path: AdminRoutes.plans, pageBuilder: (_, _) => page(const PlansOversightPage())),
           GoRoute(path: AdminRoutes.payments, pageBuilder: (_, _) => page(const PaymentQueuePage())),
+          GoRoute(path: AdminRoutes.mediaDownloads, pageBuilder: (_, _) => page(const MediaDownloadsPage())),
           GoRoute(path: AdminRoutes.settings, pageBuilder: (_, _) => page(const AdminSettingsPage())),
         ],
       ),
