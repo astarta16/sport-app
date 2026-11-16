@@ -45,30 +45,11 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final view = ref.watch(studentViewProvider);
-    final titles = [l.studentNavHome, l.studentNavBrain, l.studentNavProgress];
+    // v1.9: Home · My schedule · Brain Academy · Progress · Profile.
+    // Language and sign-out moved from bare app-bar icons into Profile.
+    final titles = [l.studentNavHome, l.navMySchedule, l.studentNavBrain, l.studentNavProgress, l.hubChildProfile];
     return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[_tab]),
-        actions: [
-          IconButton(
-            key: const Key('student-language'),
-            tooltip: l.languageLabel,
-            icon: const Icon(Icons.translate_rounded),
-            onPressed: () => showModalBottomSheet<void>(
-              context: context,
-              builder: (_) => const SafeArea(
-                child: Padding(padding: EdgeInsets.all(AppSpacing.lg), child: LanguageSelector()),
-              ),
-            ),
-          ),
-          IconButton(
-            key: const Key('student-sign-out'),
-            tooltip: l.signOut,
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () => ref.read(authRepositoryProvider).signOut(),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(titles[_tab])),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         onDestinationSelected: (i) => setState(() => _tab = i),
@@ -77,6 +58,11 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
             key: const Key('student-nav-home'),
             icon: const Icon(Icons.home_rounded),
             label: l.studentNavHome,
+          ),
+          NavigationDestination(
+            key: const Key('student-nav-schedule'),
+            icon: const Icon(Icons.event_rounded),
+            label: l.navMySchedule,
           ),
           NavigationDestination(
             key: const Key('student-nav-brain'),
@@ -88,6 +74,11 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
             icon: const Icon(Icons.insights_rounded),
             label: l.studentNavProgress,
           ),
+          NavigationDestination(
+            key: const Key('student-nav-profile'),
+            icon: const Icon(Icons.face_rounded),
+            label: l.hubChildProfile,
+          ),
         ],
       ),
       body: AsyncView<StudentView>(
@@ -96,17 +87,80 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
         data: (v) => IndexedStack(
           index: _tab,
           children: [
-            _HomeTab(view: v, openBrain: () => setState(() => _tab = 1)),
+            _HomeTab(view: v, openBrain: () => setState(() => _tab = 2)),
+            _ScheduleTab(view: v),
             BrainHub(childId: v.child.id),
             _page(const Key('student-progress'), [
               BrainPointsDashboard(childId: v.child.id),
               StudentLeaderboards(view: v),
               BrainProgressView(childId: v.child.id),
             ]),
+            _ProfileTab(view: v),
           ],
         ),
       ),
     );
+  }
+}
+
+/// Trainings and matches only, clearly told apart, with place and coach.
+class _ScheduleTab extends ConsumerWidget {
+  const _ScheduleTab({required this.view});
+
+  final StudentView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final now = ref.watch(clockProvider)();
+    final upcoming = view.matches.where((m) => m.status.isActive && m.startAt.isAfter(now)).toList();
+    return _page(const Key('student-schedule'), [
+      StudentEventsSection(view: view),
+      SectionHeader(l.studentUpcomingMatches),
+      if (upcoming.isEmpty) _nothing(context),
+      for (final m in upcoming) _MatchLine(match: m),
+      StudentCoachesSection(view: view),
+    ]);
+  }
+}
+
+class _ProfileTab extends ConsumerWidget {
+  const _ProfileTab({required this.view});
+
+  final StudentView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final t = Theme.of(context).textTheme;
+    return _page(const Key('student-profile'), [
+      AppCard(
+        child: Row(
+          children: [
+            InitialsAvatar(name: view.child.fullName, size: 56),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: Text(view.child.fullName, style: t.titleLarge)),
+          ],
+        ),
+      ),
+      SectionHeader(l.languageLabel),
+      const AppCard(key: Key('student-language'), child: LanguageSelector()),
+      const SizedBox(height: AppSpacing.lg),
+      OutlinedButton.icon(
+        key: const Key('student-sign-out'),
+        onPressed: () async {
+          final ok = await confirmDialog(
+            context,
+            title: l.signOutConfirmTitle,
+            message: l.signOutConfirmBody,
+            confirmLabel: l.signOut,
+          );
+          if (ok) await ref.read(authRepositoryProvider).signOut();
+        },
+        icon: const Icon(Icons.logout_rounded),
+        label: Text(l.signOut),
+      ),
+    ]);
   }
 }
 
@@ -207,7 +261,6 @@ class _HomeTab extends ConsumerWidget {
             ),
         ],
       ),
-      StudentCoachesSection(view: view),
       SectionHeader(l.studentNextTraining),
       if (next == null)
         _nothing(context)

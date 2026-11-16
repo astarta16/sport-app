@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/home/presentation/hubs.dart';
 import '../features/account/presentation/account_screens.dart';
 import '../features/payments/presentation/payment_proof_screens.dart';
 import '../features/roster/presentation/student_roster_screen.dart';
@@ -99,6 +100,8 @@ String? resolveRedirect({
   final home = user.isCoach ? Routes.coachHome : Routes.parentHome;
   if (blocked) return home;
   if (location == Routes.calendar) return user.isCoach ? Routes.coachCalendar : Routes.parentCalendar;
+  // v1.9: Messages is a tab of the role's shell.
+  if (location == Routes.chats) return user.isCoach ? Routes.coachChat : Routes.parentChat;
   if (location == Routes.splash || location.startsWith('/auth') || location == Routes.onboarding) return home;
   if (location == Routes.explore) return user.isCoach ? Routes.coachMap : Routes.parentMap;
   if (user.isParent && location.startsWith('/coach')) return home;
@@ -179,18 +182,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [
+          // v1.9: Home · Calendar · Messages · Children · More.
           branch(Routes.parentHome, const ParentHomeScreen()),
           branch(Routes.parentCalendar, const CalendarScreen()),
-          branch(Routes.parentMap, const MapScreen()),
+          branch(Routes.parentChat, const ChatListScreen()),
+          branch(Routes.parentChildren, const ChildrenHubScreen()),
           branch(Routes.parentProfile, const ProfileScreen()),
         ],
       ),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [
+          // v1.9: Home · Schedule · Groups · Messages · More.
           branch(Routes.coachHome, const CoachHomeScreen()),
           branch(Routes.coachCalendar, const CalendarScreen()),
-          branch(Routes.coachMap, const MapScreen()),
+          branch(Routes.coachGroups, const GroupsHubScreen()),
+          branch(Routes.coachChat, const ChatListScreen()),
           branch(Routes.coachProfile, const ProfileScreen()),
         ],
       ),
@@ -336,9 +343,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/club/:id',
         builder: (_, s) => ClubScreen(clubId: s.pathParameters['id']!),
       ),
-      GoRoute(path: Routes.chats, builder: (_, _) => const ChatListScreen()),
-      GoRoute(path: Routes.parentChat, redirect: (_, _) => Routes.chats),
-      GoRoute(path: Routes.coachChat, redirect: (_, _) => Routes.chats),
+      // The map is reached from More / Explore (it is no longer a tab).
+      GoRoute(path: Routes.parentMap, builder: (_, _) => const MapScreen()),
+      GoRoute(path: Routes.coachMap, builder: (_, _) => const MapScreen()),
       GoRoute(path: Routes.notifications, builder: (_, _) => const InboxScreen()),
       GoRoute(path: Routes.notificationSettings, builder: (_, _) => const NotificationSettingsScreen()),
       GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),

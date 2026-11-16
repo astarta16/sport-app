@@ -5730,4 +5730,56 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get confirmOrgActivateBody => 'Участники снова получат доступ к включённым функциям.';
+
+  @override
+  String get navChildren => 'Дети';
+
+  @override
+  String get navMessages => 'Сообщения';
+
+  @override
+  String get navMore => 'Ещё';
+
+  @override
+  String get navSchedule => 'Расписание';
+
+  @override
+  String get navGroups => 'Группы';
+
+  @override
+  String get navMySchedule => 'Моё расписание';
+
+  @override
+  String get navFindClubs => 'Найти клубы на карте';
+
+  @override
+  String get hubNoChildrenBody =>
+      'Добавьте ребёнка, чтобы вступить в группу, подтверждать тренировки и следить за прогрессом.';
+
+  @override
+  String get hubChildProfile => 'Профиль';
+
+  @override
+  String get hubChildProgress => 'Прогресс';
+
+  @override
+  String get hubChildDocuments => 'Медицинские справки';
+
+  @override
+  String get hubNoGroupsTitle => 'Групп пока нет';
+
+  @override
+  String get hubNoGroupsBody => 'Создайте группу по вашему виду спорта и пригласите семьи по коду.';
+
+  @override
+  String get hubNextSession => 'Следующее занятие';
+
+  @override
+  String get hubTakeAttendance => 'Отметить посещаемость';
+
+  @override
+  String get signOutConfirmTitle => 'Выйти?';
+
+  @override
+  String get signOutConfirmBody => 'Для повторного входа понадобится новый SMS-код.';
 }

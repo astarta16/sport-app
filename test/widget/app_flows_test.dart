@@ -84,9 +84,9 @@ void main() {
   testWidgets('parent demo: send a chat message', (tester) async {
     final db = await launch(tester);
     await tapAndPump(tester, find.byKey(const Key('demo-login-${DemoIds.parent}')));
-    // v1.1: chat lives behind the top-bar icon, with an unread badge.
+    // v1.9: chat is the Messages tab (with an unread badge).
     expect(find.byKey(const Key('chat-unread-g-football-u10')), findsNothing);
-    await tapAndPump(tester, find.byKey(const Key('chat-button')).first);
+    await tapAndPump(tester, find.byIcon(Icons.chat_bubble_outline_rounded).first);
     expect(find.byKey(const Key('chat-unread-g-football-u10')), findsOneWidget);
     await tapAndPump(tester, find.byKey(const Key('chat-tile-g-football-u10')));
     await tester.enterText(find.byKey(const Key('chat-input')), 'ტესტური შეტყობინება');

@@ -168,6 +168,13 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   ListTile(
+                    key: const Key('more-find-clubs'),
+                    leading: const Icon(Icons.map_outlined),
+                    title: Text(l.navFindClubs),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(user.isCoach ? Routes.coachMap : Routes.parentMap),
+                  ),
+                  ListTile(
                     leading: const Icon(Icons.notifications_active_outlined),
                     title: Text(l.notificationSettings),
                     trailing: const Icon(Icons.chevron_right_rounded),
@@ -211,7 +218,16 @@ class ProfileScreen extends ConsumerWidget {
               ),
             OutlinedButton.icon(
               key: const Key('sign-out'),
-              onPressed: () => ref.read(authRepositoryProvider).signOut(),
+              // v1.9: confirmed — re-entering an SMS code is slow.
+              onPressed: () async {
+                final ok = await confirmDialog(
+                  context,
+                  title: l.signOutConfirmTitle,
+                  message: l.signOutConfirmBody,
+                  confirmLabel: l.signOut,
+                );
+                if (ok) await ref.read(authRepositoryProvider).signOut();
+              },
               icon: const Icon(Icons.logout_rounded),
               label: Text(l.signOut),
             ),

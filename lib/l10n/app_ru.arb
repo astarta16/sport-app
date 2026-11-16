@@ -1732,5 +1732,22 @@
   "adminRemovedSnack": "Администратор удалён",
   "confirmOrgStatusTitle": "Изменить статус на «{status}»?",
   "confirmOrgSuspendBody": "Все участники организации сразу теряют возможность что-либо создавать или менять. Данные сохраняются, организацию можно активировать снова.",
-  "confirmOrgActivateBody": "Участники снова получат доступ к включённым функциям."
+  "confirmOrgActivateBody": "Участники снова получат доступ к включённым функциям.",
+  "navChildren": "Дети",
+  "navMessages": "Сообщения",
+  "navMore": "Ещё",
+  "navSchedule": "Расписание",
+  "navGroups": "Группы",
+  "navMySchedule": "Моё расписание",
+  "navFindClubs": "Найти клубы на карте",
+  "hubNoChildrenBody": "Добавьте ребёнка, чтобы вступить в группу, подтверждать тренировки и следить за прогрессом.",
+  "hubChildProfile": "Профиль",
+  "hubChildProgress": "Прогресс",
+  "hubChildDocuments": "Медицинские справки",
+  "hubNoGroupsTitle": "Групп пока нет",
+  "hubNoGroupsBody": "Создайте группу по вашему виду спорта и пригласите семьи по коду.",
+  "hubNextSession": "Следующее занятие",
+  "hubTakeAttendance": "Отметить посещаемость",
+  "signOutConfirmTitle": "Выйти?",
+  "signOutConfirmBody": "Для повторного входа понадобится новый SMS-код."
 }

@@ -1732,5 +1732,22 @@
   "adminRemovedSnack": "Administrator removed",
   "confirmOrgStatusTitle": "Change status to “{status}”?",
   "confirmOrgSuspendBody": "Everyone in this organization immediately loses the ability to create or change anything. Data is kept and can be reactivated later.",
-  "confirmOrgActivateBody": "Members regain access to the organization's enabled features."
+  "confirmOrgActivateBody": "Members regain access to the organization's enabled features.",
+  "navChildren": "Children",
+  "navMessages": "Messages",
+  "navMore": "More",
+  "navSchedule": "Schedule",
+  "navGroups": "Groups",
+  "navMySchedule": "My schedule",
+  "navFindClubs": "Find clubs on the map",
+  "hubNoChildrenBody": "Add your child to join a group, confirm trainings and follow progress.",
+  "hubChildProfile": "Profile",
+  "hubChildProgress": "Progress",
+  "hubChildDocuments": "Health documents",
+  "hubNoGroupsTitle": "No groups yet",
+  "hubNoGroupsBody": "Create a group for your sport, then invite families with its code.",
+  "hubNextSession": "Next session",
+  "hubTakeAttendance": "Take attendance",
+  "signOutConfirmTitle": "Sign out?",
+  "signOutConfirmBody": "You will need a new SMS code to sign in again."
 }

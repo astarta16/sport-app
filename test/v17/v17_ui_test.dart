@@ -204,6 +204,8 @@ void main() {
         await tester.tapAt(const Offset(10, 10));
         await pumpFrames(tester);
 
+        // v1.9: coaches are shown with the schedule (My schedule tab).
+        await tapKey(tester, 'student-nav-schedule');
         await tapKey(tester, 'contact-coach-${DemoIds.coach}');
         expect(find.byKey(const Key('contact-coach-sheet')), findsOneWidget);
         await tapKey(tester, 'contact-topic-question');

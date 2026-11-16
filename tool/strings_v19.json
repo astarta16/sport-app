@@ -240,5 +240,90 @@
   "en": "Members regain access to the organization's enabled features.",
   "ka": "წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.",
   "ru": "Участники снова получат доступ к включённым функциям."
+ },
+ "navChildren": {
+  "en": "Children",
+  "ka": "ბავშვები",
+  "ru": "Дети"
+ },
+ "navMessages": {
+  "en": "Messages",
+  "ka": "მიმოწერა",
+  "ru": "Сообщения"
+ },
+ "navMore": {
+  "en": "More",
+  "ka": "მეტი",
+  "ru": "Ещё"
+ },
+ "navSchedule": {
+  "en": "Schedule",
+  "ka": "განრიგი",
+  "ru": "Расписание"
+ },
+ "navGroups": {
+  "en": "Groups",
+  "ka": "ჯგუფები",
+  "ru": "Группы"
+ },
+ "navMySchedule": {
+  "en": "My schedule",
+  "ka": "ჩემი განრიგი",
+  "ru": "Моё расписание"
+ },
+ "navFindClubs": {
+  "en": "Find clubs on the map",
+  "ka": "კლუბების ძიება რუკაზე",
+  "ru": "Найти клубы на карте"
+ },
+ "hubNoChildrenBody": {
+  "en": "Add your child to join a group, confirm trainings and follow progress.",
+  "ka": "დაამატეთ ბავშვი, რომ შეუერთდეთ ჯგუფს, დაადასტუროთ ვარჯიშები და ადევნოთ თვალი პროგრესს.",
+  "ru": "Добавьте ребёнка, чтобы вступить в группу, подтверждать тренировки и следить за прогрессом."
+ },
+ "hubChildProfile": {
+  "en": "Profile",
+  "ka": "პროფილი",
+  "ru": "Профиль"
+ },
+ "hubChildProgress": {
+  "en": "Progress",
+  "ka": "პროგრესი",
+  "ru": "Прогресс"
+ },
+ "hubChildDocuments": {
+  "en": "Health documents",
+  "ka": "სამედიცინო ცნობები",
+  "ru": "Медицинские справки"
+ },
+ "hubNoGroupsTitle": {
+  "en": "No groups yet",
+  "ka": "ჯგუფები ჯერ არ არის",
+  "ru": "Групп пока нет"
+ },
+ "hubNoGroupsBody": {
+  "en": "Create a group for your sport, then invite families with its code.",
+  "ka": "შექმენით ჯგუფი თქვენი სპორტისთვის და მოიწვიეთ ოჯახები კოდით.",
+  "ru": "Создайте группу по вашему виду спорта и пригласите семьи по коду."
+ },
+ "hubNextSession": {
+  "en": "Next session",
+  "ka": "შემდეგი ვარჯიში",
+  "ru": "Следующее занятие"
+ },
+ "hubTakeAttendance": {
+  "en": "Take attendance",
+  "ka": "დასწრების აღნიშვნა",
+  "ru": "Отметить посещаемость"
+ },
+ "signOutConfirmTitle": {
+  "en": "Sign out?",
+  "ka": "გამოხვიდეთ?",
+  "ru": "Выйти?"
+ },
+ "signOutConfirmBody": {
+  "en": "You will need a new SMS code to sign in again.",
+  "ka": "ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.",
+  "ru": "Для повторного входа понадобится новый SMS-код."
  }
 }

@@ -25,12 +25,14 @@ class Routes {
   static const parentChat = '/parent/chat';
   static const parentMap = '/parent/map';
   static const parentProfile = '/parent/profile';
+  static const parentChildren = '/parent/children';
 
   static const coachHome = '/coach/home';
   static const coachCalendar = '/coach/calendar';
   static const coachChat = '/coach/chat';
   static const coachMap = '/coach/map';
   static const coachProfile = '/coach/profile';
+  static const coachGroups = '/coach/groups';
 
   static const chats = '/chats';
   static const calendar = '/calendar';

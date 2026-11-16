@@ -5646,4 +5646,56 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get confirmOrgActivateBody => 'წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.';
+
+  @override
+  String get navChildren => 'ბავშვები';
+
+  @override
+  String get navMessages => 'მიმოწერა';
+
+  @override
+  String get navMore => 'მეტი';
+
+  @override
+  String get navSchedule => 'განრიგი';
+
+  @override
+  String get navGroups => 'ჯგუფები';
+
+  @override
+  String get navMySchedule => 'ჩემი განრიგი';
+
+  @override
+  String get navFindClubs => 'კლუბების ძიება რუკაზე';
+
+  @override
+  String get hubNoChildrenBody =>
+      'დაამატეთ ბავშვი, რომ შეუერთდეთ ჯგუფს, დაადასტუროთ ვარჯიშები და ადევნოთ თვალი პროგრესს.';
+
+  @override
+  String get hubChildProfile => 'პროფილი';
+
+  @override
+  String get hubChildProgress => 'პროგრესი';
+
+  @override
+  String get hubChildDocuments => 'სამედიცინო ცნობები';
+
+  @override
+  String get hubNoGroupsTitle => 'ჯგუფები ჯერ არ არის';
+
+  @override
+  String get hubNoGroupsBody => 'შექმენით ჯგუფი თქვენი სპორტისთვის და მოიწვიეთ ოჯახები კოდით.';
+
+  @override
+  String get hubNextSession => 'შემდეგი ვარჯიში';
+
+  @override
+  String get hubTakeAttendance => 'დასწრების აღნიშვნა';
+
+  @override
+  String get signOutConfirmTitle => 'გამოხვიდეთ?';
+
+  @override
+  String get signOutConfirmBody => 'ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.';
 }

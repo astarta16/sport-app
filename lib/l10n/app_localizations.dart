@@ -10490,6 +10490,108 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.'**
   String get confirmOrgActivateBody;
+
+  /// No description provided for @navChildren.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვები'**
+  String get navChildren;
+
+  /// No description provided for @navMessages.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმოწერა'**
+  String get navMessages;
+
+  /// No description provided for @navMore.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეტი'**
+  String get navMore;
+
+  /// No description provided for @navSchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი'**
+  String get navSchedule;
+
+  /// No description provided for @navGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები'**
+  String get navGroups;
+
+  /// No description provided for @navMySchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი განრიგი'**
+  String get navMySchedule;
+
+  /// No description provided for @navFindClubs.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლუბების ძიება რუკაზე'**
+  String get navFindClubs;
+
+  /// No description provided for @hubNoChildrenBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაამატეთ ბავშვი, რომ შეუერთდეთ ჯგუფს, დაადასტუროთ ვარჯიშები და ადევნოთ თვალი პროგრესს.'**
+  String get hubNoChildrenBody;
+
+  /// No description provided for @hubChildProfile.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროფილი'**
+  String get hubChildProfile;
+
+  /// No description provided for @hubChildProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრესი'**
+  String get hubChildProgress;
+
+  /// No description provided for @hubChildDocuments.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამედიცინო ცნობები'**
+  String get hubChildDocuments;
+
+  /// No description provided for @hubNoGroupsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები ჯერ არ არის'**
+  String get hubNoGroupsTitle;
+
+  /// No description provided for @hubNoGroupsBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმენით ჯგუფი თქვენი სპორტისთვის და მოიწვიეთ ოჯახები კოდით.'**
+  String get hubNoGroupsBody;
+
+  /// No description provided for @hubNextSession.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი ვარჯიში'**
+  String get hubNextSession;
+
+  /// No description provided for @hubTakeAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრების აღნიშვნა'**
+  String get hubTakeAttendance;
+
+  /// No description provided for @signOutConfirmTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოხვიდეთ?'**
+  String get signOutConfirmTitle;
+
+  /// No description provided for @signOutConfirmBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.'**
+  String get signOutConfirmBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -5680,4 +5680,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmOrgActivateBody => 'Members regain access to the organization\'s enabled features.';
+
+  @override
+  String get navChildren => 'Children';
+
+  @override
+  String get navMessages => 'Messages';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String get navSchedule => 'Schedule';
+
+  @override
+  String get navGroups => 'Groups';
+
+  @override
+  String get navMySchedule => 'My schedule';
+
+  @override
+  String get navFindClubs => 'Find clubs on the map';
+
+  @override
+  String get hubNoChildrenBody => 'Add your child to join a group, confirm trainings and follow progress.';
+
+  @override
+  String get hubChildProfile => 'Profile';
+
+  @override
+  String get hubChildProgress => 'Progress';
+
+  @override
+  String get hubChildDocuments => 'Health documents';
+
+  @override
+  String get hubNoGroupsTitle => 'No groups yet';
+
+  @override
+  String get hubNoGroupsBody => 'Create a group for your sport, then invite families with its code.';
+
+  @override
+  String get hubNextSession => 'Next session';
+
+  @override
+  String get hubTakeAttendance => 'Take attendance';
+
+  @override
+  String get signOutConfirmTitle => 'Sign out?';
+
+  @override
+  String get signOutConfirmBody => 'You will need a new SMS code to sign in again.';
 }

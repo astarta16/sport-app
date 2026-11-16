@@ -7,8 +7,16 @@ import '../core/l10n/l10n.dart';
 import '../core/layout/responsive.dart';
 import '../core/theme/app_theme.dart';
 import '../features/authentication/presentation/splash_screen.dart';
+import '../features/organizations/presentation/feature_gate.dart';
+import '../features/organizations/domain/organization.dart';
+import '../features/chat/presentation/chat_providers.dart';
+import '../features/authentication/presentation/session_providers.dart';
 
-/// Home · Calendar · Map · Profile (v1.1 §10 — chat moved to the top bar).
+/// v1.9 role-specific navigation (docs/ux-v1.9-navigation.md):
+/// * Parent: Home · Calendar · Messages · Children · More
+/// * Coach: Home · Schedule · Groups · Messages · More
+/// Messages is left out (not shown disabled) when chat is off for every
+/// organization of the user; branch indexes are mapped accordingly.
 ///
 /// * compact (< 600): bottom [NavigationBar] — the original phone design.
 /// * medium / expanded (600–1199): [NavigationRail] with labels.
@@ -21,17 +29,53 @@ class AppShell extends ConsumerWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  void _go(int i) => navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    final user = ref.watch(currentUserProvider);
+    final coach = user?.isCoach ?? false;
+    final chatOn = (user?.canUseChat ?? false) && ref.watch(featureOnProvider(OrgModule.communication));
+    final chatUnread = chatOn ? ref.watch(totalChatUnreadProvider) : 0;
+    Widget messagesIcon(IconData i) =>
+        Badge(isLabelVisible: chatUnread > 0, label: Text('$chatUnread'), child: Icon(i));
+    // (branch index, icon, selected icon, label)
+    final all = coach
+        ? [
+            (0, const Icon(Icons.home_outlined), const Icon(Icons.home_rounded), l.navHome),
+            (1, const Icon(Icons.calendar_month_outlined), const Icon(Icons.calendar_month_rounded), l.navSchedule),
+            (2, const Icon(Icons.groups_outlined), const Icon(Icons.groups_rounded), l.navGroups),
+            (
+              3,
+              messagesIcon(Icons.chat_bubble_outline_rounded),
+              messagesIcon(Icons.chat_bubble_rounded),
+              l.navMessages,
+            ),
+            (4, const Icon(Icons.menu_rounded), const Icon(Icons.menu_open_rounded), l.navMore),
+          ]
+        : [
+            (0, const Icon(Icons.home_outlined), const Icon(Icons.home_rounded), l.navHome),
+            (1, const Icon(Icons.calendar_month_outlined), const Icon(Icons.calendar_month_rounded), l.navCalendar),
+            (
+              2,
+              messagesIcon(Icons.chat_bubble_outline_rounded),
+              messagesIcon(Icons.chat_bubble_rounded),
+              l.navMessages,
+            ),
+            (3, const Icon(Icons.child_care_outlined), const Icon(Icons.child_care_rounded), l.navChildren),
+            (4, const Icon(Icons.menu_rounded), const Icon(Icons.menu_open_rounded), l.navMore),
+          ];
+    final messagesBranch = coach ? 3 : 2;
     final items = [
-      (Icons.home_outlined, Icons.home_rounded, l.navHome),
-      (Icons.calendar_month_outlined, Icons.calendar_month_rounded, l.navCalendar),
-      (Icons.map_outlined, Icons.map_rounded, l.navMap),
-      (Icons.person_outline_rounded, Icons.person_rounded, l.navProfile),
+      for (final i in all)
+        if (chatOn || i.$1 != messagesBranch) i,
     ];
+    final current = items.indexWhere((i) => i.$1 == navigationShell.currentIndex);
+    final selectedIndex = current < 0 ? 0 : current;
+    void go(int i) {
+      final b = items[i].$1;
+      navigationShell.goBranch(b, initialLocation: b == navigationShell.currentIndex);
+    }
+
     final size = context.windowSize;
     final scheme = Theme.of(context).colorScheme;
 
@@ -44,11 +88,11 @@ class AppShell extends ConsumerWidget {
           ),
           child: NavigationBar(
             key: const Key('bottom-nav'),
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: _go,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: go,
             destinations: [
-              for (final (icon, selected, label) in items)
-                NavigationDestination(icon: Icon(icon), selectedIcon: Icon(selected), label: label),
+              for (final (_, icon, selected, label) in items)
+                NavigationDestination(icon: icon, selectedIcon: selected, label: label),
             ],
           ),
         ),
@@ -76,8 +120,8 @@ class AppShell extends ConsumerWidget {
                         extended: extended,
                         minExtendedWidth: 232,
                         backgroundColor: Colors.transparent,
-                        selectedIndex: navigationShell.currentIndex,
-                        onDestinationSelected: _go,
+                        selectedIndex: selectedIndex,
+                        onDestinationSelected: go,
                         labelType: extended ? NavigationRailLabelType.none : NavigationRailLabelType.all,
                         groupAlignment: -0.85,
                         leading: Padding(
@@ -98,10 +142,10 @@ class AppShell extends ConsumerWidget {
                           child: TopBarActions(key: Key('rail-actions'), iconSize: 24, vertical: true),
                         ),
                         destinations: [
-                          for (final (icon, selected, label) in items)
+                          for (final (_, icon, selected, label) in items)
                             NavigationRailDestination(
-                              icon: Icon(icon),
-                              selectedIcon: Icon(selected),
+                              icon: icon,
+                              selectedIcon: selected,
                               label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
                             ),
                         ],
