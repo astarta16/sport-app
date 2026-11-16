@@ -61,7 +61,7 @@ Layouts follow the **window width** (so Split View, Slide Over and Stage Manager
 | 840–1199 | expanded (iPad portrait, iPad mini landscape) | navigation rail | two-column dashboards, chat master-detail, calendar beside lists, two-column forms/profile, roster grid, map side panel |
 | ≥ 1200 | large (iPad Air/Pro landscape) | sidebar (extended rail) | + coach group list as master pane, calendar with training-detail pane |
 
-## Admin web dashboard (v1.3, multi-tenant since v1.7)
+## Admin web dashboard (v1.3, multi-tenant since v1.7, Platform Control Center since v1.8)
 
 ```bash
 flutter run -d chrome -t lib/main_admin.dart          # demo: platform admin / club admin / "parent" (denied)
@@ -74,16 +74,48 @@ What it covers:
 - coach verification, clubs, sports catalog, group oversight, moderation, audit log, admin roles;
 - v1.3: certificate compliance (counts only), attendance reports, plan oversight, payment verification queue with receipt review, payment reviewers per group, language (ka/en/ru);
 - roles enforced server-side through custom claims. Guide: [docs/admin-guide.md](docs/admin-guide.md).
+- v1.8 Platform Control Center (platform admin, first demo account): Overview, Organizations (+ provisioning wizard and
+  detail tabs), Organization templates, Feature catalog, Packages, Subscriptions, Invitations, Platform users, Audit
+  logs, System health. Organization admins (Tianeti, Mtskheta, Saburtalo) see only their organization's pages.
+  Guide: [docs/platform-super-admin.md](docs/platform-super-admin.md).
 
 ## Android APK (demo mode)
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.7.0 --build-number=20
+  --build-name=1.8.0 --build-number=21
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.8: Platform Super Admin, feature management, subscriptions
+
+- **Platform Control Center** (admin web) — overview with totals, adoption, subscriptions, alerts and recent admin
+  actions; organization directory; organization detail with Overview, Admins & members, Features, Subscription,
+  Branding, Limits & usage, Audit history and Settings tabs. [Guide](docs/platform-super-admin.md).
+- **Provisioning** — wizard with legal/funding profile, template, package, initial features (dependency-checked) and
+  an invited first administrator; stable ids; two-phase, recoverable creation. Templates: Government Sports School,
+  Private Sports Club, Children's Sports Academy, Independent Coach (create, edit, duplicate, archive, apply with
+  preview). [Provisioning](docs/organization-provisioning.md).
+- **Central feature management** — 22 features with stable ids, a dependency graph (confirmation before adding
+  dependencies), rollout states (enabled / disabled / trial / scheduled), versioned changes with reason, author,
+  history and conflict detection. A disabled feature disappears from navigation, cards and actions, its routes are
+  blocked, writes are rejected by the backend and rules, its jobs and notifications stop, and its data is kept.
+  Changes reach open apps live. [Feature management](docs/feature-management.md).
+- **Three-level authorization** — platform entitlement × organization switch × user permission.
+- **Packages and subscriptions** — Starter / Professional / Enterprise / Custom with limits and informational
+  pricing; trial / active / past due / suspended / cancelled / expired with grace periods and read-only access;
+  manual only, **no billing**. [Subscriptions](docs/subscription-management.md).
+- **Administrator invitations** — expiring, hashed, single-use tokens; accept, reject, resend, revoke, transfer.
+- **Demo** — Tianeti is now a government school (payments, receipts, reminders off; rooms, student accounts and
+  Brain Academy on); new **Saburtalo Sports Club** (private, payments on: coach **ლევან ჩხეიძე**, parent
+  **მარიამ კაპანაძე**, admin **თამარ გელაშვილი**); **Vake Youth Academy** on a trial; Nino (demo parent) has a
+  pending admin invitation to Saburtalo — in the admin web choose the parent account and enter
+  `demo-invite-saburtalo-2026`.
+
+Details, verification and open items: [docs/beta-v1.8-progress.md](docs/beta-v1.8-progress.md).
+Upgrade: [docs/firebase-migration-plan.md](docs/firebase-migration-plan.md) (`functions/scripts/migrate-v18.mjs`, dry run by default).
 
 ## What's new in v1.7: multi-academy SaaS
 
@@ -230,12 +262,13 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 383 tests (… v1.3–v1.7 flows, games, scheduling, tenants)
-cd functions && npm install && npm run build && npm test      # 229 tests
-cd rules-tests && npm install && npm run test:emulator        # 185 rules tests (Java 17+)
+flutter test                                   # 422 tests (… v1.3–v1.8 flows, games, scheduling, tenants, platform)
+cd functions && npm install && npm run build && npm test      # 235 tests
+cd rules-tests && npm install && npm run test:emulator        # 201 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps
-# v1.7 callables (from rules-tests/): npx firebase emulators:exec --config ../firebase.json \
-#   --only functions,firestore,auth --project demo-sport-parent "node ../functions/test-integration/v17.integration.mjs"
+# v1.7 / v1.8 callables (from rules-tests/): npx firebase emulators:exec --config ../firebase.json \
+#   --only functions,firestore,auth --project demo-sport-parent \
+#   "node ../functions/test-integration/v17.integration.mjs && node ../functions/test-integration/v18.integration.mjs"
 ```
 
 ## Security model (summary)

@@ -172,3 +172,13 @@ cd build/admin_web && python3 -m http.server 8765
 - [ ] Legal: privacy policy, parental consent text and retention periods approved.
 - [ ] SMS provider contracted (or leave SMS disabled — the default).
 - [ ] Version bump (`pubspec.yaml` `version:` and `AppConfig.version`).
+
+## v1.8 (platform control) — before staging / production
+- [ ] Deploy new indexes (`notifications` groupId+createdAt, `smsLog` clubId+at).
+- [ ] Run `migrate-v18.mjs` dry run on staging, review, apply, keep the snapshot.
+- [ ] Seed or review `subscriptionPackages` (prices are informational; no billing).
+- [ ] Review the four built-in templates with the product owner.
+- [ ] Decide invitation delivery (email/SMS provider) — currently the link is shared manually.
+- [ ] Storage usage metering per organization (not implemented on Firebase).
+- [ ] App Check on the v1.8 callables.
+- [ ] Re-run `rules-tests`, `v17`/`v18` integration and the smoke test against staging.

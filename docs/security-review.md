@@ -206,3 +206,35 @@ certificates.
 5. ~~Server attendance / feedback notifications~~ (done in v1.3.1).
 6. v1.7: legal/privacy review of leaderboard consent and student accounts before enabling them for any real organization; DST-aware time zones; App Check on the new callables.
 7. Deploy the v1.4 indexes (collection-group `msgReads` / `msgAcks`, `receipts`, `mediaDownloads`).
+
+## v1.8 review: platform control and feature enforcement
+
+**Enforcement is on the server.** Hiding UI is a convenience only:
+
+| Concern | Control |
+|---|---|
+| Disabled feature writes | rules `moduleOn` (server-derived `effectiveModules`), callables, demo repositories |
+| Read-only / suspended / provisioning organizations | rules `accessMode`, `status`, `provisioning`; `EntitlementResolver.can` |
+| Self-escalation by an organization admin | `orgConfigs` is client-write-denied; `updateOrgSettings` accepts only a subset of the entitlement and a valid dependency set; restricted features need platform entitlement |
+| Packages, templates, invitations, history, platform admins | client writes denied; reads: platform (templates, platform admins), administrators (packages), own organization admin + platform (invitations, history) |
+| Invitations | 256-bit random token, only the SHA-256 hash stored, 7-day expiry, single use, bound to the invited phone, revocable; transfer only of one's own role |
+| Concurrent configuration edits | `expectedVersion` in a transaction; stale writes rejected with the current version; history per version with author and reason |
+| Scheduled jobs / notifications | `jobGate()` per organization and feature (payment reminders, recurring payments, notifications) |
+| Silent data changes | the hourly refresh never upgrades v1.7 documents; that is only done by `migrate-v18.mjs` (dry run first, snapshot for rollback) |
+| Data retention | no status or feature change deletes data |
+
+Tests: `rules-tests/test/v18.rules.test.js` (cross-tenant reads, escalation,
+suspended / read-only / provisioning organizations, disabled payments, chat,
+acknowledgments, challenges, plans, media, platform collections),
+`functions/test-integration/v18.integration.mjs`, `test/v18/*`.
+
+**Honest limits (v1.8)**
+
+- Trial ends and scheduled rollouts reach the rules through the hourly
+  refresh: up to 60 minutes of lag on the server side (clients switch
+  immediately).
+- Storage usage per organization is not measured on Firebase yet (0).
+- Invitations are not delivered by email/SMS (no provider); the link is shown
+  once to the Super Admin.
+- Verified only against the local emulators and the demo backend — **not**
+  against a real Firebase project. Not production-ready on that basis.

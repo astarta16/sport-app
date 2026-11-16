@@ -4,3 +4,4 @@ node_modules/
 *.log
 # Secret Manager overrides for the emulator — never commit
 .secret.local
+migrate-v18-*.json

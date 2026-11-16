@@ -113,3 +113,41 @@ enabled(module) = status == active
 | Isolation, escalation, flags, concurrency (demo backend) | `test/v17/v17_workflows_test.dart` | passes |
 | Rules on the emulator | `rules-tests/test/v17.rules.test.js` | 18 tests pass |
 | Callables on the emulator | `functions/test-integration/v17.integration.mjs` | 7 steps pass |
+
+## 7. v1.8: platform control, entitlements and subscriptions
+
+v1.8 extends this model; it does not replace it (`clubId` is still the
+organization id, `orgConfigs/{clubId}` still the configuration).
+
+- **Configuration document** gains `packageId`, `subscription`, `rollout`,
+  `profile` (legal name, type, funding, registration id, city), `settings`
+  (`coachesCanBookRooms`, `coachesCanExport`), `provisioning`, `version`,
+  `updatedBy`, `changeReason`, `templateId`, and the server-derived
+  `effectiveModules`, `accessMode`, `featureSchema: 2`.
+- **New collections** (all client-write-denied): `subscriptionPackages`,
+  `orgTemplates`, `orgInvitations` (token hash only),
+  `orgConfigs/{id}/history/{version}`, `platformAdmins`.
+- **Three-level authorization:** platform entitlement × organization switch ×
+  role permission — see [feature-management.md](feature-management.md).
+- **Rules** read the derived fields (`cfgModuleOn`): active, full access,
+  provisioned, feature in `effectiveModules`; v1.7 documents fall back to
+  the coarse lists through `legacyParent`.
+- **Multi-organization users:** the app's organization switcher (`All
+  academies` or one organization) scopes dashboards and features; switching
+  invalidates every tenant-scoped provider (configuration, programs, rooms,
+  bookings, leaderboards, consents) so no data of the previous organization
+  is shown. It only scopes what is shown — every request is still authorized
+  against the target organization.
+- **Jobs and notifications** run through `jobGate()` and
+  `moduleOfNotification`, so a disabled feature sends nothing.
+- Docs: [platform-super-admin.md](platform-super-admin.md),
+  [organization-provisioning.md](organization-provisioning.md),
+  [subscription-management.md](subscription-management.md).
+
+| v1.8 tests | Where | Result |
+|---|---|---|
+| Workflows (demo backend) | `test/v18/v18_workflows_test.dart` | 31 pass |
+| UI (mobile gating, Control Center, invitation) | `test/v18/v18_ui_test.dart` | 8 pass |
+| Rules on the emulator | `rules-tests/test/v18.rules.test.js` | 16 pass |
+| Callables on the emulator | `functions/test-integration/v18.integration.mjs` | 7 steps pass |
+| Pure logic (TS) | `functions/test/v18.test.ts` | pass |

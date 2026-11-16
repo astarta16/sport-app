@@ -89,3 +89,32 @@ emulator: dry run → apply → second apply creates nothing).
   accounts before enabling `studentAccounts` or `leaderboards` for any real
   organization.
 - Choose the organization time zones; the beta supports fixed-offset zones only.
+
+## v1.8 → feature schema 2 (platform control)
+
+Nothing here runs automatically; **no production migration was run**.
+
+1. **Back up:** `gcloud firestore export gs://<bucket>/pre-v1.8` (staging
+   first).
+2. **Deploy** rules, indexes (`notifications` groupId+createdAt, `smsLog`
+   clubId+at) and functions. Old documents keep working: the rules fall back
+   to the coarse v1.7 lists and the scheduler skips v1.7 documents.
+3. **Grant** the first platform admin (`grant-platform-admin.mjs`).
+4. **Dry run:** `cd functions && npm run build && node scripts/migrate-v18.mjs
+   --production --project <id>` — prints, per organization, the version
+   bump, package derived from the plan and the implied features that will be
+   persisted (payments → receipts / verification / reminders, …). Nothing is
+   written.
+5. **Apply** after review: add `--apply`. Each organization is upgraded in its
+   own transaction (skipped if it changed after the plan), with a history
+   entry `v1.8 feature schema migration`; built-in packages are created if
+   missing. A JSON snapshot of the previous documents is written locally.
+6. **Check:** Overview totals and alerts; one organization per package in the
+   Features tab; `rules-tests` and `v18.integration.mjs` on the emulator.
+7. **Roll back:** `node scripts/migrate-v18.mjs --rollback <snapshot.json>
+   [--production --project <id>] --apply` restores the configuration
+   documents and removes the migration history entries; redeploy the v1.7
+   rules/functions if needed. No data is deleted by the migration itself.
+
+Verified on the emulator: dry run writes nothing; apply upgrades and records
+history; a second run is a no-op; rollback restores the v1.7 document.
