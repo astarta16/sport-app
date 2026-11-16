@@ -4221,4 +4221,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get brainParentNote => 'Points show practice, not intelligence.';
+
+  @override
+  String get brainSettingsTitle => 'Game settings';
+
+  @override
+  String get settingsHaptics => 'Vibration';
+
+  @override
+  String get fbWrongTitle => 'Not this one';
+
+  @override
+  String get hudScore => 'Score';
+
+  @override
+  String get hudTime => 'Time';
+
+  @override
+  String hudStreak(int n) {
+    return 'Streak ×$n';
+  }
+
+  @override
+  String hudProgress(int done, int total) {
+    return '$done/$total';
+  }
+
+  @override
+  String get resultLevelComplete => 'Level complete!';
+
+  @override
+  String get resultNewHighScore => 'New high score!';
+
+  @override
+  String resultNextUnlocked(int level) {
+    return 'Level $level unlocked';
+  }
+
+  @override
+  String get resultChallengeDone => 'Coach challenge complete!';
+
+  @override
+  String get resultBackToAcademy => 'Back to Brain Academy';
+
+  @override
+  String get resultTryEasier => 'Try an easier level';
+
+  @override
+  String get resultFailTitle => 'Almost there!';
+
+  @override
+  String get resultFailEncourage =>
+      'Every try makes your brain stronger. Want another go?';
+
+  @override
+  String resultStars(int n) {
+    return '$n of 3 stars';
+  }
+
+  @override
+  String get resultRetry => 'Try again';
+
+  @override
+  String get failOutOfLives => 'You ran out of lives.';
+
+  @override
+  String get failLowAccuracy => 'Fewer than half of the answers were right.';
+
+  @override
+  String get failTooSlow => 'Time ran out in several rounds.';
+
+  @override
+  String get objMemory => 'Goal: find all the pairs.';
+
+  @override
+  String get objLogic => 'Goal: solve 8 puzzles.';
+
+  @override
+  String get objSmart => 'Goal: pick the right move in match situations.';
+
+  @override
+  String get objQuick => 'Goal: find the target quickly in 12 rounds.';
+
+  @override
+  String get objSequence => 'Goal: repeat 5 sequences.';
+
+  @override
+  String get objPath => 'Goal: bring the ball to the goal.';
+
+  @override
+  String get diffEasyHint => 'Relaxed pace';
+
+  @override
+  String get diffMediumHint => 'A bit harder';
+
+  @override
+  String get diffHardHint => 'For champions';
+
+  @override
+  String levelsUnlocked(int level) {
+    return 'Unlocked up to level $level';
+  }
+
+  @override
+  String logicWhyRepeat(int n) {
+    return 'The row repeats every $n shapes.';
+  }
+
+  @override
+  String get logicWhyGrow => 'Each step adds more of the same shape.';
+
+  @override
+  String get logicWhyMissing =>
+      'Look at the shapes before and after the “?” — the row repeats.';
+
+  @override
+  String get logicCorrectWas => 'The right answer is marked in green.';
+
+  @override
+  String get gameNext => 'Next';
+
+  @override
+  String get spCoachSays => 'Coach says';
+
+  @override
+  String get spYourChoice => 'Your choice';
+
+  @override
+  String get spBestChoice => 'Best choice';
+
+  @override
+  String get quickTooSlow => 'Too slow!';
+
+  @override
+  String get quickHurry => 'Hurry!';
+
+  @override
+  String quickReaction(String time) {
+    return 'Reaction: $time s';
+  }
+
+  @override
+  String get seqRepeatHint => 'Now tap them in the same order';
+
+  @override
+  String get seqRoundDone => 'Sequence complete!';
+
+  @override
+  String get seqMistake => 'Oops! Watch again.';
+
+  @override
+  String get mazeBlocked => 'Blocked!';
+
+  @override
+  String get mazeStart => 'Start';
+
+  @override
+  String get memoryPair => 'Match!';
+
+  @override
+  String get memoryNoPair => 'Not a pair';
+
+  @override
+  String comboLabel(int n) {
+    return 'Combo ×$n!';
+  }
 }

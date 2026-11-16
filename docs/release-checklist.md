@@ -1,4 +1,11 @@
-# Release checklist: beta v1.6
+# Release checklist: beta v1.6.1
+
+## v1.6.1 local verification (2026-11-16)
+- [x] `flutter analyze`: no issues; `flutter test`: 318 passed
+- [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.6.1.apk`, 80,258,530 bytes (80.3 MB), versionName 1.6.1, versionCode 19, 7 sounds bundled
+- [ ] Sounds and haptics checked by ear and hand on a real Android phone (simulators give no haptics)
+- [ ] Native-speaker review of the new ka/ru game strings
+
 
 ## v1.6 local verification (done 2026-11-16)
 - [x] `dart format`, `flutter analyze`: no issues

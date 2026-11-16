@@ -79,11 +79,30 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.6.0 --build-number=18
+  --build-name=1.6.1 --build-number=19
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.6.1
+
+- **Brain Academy polish:**
+  - clearer start screens (objective, difficulty hints, unlocked levels);
+  - an in-game status bar (level, difficulty, score, time, progress, lives, streak);
+  - big right/wrong feedback with icons, shake and glow;
+  - success screens with 1–3 stars, badges and the next level unlocked;
+  - kind failure screens with a reason, retry and an "easier" option.
+- **Per game:**
+  - Memory: 3D flips and combos;
+  - Logic: an explanation and a Next button;
+  - Smart Play: the best choice is always marked, with pitch arrows and a coach's tip;
+  - Quick Mind: an urgency timer and reaction time;
+  - Sequence: separate watch and play phases;
+  - Path Finder: start and goal markers, cones, "Blocked!" feedback, and a board that always fits.
+- **Sound and vibration:** short bundled sounds and haptics, with switches in the game's settings (speaker icon); the switches are remembered.
+
+Details: [docs/beta-v1.6.1-progress.md](docs/beta-v1.6.1-progress.md).
 
 ## What's new in v1.6
 
@@ -174,7 +193,7 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 298 tests (responsive, security, workflows, admin, l10n, v1.3–v1.6 flows, games)
+flutter test                                   # 318 tests (responsive, security, workflows, admin, l10n, v1.3–v1.6.1 flows, games)
 cd functions && npm install && npm run build && npm test      # 215 tests
 cd rules-tests && npm install && npm run test:emulator        # 167 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps

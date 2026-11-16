@@ -2435,5 +2435,113 @@
   "challengeEmpty": "გამოწვევები ჯერ არ არის",
   "challengeOpenAction": "თამაში",
   "validationDueInPast": "ვადა წარსულში ვერ იქნება.",
-  "brainParentNote": "ქულები სავარჯიშოა და არა ინტელექტის შეფასება."
+  "brainParentNote": "ქულები სავარჯიშოა და არა ინტელექტის შეფასება.",
+  "brainSettingsTitle": "თამაშის პარამეტრები",
+  "settingsHaptics": "ვიბრაცია",
+  "fbWrongTitle": "არასწორია",
+  "hudScore": "ქულა",
+  "hudTime": "დრო",
+  "hudStreak": "სერია ×{n}",
+  "@hudStreak": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hudProgress": "{done}/{total}",
+  "@hudProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultLevelComplete": "დონე გავლილია!",
+  "resultNewHighScore": "ახალი რეკორდი!",
+  "resultNextUnlocked": "გაიხსნა დონე {level}",
+  "@resultNextUnlocked": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "resultChallengeDone": "მწვრთნელის გამოწვევა შესრულდა!",
+  "resultBackToAcademy": "ტვინის აკადემიაში დაბრუნება",
+  "resultTryEasier": "სცადე უფრო მარტივი",
+  "resultFailTitle": "ცოტაც და გამოგივა!",
+  "resultFailEncourage": "ყოველი ცდა გონებას აძლიერებს. კიდევ სცადე?",
+  "resultStars": "{n} ვარსკვლავი 3-დან",
+  "@resultStars": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "resultRetry": "თავიდან ცდა",
+  "failOutOfLives": "სიცოცხლეები ამოგეწურა.",
+  "failLowAccuracy": "სწორი იყო პასუხების ნახევარზე ნაკლები.",
+  "failTooSlow": "რამდენიმე რაუნდში დრო ამოიწურა.",
+  "objMemory": "მიზანი: იპოვე ყველა წყვილი.",
+  "objLogic": "მიზანი: ამოხსენი 8 თავსატეხი.",
+  "objSmart": "მიზანი: აირჩიე სწორი სვლა მატჩის სიტუაციებში.",
+  "objQuick": "მიზანი: 12 რაუნდში სწრაფად იპოვე სამიზნე.",
+  "objSequence": "მიზანი: გაიმეორე 5 თანმიმდევრობა.",
+  "objPath": "მიზანი: მიიყვანე ბურთი კარამდე.",
+  "diffEasyHint": "მშვიდი ტემპი",
+  "diffMediumHint": "ცოტა უფრო რთული",
+  "diffHardHint": "ჩემპიონებისთვის",
+  "levelsUnlocked": "გახსნილია {level} დონემდე",
+  "@levelsUnlocked": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "logicWhyRepeat": "რიგი ყოველ {n} ფიგურაში მეორდება.",
+  "@logicWhyRepeat": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "logicWhyGrow": "ყოველ ნაბიჯზე იგივე ფიგურა მატულობს.",
+  "logicWhyMissing": "შეხედე ფიგურებს „?“-მდე და მის შემდეგ — რიგი მეორდება.",
+  "logicCorrectWas": "სწორი პასუხი მწვანედაა მონიშნული.",
+  "gameNext": "შემდეგი",
+  "spCoachSays": "მწვრთნელის რჩევა",
+  "spYourChoice": "შენი არჩევანი",
+  "spBestChoice": "საუკეთესო არჩევანი",
+  "quickTooSlow": "ძალიან ნელა!",
+  "quickHurry": "იჩქარე!",
+  "quickReaction": "რეაქცია: {time} წმ",
+  "@quickReaction": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "seqRepeatHint": "ახლა შეეხე იმავე რიგით",
+  "seqRoundDone": "თანმიმდევრობა სწორია!",
+  "seqMistake": "უი! კიდევ ერთხელ დააკვირდი.",
+  "mazeBlocked": "გზა ჩაკეტილია!",
+  "mazeStart": "სტარტი",
+  "memoryPair": "წყვილია!",
+  "memoryNoPair": "წყვილი არ არის",
+  "comboLabel": "კომბო ×{n}!",
+  "@comboLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

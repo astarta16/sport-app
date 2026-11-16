@@ -4178,4 +4178,169 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get brainParentNote => 'ქულები სავარჯიშოა და არა ინტელექტის შეფასება.';
+
+  @override
+  String get brainSettingsTitle => 'თამაშის პარამეტრები';
+
+  @override
+  String get settingsHaptics => 'ვიბრაცია';
+
+  @override
+  String get fbWrongTitle => 'არასწორია';
+
+  @override
+  String get hudScore => 'ქულა';
+
+  @override
+  String get hudTime => 'დრო';
+
+  @override
+  String hudStreak(int n) {
+    return 'სერია ×$n';
+  }
+
+  @override
+  String hudProgress(int done, int total) {
+    return '$done/$total';
+  }
+
+  @override
+  String get resultLevelComplete => 'დონე გავლილია!';
+
+  @override
+  String get resultNewHighScore => 'ახალი რეკორდი!';
+
+  @override
+  String resultNextUnlocked(int level) {
+    return 'გაიხსნა დონე $level';
+  }
+
+  @override
+  String get resultChallengeDone => 'მწვრთნელის გამოწვევა შესრულდა!';
+
+  @override
+  String get resultBackToAcademy => 'ტვინის აკადემიაში დაბრუნება';
+
+  @override
+  String get resultTryEasier => 'სცადე უფრო მარტივი';
+
+  @override
+  String get resultFailTitle => 'ცოტაც და გამოგივა!';
+
+  @override
+  String get resultFailEncourage =>
+      'ყოველი ცდა გონებას აძლიერებს. კიდევ სცადე?';
+
+  @override
+  String resultStars(int n) {
+    return '$n ვარსკვლავი 3-დან';
+  }
+
+  @override
+  String get resultRetry => 'თავიდან ცდა';
+
+  @override
+  String get failOutOfLives => 'სიცოცხლეები ამოგეწურა.';
+
+  @override
+  String get failLowAccuracy => 'სწორი იყო პასუხების ნახევარზე ნაკლები.';
+
+  @override
+  String get failTooSlow => 'რამდენიმე რაუნდში დრო ამოიწურა.';
+
+  @override
+  String get objMemory => 'მიზანი: იპოვე ყველა წყვილი.';
+
+  @override
+  String get objLogic => 'მიზანი: ამოხსენი 8 თავსატეხი.';
+
+  @override
+  String get objSmart => 'მიზანი: აირჩიე სწორი სვლა მატჩის სიტუაციებში.';
+
+  @override
+  String get objQuick => 'მიზანი: 12 რაუნდში სწრაფად იპოვე სამიზნე.';
+
+  @override
+  String get objSequence => 'მიზანი: გაიმეორე 5 თანმიმდევრობა.';
+
+  @override
+  String get objPath => 'მიზანი: მიიყვანე ბურთი კარამდე.';
+
+  @override
+  String get diffEasyHint => 'მშვიდი ტემპი';
+
+  @override
+  String get diffMediumHint => 'ცოტა უფრო რთული';
+
+  @override
+  String get diffHardHint => 'ჩემპიონებისთვის';
+
+  @override
+  String levelsUnlocked(int level) {
+    return 'გახსნილია $level დონემდე';
+  }
+
+  @override
+  String logicWhyRepeat(int n) {
+    return 'რიგი ყოველ $n ფიგურაში მეორდება.';
+  }
+
+  @override
+  String get logicWhyGrow => 'ყოველ ნაბიჯზე იგივე ფიგურა მატულობს.';
+
+  @override
+  String get logicWhyMissing =>
+      'შეხედე ფიგურებს „?“-მდე და მის შემდეგ — რიგი მეორდება.';
+
+  @override
+  String get logicCorrectWas => 'სწორი პასუხი მწვანედაა მონიშნული.';
+
+  @override
+  String get gameNext => 'შემდეგი';
+
+  @override
+  String get spCoachSays => 'მწვრთნელის რჩევა';
+
+  @override
+  String get spYourChoice => 'შენი არჩევანი';
+
+  @override
+  String get spBestChoice => 'საუკეთესო არჩევანი';
+
+  @override
+  String get quickTooSlow => 'ძალიან ნელა!';
+
+  @override
+  String get quickHurry => 'იჩქარე!';
+
+  @override
+  String quickReaction(String time) {
+    return 'რეაქცია: $time წმ';
+  }
+
+  @override
+  String get seqRepeatHint => 'ახლა შეეხე იმავე რიგით';
+
+  @override
+  String get seqRoundDone => 'თანმიმდევრობა სწორია!';
+
+  @override
+  String get seqMistake => 'უი! კიდევ ერთხელ დააკვირდი.';
+
+  @override
+  String get mazeBlocked => 'გზა ჩაკეტილია!';
+
+  @override
+  String get mazeStart => 'სტარტი';
+
+  @override
+  String get memoryPair => 'წყვილია!';
+
+  @override
+  String get memoryNoPair => 'წყვილი არ არის';
+
+  @override
+  String comboLabel(int n) {
+    return 'კომბო ×$n!';
+  }
 }

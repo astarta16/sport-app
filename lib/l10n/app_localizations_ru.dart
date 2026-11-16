@@ -4255,4 +4255,169 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get brainParentNote => 'Очки отражают практику, а не интеллект.';
+
+  @override
+  String get brainSettingsTitle => 'Настройки игры';
+
+  @override
+  String get settingsHaptics => 'Вибрация';
+
+  @override
+  String get fbWrongTitle => 'Неверно';
+
+  @override
+  String get hudScore => 'Очки';
+
+  @override
+  String get hudTime => 'Время';
+
+  @override
+  String hudStreak(int n) {
+    return 'Серия ×$n';
+  }
+
+  @override
+  String hudProgress(int done, int total) {
+    return '$done/$total';
+  }
+
+  @override
+  String get resultLevelComplete => 'Уровень пройден!';
+
+  @override
+  String get resultNewHighScore => 'Новый рекорд!';
+
+  @override
+  String resultNextUnlocked(int level) {
+    return 'Открыт уровень $level';
+  }
+
+  @override
+  String get resultChallengeDone => 'Задание тренера выполнено!';
+
+  @override
+  String get resultBackToAcademy => 'Назад в Академию ума';
+
+  @override
+  String get resultTryEasier => 'Попробовать полегче';
+
+  @override
+  String get resultFailTitle => 'Почти получилось!';
+
+  @override
+  String get resultFailEncourage =>
+      'Каждая попытка тренирует ум. Попробуешь ещё раз?';
+
+  @override
+  String resultStars(int n) {
+    return '$n из 3 звёзд';
+  }
+
+  @override
+  String get resultRetry => 'Ещё раз';
+
+  @override
+  String get failOutOfLives => 'Закончились жизни.';
+
+  @override
+  String get failLowAccuracy => 'Верных ответов меньше половины.';
+
+  @override
+  String get failTooSlow => 'В нескольких раундах не хватило времени.';
+
+  @override
+  String get objMemory => 'Цель: найти все пары.';
+
+  @override
+  String get objLogic => 'Цель: решить 8 головоломок.';
+
+  @override
+  String get objSmart => 'Цель: выбрать верный ход в игровых ситуациях.';
+
+  @override
+  String get objQuick => 'Цель: быстро найти цель в 12 раундах.';
+
+  @override
+  String get objSequence => 'Цель: повторить 5 последовательностей.';
+
+  @override
+  String get objPath => 'Цель: довести мяч до ворот.';
+
+  @override
+  String get diffEasyHint => 'Спокойный темп';
+
+  @override
+  String get diffMediumHint => 'Чуть сложнее';
+
+  @override
+  String get diffHardHint => 'Для чемпионов';
+
+  @override
+  String levelsUnlocked(int level) {
+    return 'Открыто до уровня $level';
+  }
+
+  @override
+  String logicWhyRepeat(int n) {
+    return 'Ряд повторяется через каждые $n фигуры.';
+  }
+
+  @override
+  String get logicWhyGrow => 'С каждым шагом фигур становится больше.';
+
+  @override
+  String get logicWhyMissing =>
+      'Посмотри на фигуры до и после «?» — ряд повторяется.';
+
+  @override
+  String get logicCorrectWas => 'Правильный ответ отмечен зелёным.';
+
+  @override
+  String get gameNext => 'Далее';
+
+  @override
+  String get spCoachSays => 'Совет тренера';
+
+  @override
+  String get spYourChoice => 'Твой выбор';
+
+  @override
+  String get spBestChoice => 'Лучший выбор';
+
+  @override
+  String get quickTooSlow => 'Слишком медленно!';
+
+  @override
+  String get quickHurry => 'Быстрее!';
+
+  @override
+  String quickReaction(String time) {
+    return 'Реакция: $time с';
+  }
+
+  @override
+  String get seqRepeatHint => 'Теперь нажми в том же порядке';
+
+  @override
+  String get seqRoundDone => 'Последовательность верна!';
+
+  @override
+  String get seqMistake => 'Ой! Посмотри ещё раз.';
+
+  @override
+  String get mazeBlocked => 'Путь закрыт!';
+
+  @override
+  String get mazeStart => 'Старт';
+
+  @override
+  String get memoryPair => 'Пара!';
+
+  @override
+  String get memoryNoPair => 'Не пара';
+
+  @override
+  String comboLabel(int n) {
+    return 'Комбо ×$n!';
+  }
 }

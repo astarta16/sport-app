@@ -7563,6 +7563,300 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ქულები სავარჯიშოა და არა ინტელექტის შეფასება.'**
   String get brainParentNote;
+
+  /// No description provided for @brainSettingsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაშის პარამეტრები'**
+  String get brainSettingsTitle;
+
+  /// No description provided for @settingsHaptics.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვიბრაცია'**
+  String get settingsHaptics;
+
+  /// No description provided for @fbWrongTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'არასწორია'**
+  String get fbWrongTitle;
+
+  /// No description provided for @hudScore.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულა'**
+  String get hudScore;
+
+  /// No description provided for @hudTime.
+  ///
+  /// In ka, this message translates to:
+  /// **'დრო'**
+  String get hudTime;
+
+  /// No description provided for @hudStreak.
+  ///
+  /// In ka, this message translates to:
+  /// **'სერია ×{n}'**
+  String hudStreak(int n);
+
+  /// No description provided for @hudProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'{done}/{total}'**
+  String hudProgress(int done, int total);
+
+  /// No description provided for @resultLevelComplete.
+  ///
+  /// In ka, this message translates to:
+  /// **'დონე გავლილია!'**
+  String get resultLevelComplete;
+
+  /// No description provided for @resultNewHighScore.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი რეკორდი!'**
+  String get resultNewHighScore;
+
+  /// No description provided for @resultNextUnlocked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაიხსნა დონე {level}'**
+  String resultNextUnlocked(int level);
+
+  /// No description provided for @resultChallengeDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის გამოწვევა შესრულდა!'**
+  String get resultChallengeDone;
+
+  /// No description provided for @resultBackToAcademy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტვინის აკადემიაში დაბრუნება'**
+  String get resultBackToAcademy;
+
+  /// No description provided for @resultTryEasier.
+  ///
+  /// In ka, this message translates to:
+  /// **'სცადე უფრო მარტივი'**
+  String get resultTryEasier;
+
+  /// No description provided for @resultFailTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცოტაც და გამოგივა!'**
+  String get resultFailTitle;
+
+  /// No description provided for @resultFailEncourage.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოველი ცდა გონებას აძლიერებს. კიდევ სცადე?'**
+  String get resultFailEncourage;
+
+  /// No description provided for @resultStars.
+  ///
+  /// In ka, this message translates to:
+  /// **'{n} ვარსკვლავი 3-დან'**
+  String resultStars(int n);
+
+  /// No description provided for @resultRetry.
+  ///
+  /// In ka, this message translates to:
+  /// **'თავიდან ცდა'**
+  String get resultRetry;
+
+  /// No description provided for @failOutOfLives.
+  ///
+  /// In ka, this message translates to:
+  /// **'სიცოცხლეები ამოგეწურა.'**
+  String get failOutOfLives;
+
+  /// No description provided for @failLowAccuracy.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწორი იყო პასუხების ნახევარზე ნაკლები.'**
+  String get failLowAccuracy;
+
+  /// No description provided for @failTooSlow.
+  ///
+  /// In ka, this message translates to:
+  /// **'რამდენიმე რაუნდში დრო ამოიწურა.'**
+  String get failTooSlow;
+
+  /// No description provided for @objMemory.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: იპოვე ყველა წყვილი.'**
+  String get objMemory;
+
+  /// No description provided for @objLogic.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: ამოხსენი 8 თავსატეხი.'**
+  String get objLogic;
+
+  /// No description provided for @objSmart.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: აირჩიე სწორი სვლა მატჩის სიტუაციებში.'**
+  String get objSmart;
+
+  /// No description provided for @objQuick.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: 12 რაუნდში სწრაფად იპოვე სამიზნე.'**
+  String get objQuick;
+
+  /// No description provided for @objSequence.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: გაიმეორე 5 თანმიმდევრობა.'**
+  String get objSequence;
+
+  /// No description provided for @objPath.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზანი: მიიყვანე ბურთი კარამდე.'**
+  String get objPath;
+
+  /// No description provided for @diffEasyHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშვიდი ტემპი'**
+  String get diffEasyHint;
+
+  /// No description provided for @diffMediumHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცოტა უფრო რთული'**
+  String get diffMediumHint;
+
+  /// No description provided for @diffHardHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემპიონებისთვის'**
+  String get diffHardHint;
+
+  /// No description provided for @levelsUnlocked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გახსნილია {level} დონემდე'**
+  String levelsUnlocked(int level);
+
+  /// No description provided for @logicWhyRepeat.
+  ///
+  /// In ka, this message translates to:
+  /// **'რიგი ყოველ {n} ფიგურაში მეორდება.'**
+  String logicWhyRepeat(int n);
+
+  /// No description provided for @logicWhyGrow.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოველ ნაბიჯზე იგივე ფიგურა მატულობს.'**
+  String get logicWhyGrow;
+
+  /// No description provided for @logicWhyMissing.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეხედე ფიგურებს „?“-მდე და მის შემდეგ — რიგი მეორდება.'**
+  String get logicWhyMissing;
+
+  /// No description provided for @logicCorrectWas.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწორი პასუხი მწვანედაა მონიშნული.'**
+  String get logicCorrectWas;
+
+  /// No description provided for @gameNext.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი'**
+  String get gameNext;
+
+  /// No description provided for @spCoachSays.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის რჩევა'**
+  String get spCoachSays;
+
+  /// No description provided for @spYourChoice.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენი არჩევანი'**
+  String get spYourChoice;
+
+  /// No description provided for @spBestChoice.
+  ///
+  /// In ka, this message translates to:
+  /// **'საუკეთესო არჩევანი'**
+  String get spBestChoice;
+
+  /// No description provided for @quickTooSlow.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძალიან ნელა!'**
+  String get quickTooSlow;
+
+  /// No description provided for @quickHurry.
+  ///
+  /// In ka, this message translates to:
+  /// **'იჩქარე!'**
+  String get quickHurry;
+
+  /// No description provided for @quickReaction.
+  ///
+  /// In ka, this message translates to:
+  /// **'რეაქცია: {time} წმ'**
+  String quickReaction(String time);
+
+  /// No description provided for @seqRepeatHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახლა შეეხე იმავე რიგით'**
+  String get seqRepeatHint;
+
+  /// No description provided for @seqRoundDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანმიმდევრობა სწორია!'**
+  String get seqRoundDone;
+
+  /// No description provided for @seqMistake.
+  ///
+  /// In ka, this message translates to:
+  /// **'უი! კიდევ ერთხელ დააკვირდი.'**
+  String get seqMistake;
+
+  /// No description provided for @mazeBlocked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გზა ჩაკეტილია!'**
+  String get mazeBlocked;
+
+  /// No description provided for @mazeStart.
+  ///
+  /// In ka, this message translates to:
+  /// **'სტარტი'**
+  String get mazeStart;
+
+  /// No description provided for @memoryPair.
+  ///
+  /// In ka, this message translates to:
+  /// **'წყვილია!'**
+  String get memoryPair;
+
+  /// No description provided for @memoryNoPair.
+  ///
+  /// In ka, this message translates to:
+  /// **'წყვილი არ არის'**
+  String get memoryNoPair;
+
+  /// No description provided for @comboLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'კომბო ×{n}!'**
+  String comboLabel(int n);
 }
 
 class _AppLocalizationsDelegate

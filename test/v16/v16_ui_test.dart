@@ -123,6 +123,8 @@ void main() {
       final a = e.current.answer;
       e.answer(a);
       await tap(tester, 'logic-option-$a', frames: 1);
+      expect(find.byKey(const Key('logic-feedback')), findsOneWidget);
+      await tap(tester, 'logic-next', frames: 1);
     }
     await expectFinished(tester, db, BrainGame.logicQuest, before);
   });
@@ -146,6 +148,8 @@ void main() {
     for (var i = 0; i < QuickMindEngine.rounds; i++) {
       final r = e.nextRound();
       await tap(tester, 'quick-item-${r.items.indexOf(r.target)}', frames: 1);
+      // Short "correct" moment before the next round.
+      await tester.pump(const Duration(milliseconds: 700));
     }
     await expectFinished(tester, db, BrainGame.quickMind, before);
     expect(db.brainResults.last.accuracy, 1);
@@ -154,6 +158,9 @@ void main() {
   testWidgets('Quick Mind: a missed round times out (counted, not correct)', (tester) async {
     await openGame(tester, BrainGame.quickMind);
     await tester.pump(const Duration(milliseconds: 3600));
+    await pumpFrames(tester, 2);
+    expect(find.byKey(const Key('quick-too-slow')), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 700));
     await pumpFrames(tester, 2);
     expect(find.text('რაუნდი 2/12'), findsOneWidget);
   });
@@ -195,6 +202,8 @@ void main() {
       await tester.tap(find.byKey(Key('maze-$d')));
       await tester.pump(const Duration(milliseconds: 150));
     }
+    expect(find.byKey(const Key('maze-finished')), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 900));
     await expectFinished(tester, db, BrainGame.pathFinder, before);
     expect(db.brainResults.last.accuracy, 1);
   });
