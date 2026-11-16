@@ -1424,11 +1424,17 @@ class _FeaturesEditorState extends ConsumerState<FeaturesEditor> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.sm),
               children: [
+                // v1.9: the four levels are different things — say which is which.
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                  child: AppFeedbackBanner(key: const Key('features-legend'), message: l.featLegend),
+                ),
                 for (final d in defs)
                   _FeatureRow(
                     def: d,
                     entitled: _allowed.contains(d.module),
                     inPackage: pkg?.includes(d.module) ?? true,
+                    orgEnabled: cfg.enabledModules.contains(d.module),
                     rollout: _rollout[d.module],
                     effective: EntitlementResolver.blockOf(draft, d.module, now, package: pkg),
                     lastChange: history
@@ -1492,11 +1498,15 @@ class _FeatureRow extends StatelessWidget {
     required this.lastChange,
     required this.onEntitled,
     required this.onRollout,
+    this.orgEnabled = true,
   });
 
   final FeatureDef def;
   final bool entitled;
   final bool inPackage;
+
+  /// Level 2 — the organization's own switch (shown, not edited here).
+  final bool orgEnabled;
   final FeatureRollout? rollout;
   final EntitlementBlock? effective;
   final ConfigHistoryEntry? lastChange;
@@ -1542,6 +1552,13 @@ class _FeatureRow extends StatelessWidget {
           StatusPill(
             label: inPackage ? l.inPackage : l.effNotInPackage,
             color: inPackage ? AppColors.success : AppColors.neutral,
+            dense: true,
+          ),
+          StatusPill(
+            key: Key('feature-org-${def.module.name}'),
+            label: orgEnabled ? l.featOrgOn : l.featOrgOff,
+            color: orgEnabled ? AppColors.blue : AppColors.neutral,
+            icon: Icons.apartment_rounded,
             dense: true,
           ),
           StatusPill(

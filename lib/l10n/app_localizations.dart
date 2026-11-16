@@ -10808,6 +10808,24 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.'**
   String get itemGoneBody;
+
+  /// No description provided for @featOrgOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგ.: ჩართული'**
+  String get featOrgOn;
+
+  /// No description provided for @featOrgOff.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგ.: გამორთული'**
+  String get featOrgOff;
+
+  /// No description provided for @featLegend.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება).'**
+  String get featLegend;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

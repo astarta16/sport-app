@@ -58,6 +58,10 @@ class AppSpacing {
 class AppTheme {
   AppTheme._();
 
+  /// Test/screenshot hook only (null in the app): extra font families used
+  /// for glyphs the primary font lacks, e.g. Georgian in rendered PNGs.
+  static List<String>? debugFontFallback;
+
   static ThemeData light() => _build(Brightness.light);
   static ThemeData dark() => _build(Brightness.dark);
 
@@ -92,7 +96,12 @@ class AppTheme {
       onInverseSurface: dark ? AppColors.navy : Colors.white,
     );
 
-    final base = ThemeData(useMaterial3: true, colorScheme: scheme, brightness: b);
+    final base = ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      brightness: b,
+      fontFamilyFallback: debugFontFallback,
+    );
     final text = base.textTheme.apply(bodyColor: scheme.onSurface, displayColor: scheme.onSurface);
     final textTheme = text.copyWith(
       displaySmall: text.displaySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),

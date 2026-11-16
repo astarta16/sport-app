@@ -1785,5 +1785,8 @@
   "groupArchivedSnack": "Group archived",
   "groupRestoredSnack": "Group restored",
   "itemGoneTitle": "This item no longer exists",
-  "itemGoneBody": "It may have been deleted or cancelled. Go back to see the current list."
+  "itemGoneBody": "It may have been deleted or cancelled. Go back to see the current list.",
+  "featOrgOn": "Org: on",
+  "featOrgOff": "Org: off",
+  "featLegend": "Package = what the package includes · Org = the organization's own switch · Active/blocked = what users get right now · Rollout = timing · The switch on the right = allowed by the platform (what you change here)."
 }

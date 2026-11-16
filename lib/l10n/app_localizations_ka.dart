@@ -5827,4 +5827,14 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get itemGoneBody => 'შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.';
+
+  @override
+  String get featOrgOn => 'ორგ.: ჩართული';
+
+  @override
+  String get featOrgOff => 'ორგ.: გამორთული';
+
+  @override
+  String get featLegend =>
+      'პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება).';
 }

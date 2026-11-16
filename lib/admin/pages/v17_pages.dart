@@ -83,6 +83,14 @@ class AdminOrgPicker extends ConsumerWidget {
     final ids = ref.watch(adminOrgIdsProvider);
     final current = ref.watch(adminOrgProvider);
     if (ids.isEmpty || current == null) return const SizedBox.shrink();
+    // One organization: a plain label (a greyed-out button looked broken).
+    if (ids.length < 2) {
+      return Chip(
+        key: const Key('admin-org-picker'),
+        avatar: const Icon(Icons.apartment_rounded, size: 18),
+        label: Text(orgName(context, ref, current), overflow: TextOverflow.ellipsis),
+      );
+    }
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 320),
       child: OutlinedButton.icon(

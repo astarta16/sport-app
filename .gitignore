@@ -59,3 +59,4 @@ functions/lib/
 rules-tests/node_modules/
 *-debug.log
 .firebase/
+test/screenshots/out/

@@ -5911,4 +5911,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get itemGoneBody => 'Возможно, запись удалили или отменили. Вернитесь к актуальному списку.';
+
+  @override
+  String get featOrgOn => 'Орг.: вкл.';
+
+  @override
+  String get featOrgOff => 'Орг.: выкл.';
+
+  @override
+  String get featLegend =>
+      'Пакет = что входит в пакет · Орг. = собственный переключатель организации · Активно/заблокировано = что пользователи получают сейчас · Запуск = сроки · Переключатель справа = разрешение платформы (меняется здесь).';
 }

@@ -5859,4 +5859,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemGoneBody => 'It may have been deleted or cancelled. Go back to see the current list.';
+
+  @override
+  String get featOrgOn => 'Org: on';
+
+  @override
+  String get featOrgOff => 'Org: off';
+
+  @override
+  String get featLegend =>
+      'Package = what the package includes · Org = the organization\'s own switch · Active/blocked = what users get right now · Rollout = timing · The switch on the right = allowed by the platform (what you change here).';
 }
