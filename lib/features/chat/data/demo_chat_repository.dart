@@ -10,6 +10,7 @@ import '../../notifications/domain/notification_models.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/chat_message.dart';
 import '../domain/chat_repository.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/receipts.dart';
 
 class DemoChatRepository implements ChatRepository {
@@ -39,6 +40,8 @@ class DemoChatRepository implements ChatRepository {
     bool requiresAck = false,
   }) async {
     db.requireOnline();
+    db.requireGroupModule(groupId, OrgModule.communication);
+    if (requiresAck) db.requireGroupModule(groupId, OrgModule.messageAcks);
     final me = db.me;
     final g = db.requireGroup(groupId);
     if (!AccessPolicy.canAccessChat(me, g)) throw const PermissionDeniedException('chat');
@@ -242,6 +245,7 @@ class DemoChatRepository implements ChatRepository {
   @override
   Future<void> acknowledge(String groupId, String messageId) async {
     db.requireOnline();
+    db.requireGroupModule(groupId, OrgModule.messageAcks);
     final me = db.me;
     final m = _message(groupId, messageId);
     if (m == null) throw const NotFoundException('message');

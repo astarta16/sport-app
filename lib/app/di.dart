@@ -84,3 +84,4 @@ final organizationsRepositoryProvider = Provider<OrganizationsRepository>((_) =>
 final schedulingRepositoryProvider = Provider<SchedulingRepository>((_) => _unbound('SchedulingRepository'));
 final leaderboardRepositoryProvider = Provider<LeaderboardRepository>((_) => _unbound('LeaderboardRepository'));
 final coachContactRepositoryProvider = Provider<CoachContactRepository>((_) => _unbound('CoachContactRepository'));
+final platformRepositoryProvider = Provider<PlatformRepository>((_) => _unbound('PlatformRepository'));

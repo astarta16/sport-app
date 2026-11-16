@@ -11,6 +11,7 @@ import '../../brain_academy/domain/scoring.dart';
 import '../../clubs/domain/club.dart';
 import '../domain/coach_contact.dart';
 import '../domain/organization.dart';
+import '../domain/platform.dart';
 import '../domain/repositories.dart';
 import '../domain/scheduling.dart';
 
@@ -98,7 +99,13 @@ class FirebaseOrganizationsRepository implements OrganizationsRepository {
     LeaderboardSettings? leaderboard,
     int? bookingBufferMin,
     List<String>? sportIds,
+    OrgSettings? settings,
+    int? expectedVersion,
+    String? reason,
   }) => callFunction(functions, 'updateOrgSettings', {
+    if (settings != null) 'settings': settings.toMap(),
+    'expectedVersion': ?expectedVersion,
+    'reason': ?reason,
     'orgId': orgId,
     if (enabledModules != null) 'enabledModules': [for (final m in enabledModules) m.name],
     if (branding != null) 'branding': branding.toMap(),

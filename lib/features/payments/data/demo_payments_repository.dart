@@ -4,6 +4,7 @@ import '../../demo/data/demo_backend.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/payment.dart';
 import '../domain/payment_reminders.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/payments_repository.dart';
 
 class DemoPaymentsRepository implements PaymentsRepository {
@@ -35,6 +36,7 @@ class DemoPaymentsRepository implements PaymentsRepository {
     db.requireOnline();
     final p = db.payments[paymentId] ?? (throw const NotFoundException());
     final g = db.requireGroup(p.groupId);
+    db.requireModule(g.clubId, OrgModule.payments);
     // v1.3: changing the authoritative status needs payment-verification rights.
     if (!AccessPolicy.canVerifyPayments(db.me, g)) throw const PermissionDeniedException('payments');
     if (p.status == status) return;
@@ -86,6 +88,7 @@ class DemoPaymentsRepository implements PaymentsRepository {
   }) async {
     db.requireOnline();
     final g = db.requireGroup(groupId);
+    db.requireModule(g.clubId, OrgModule.payments);
     if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
     if (amount <= 0) throw const ValidationException('amountPositive');
     var created = 0;
@@ -131,6 +134,7 @@ class DemoPaymentsRepository implements PaymentsRepository {
   @override
   Future<PaymentPlan> createPlan({required String groupId, required num amount, required int dayOfMonth}) async {
     final g = db.requireGroup(groupId);
+    db.requireModule(g.clubId, OrgModule.payments);
     if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
     if (amount <= 0) throw const ValidationException('amountPositive');
     if (dayOfMonth < 1 || dayOfMonth > 28) throw const ValidationException('dayOfMonth');
@@ -151,6 +155,7 @@ class DemoPaymentsRepository implements PaymentsRepository {
   Future<int> generateRecurring(String planId, {required int year, required int month}) async {
     final plan = db.plans[planId] ?? (throw const NotFoundException());
     final g = db.requireGroup(plan.groupId);
+    db.requireModule(g.clubId, OrgModule.payments);
     if (!AccessPolicy.canManagePayments(db.me, g)) throw const PermissionDeniedException();
     if (!plan.active) return 0;
     var created = 0;
@@ -183,7 +188,10 @@ class DemoPaymentsRepository implements PaymentsRepository {
     final service = PaymentReminderService(provider: sms, ledger: ledger, smsEnabled: true);
     final report = await service.run(
       now: now,
-      payments: db.payments.values.toList(),
+      // Scheduled-job enforcement: only organizations with reminders on.
+      payments: db.payments.values
+          .where((p) => db.moduleOn(db.clubOfGroup(p.groupId), OrgModule.paymentReminders))
+          .toList(),
       recipientOf: (parentId) {
         final u = db.users[parentId];
         if (u == null) return null;

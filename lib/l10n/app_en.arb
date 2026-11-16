@@ -1402,7 +1402,7 @@
   "minutesShort": "{minutes} min",
   "moduleAttendance": "Attendance",
   "moduleBrainAcademy": "Brain Academy",
-  "moduleCommunication": "Parent communication",
+  "moduleCommunication": "Chat",
   "moduleDisabledRooms": "Room scheduling is not enabled for this organization. The platform administrator can allow it, then you can switch it on in the academy settings.",
   "moduleDisabledTitle": "Module switched off",
   "moduleLeaderboards": "Leaderboards",
@@ -1506,5 +1506,14 @@
   "scheduleSubtitle": "Times shown in {tz}. Tap a free slot to book, drag a booking to move it.",
   "scheduleWeek": "Week",
   "sysEventRescheduled": "Schedule changed: {when}. Please confirm attendance again.",
-  "sysEventRescheduledNoTime": "The schedule changed. Please confirm attendance again."
+  "sysEventRescheduledNoTime": "The schedule changed. Please confirm attendance again.",
+  "moduleParentRsvp": "Parent RSVP",
+  "moduleMessageAcks": "Message acknowledgments",
+  "moduleCoachChallenges": "Coach challenges",
+  "modulePaymentReceipts": "Payment receipts",
+  "modulePaymentVerification": "Payment verification",
+  "modulePaymentReminders": "Payment reminders",
+  "moduleFacilities": "Facilities",
+  "moduleReports": "Reports",
+  "moduleDataExports": "Data exports"
 }

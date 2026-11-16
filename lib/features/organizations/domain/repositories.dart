@@ -5,6 +5,7 @@ import '../../brain_academy/domain/scoring.dart';
 import '../../clubs/domain/club.dart';
 import 'coach_contact.dart';
 import 'organization.dart';
+import 'platform.dart';
 import 'scheduling.dart';
 
 /// Tenant administration. Platform-only operations are re-checked on the
@@ -46,6 +47,9 @@ abstract interface class OrganizationsRepository {
     LeaderboardSettings? leaderboard,
     int? bookingBufferMin,
     List<String>? sportIds,
+    OrgSettings? settings,
+    int? expectedVersion,
+    String? reason,
   });
 
   /// Platform admin assigns / removes an organization administrator.
@@ -199,4 +203,159 @@ abstract interface class CoachContactRepository {
   /// The student's own requests.
   Stream<List<CoachContactRequest>> watchMine();
   Future<void> markHandled(String id);
+}
+
+/// v1.8 Platform Super Admin operations (all re-checked server-side).
+abstract interface class PlatformRepository {
+  Stream<PlatformStats> watchStats();
+
+  Stream<List<SubscriptionPackage>> watchPackages();
+  Future<SubscriptionPackage> upsertPackage(SubscriptionPackage p);
+
+  Stream<List<OrgTemplate>> watchTemplates();
+  Future<OrgTemplate> upsertTemplate(OrgTemplate t);
+  Future<OrgTemplate> duplicateTemplate(String templateId);
+  Future<void> archiveTemplate(String templateId, {required bool archived});
+
+  /// Creates club + configuration + membership + admin invitation as one
+  /// unit. The organization stays `provisioning` (unusable) until every
+  /// part exists; a failure leaves nothing active.
+  Future<ProvisionResult> provisionOrganization(ProvisionRequest r);
+
+  /// What applying a template to an EXISTING organization would change.
+  Future<List<TemplateChange>> previewTemplate(String orgId, String templateId);
+  Future<OrgConfig> applyTemplate(
+    String orgId,
+    String templateId, {
+    required int expectedVersion,
+    required String reason,
+  });
+
+  /// Level-1 entitlements + rollout. Rejects stale [expectedVersion]
+  /// with [ConfigConflictException] (never silently overwrites).
+  Future<OrgConfig> updateEntitlements(
+    String orgId, {
+    required int expectedVersion,
+    required Set<OrgModule> allowed,
+    Map<OrgModule, FeatureRollout> rollout,
+    required String reason,
+  });
+
+  Future<OrgConfig> updateSubscription(
+    String orgId, {
+    required int expectedVersion,
+    String? packageId,
+    SubscriptionInfo? subscription,
+    OrgLimits? limits,
+    required String reason,
+  });
+
+  Stream<List<ConfigHistoryEntry>> watchHistory(String orgId);
+  Future<OrgUsage> usage(String orgId);
+
+  Stream<List<OrgInvitation>> watchInvitations({String? orgId});
+  Future<InvitationIssued> inviteAdmin(String orgId, {String? phone, String? email, String? transferFrom});
+  Future<InvitationIssued> resendInvitation(String invitationId);
+  Future<void> revokeInvitation(String invitationId);
+
+  /// The signed-in user accepts; returns the organization id.
+  Future<String> acceptInvitation(String token);
+  Future<void> rejectInvitation(String token);
+
+  /// Scheduler equivalent: expires trials, applies scheduled rollouts and
+  /// subscription end dates. Returns organizations whose access changed.
+  Future<List<String>> refreshEntitlements();
+}
+
+class ProvisionRequest {
+  const ProvisionRequest({
+    required this.names,
+    required this.address,
+    required this.city,
+    required this.contactEmail,
+    required this.contactPhone,
+    required this.sportIds,
+    required this.packageId,
+    this.legalName = '',
+    this.type = OrgType.club,
+    this.funding = FundingType.private,
+    this.registrationId,
+    this.lat = 41.7151,
+    this.lng = 44.8271,
+    this.description = '',
+    this.logoUrl,
+    this.primaryColor = 0xFF1D4ED8,
+    this.secondaryColor = 0xFF0F172A,
+    this.timezone = OrgTimeZones.tbilisi,
+    this.defaultLanguage = 'ka',
+    this.templateId,
+    this.modules,
+    this.subscription = const SubscriptionInfo(),
+    this.adminPhone,
+    this.adminEmail,
+  });
+
+  final Map<String, String> names;
+  final String legalName;
+  final OrgType type;
+  final FundingType funding;
+  final String? registrationId;
+  final String address;
+  final String city;
+  final double lat;
+  final double lng;
+  final String contactEmail;
+  final String contactPhone;
+  final String description;
+  final String? logoUrl;
+  final int primaryColor;
+  final int secondaryColor;
+  final List<String> sportIds;
+  final String timezone;
+  final String defaultLanguage;
+  final String packageId;
+  final String? templateId;
+
+  /// Initial feature configuration; null = the template's (or package's).
+  final Set<OrgModule>? modules;
+  final SubscriptionInfo subscription;
+
+  /// Initial organization admin, invited (never given a password).
+  final String? adminPhone;
+  final String? adminEmail;
+
+  static final _email = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+  static final _phone = RegExp(r'^\+?[0-9 ]{9,16}$');
+
+  /// Validation codes (localized in the UI).
+  static List<String> validate(ProvisionRequest r) => [
+    if ((r.names['ka'] ?? r.names['en'] ?? '').trim().length < 2) 'orgName',
+    if (r.address.trim().length < 2) 'orgAddress',
+    if (r.city.trim().length < 2) 'orgCity',
+    if (!_email.hasMatch(r.contactEmail.trim())) 'orgEmail',
+    if (!_phone.hasMatch(r.contactPhone.trim())) 'orgPhone',
+    if (r.sportIds.isEmpty) 'orgSports',
+    if (r.adminPhone == null && r.adminEmail == null) 'orgAdminMissing',
+    if (r.adminEmail != null && !_email.hasMatch(r.adminEmail!.trim())) 'orgEmail',
+    if (r.adminPhone != null && !_phone.hasMatch(r.adminPhone!.trim())) 'orgPhone',
+    if (r.modules != null && !FeatureCatalog.isValid(r.modules!)) 'featureDependencies',
+    if (!BrandContrast.acceptable(r.primaryColor)) 'brandContrast',
+  ];
+}
+
+class ProvisionResult {
+  const ProvisionResult({required this.orgId, required this.invitation, required this.token});
+
+  final String orgId;
+  final OrgInvitation invitation;
+
+  /// Shown once to the inviter (in production it is sent by email/SMS).
+  final String token;
+}
+
+class InvitationIssued {
+  const InvitationIssued(this.invitation, this.token);
+
+  final OrgInvitation invitation;
+  final String token;
 }

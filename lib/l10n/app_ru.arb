@@ -1506,5 +1506,14 @@
   "scheduleSubtitle": "Время в поясе {tz}. Нажмите на свободный слот, чтобы забронировать; перетащите бронь, чтобы перенести.",
   "scheduleWeek": "Неделя",
   "sysEventRescheduled": "Расписание изменилось: {when}. Пожалуйста, подтвердите участие ещё раз.",
-  "sysEventRescheduledNoTime": "Расписание изменилось. Пожалуйста, подтвердите участие ещё раз."
+  "sysEventRescheduledNoTime": "Расписание изменилось. Пожалуйста, подтвердите участие ещё раз.",
+  "moduleParentRsvp": "Ответы родителей",
+  "moduleMessageAcks": "Подтверждение прочтения",
+  "moduleCoachChallenges": "Задания тренера",
+  "modulePaymentReceipts": "Квитанции об оплате",
+  "modulePaymentVerification": "Проверка платежей",
+  "modulePaymentReminders": "Напоминания об оплате",
+  "moduleFacilities": "Объекты и залы",
+  "moduleReports": "Отчёты",
+  "moduleDataExports": "Экспорт данных"
 }

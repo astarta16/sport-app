@@ -5,6 +5,7 @@ import '../../authentication/domain/access_policy.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../groups/domain/group.dart';
 import '../../notifications/domain/notification_models.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/training_plan.dart';
 
 /// Demo training plans. Visibility mirrors the server `readerIds`: parents
@@ -45,6 +46,9 @@ class DemoTrainingPlansRepository implements TrainingPlansRepository {
     db.requireOnline();
     final me = db.me;
     final groups = d.groupIds.map(db.requireGroup).toList();
+    for (final g in groups) {
+      db.requireModule(g.clubId, OrgModule.trainingPlans);
+    }
     if (!AccessPolicy.canManagePlan(me, groups)) throw const PermissionDeniedException('plan groups');
     final existing = planId == null ? null : (db.trainingPlans[planId] ?? (throw const NotFoundException('plan')));
     if (existing != null && !_isCoach(existing)) throw const PermissionDeniedException('plan');

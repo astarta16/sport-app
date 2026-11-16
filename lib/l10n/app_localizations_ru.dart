@@ -5121,4 +5121,31 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get sysEventRescheduledNoTime =>
       'Расписание изменилось. Пожалуйста, подтвердите участие ещё раз.';
+
+  @override
+  String get moduleParentRsvp => 'Ответы родителей';
+
+  @override
+  String get moduleMessageAcks => 'Подтверждение прочтения';
+
+  @override
+  String get moduleCoachChallenges => 'Задания тренера';
+
+  @override
+  String get modulePaymentReceipts => 'Квитанции об оплате';
+
+  @override
+  String get modulePaymentVerification => 'Проверка платежей';
+
+  @override
+  String get modulePaymentReminders => 'Напоминания об оплате';
+
+  @override
+  String get moduleFacilities => 'Объекты и залы';
+
+  @override
+  String get moduleReports => 'Отчёты';
+
+  @override
+  String get moduleDataExports => 'Экспорт данных';
 }

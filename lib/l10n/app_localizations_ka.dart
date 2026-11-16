@@ -5043,4 +5043,31 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get sysEventRescheduledNoTime =>
       'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.';
+
+  @override
+  String get moduleParentRsvp => 'მშობლის დადასტურება';
+
+  @override
+  String get moduleMessageAcks => 'შეტყობინების გაცნობის დადასტურება';
+
+  @override
+  String get moduleCoachChallenges => 'მწვრთნელის გამოწვევები';
+
+  @override
+  String get modulePaymentReceipts => 'გადახდის ქვითრები';
+
+  @override
+  String get modulePaymentVerification => 'გადახდის შემოწმება';
+
+  @override
+  String get modulePaymentReminders => 'გადახდის შეხსენებები';
+
+  @override
+  String get moduleFacilities => 'ობიექტები და დარბაზები';
+
+  @override
+  String get moduleReports => 'ანგარიშები';
+
+  @override
+  String get moduleDataExports => 'მონაცემების ექსპორტი';
 }

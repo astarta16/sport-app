@@ -67,6 +67,7 @@ class DemoGroupsRepository implements GroupsRepository {
     if (club == null || club.archived) throw const ValidationException('clubArchived');
     final errors = GroupDraft.validate(d);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
+    db.requireWithinLimit(d.clubId, 'groups');
     final g = Group(
       id: db.newId('g'),
       clubId: d.clubId,
@@ -318,7 +319,10 @@ class DemoGroupsRepository implements GroupsRepository {
       mediaConsentAt: db.clock(),
       sportIds: child.sportIds.contains(g.sportId) ? null : [...child.sportIds, g.sportId],
     );
-    if (!g.hasChild(childId)) db.groups[g.id] = g.copyWith(memberChildIds: [...g.memberChildIds, childId]);
+    if (!g.hasChild(childId)) {
+      db.requireStudentCapacity(g.clubId, childId);
+      db.groups[g.id] = g.copyWith(memberChildIds: [...g.memberChildIds, childId]);
+    }
     db.recomputeMemberships();
     db.invites[inviteId] = i.copyWith(
       status: InviteStatus.accepted,

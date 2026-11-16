@@ -142,6 +142,7 @@ class DemoBrainAcademyRepository implements BrainAcademyRepository {
   }) async {
     db.requireOnline();
     final g = db.requireGroup(groupId);
+    db.requireModule(g.clubId, OrgModule.coachChallenges);
     if (!AccessPolicy.isCoachOf(db.me, g)) throw const PermissionDeniedException('brain');
     final now = db.clock();
     if (dueDate != null && dueDate.isBefore(DateTime(now.year, now.month, now.day))) {

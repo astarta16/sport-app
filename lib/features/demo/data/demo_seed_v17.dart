@@ -109,8 +109,8 @@ class DemoSeedV17 {
     db.orgConfigs[mtskheta] = OrgConfig(
       orgId: mtskheta,
       plan: OrgPlan.standard,
-      allowedModules: {...OrgPlan.standard.defaultModules, OrgModule.roomScheduling},
-      enabledModules: {...OrgPlan.standard.defaultModules, OrgModule.roomScheduling},
+      allowedModules: {...OrgPlan.standard.defaultModules, OrgModule.facilities, OrgModule.roomScheduling},
+      enabledModules: {...OrgPlan.standard.defaultModules, OrgModule.facilities, OrgModule.roomScheduling},
       branding: const OrgBranding(
         names: {
           'ka': 'მცხეთის ახალგაზრდული აკადემია',

@@ -9141,6 +9141,60 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.'**
   String get sysEventRescheduledNoTime;
+
+  /// No description provided for @moduleParentRsvp.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლის დადასტურება'**
+  String get moduleParentRsvp;
+
+  /// No description provided for @moduleMessageAcks.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინების გაცნობის დადასტურება'**
+  String get moduleMessageAcks;
+
+  /// No description provided for @moduleCoachChallenges.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის გამოწვევები'**
+  String get moduleCoachChallenges;
+
+  /// No description provided for @modulePaymentReceipts.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის ქვითრები'**
+  String get modulePaymentReceipts;
+
+  /// No description provided for @modulePaymentVerification.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის შემოწმება'**
+  String get modulePaymentVerification;
+
+  /// No description provided for @modulePaymentReminders.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდის შეხსენებები'**
+  String get modulePaymentReminders;
+
+  /// No description provided for @moduleFacilities.
+  ///
+  /// In ka, this message translates to:
+  /// **'ობიექტები და დარბაზები'**
+  String get moduleFacilities;
+
+  /// No description provided for @moduleReports.
+  ///
+  /// In ka, this message translates to:
+  /// **'ანგარიშები'**
+  String get moduleReports;
+
+  /// No description provided for @moduleDataExports.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონაცემების ექსპორტი'**
+  String get moduleDataExports;
 }
 
 class _AppLocalizationsDelegate

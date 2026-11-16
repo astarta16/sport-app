@@ -2903,5 +2903,14 @@
       }
     }
   },
-  "sysEventRescheduledNoTime": "განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება."
+  "sysEventRescheduledNoTime": "განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "moduleParentRsvp": "მშობლის დადასტურება",
+  "moduleMessageAcks": "შეტყობინების გაცნობის დადასტურება",
+  "moduleCoachChallenges": "მწვრთნელის გამოწვევები",
+  "modulePaymentReceipts": "გადახდის ქვითრები",
+  "modulePaymentVerification": "გადახდის შემოწმება",
+  "modulePaymentReminders": "გადახდის შეხსენებები",
+  "moduleFacilities": "ობიექტები და დარბაზები",
+  "moduleReports": "ანგარიშები",
+  "moduleDataExports": "მონაცემების ექსპორტი"
 }

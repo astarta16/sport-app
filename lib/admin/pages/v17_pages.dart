@@ -112,6 +112,15 @@ String moduleLabel(BuildContext context, OrgModule m) {
     OrgModule.leaderboards => l.moduleLeaderboards,
     OrgModule.roomScheduling => l.moduleRoomScheduling,
     OrgModule.notifications => l.moduleNotifications,
+    OrgModule.parentRsvp => l.moduleParentRsvp,
+    OrgModule.messageAcks => l.moduleMessageAcks,
+    OrgModule.coachChallenges => l.moduleCoachChallenges,
+    OrgModule.paymentReceipts => l.modulePaymentReceipts,
+    OrgModule.paymentVerification => l.modulePaymentVerification,
+    OrgModule.paymentReminders => l.modulePaymentReminders,
+    OrgModule.facilities => l.moduleFacilities,
+    OrgModule.reports => l.moduleReports,
+    OrgModule.dataExports => l.moduleDataExports,
   };
 }
 

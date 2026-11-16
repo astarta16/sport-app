@@ -36,6 +36,7 @@ import '../features/trainings/data/firebase_trainings_repository.dart';
 import 'config.dart';
 import 'di.dart';
 import '../features/organizations/data/firebase_org_repositories.dart';
+import '../features/organizations/data/firebase_platform_repository.dart';
 
 /// Initializes Firebase and binds the production repositories.
 ///
@@ -94,5 +95,6 @@ Future<List<Override>> firebaseOverrides() async {
     schedulingRepositoryProvider.overrideWithValue(FirebaseSchedulingRepository(db, functions)),
     leaderboardRepositoryProvider.overrideWithValue(FirebaseLeaderboardRepository(db, functions)),
     coachContactRepositoryProvider.overrideWithValue(FirebaseCoachContactRepository(auth, db, functions)),
+    platformRepositoryProvider.overrideWithValue(FirebasePlatformRepository(db, functions)),
   ];
 }

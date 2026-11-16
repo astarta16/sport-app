@@ -166,7 +166,10 @@ void main() {
       expect(db.users[DemoSeedV17.mtskhetaParent]!.administersClub(club.id), isTrue);
 
       as(DemoSeedV17.mtskhetaParent);
-      await orgs.updateOrgSettings(club.id, enabledModules: {...cfg.enabledModules, OrgModule.roomScheduling});
+      await orgs.updateOrgSettings(
+        club.id,
+        enabledModules: {...cfg.enabledModules, OrgModule.facilities, OrgModule.roomScheduling},
+      );
       final hall = await sched.upsertRoom(Room(id: '', orgId: club.id, name: 'Main hall', capacity: 25));
       await orgs.setOrgCoach(club.id, DemoSeedV17.badmintonCoach, member: true);
       final program = await orgs.upsertProgram(

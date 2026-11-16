@@ -1,5 +1,6 @@
 import '../../../core/utils/dates.dart';
 import '../../brain_academy/domain/brain_models.dart';
+import 'platform.dart';
 
 /// v1.7 multi-academy SaaS. An organization (sports school, academy,
 /// company) is the tenant. It is stored as the existing `clubs/{clubId}`
@@ -22,7 +23,17 @@ enum OrgModule {
   media,
   leaderboards,
   roomScheduling,
-  notifications;
+  notifications,
+  // v1.8 finer-grained features (stable ids; see FeatureCatalog).
+  parentRsvp,
+  messageAcks,
+  coachChallenges,
+  paymentReceipts,
+  paymentVerification,
+  paymentReminders,
+  facilities,
+  reports,
+  dataExports;
 
   static OrgModule? fromName(String? n) => values.where((v) => v.name == n).firstOrNull;
 
@@ -60,17 +71,25 @@ enum OrgPlan {
       OrgModule.trainings,
       OrgModule.matches,
       OrgModule.attendance,
+      OrgModule.parentRsvp,
       OrgModule.communication,
+      OrgModule.messageAcks,
       OrgModule.notifications,
+      OrgModule.reports,
     },
     standard => {
       ...free.defaultModules,
       OrgModule.studentAccounts,
       OrgModule.brainAcademy,
+      OrgModule.coachChallenges,
       OrgModule.trainingPlans,
       OrgModule.payments,
+      OrgModule.paymentReceipts,
+      OrgModule.paymentVerification,
+      OrgModule.paymentReminders,
       OrgModule.medicalCertificates,
       OrgModule.media,
+      OrgModule.dataExports,
     },
     premium => {...OrgModule.values},
   };
@@ -83,7 +102,7 @@ enum OrgPlan {
 }
 
 /// Modules only the platform may switch on (they need review or cost money).
-const restrictedModules = {OrgModule.leaderboards, OrgModule.roomScheduling, OrgModule.studentAccounts};
+final restrictedModules = FeatureCatalog.restricted;
 
 class OrgLimits {
   const OrgLimits({
@@ -130,6 +149,7 @@ class OrgBranding {
     this.names = const {},
     this.logoUrl,
     this.primaryColor = 0xFF1D4ED8,
+    this.secondaryColor = 0xFF0F172A,
     this.description = '',
     this.contactPhone,
     this.contactEmail,
@@ -142,6 +162,9 @@ class OrgBranding {
 
   /// ARGB colour value.
   final int primaryColor;
+
+  /// v1.8 secondary brand colour (accents, headers).
+  final int secondaryColor;
   final String description;
   final String? contactPhone;
   final String? contactEmail;
@@ -156,6 +179,7 @@ class OrgBranding {
     'names': names,
     'logoUrl': logoUrl,
     'primaryColor': primaryColor,
+    'secondaryColor': secondaryColor,
     'description': description,
     'contactPhone': contactPhone,
     'contactEmail': contactEmail,
@@ -168,6 +192,7 @@ class OrgBranding {
       names: {for (final e in ((m['names'] as Map?) ?? const {}).entries) e.key.toString(): e.value.toString()},
       logoUrl: m['logoUrl'] as String?,
       primaryColor: (m['primaryColor'] as num?)?.toInt() ?? 0xFF1D4ED8,
+      secondaryColor: (m['secondaryColor'] as num?)?.toInt() ?? 0xFF0F172A,
       description: m['description'] as String? ?? '',
       contactPhone: m['contactPhone'] as String?,
       contactEmail: m['contactEmail'] as String?,
@@ -179,6 +204,7 @@ class OrgBranding {
     Map<String, String>? names,
     String? logoUrl,
     int? primaryColor,
+    int? secondaryColor,
     String? description,
     String? contactPhone,
     String? contactEmail,
@@ -187,6 +213,7 @@ class OrgBranding {
     names: names ?? this.names,
     logoUrl: logoUrl ?? this.logoUrl,
     primaryColor: primaryColor ?? this.primaryColor,
+    secondaryColor: secondaryColor ?? this.secondaryColor,
     description: description ?? this.description,
     contactPhone: contactPhone ?? this.contactPhone,
     contactEmail: contactEmail ?? this.contactEmail,
@@ -288,7 +315,19 @@ class OrgConfig {
     this.leaderboard = const LeaderboardSettings(),
     this.bookingBufferMin = 0,
     this.updatedAt,
-  }) : limits = limits ?? const OrgLimits(maxStudents: 300, maxCoaches: 30, maxRooms: 5, maxGroups: 40);
+    String? packageId,
+    this.subscription = const SubscriptionInfo(),
+    this.rollout = const {},
+    this.profile = const OrgProfile(),
+    this.settings = const OrgSettings(),
+    this.provisioning = ProvisioningState.ready,
+    this.version = 1,
+    this.updatedBy,
+    this.changeReason,
+    this.templateId,
+  }) : limits = limits ?? const OrgLimits(maxStudents: 300, maxCoaches: 30, maxRooms: 5, maxGroups: 40),
+       packageId =
+           packageId ?? (plan == OrgPlan.free ? 'starter' : (plan == OrgPlan.premium ? 'enterprise' : 'professional'));
 
   /// Legacy clubs created before v1.7 (no config document yet): everything
   /// that existed before stays on, the new restricted modules stay off.
@@ -300,8 +339,14 @@ class OrgConfig {
 
   final String orgId;
   final OrgStatus status;
+
+  /// v1.7 plan (kept for old documents); v1.8 uses [packageId].
   final OrgPlan plan;
+
+  /// Level 1 — what the platform entitles the organization to.
   final Set<OrgModule> allowedModules;
+
+  /// Level 2 — what the organization switched on (subset of allowed).
   final Set<OrgModule> enabledModules;
   final OrgBranding branding;
   final String timezone;
@@ -313,21 +358,59 @@ class OrgConfig {
   final int bookingBufferMin;
   final DateTime? updatedAt;
 
+  // v1.8
+  final String packageId;
+  final SubscriptionInfo subscription;
+
+  /// Platform rollout per feature (trial / scheduled); absent = enabled.
+  final Map<OrgModule, FeatureRollout> rollout;
+  final OrgProfile profile;
+  final OrgSettings settings;
+  final ProvisioningState provisioning;
+
+  /// Optimistic-concurrency version; every change increments it.
+  final int version;
+  final String? updatedBy;
+  final String? changeReason;
+  final String? templateId;
+
   bool get isActive => status == OrgStatus.active;
 
-  /// The single feature-flag check used everywhere.
-  bool isEnabled(OrgModule m) => isActive && allowedModules.contains(m) && enabledModules.contains(m);
+  AccessMode accessAt(DateTime now) => subscription.accessAt(now);
+
+  /// The single feature-flag check used everywhere: organization active and
+  /// provisioned, subscription not read-only, feature entitled by the
+  /// platform (incl. trial / scheduled rollout), switched on by the
+  /// organization, and every dependency effectively on as well.
+  bool isEnabled(OrgModule m, {DateTime? now}) {
+    final t = now ?? DateTime.now();
+    if (!isActive || provisioning != ProvisioningState.ready || accessAt(t) != AccessMode.full) return false;
+    if (!allowedModules.contains(m) || !enabledModules.contains(m)) return false;
+    if (!(rollout[m]?.allows(t) ?? true)) return false;
+    for (final group in FeatureCatalog.of(m).requires) {
+      if (!group.any((d) => isEnabled(d, now: t))) return false;
+    }
+    return true;
+  }
 
   bool get leaderboardOn => isEnabled(OrgModule.leaderboards) && leaderboard.enabled;
 
   /// Modules the organization admin may switch themselves.
   bool canOrgAdminToggle(OrgModule m) => allowedModules.contains(m);
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap({DateTime? now}) => {
     'status': status.name,
     'plan': plan.name,
     'allowedModules': [for (final m in allowedModules) m.name],
     'enabledModules': [for (final m in enabledModules) m.name],
+    // Derived: what the rules check (refreshed by the server on every write
+    // and by the scheduled `refreshEntitlements` job).
+    'effectiveModules': [
+      for (final m in OrgModule.values)
+        if (isEnabled(m, now: now)) m.name,
+    ],
+    'accessMode': accessAt(now ?? DateTime.now()).name,
+    'featureSchema': 2,
     'branding': branding.toMap(),
     'timezone': timezone,
     'defaultLanguage': defaultLanguage,
@@ -335,17 +418,31 @@ class OrgConfig {
     'leaderboard': leaderboard.toMap(),
     'bookingBufferMin': bookingBufferMin,
     'updatedAt': updatedAt,
+    'packageId': packageId,
+    'subscription': subscription.toMap(),
+    'rollout': {for (final e in rollout.entries) e.key.name: e.value.toMap()},
+    'profile': profile.toMap(),
+    'settings': settings.toMap(),
+    'provisioning': provisioning.name,
+    'version': version,
+    'updatedBy': updatedBy,
+    'changeReason': changeReason,
+    'templateId': templateId,
   };
 
   factory OrgConfig.fromMap(String id, Map<String, dynamic> m) {
     final plan = OrgPlan.fromName(m['plan'] as String?);
+    // v1.7 documents (featureSchema < 2) used coarse modules: expand them.
+    final legacy = ((m['featureSchema'] as num?)?.toInt() ?? 1) < 2;
+    Set<OrgModule> read(Object? raw) =>
+        legacy ? FeatureCatalog.expandLegacy(OrgModule.readSet(raw)) : OrgModule.readSet(raw);
     return OrgConfig(
       orgId: id,
       status: OrgStatus.fromName(m['status'] as String?),
       plan: plan,
-      allowedModules: m.containsKey('allowedModules') ? OrgModule.readSet(m['allowedModules']) : plan.defaultModules,
+      allowedModules: m.containsKey('allowedModules') ? read(m['allowedModules']) : plan.defaultModules,
       enabledModules: m.containsKey('enabledModules')
-          ? OrgModule.readSet(m['enabledModules'])
+          ? read(m['enabledModules'])
           : plan.defaultModules.difference(restrictedModules),
       branding: OrgBranding.fromMap(m['branding']),
       timezone: OrgTimeZones.normalize(m['timezone'] as String?),
@@ -354,6 +451,19 @@ class OrgConfig {
       leaderboard: LeaderboardSettings.fromMap(m['leaderboard']),
       bookingBufferMin: ((m['bookingBufferMin'] as num?)?.toInt() ?? 0).clamp(0, 120),
       updatedAt: readDateOrNull(m['updatedAt']),
+      packageId: m['packageId'] as String?,
+      subscription: SubscriptionInfo.fromMap(m['subscription']),
+      rollout: {
+        for (final e in ((m['rollout'] as Map?) ?? const {}).entries)
+          if (OrgModule.fromName('${e.key}') case final mod?) mod: FeatureRollout.fromMap(e.value),
+      },
+      profile: OrgProfile.fromMap(m['profile']),
+      settings: OrgSettings.fromMap(m['settings']),
+      provisioning: ProvisioningState.fromName(m['provisioning'] as String?),
+      version: (m['version'] as num?)?.toInt() ?? 1,
+      updatedBy: m['updatedBy'] as String?,
+      changeReason: m['changeReason'] as String?,
+      templateId: m['templateId'] as String?,
     );
   }
 
@@ -369,6 +479,16 @@ class OrgConfig {
     LeaderboardSettings? leaderboard,
     int? bookingBufferMin,
     DateTime? updatedAt,
+    String? packageId,
+    SubscriptionInfo? subscription,
+    Map<OrgModule, FeatureRollout>? rollout,
+    OrgProfile? profile,
+    OrgSettings? settings,
+    ProvisioningState? provisioning,
+    int? version,
+    String? updatedBy,
+    String? changeReason,
+    String? templateId,
   }) => OrgConfig(
     orgId: orgId,
     status: status ?? this.status,
@@ -382,6 +502,16 @@ class OrgConfig {
     leaderboard: leaderboard ?? this.leaderboard,
     bookingBufferMin: bookingBufferMin ?? this.bookingBufferMin,
     updatedAt: updatedAt ?? this.updatedAt,
+    packageId: packageId ?? this.packageId,
+    subscription: subscription ?? this.subscription,
+    rollout: rollout ?? this.rollout,
+    profile: profile ?? this.profile,
+    settings: settings ?? this.settings,
+    provisioning: provisioning ?? this.provisioning,
+    version: version ?? this.version,
+    updatedBy: updatedBy ?? this.updatedBy,
+    changeReason: changeReason ?? this.changeReason,
+    templateId: templateId ?? this.templateId,
   );
 }
 

@@ -63,7 +63,7 @@ class DemoAttendanceRepository implements AttendanceRepository {
     final me = db.me;
     final e = _event(trainingId);
     final g = db.requireGroup(e.groupId);
-    db.requireModule(g.clubId, OrgModule.attendance);
+    db.requireModule(g.clubId, OrgModule.parentRsvp);
     final c = db.requireChild(childId);
     if (!AccessPolicy.isParentOf(me, c) || !g.hasChild(childId)) throw const PermissionDeniedException('rsvp');
     if (!AccessPolicy.canRsvp(me, c, g, e.startAt, db.clock())) throw const ValidationException('rsvpClosed');

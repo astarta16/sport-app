@@ -21,6 +21,7 @@ import '../features/medical_certificates/data/demo_certificates_repository.dart'
 import '../features/moderation/data/demo_moderation_repository.dart';
 import '../features/notifications/data/demo_notifications_repository.dart';
 import '../features/organizations/data/demo_org_repositories.dart';
+import '../features/organizations/data/demo_platform_repository.dart';
 import '../features/payments/data/demo_payment_proofs_repository.dart';
 import '../features/payments/data/demo_payments_repository.dart';
 import '../features/sports/data/demo_sports_repository.dart';
@@ -74,4 +75,5 @@ List<Override> demoOverrides(DemoBackend db) => [
   schedulingRepositoryProvider.overrideWithValue(DemoSchedulingRepository(db)),
   leaderboardRepositoryProvider.overrideWithValue(DemoLeaderboardRepository(db)),
   coachContactRepositoryProvider.overrideWithValue(DemoCoachContactRepository(db)),
+  platformRepositoryProvider.overrideWithValue(DemoPlatformRepository(db)),
 ];

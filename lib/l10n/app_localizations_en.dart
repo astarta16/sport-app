@@ -4757,7 +4757,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moduleBrainAcademy => 'Brain Academy';
 
   @override
-  String get moduleCommunication => 'Parent communication';
+  String get moduleCommunication => 'Chat';
 
   @override
   String get moduleDisabledRooms =>
@@ -5088,4 +5088,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sysEventRescheduledNoTime =>
       'The schedule changed. Please confirm attendance again.';
+
+  @override
+  String get moduleParentRsvp => 'Parent RSVP';
+
+  @override
+  String get moduleMessageAcks => 'Message acknowledgments';
+
+  @override
+  String get moduleCoachChallenges => 'Coach challenges';
+
+  @override
+  String get modulePaymentReceipts => 'Payment receipts';
+
+  @override
+  String get modulePaymentVerification => 'Payment verification';
+
+  @override
+  String get modulePaymentReminders => 'Payment reminders';
+
+  @override
+  String get moduleFacilities => 'Facilities';
+
+  @override
+  String get moduleReports => 'Reports';
+
+  @override
+  String get moduleDataExports => 'Data exports';
 }

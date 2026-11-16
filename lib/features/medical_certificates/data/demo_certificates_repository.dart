@@ -4,6 +4,7 @@ import '../../../core/errors/app_exception.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../demo/data/demo_backend.dart';
 import '../domain/certificates_repository.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/medical_certificate.dart';
 
 class DemoCertificatesRepository implements CertificatesRepository {
@@ -39,6 +40,7 @@ class DemoCertificatesRepository implements CertificatesRepository {
     db.requireOnline();
     final child = db.requireChild(u.childId);
     if (!AccessPolicy.canUploadCertificate(db.me, child)) throw const PermissionDeniedException();
+    db.requireChildModule(u.childId, OrgModule.medicalCertificates);
     final errors = CertificatePolicy.validateUpload(u);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final id = db.newId('cert');

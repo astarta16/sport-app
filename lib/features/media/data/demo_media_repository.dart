@@ -6,6 +6,7 @@ import '../../demo/data/demo_backend.dart';
 import '../../groups/domain/group.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/media_post.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/media_repository.dart';
 
 /// Loads private media by reference and enforces *current* group
@@ -84,6 +85,9 @@ class DemoMediaPostsRepository implements MediaPostsRepository {
     db.requireOnline();
     final me = db.me;
     final targets = groupIds.map(db.requireGroup).toList();
+    for (final g in targets) {
+      db.requireModule(g.clubId, OrgModule.media);
+    }
     if (!AccessPolicy.canPublishMedia(me, targets)) throw const PermissionDeniedException('media');
     final error = MediaPost.validateUpload(
       type: upload.type,

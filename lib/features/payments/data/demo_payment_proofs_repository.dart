@@ -8,6 +8,7 @@ import '../../groups/domain/group.dart';
 import '../../media/domain/media_access.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/payment.dart';
+import '../../organizations/domain/organization.dart';
 import '../domain/payment_proof.dart';
 
 /// Demo stand-in for `submitPaymentProof` / `reviewPaymentProof` /
@@ -48,6 +49,7 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
     final me = db.me;
     final pay = _payment(d.paymentId);
     if (!me.isParent || pay.parentId != me.id) throw const PermissionDeniedException('payment');
+    db.requireGroupModule(pay.groupId, OrgModule.paymentReceipts);
     final errors = PaymentProofDraft.validate(d, now: db.clock());
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     if (pay.status != PaymentStatus.pending) throw const ValidationException('paymentClosed');
@@ -148,6 +150,7 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
   Future<void> startReview(String proofId) async {
     db.requireOnline();
     final p = _reviewable(proofId);
+    db.requireGroupModule(p.groupId, OrgModule.paymentVerification);
     if (p.status != ProofStatus.submitted) return;
     db.paymentProofs[proofId] = PaymentProof.fromMap(proofId, {..._map(p), 'status': 'under_review'});
     final pay = _payment(p.paymentId);
@@ -163,6 +166,7 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
     db.requireOnline();
     final me = db.me;
     final p = _reviewable(proofId);
+    db.requireGroupModule(p.groupId, OrgModule.paymentVerification);
     // Transaction equivalent: only an open proof can be decided once.
     if (!p.status.isOpen) throw const ValidationException('proofClosed');
     final r = (reason ?? '').trim();

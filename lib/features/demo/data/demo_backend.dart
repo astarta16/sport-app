@@ -20,6 +20,7 @@ import '../../moderation/domain/report.dart';
 import '../../organizations/domain/organization.dart';
 import '../../organizations/domain/scheduling.dart';
 import '../../organizations/domain/coach_contact.dart';
+import '../../organizations/domain/platform.dart';
 import '../../brain_academy/domain/scoring.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../../payments/domain/payment.dart';
@@ -126,10 +127,112 @@ class DemoBackend {
 
   OrgConfig orgConfig(String clubId) => orgConfigs[clubId] ?? OrgConfig.legacy(clubId);
 
-  /// Server-side feature flag check (same as the `moduleOn()` rule).
+  // v1.8 platform collections.
+  final packages = <String, SubscriptionPackage>{for (final p in SubscriptionPackage.builtIns) p.id: p};
+  final templates = <String, OrgTemplate>{for (final t in OrgTemplate.builtIns) t.id: t};
+  final invitations = <String, OrgInvitation>{};
+  final configHistory = <ConfigHistoryEntry>[];
+
+  /// Server-side feature flag check (same as the `moduleOn()` rule), at the
+  /// backend's clock (trials, scheduled rollouts, subscription end dates).
   void requireModule(String? clubId, OrgModule m) {
     if (clubId == null || clubId.isEmpty) return;
-    if (!orgConfig(clubId).isEnabled(m)) throw ValidationException('moduleDisabled:${m.name}');
+    if (!orgConfig(clubId).isEnabled(m, now: clock())) throw ValidationException('moduleDisabled:${m.name}');
+  }
+
+  bool moduleOn(String? clubId, OrgModule m) =>
+      clubId == null || clubId.isEmpty || orgConfig(clubId).isEnabled(m, now: clock());
+
+  /// Child-level data (certificates, payments of a child): allowed when at
+  /// least one organization of the child's groups has the feature on.
+  void requireChildModule(String childId, OrgModule m) {
+    final orgs = {for (final g in groups.values) if (g.hasChild(childId)) g.clubId};
+    if (orgs.isNotEmpty && !orgs.any((o) => moduleOn(o, m))) throw ValidationException('moduleDisabled:${m.name}');
+  }
+
+  /// Module on for at least one organization of the group.
+  void requireGroupModule(String groupId, OrgModule m) => requireModule(clubOfGroup(groupId), m);
+
+  /// Writes a configuration change with optimistic concurrency: a stale
+  /// [expectedVersion] throws [ConfigConflictException]; every change gets a
+  /// new version, a history entry (who / when / why / what) and an audit line.
+  OrgConfig saveConfig(OrgConfig next, {int? expectedVersion, required String reason, required String action}) {
+    final old = orgConfig(next.orgId);
+    if (expectedVersion != null && expectedVersion != old.version) throw ConfigConflictException(old.version);
+    final changes = <String>[
+      for (final m in OrgModule.values) ...[
+        if (!old.allowedModules.contains(m) && next.allowedModules.contains(m)) 'entitle:${m.name}',
+        if (old.allowedModules.contains(m) && !next.allowedModules.contains(m)) 'revoke:${m.name}',
+        if (!old.enabledModules.contains(m) && next.enabledModules.contains(m)) '+${m.name}',
+        if (old.enabledModules.contains(m) && !next.enabledModules.contains(m)) '-${m.name}',
+      ],
+      if (old.packageId != next.packageId) 'package:${old.packageId}→${next.packageId}',
+      if (old.subscription.status != next.subscription.status)
+        'subscription:${old.subscription.status.name}→${next.subscription.status.name}',
+      if (old.status != next.status) 'status:${old.status.name}→${next.status.name}',
+      if (old.rollout.length != next.rollout.length || old.rollout.entries.any((e) => next.rollout[e.key]?.state != e.value.state))
+        'rollout',
+      if (old.branding.primaryColor != next.branding.primaryColor || old.branding.names.toString() != next.branding.names.toString())
+        'branding',
+      if (old.settings.coachesCanBookRooms != next.settings.coachesCanBookRooms) 'settings',
+    ];
+    final saved = next.copyWith(
+      version: old.version + 1,
+      updatedAt: clock(),
+      updatedBy: currentUser?.id ?? 'system',
+      changeReason: reason,
+    );
+    orgConfigs[next.orgId] = saved;
+    configHistory.add(
+      ConfigHistoryEntry(
+        orgId: next.orgId,
+        version: saved.version,
+        at: clock(),
+        by: currentUser?.id ?? 'system',
+        reason: reason,
+        changes: changes,
+      ),
+    );
+    auditLog(action, 'club', next.orgId, clubId: next.orgId, details: {'reason': reason, 'changes': changes.join(',')});
+    return saved;
+  }
+
+  /// Current usage of one organization (limits are checked against it).
+  OrgUsage usageOf(String orgId) {
+    final groupsOf = groups.values.where((g) => g.clubId == orgId).toList();
+    final ids = {for (final g in groupsOf) g.id};
+    final monthStart = DateTime(clock().year, clock().month);
+    return OrgUsage(
+      coaches: users.values.where((u) => u.isCoach && u.clubIds.contains(orgId)).length,
+      students: {for (final g in groupsOf) ...g.memberChildIds}.length,
+      groups: groupsOf.length,
+      rooms: rooms.values.where((r) => r.orgId == orgId && r.status != RoomStatus.archived).length,
+      // Demo storage: 2 MB per media post (synthetic, labelled in the UI).
+      storageMb: mediaPosts.values.where((p) => p.groupIds.any(ids.contains)).length * 2,
+      notificationsThisMonth: notifications.where((n) => ids.contains(n.groupId) && !n.createdAt.isBefore(monthStart)).length,
+      smsThisMonth: 0,
+    );
+  }
+
+  /// A child joining a group counts against the student limit only when it
+  /// is new to the organization.
+  void requireStudentCapacity(String orgId, String childId) {
+    final already = groups.values.any((g) => g.clubId == orgId && g.hasChild(childId));
+    if (!already) requireWithinLimit(orgId, 'students');
+  }
+
+  /// Package limit check before adding [adding] of [kind].
+  void requireWithinLimit(String? orgId, String kind, {int adding = 1}) {
+    if (orgId == null || orgId.isEmpty || !orgConfigs.containsKey(orgId)) return;
+    final l = orgConfig(orgId).limits;
+    final u = usageOf(orgId);
+    final (used, max) = switch (kind) {
+      'students' => (u.students, l.maxStudents),
+      'coaches' => (u.coaches, l.maxCoaches),
+      'groups' => (u.groups, l.maxGroups),
+      _ => (u.rooms, l.maxRooms),
+    };
+    if (used + adding > max) throw ValidationException('limit${kind[0].toUpperCase()}${kind.substring(1)}');
   }
 
   /// Keeps a room reservation in step with its training (shared source of
@@ -306,6 +409,10 @@ class DemoBackend {
   }) {
     final u = users[userId];
     if (u == null || u.role == UserRole.child || !u.notificationPrefs.isEnabled(type)) return;
+    // v1.8: no notifications for a tenant with notifications or the
+    // notification's own feature switched off.
+    final org = groupId == null ? null : clubOfGroup(groupId);
+    if (org != null && (!moduleOn(org, OrgModule.notifications) || !moduleOn(org, moduleOfNotification(type)))) return;
     if (dedupeKey != null && !_notificationKeys.add('$userId|$dedupeKey')) return;
     notifications.add(
       AppNotification(
@@ -446,3 +553,27 @@ class MediaDownloadEvent {
   final String mediaType;
   final DateTime at;
 }
+
+/// Feature that a notification type belongs to (notifications of a
+/// disabled feature are never sent).
+OrgModule moduleOfNotification(NotificationType t) => switch (t) {
+  NotificationType.newTraining ||
+  NotificationType.trainingChanged ||
+  NotificationType.trainingReminder ||
+  NotificationType.scheduleChanged => OrgModule.trainings,
+  NotificationType.newMatch ||
+  NotificationType.matchChanged ||
+  NotificationType.matchReminder ||
+  NotificationType.matchResult => OrgModule.matches,
+  NotificationType.chatMessage || NotificationType.announcement => OrgModule.communication,
+  NotificationType.ackRequested => OrgModule.notifications,
+  NotificationType.certificateExpiry => OrgModule.medicalCertificates,
+  NotificationType.newPhotos || NotificationType.newMedia => OrgModule.media,
+  NotificationType.paymentReminder || NotificationType.paymentSms => OrgModule.paymentReminders,
+  NotificationType.paymentProofSubmitted ||
+  NotificationType.paymentProofApproved ||
+  NotificationType.paymentProofRejected => OrgModule.paymentReceipts,
+  NotificationType.trainingPlanPublished => OrgModule.trainingPlans,
+  NotificationType.attendanceRecorded || NotificationType.feedbackAdded => OrgModule.attendance,
+  _ => OrgModule.notifications,
+};

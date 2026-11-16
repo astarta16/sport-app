@@ -13,6 +13,7 @@ import '../../matches/domain/match.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/coach_contact.dart';
 import '../domain/organization.dart';
+import '../domain/platform.dart';
 import '../domain/repositories.dart';
 import '../domain/scheduling.dart';
 
@@ -133,27 +134,21 @@ class DemoOrganizationsRepository implements OrganizationsRepository {
     _requireClub(orgId);
     final old = db.orgConfig(orgId);
     final allowed = allowedModules ?? (plan != null ? plan.defaultModules : old.allowedModules);
-    db.orgConfigs[orgId] = old.copyWith(
-      status: status,
-      plan: plan,
-      allowedModules: allowed,
-      // Withdrawing a module also switches it off.
-      enabledModules: old.enabledModules.intersection(allowed),
-      limits: limits,
-      updatedAt: db.clock(),
+    if (!FeatureCatalog.isValid(allowed)) throw const ValidationException('featureDependencies');
+    db.saveConfig(
+      old.copyWith(
+        status: status,
+        plan: plan,
+        packageId: plan == null ? null : SubscriptionPackage.fromLegacyPlan(plan),
+        allowedModules: allowed,
+        // Withdrawing a module also switches it (and its dependents) off.
+        enabledModules: FeatureCatalog.prune(old.enabledModules.intersection(allowed)),
+        limits: limits,
+      ),
+      reason: 'platform settings',
+      action: 'org.platform',
     );
     if (status != null) db.clubs[orgId] = db.clubs[orgId]!.copyWith(archived: status == OrgStatus.deactivated);
-    db.auditLog(
-      'org.platform',
-      'club',
-      orgId,
-      clubId: orgId,
-      details: {
-        if (status != null) 'status': status.name,
-        if (plan != null) 'plan': plan.name,
-        'allowed': allowed.map((m) => m.name).join(','),
-      },
-    );
     db.commit();
   }
 
@@ -167,33 +162,46 @@ class DemoOrganizationsRepository implements OrganizationsRepository {
     LeaderboardSettings? leaderboard,
     int? bookingBufferMin,
     List<String>? sportIds,
+    OrgSettings? settings,
+    int? expectedVersion,
+    String? reason,
   }) async {
     db.requireOnline();
     _orgAdmin(orgId);
     _requireClub(orgId);
     final old = db.orgConfig(orgId);
-    if (!old.isActive) throw const ValidationException('orgInactive');
+    if (!old.isActive || old.accessAt(db.clock()) != AccessMode.full) throw const ValidationException('orgInactive');
     if (enabledModules != null && !old.allowedModules.containsAll(enabledModules)) {
       throw const PermissionDeniedException('moduleNotAllowed');
     }
+    if (enabledModules != null && !FeatureCatalog.isValid(enabledModules)) {
+      throw const ValidationException('featureDependencies');
+    }
     if (branding != null && !OrgBranding.validColor(branding.primaryColor)) {
       throw const ValidationException('brandColor');
+    }
+    if (branding != null && !BrandContrast.acceptable(branding.primaryColor)) {
+      throw const ValidationException('brandContrast');
     }
     if (leaderboard != null && leaderboard.enabled && !old.allowedModules.contains(OrgModule.leaderboards)) {
       throw const PermissionDeniedException('moduleNotAllowed');
     }
     if (sportIds != null && sportIds.any((s) => !db.sports.containsKey(s))) throw const ValidationException('sport');
-    db.orgConfigs[orgId] = old.copyWith(
-      enabledModules: enabledModules,
-      branding: branding,
-      defaultLanguage: defaultLanguage,
-      timezone: timezone == null ? null : OrgTimeZones.normalize(timezone),
-      leaderboard: leaderboard,
-      bookingBufferMin: bookingBufferMin?.clamp(0, 120),
-      updatedAt: db.clock(),
+    db.saveConfig(
+      old.copyWith(
+        enabledModules: enabledModules,
+        branding: branding,
+        defaultLanguage: defaultLanguage,
+        timezone: timezone == null ? null : OrgTimeZones.normalize(timezone),
+        leaderboard: leaderboard,
+        bookingBufferMin: bookingBufferMin?.clamp(0, 120),
+        settings: settings,
+      ),
+      expectedVersion: expectedVersion,
+      reason: (reason ?? '').trim().isEmpty ? 'organization settings' : reason!.trim(),
+      action: 'org.settings',
     );
     if (sportIds != null) db.clubs[orgId] = db.clubs[orgId]!.copyWith(sportIds: sportIds);
-    db.auditLog('org.settings', 'club', orgId, clubId: orgId);
     db.commit();
   }
 
