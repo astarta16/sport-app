@@ -126,8 +126,13 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
   }
 
   Future<void> _pick(Future<PhotoUpload?> Function() p) async {
-    final f = await p();
-    if (f != null && mounted) setState(() => _receipt = f);
+    // v1.9: a denied permission or picker failure is explained (M23).
+    try {
+      final f = await p();
+      if (f != null && mounted) setState(() => _receipt = f);
+    } catch (e) {
+      if (mounted) showAppSnack(context, errorText(context, e), error: true);
+    }
   }
 
   Future<void> _submit() async {
@@ -170,15 +175,25 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final f = Fmt.of(context);
-    final payment = (ref.watch(myPaymentsProvider).value ?? const <Payment>[])
-        .where((p) => p.id == widget.paymentId)
-        .firstOrNull;
+    final paymentsAsync = ref.watch(myPaymentsProvider);
+    final payment = (paymentsAsync.value ?? const <Payment>[]).where((p) => p.id == widget.paymentId).firstOrNull;
+    // v1.9 (M7): loading, error and "not found" are explicit states.
+    if (payment == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l.payProofTitle)),
+        body: paymentsAsync.hasError
+            ? ErrorView(error: paymentsAsync.error!, onRetry: () => ref.invalidate(myPaymentsProvider))
+            : paymentsAsync.hasValue
+            ? EmptyState(icon: Icons.receipt_long_rounded, title: l.itemGoneTitle, body: l.itemGoneBody)
+            : const SkeletonList(),
+      );
+    }
     final proofs = ref.watch(proofsForPaymentProvider(widget.paymentId)).value ?? const <PaymentProof>[];
     final events = ref.watch(paymentEventsProvider(widget.paymentId)).value ?? const <PaymentVerificationEvent>[];
     final now = ref.watch(clockProvider)();
     final open = proofs.where((p) => p.status.isOpen).firstOrNull;
-    final canSubmit = payment != null && payment.status == PaymentStatus.pending && open == null;
-    final child = payment == null ? null : ref.watch(childProvider(payment.childId)).value;
+    final canSubmit = payment.status == PaymentStatus.pending && open == null;
+    final child = ref.watch(childProvider(payment.childId)).value;
     return Scaffold(
       appBar: AppBar(title: Text(l.payProofTitle)),
       body: ConstrainedContent(
@@ -186,23 +201,22 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
-            if (payment != null)
-              AppCard(
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.payments_rounded),
-                  title: Text(
-                    l.payProofFor(child?.firstName ?? '', f.money(payment.amount), f.dayMonth(payment.dueDate)),
-                  ),
-                  subtitle: Text(switch (displayStateOf(payment)) {
-                    PaymentDisplayState.paid => l.payStatePaid,
-                    PaymentDisplayState.proofSubmitted => l.payStateAwaiting,
-                    PaymentDisplayState.underReview => l.payStateUnderReview,
-                    PaymentDisplayState.rejected => l.payRejectedReason(payment.verification.rejectionReason ?? ''),
-                    _ => l.paymentPending,
-                  }, key: const Key('proof-state')),
+            AppCard(
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.payments_rounded),
+                title: Text(
+                  l.payProofFor(child?.firstName ?? '', f.money(payment.amount), f.dayMonth(payment.dueDate)),
                 ),
+                subtitle: Text(switch (displayStateOf(payment)) {
+                  PaymentDisplayState.paid => l.payStatePaid,
+                  PaymentDisplayState.proofSubmitted => l.payStateAwaiting,
+                  PaymentDisplayState.underReview => l.payStateUnderReview,
+                  PaymentDisplayState.rejected => l.payRejectedReason(payment.verification.rejectionReason ?? ''),
+                  _ => l.paymentPending,
+                }, key: const Key('proof-state')),
               ),
+            ),
             const SizedBox(height: AppSpacing.sm),
             DemoBanner(text: l.payProofHint),
             if (canSubmit) ...[

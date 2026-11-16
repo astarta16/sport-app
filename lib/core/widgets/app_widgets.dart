@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -137,20 +139,41 @@ class StatusPill extends StatelessWidget {
   final IconData? icon;
   final bool dense;
 
+  /// v1.9 (WCAG 2.2 AA): text in the raw status colour on its own tint can
+  /// fall to ~2:1 (amber). The text colour is darkened (light theme) or
+  /// lightened (dark theme) until it reaches 4.5:1 against the pill.
+  static Color readableOn(Color c, Color background) {
+    double lum(Color x) => x.computeLuminance();
+    double ratio(Color a, Color b) {
+      final la = lum(a), lb = lum(b);
+      return (max(la, lb) + 0.05) / (min(la, lb) + 0.05);
+    }
+
+    final towards = lum(background) > .5 ? Colors.black : Colors.white;
+    var out = c;
+    for (var i = 1; i <= 10 && ratio(out, background) < 4.5; i++) {
+      out = Color.lerp(c, towards, i / 10)!;
+    }
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final surface = Theme.of(context).colorScheme.surface;
+    final bg = Color.alphaBlend(color.withValues(alpha: 0.13), surface);
+    final fg = readableOn(color, bg);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: dense ? 8 : 10, vertical: dense ? 3 : 5),
       decoration: BoxDecoration(color: color.withValues(alpha: 0.13), borderRadius: BorderRadius.circular(30)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[Icon(icon, size: dense ? 13 : 15, color: color), const SizedBox(width: 4)],
+          if (icon != null) ...[Icon(icon, size: dense ? 13 : 15, color: fg), const SizedBox(width: 4)],
           Flexible(
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w800),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: fg, fontWeight: FontWeight.w800),
             ),
           ),
         ],

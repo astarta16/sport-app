@@ -1770,5 +1770,20 @@
   "wizReview": "Review",
   "wizFixErrors": "Please fix the highlighted fields to continue.",
   "venueGroupClub": "Your club's venues",
-  "venueGroupOther": "Other venues for this sport"
+  "venueGroupOther": "Other venues for this sport",
+  "adminNoMatches": "Nothing matches your search or filter.",
+  "adminClearFilters": "Clear search and filters",
+  "adminPrevPage": "Previous page",
+  "adminNextPage": "Next page",
+  "confirmRevokeBody": "The invitation link stops working immediately. You can send a new invitation later.",
+  "invitationRevokedSnack": "Invitation revoked",
+  "confirmArchiveTemplateBody": "Archived templates can't be used for new organizations. Organizations already created from it are not changed.",
+  "templateArchivedSnack": "Template archived",
+  "templateRestoredSnack": "Template restored",
+  "confirmCancelBookingBody": "The room becomes free for others at this time. Linked trainings are cancelled and families are notified.",
+  "confirmArchiveGroupBody": "“{name}” will stop appearing in schedules and lists. Its history is kept and it can be restored.",
+  "groupArchivedSnack": "Group archived",
+  "groupRestoredSnack": "Group restored",
+  "itemGoneTitle": "This item no longer exists",
+  "itemGoneBody": "It may have been deleted or cancelled. Go back to see the current list."
 }

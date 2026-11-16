@@ -3288,5 +3288,27 @@
   "wizReview": "გადახედვა",
   "wizFixErrors": "გასაგრძელებლად შეასწორეთ მონიშნული ველები.",
   "venueGroupClub": "თქვენი კლუბის ადგილები",
-  "venueGroupOther": "ამ სპორტის სხვა ადგილები"
+  "venueGroupOther": "ამ სპორტის სხვა ადგილები",
+  "adminNoMatches": "ძიებას ან ფილტრს არაფერი შეესაბამება.",
+  "adminClearFilters": "ძიებისა და ფილტრების გასუფთავება",
+  "adminPrevPage": "წინა გვერდი",
+  "adminNextPage": "შემდეგი გვერდი",
+  "confirmRevokeBody": "მოწვევის ბმული მაშინვე შეწყვეტს მუშაობას. მოგვიანებით ახალი მოწვევის გაგზავნა შეგიძლიათ.",
+  "invitationRevokedSnack": "მოწვევა გაუქმდა",
+  "confirmArchiveTemplateBody": "დაარქივებული შაბლონით ახალი ორგანიზაციის შექმნა შეუძლებელია. უკვე შექმნილი ორგანიზაციები არ შეიცვლება.",
+  "templateArchivedSnack": "შაბლონი დაარქივდა",
+  "templateRestoredSnack": "შაბლონი აღდგა",
+  "confirmCancelBookingBody": "ოთახი ამ დროს სხვებისთვის გათავისუფლდება. დაკავშირებული ვარჯიშები გაუქმდება და ოჯახები მიიღებენ შეტყობინებას.",
+  "confirmArchiveGroupBody": "„{name}“ აღარ გამოჩნდება განრიგებსა და სიებში. ისტორია ინახება და აღდგენა შესაძლებელია.",
+  "@confirmArchiveGroupBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupArchivedSnack": "ჯგუფი დაარქივდა",
+  "groupRestoredSnack": "ჯგუფი აღდგა",
+  "itemGoneTitle": "ეს ჩანაწერი აღარ არსებობს",
+  "itemGoneBody": "შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია."
 }

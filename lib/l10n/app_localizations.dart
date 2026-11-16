@@ -10718,6 +10718,96 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ამ სპორტის სხვა ადგილები'**
   String get venueGroupOther;
+
+  /// No description provided for @adminNoMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიებას ან ფილტრს არაფერი შეესაბამება.'**
+  String get adminNoMatches;
+
+  /// No description provided for @adminClearFilters.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიებისა და ფილტრების გასუფთავება'**
+  String get adminClearFilters;
+
+  /// No description provided for @adminPrevPage.
+  ///
+  /// In ka, this message translates to:
+  /// **'წინა გვერდი'**
+  String get adminPrevPage;
+
+  /// No description provided for @adminNextPage.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი გვერდი'**
+  String get adminNextPage;
+
+  /// No description provided for @confirmRevokeBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევის ბმული მაშინვე შეწყვეტს მუშაობას. მოგვიანებით ახალი მოწვევის გაგზავნა შეგიძლიათ.'**
+  String get confirmRevokeBody;
+
+  /// No description provided for @invitationRevokedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევა გაუქმდა'**
+  String get invitationRevokedSnack;
+
+  /// No description provided for @confirmArchiveTemplateBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივებული შაბლონით ახალი ორგანიზაციის შექმნა შეუძლებელია. უკვე შექმნილი ორგანიზაციები არ შეიცვლება.'**
+  String get confirmArchiveTemplateBody;
+
+  /// No description provided for @templateArchivedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'შაბლონი დაარქივდა'**
+  String get templateArchivedSnack;
+
+  /// No description provided for @templateRestoredSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'შაბლონი აღდგა'**
+  String get templateRestoredSnack;
+
+  /// No description provided for @confirmCancelBookingBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოთახი ამ დროს სხვებისთვის გათავისუფლდება. დაკავშირებული ვარჯიშები გაუქმდება და ოჯახები მიიღებენ შეტყობინებას.'**
+  String get confirmCancelBookingBody;
+
+  /// No description provided for @confirmArchiveGroupBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'„{name}“ აღარ გამოჩნდება განრიგებსა და სიებში. ისტორია ინახება და აღდგენა შესაძლებელია.'**
+  String confirmArchiveGroupBody(String name);
+
+  /// No description provided for @groupArchivedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი დაარქივდა'**
+  String get groupArchivedSnack;
+
+  /// No description provided for @groupRestoredSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი აღდგა'**
+  String get groupRestoredSnack;
+
+  /// No description provided for @itemGoneTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს ჩანაწერი აღარ არსებობს'**
+  String get itemGoneTitle;
+
+  /// No description provided for @itemGoneBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.'**
+  String get itemGoneBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

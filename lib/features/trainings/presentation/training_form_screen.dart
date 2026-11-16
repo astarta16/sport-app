@@ -117,9 +117,15 @@ class _TrainingFormScreenState extends ConsumerState<TrainingFormScreen> {
       final existing = ref.watch(trainingProvider(widget.trainingId!));
       if (existing.value != null) _initFrom(existing.value!);
       if (!_initialized) {
+        // v1.9: an error or a deleted training is explained (with retry)
+        // instead of an endless skeleton.
         return Scaffold(
           appBar: AppBar(title: Text(l.editTraining)),
-          body: const SkeletonList(),
+          body: existing.hasError
+              ? ErrorView(error: existing.error!, onRetry: () => ref.invalidate(trainingProvider(widget.trainingId!)))
+              : existing.hasValue
+              ? EmptyState(icon: Icons.event_busy_rounded, title: l.itemGoneTitle, body: l.itemGoneBody)
+              : const SkeletonList(),
         );
       }
     }

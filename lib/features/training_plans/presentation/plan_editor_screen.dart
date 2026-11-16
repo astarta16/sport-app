@@ -132,12 +132,17 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
     final l = context.l10n;
     final f = Fmt.of(context);
     if (widget.planId != null) {
-      final p = ref.watch(planProvider(widget.planId!)).value;
+      final async = ref.watch(planProvider(widget.planId!));
+      final p = async.value;
       if (p != null) _initFrom(p);
       if (!_init) {
         return Scaffold(
           appBar: AppBar(title: Text(l.planEdit)),
-          body: const SkeletonList(),
+          body: async.hasError
+              ? ErrorView(error: async.error!, onRetry: () => ref.invalidate(planProvider(widget.planId!)))
+              : async.hasValue
+              ? EmptyState(icon: Icons.assignment_late_rounded, title: l.itemGoneTitle, body: l.itemGoneBody)
+              : const SkeletonList(),
         );
       }
     }

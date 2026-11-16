@@ -5861,4 +5861,54 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get venueGroupOther => 'Другие площадки для этого спорта';
+
+  @override
+  String get adminNoMatches => 'Ничего не найдено по поиску или фильтру.';
+
+  @override
+  String get adminClearFilters => 'Сбросить поиск и фильтры';
+
+  @override
+  String get adminPrevPage => 'Предыдущая страница';
+
+  @override
+  String get adminNextPage => 'Следующая страница';
+
+  @override
+  String get confirmRevokeBody =>
+      'Ссылка-приглашение сразу перестанет работать. Позже можно отправить новое приглашение.';
+
+  @override
+  String get invitationRevokedSnack => 'Приглашение отозвано';
+
+  @override
+  String get confirmArchiveTemplateBody =>
+      'Архивный шаблон нельзя использовать для новых организаций. Уже созданные организации не изменятся.';
+
+  @override
+  String get templateArchivedSnack => 'Шаблон в архиве';
+
+  @override
+  String get templateRestoredSnack => 'Шаблон восстановлен';
+
+  @override
+  String get confirmCancelBookingBody =>
+      'Помещение освободится для других. Связанные тренировки будут отменены, семьи получат уведомление.';
+
+  @override
+  String confirmArchiveGroupBody(String name) {
+    return '«$name» исчезнет из расписаний и списков. История сохранится, группу можно восстановить.';
+  }
+
+  @override
+  String get groupArchivedSnack => 'Группа в архиве';
+
+  @override
+  String get groupRestoredSnack => 'Группа восстановлена';
+
+  @override
+  String get itemGoneTitle => 'Эта запись больше не существует';
+
+  @override
+  String get itemGoneBody => 'Возможно, запись удалили или отменили. Вернитесь к актуальному списку.';
 }

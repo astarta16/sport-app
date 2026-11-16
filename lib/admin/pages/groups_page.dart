@@ -87,13 +87,24 @@ class GroupsPage extends ConsumerWidget {
                   IconButton(
                     key: Key('archive-group-${g.group.id}'),
                     tooltip: g.group.isActive ? l.adminArchive : l.adminRestore,
-                    onPressed: () => runGuarded(
-                      context,
-                      () => ref
-                          .read(adminRepositoryProvider)
-                          .archiveGroup(g.group.id, archived: g.group.status == GroupStatus.active),
-                      success: l.adminSaved,
-                    ),
+                    onPressed: () async {
+                      final archiving = g.group.status == GroupStatus.active;
+                      if (archiving) {
+                        final ok = await confirmDialog(
+                          context,
+                          title: l.adminArchive,
+                          message: l.confirmArchiveGroupBody(g.group.name),
+                          confirmLabel: l.adminArchive,
+                          destructive: true,
+                        );
+                        if (!ok || !context.mounted) return;
+                      }
+                      await runGuarded(
+                        context,
+                        () => ref.read(adminRepositoryProvider).archiveGroup(g.group.id, archived: archiving),
+                        success: archiving ? l.groupArchivedSnack : l.groupRestoredSnack,
+                      );
+                    },
                     icon: Icon(g.group.isActive ? Icons.archive_rounded : Icons.unarchive_rounded),
                   ),
                 ],

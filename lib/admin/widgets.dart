@@ -82,7 +82,21 @@ class AdminTable<T> extends StatefulWidget {
 
 class _AdminTableState<T> extends State<AdminTable<T>> {
   String _q = '';
+  final _search = TextEditingController();
   int _filter = 0;
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  void _clearFilters() => setState(() {
+    _search.clear();
+    _q = '';
+    _filter = 0;
+    _page = 0;
+  });
   int _page = 0;
   int? _sort;
   bool _asc = true;
@@ -117,6 +131,7 @@ class _AdminTableState<T> extends State<AdminTable<T>> {
                   width: 280,
                   child: TextField(
                     key: const Key('admin-search'),
+                    controller: _search,
                     decoration: InputDecoration(prefixIcon: const Icon(Icons.search_rounded), hintText: l.adminSearch),
                     onChanged: (v) => setState(() {
                       _q = v;
@@ -141,9 +156,29 @@ class _AdminTableState<T> extends State<AdminTable<T>> {
           LayoutBuilder(
             builder: (context, c) {
               if (slice.isEmpty) {
+                // v1.9: "nothing exists yet" is not the same as "nothing
+                // matches your search" — the latter offers a way back.
+                final filtered = widget.rows.isNotEmpty;
                 return Padding(
                   padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Center(child: Text(l.adminEmpty)),
+                  child: Center(
+                    child: Column(
+                      key: Key(filtered ? 'admin-no-matches' : 'admin-empty'),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(filtered ? Icons.search_off_rounded : Icons.inbox_rounded, size: 36),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(filtered ? l.adminNoMatches : l.adminEmpty, textAlign: TextAlign.center),
+                        if (filtered)
+                          TextButton.icon(
+                            key: const Key('admin-clear-filters'),
+                            onPressed: _clearFilters,
+                            icon: const Icon(Icons.filter_alt_off_rounded),
+                            label: Text(l.adminClearFilters),
+                          ),
+                      ],
+                    ),
+                  ),
                 );
               }
               if (c.maxWidth < 760) {
@@ -249,11 +284,13 @@ class _AdminTableState<T> extends State<AdminTable<T>> {
                 ),
                 IconButton(
                   key: const Key('admin-prev'),
+                  tooltip: l.adminPrevPage,
                   onPressed: page > 0 ? () => setState(() => _page = page - 1) : null,
                   icon: const Icon(Icons.chevron_left_rounded),
                 ),
                 IconButton(
                   key: const Key('admin-next'),
+                  tooltip: l.adminNextPage,
                   onPressed: page < pages - 1 ? () => setState(() => _page = page + 1) : null,
                   icon: const Icon(Icons.chevron_right_rounded),
                 ),

@@ -1234,11 +1234,21 @@ class InvitationsTable extends ConsumerWidget {
                   key: Key('inv-revoke-${i.id}'),
                   tooltip: l.inviteRevoke,
                   icon: const Icon(Icons.block_rounded, color: AppColors.danger),
-                  onPressed: () => runPlatform(
-                    context,
-                    () => ref.read(platformRepositoryProvider).revokeInvitation(i.id),
-                    success: l.orgSaved,
-                  ),
+                  onPressed: () async {
+                    final ok = await confirmDialog(
+                      context,
+                      title: l.inviteRevoke,
+                      message: l.confirmRevokeBody,
+                      confirmLabel: l.inviteRevoke,
+                      destructive: true,
+                    );
+                    if (!ok || !context.mounted) return;
+                    await runPlatform(
+                      context,
+                      () => ref.read(platformRepositoryProvider).revokeInvitation(i.id),
+                      success: l.invitationRevokedSnack,
+                    );
+                  },
                 ),
             ],
           ),
@@ -1942,11 +1952,22 @@ class TemplatesPage extends ConsumerWidget {
                     key: Key('template-archive-${t.id}'),
                     tooltip: t.archived ? l.restore : l.archive,
                     icon: Icon(t.archived ? Icons.unarchive_rounded : Icons.archive_rounded),
-                    onPressed: () => runPlatform(
-                      context,
-                      () => ref.read(platformRepositoryProvider).archiveTemplate(t.id, archived: !t.archived),
-                      success: l.orgSaved,
-                    ),
+                    onPressed: () async {
+                      if (!t.archived) {
+                        final ok = await confirmDialog(
+                          context,
+                          title: l.archive,
+                          message: l.confirmArchiveTemplateBody,
+                          confirmLabel: l.archive,
+                        );
+                        if (!ok || !context.mounted) return;
+                      }
+                      await runPlatform(
+                        context,
+                        () => ref.read(platformRepositoryProvider).archiveTemplate(t.id, archived: !t.archived),
+                        success: t.archived ? l.templateRestoredSnack : l.templateArchivedSnack,
+                      );
+                    },
                   ),
                 ],
               ),

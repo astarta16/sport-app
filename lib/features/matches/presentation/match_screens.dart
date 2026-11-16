@@ -113,12 +113,17 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     if (widget.isEdit) {
-      final m = ref.watch(matchProvider(widget.matchId!)).value;
+      final async = ref.watch(matchProvider(widget.matchId!));
+      final m = async.value;
       if (m != null) _initFrom(m);
       if (!_init) {
         return Scaffold(
           appBar: AppBar(title: Text(l.editMatch)),
-          body: const SkeletonList(),
+          body: async.hasError
+              ? ErrorView(error: async.error!, onRetry: () => ref.invalidate(matchProvider(widget.matchId!)))
+              : async.hasValue
+              ? EmptyState(icon: Icons.event_busy_rounded, title: l.itemGoneTitle, body: l.itemGoneBody)
+              : const SkeletonList(),
         );
       }
     }

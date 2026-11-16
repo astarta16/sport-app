@@ -2312,6 +2312,16 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
   }
 
   Future<void> _cancel(SeriesEditScope scope) async {
+    final l = context.l10n;
+    // v1.9: cancelling frees the room for others — confirm first.
+    final sure = await confirmDialog(
+      context,
+      title: scope == SeriesEditScope.thisOccurrence ? l.bookingCancel : l.bookingCancelFuture,
+      message: l.confirmCancelBookingBody,
+      confirmLabel: scope == SeriesEditScope.thisOccurrence ? l.bookingCancel : l.bookingCancelFuture,
+      destructive: true,
+    );
+    if (!sure || !mounted) return;
     final ok = await runGuarded(
       context,
       () => ref.read(schedulingRepositoryProvider).cancelBooking(widget.existing!, scope: scope),

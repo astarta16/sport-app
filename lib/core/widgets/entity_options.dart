@@ -21,10 +21,15 @@ import 'app_widgets.dart';
 /// Sports by stable id (never duplicated by language), sorted by localized
 /// name, with icon. [allowedIds] restricts to the organization's sports.
 List<AppPickerOption<String>> sportOptions(BuildContext context, Iterable<Sport> sports, {Set<String>? allowedIds}) {
-  final byId = <String, Sport>{
-    for (final s in sports)
-      if (s.active && (allowedIds == null || allowedIds.contains(s.id))) s.id: s,
-  };
+  // One option per stable id; names from duplicate records are merged so a
+  // sport is never listed twice and every language stays searchable.
+  final byId = <String, Sport>{};
+  final names = <String, Set<String>>{};
+  for (final s in sports) {
+    if (!s.active || (allowedIds != null && !allowedIds.contains(s.id))) continue;
+    byId.putIfAbsent(s.id, () => s);
+    (names[s.id] ??= {}).addAll([s.name, ...s.names.values]);
+  }
   final list = [
     for (final s in byId.values)
       AppPickerOption<String>(
@@ -33,7 +38,7 @@ List<AppPickerOption<String>> sportOptions(BuildContext context, Iterable<Sport>
         leading: SportBadge(sportKey: s.icon, size: 36),
         // Every language's name is searchable (a Russian speaker can type
         // "Волейбол" in a Georgian UI).
-        searchText: '${s.id} ${s.name} ${s.names.values.join(' ')}',
+        searchText: '${s.id} ${names[s.id]!.join(' ')}',
       ),
   ];
   list.sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));

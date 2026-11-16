@@ -446,5 +446,83 @@
   "en": "Other venues for this sport",
   "ka": "ამ სპორტის სხვა ადგილები",
   "ru": "Другие площадки для этого спорта"
+ },
+ "adminNoMatches": {
+  "en": "Nothing matches your search or filter.",
+  "ka": "ძიებას ან ფილტრს არაფერი შეესაბამება.",
+  "ru": "Ничего не найдено по поиску или фильтру."
+ },
+ "adminClearFilters": {
+  "en": "Clear search and filters",
+  "ka": "ძიებისა და ფილტრების გასუფთავება",
+  "ru": "Сбросить поиск и фильтры"
+ },
+ "adminPrevPage": {
+  "en": "Previous page",
+  "ka": "წინა გვერდი",
+  "ru": "Предыдущая страница"
+ },
+ "adminNextPage": {
+  "en": "Next page",
+  "ka": "შემდეგი გვერდი",
+  "ru": "Следующая страница"
+ },
+ "confirmRevokeBody": {
+  "en": "The invitation link stops working immediately. You can send a new invitation later.",
+  "ka": "მოწვევის ბმული მაშინვე შეწყვეტს მუშაობას. მოგვიანებით ახალი მოწვევის გაგზავნა შეგიძლიათ.",
+  "ru": "Ссылка-приглашение сразу перестанет работать. Позже можно отправить новое приглашение."
+ },
+ "invitationRevokedSnack": {
+  "en": "Invitation revoked",
+  "ka": "მოწვევა გაუქმდა",
+  "ru": "Приглашение отозвано"
+ },
+ "confirmArchiveTemplateBody": {
+  "en": "Archived templates can't be used for new organizations. Organizations already created from it are not changed.",
+  "ka": "დაარქივებული შაბლონით ახალი ორგანიზაციის შექმნა შეუძლებელია. უკვე შექმნილი ორგანიზაციები არ შეიცვლება.",
+  "ru": "Архивный шаблон нельзя использовать для новых организаций. Уже созданные организации не изменятся."
+ },
+ "templateArchivedSnack": {
+  "en": "Template archived",
+  "ka": "შაბლონი დაარქივდა",
+  "ru": "Шаблон в архиве"
+ },
+ "templateRestoredSnack": {
+  "en": "Template restored",
+  "ka": "შაბლონი აღდგა",
+  "ru": "Шаблон восстановлен"
+ },
+ "confirmCancelBookingBody": {
+  "en": "The room becomes free for others at this time. Linked trainings are cancelled and families are notified.",
+  "ka": "ოთახი ამ დროს სხვებისთვის გათავისუფლდება. დაკავშირებული ვარჯიშები გაუქმდება და ოჯახები მიიღებენ შეტყობინებას.",
+  "ru": "Помещение освободится для других. Связанные тренировки будут отменены, семьи получат уведомление."
+ },
+ "confirmArchiveGroupBody": {
+  "en": "“{name}” will stop appearing in schedules and lists. Its history is kept and it can be restored.",
+  "ka": "„{name}“ აღარ გამოჩნდება განრიგებსა და სიებში. ისტორია ინახება და აღდგენა შესაძლებელია.",
+  "ru": "«{name}» исчезнет из расписаний и списков. История сохранится, группу можно восстановить.",
+  "ph": {
+   "name": "String"
+  }
+ },
+ "groupArchivedSnack": {
+  "en": "Group archived",
+  "ka": "ჯგუფი დაარქივდა",
+  "ru": "Группа в архиве"
+ },
+ "groupRestoredSnack": {
+  "en": "Group restored",
+  "ka": "ჯგუფი აღდგა",
+  "ru": "Группа восстановлена"
+ },
+ "itemGoneTitle": {
+  "en": "This item no longer exists",
+  "ka": "ეს ჩანაწერი აღარ არსებობს",
+  "ru": "Эта запись больше не существует"
+ },
+ "itemGoneBody": {
+  "en": "It may have been deleted or cancelled. Go back to see the current list.",
+  "ka": "შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.",
+  "ru": "Возможно, запись удалили или отменили. Вернитесь к актуальному списку."
  }
 }

@@ -5777,4 +5777,54 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get venueGroupOther => 'ამ სპორტის სხვა ადგილები';
+
+  @override
+  String get adminNoMatches => 'ძიებას ან ფილტრს არაფერი შეესაბამება.';
+
+  @override
+  String get adminClearFilters => 'ძიებისა და ფილტრების გასუფთავება';
+
+  @override
+  String get adminPrevPage => 'წინა გვერდი';
+
+  @override
+  String get adminNextPage => 'შემდეგი გვერდი';
+
+  @override
+  String get confirmRevokeBody =>
+      'მოწვევის ბმული მაშინვე შეწყვეტს მუშაობას. მოგვიანებით ახალი მოწვევის გაგზავნა შეგიძლიათ.';
+
+  @override
+  String get invitationRevokedSnack => 'მოწვევა გაუქმდა';
+
+  @override
+  String get confirmArchiveTemplateBody =>
+      'დაარქივებული შაბლონით ახალი ორგანიზაციის შექმნა შეუძლებელია. უკვე შექმნილი ორგანიზაციები არ შეიცვლება.';
+
+  @override
+  String get templateArchivedSnack => 'შაბლონი დაარქივდა';
+
+  @override
+  String get templateRestoredSnack => 'შაბლონი აღდგა';
+
+  @override
+  String get confirmCancelBookingBody =>
+      'ოთახი ამ დროს სხვებისთვის გათავისუფლდება. დაკავშირებული ვარჯიშები გაუქმდება და ოჯახები მიიღებენ შეტყობინებას.';
+
+  @override
+  String confirmArchiveGroupBody(String name) {
+    return '„$name“ აღარ გამოჩნდება განრიგებსა და სიებში. ისტორია ინახება და აღდგენა შესაძლებელია.';
+  }
+
+  @override
+  String get groupArchivedSnack => 'ჯგუფი დაარქივდა';
+
+  @override
+  String get groupRestoredSnack => 'ჯგუფი აღდგა';
+
+  @override
+  String get itemGoneTitle => 'ეს ჩანაწერი აღარ არსებობს';
+
+  @override
+  String get itemGoneBody => 'შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.';
 }

@@ -5810,4 +5810,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get venueGroupOther => 'Other venues for this sport';
+
+  @override
+  String get adminNoMatches => 'Nothing matches your search or filter.';
+
+  @override
+  String get adminClearFilters => 'Clear search and filters';
+
+  @override
+  String get adminPrevPage => 'Previous page';
+
+  @override
+  String get adminNextPage => 'Next page';
+
+  @override
+  String get confirmRevokeBody => 'The invitation link stops working immediately. You can send a new invitation later.';
+
+  @override
+  String get invitationRevokedSnack => 'Invitation revoked';
+
+  @override
+  String get confirmArchiveTemplateBody =>
+      'Archived templates can\'t be used for new organizations. Organizations already created from it are not changed.';
+
+  @override
+  String get templateArchivedSnack => 'Template archived';
+
+  @override
+  String get templateRestoredSnack => 'Template restored';
+
+  @override
+  String get confirmCancelBookingBody =>
+      'The room becomes free for others at this time. Linked trainings are cancelled and families are notified.';
+
+  @override
+  String confirmArchiveGroupBody(String name) {
+    return '“$name” will stop appearing in schedules and lists. Its history is kept and it can be restored.';
+  }
+
+  @override
+  String get groupArchivedSnack => 'Group archived';
+
+  @override
+  String get groupRestoredSnack => 'Group restored';
+
+  @override
+  String get itemGoneTitle => 'This item no longer exists';
+
+  @override
+  String get itemGoneBody => 'It may have been deleted or cancelled. Go back to see the current list.';
 }

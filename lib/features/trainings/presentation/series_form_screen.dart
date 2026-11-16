@@ -114,13 +114,21 @@ class _SeriesFormScreenState extends ConsumerState<SeriesFormScreen> {
         .toList();
     if (widget.isEdit) {
       final gid = widget.groupId ?? groups.map((g) => g.id).firstOrNull;
-      final all = [for (final g in groups) ...?ref.watch(seriesForGroupProvider(g.id)).value];
+      final asyncs = [for (final g in groups) ref.watch(seriesForGroupProvider(g.id))];
+      final all = [for (final a in asyncs) ...?a.value];
       final s = all.where((x) => x.id == widget.seriesId).firstOrNull;
       if (s != null) _initFrom(s);
       if (!_init) {
+        final failed = asyncs.where((a) => a.hasError).firstOrNull;
+        final loaded = gid != null && asyncs.every((a) => a.hasValue);
+        // v1.9: never a blank page or an endless skeleton.
         return Scaffold(
           appBar: AppBar(title: Text(l.seriesEdit)),
-          body: gid == null ? const SizedBox() : const SkeletonList(),
+          body: failed != null
+              ? ErrorView(error: failed.error!, onRetry: () => ref.invalidate(myGroupsProvider))
+              : (loaded || (gid == null && ref.watch(myGroupsProvider).hasValue))
+              ? EmptyState(icon: Icons.event_busy_rounded, title: l.itemGoneTitle, body: l.itemGoneBody)
+              : const SkeletonList(),
         );
       }
     }
