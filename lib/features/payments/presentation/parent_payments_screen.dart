@@ -13,6 +13,7 @@ import '../../children/presentation/children_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../domain/payment.dart';
 import '../domain/payment_proof.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'payments_providers.dart';
 
 class ParentPaymentsScreen extends ConsumerStatefulWidget {
@@ -96,7 +97,7 @@ class _ParentPaymentsScreenState extends ConsumerState<ParentPaymentsScreen> {
                       FilterChip(
                         key: Key('pay-filter-sport-$s'),
                         avatar: Icon(SportVisuals.icon(s), size: 16),
-                        label: Text(sports[s]?.name ?? s),
+                        label: Text(sports[s]?.label(context) ?? s),
                         selected: _sportId == s,
                         onSelected: (v) => setState(() => _sportId = v ? s : null),
                       ),
@@ -172,7 +173,7 @@ class PaymentRow extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${child?.firstName ?? ''} · ${sport?.name ?? payment.sportId}',
+                        '${child?.firstName ?? ''} · ${sport?.label(context) ?? payment.sportId}',
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       Text(

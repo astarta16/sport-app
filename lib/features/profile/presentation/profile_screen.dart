@@ -20,6 +20,7 @@ import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../clubs/presentation/clubs_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../../sports/presentation/sports_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -103,7 +104,7 @@ class ProfileScreen extends ConsumerWidget {
                           leading: InitialsAvatar(name: c.fullName, size: 42),
                           title: Text(c.fullName, style: t.titleSmall),
                           subtitle: Text(
-                            '${l.yearsOld(c.ageOn(now))} · ${c.sportIds.map((s) => sports[s]?.name ?? s).join(', ')}',
+                            '${l.yearsOld(c.ageOn(now))} · ${c.sportIds.map((s) => sports[s]?.label(context) ?? s).join(', ')}',
                           ),
                           trailing: const Icon(Icons.chevron_right_rounded),
                           onTap: () => context.push(Routes.child(c.id)),

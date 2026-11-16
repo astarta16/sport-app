@@ -38,9 +38,19 @@ class FirebaseBrainAcademyRepository implements BrainAcademyRepository {
   Future<GameResult> recordResult(GameResult r) => guardFirebase(() async {
     final errors = GameResult.validate(r);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
-    final ref = db.collection('brainResults').doc();
-    await ref.set({...r.toMap(), 'playedAt': FieldValue.serverTimestamp()});
-    return r;
+    // v1.7: the client-generated id is the idempotency key (create-only
+    // rule: a duplicate submission cannot overwrite or double count). Points
+    // and leaderboard totals are computed server-side from stored results.
+    final ref = r.id.isEmpty ? db.collection('brainResults').doc() : db.collection('brainResults').doc(r.id);
+    final write = ref.set({
+      ...r.toMap(),
+      'playedAt': FieldValue.serverTimestamp(),
+      'clientPlayedAt': r.playedAt.toIso8601String(),
+    });
+    // Offline: Firestore keeps the write queued and syncs on reconnect; the
+    // game does not wait for the server acknowledgement.
+    await write.timeout(const Duration(seconds: 4), onTimeout: () {});
+    return GameResult.fromMap(ref.id, r.toMap());
   });
 
   @override

@@ -12,6 +12,7 @@ import '../../features/authentication/presentation/session_providers.dart';
 import '../../features/clubs/presentation/clubs_providers.dart';
 import '../../features/sports/presentation/sports_providers.dart';
 import '../widgets.dart';
+import '../../features/sports/presentation/sport_label.dart';
 import 'admin_providers.dart';
 
 String coachStatusLabel(BuildContext context, CoachStatus s) {
@@ -114,7 +115,7 @@ class CoachesPage extends ConsumerWidget {
             AdminColumn(l.adminColClubs, (c) => Text(c.clubIds.map((id) => clubs[id]?.name ?? id).join(', ')), flex: 3),
             AdminColumn(
               l.adminColSports,
-              (c) => Text(c.sportIds.map((id) => sports[id]?.name ?? id).join(', ')),
+              (c) => Text(c.sportIds.map((id) => sports[id]?.label(context) ?? id).join(', ')),
               flex: 2,
             ),
             AdminColumn(l.adminColGroups, (c) => Text('${c.groupCount}')),

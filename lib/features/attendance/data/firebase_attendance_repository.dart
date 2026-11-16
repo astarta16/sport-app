@@ -19,6 +19,15 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
   CollectionReference<Map<String, dynamic>> get _att => db.collection('attendance');
   CollectionReference<Map<String, dynamic>> get _fb => db.collection('feedback');
 
+  /// The event (training first, then match) with its `eventType`.
+  Future<Map<String, dynamic>> _eventData(String id) async {
+    final t = (await db.collection('trainings').doc(id).get()).data();
+    if (t != null) return {...t, 'eventType': EventType.training.name};
+    final m = (await db.collection('matches').doc(id).get()).data();
+    if (m != null) return {...m, 'eventType': EventType.match.name};
+    throw const NotFoundException();
+  }
+
   @override
   Future<void> respond({
     required String trainingId,
@@ -26,19 +35,64 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
     required RsvpResponse response,
     String? reason,
   }) => guardFirebase(() async {
-    final t = (await db.collection('trainings').doc(trainingId).get()).data() ?? (throw const NotFoundException());
+    final t = await _eventData(trainingId);
     final r = (reason ?? '').trim();
     if (r.length > Rsvp.maxReason) throw const ValidationException('validationTooLong');
-    await _rsvps.doc(Rsvp.docId(trainingId, childId)).set({
+    final uid = requireUid(auth);
+    final version = (t['scheduleVersion'] as num?)?.toInt() ?? 1;
+    final kept = response == RsvpResponse.yes || r.isEmpty ? null : r;
+    final ref = _rsvps.doc(Rsvp.docId(trainingId, childId));
+    // Child-level record + this guardian's answer + append-only history,
+    // atomically. Older answers stay in history (audit).
+    final batch = db.batch();
+    batch.set(ref, {
       'trainingId': trainingId,
+      'eventId': trainingId,
+      'eventType': t['eventType'],
       'groupId': t['groupId'],
       'childId': childId,
-      'parentId': requireUid(auth),
+      'parentId': uid,
       'response': response.name,
-      'reason': response == RsvpResponse.yes || r.isEmpty ? null : r,
+      'reason': kept,
+      'scheduleVersion': version,
       'updatedAt': FieldValue.serverTimestamp(),
+      'guardianResponses': {
+        uid: {'response': response.name, 'version': version, 'at': FieldValue.serverTimestamp(), 'reason': kept},
+      },
+    }, SetOptions(merge: true));
+    batch.set(ref.collection('history').doc(), {
+      'guardianId': uid,
+      'response': response.name,
+      'version': version,
+      'reason': kept,
+      'at': FieldValue.serverTimestamp(),
     });
+    await batch.commit();
   });
+
+  @override
+  Stream<List<RsvpHistoryEntry>> watchRsvpHistory(String eventId, String childId) {
+    final id = Rsvp.docId(eventId, childId);
+    return _rsvps
+        .doc(id)
+        .collection('history')
+        .orderBy('at', descending: true)
+        .snapshots()
+        .map(
+          (s) => [
+            for (final d in s.docs)
+              RsvpHistoryEntry(
+                rsvpId: id,
+                guardianId: d.data()['guardianId'] as String? ?? '',
+                response: RsvpResponse.fromName(d.data()['response'] as String?),
+                version: (d.data()['version'] as num?)?.toInt() ?? 1,
+                at: d.data()['at'] == null ? DateTime.now() : (d.data()['at'] as Timestamp).toDate(),
+                reason: d.data()['reason'] as String?,
+              ),
+          ],
+        )
+        .mapFirebaseErrors();
+  }
 
   Stream<List<Rsvp>> _rsvpQuery(Query<Map<String, dynamic>> q) => q
       .snapshots()
@@ -64,9 +118,11 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
           await ref.delete();
           return;
         }
-        final t = (await db.collection('trainings').doc(trainingId).get()).data() ?? (throw const NotFoundException());
+        final t = await _eventData(trainingId);
         await ref.set({
           'trainingId': trainingId,
+          'eventId': trainingId,
+          'eventType': t['eventType'],
           'groupId': t['groupId'],
           'childId': childId,
           'status': status.name,
@@ -79,7 +135,7 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
   @override
   Future<void> markAll({required String trainingId, required AttendanceStatus status, bool onlyUnmarked = true}) =>
       guardFirebase(() async {
-        final t = (await db.collection('trainings').doc(trainingId).get()).data() ?? (throw const NotFoundException());
+        final t = await _eventData(trainingId);
         final g = (await db.collection('groups').doc(t['groupId'] as String).get()).data() ?? const {};
         final existing = (await _att.where('trainingId', isEqualTo: trainingId).get()).docs.map((d) => d.id).toSet();
         final batch = db.batch();
@@ -88,6 +144,8 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
           if (onlyUnmarked && existing.contains(id)) continue;
           batch.set(_att.doc(id), {
             'trainingId': trainingId,
+            'eventId': trainingId,
+            'eventType': t['eventType'],
             'groupId': t['groupId'],
             'childId': childId,
             'status': status.name,
@@ -101,7 +159,7 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
   @override
   Future<void> saveBatch({required String trainingId, required Map<String, AttendanceStatus?> marks}) =>
       guardFirebase(() async {
-        final t = (await db.collection('trainings').doc(trainingId).get()).data() ?? (throw const NotFoundException());
+        final t = await _eventData(trainingId);
         final batch = db.batch();
         for (final e in marks.entries) {
           final ref = _att.doc(AttendanceRecord.docId(trainingId, e.key));
@@ -110,6 +168,8 @@ class FirebaseAttendanceRepository implements AttendanceRepository {
           } else {
             batch.set(ref, {
               'trainingId': trainingId,
+              'eventId': trainingId,
+              'eventType': t['eventType'],
               'groupId': t['groupId'],
               'childId': e.key,
               'status': e.value!.name,

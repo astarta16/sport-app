@@ -35,6 +35,7 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/child.dart';
 import 'children_providers.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../../brain_academy/presentation/student_home_screen.dart';
 
 /// Who is looking at the profile, and which groups they may see data of.
@@ -205,7 +206,7 @@ class _Overview extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           leading: SportBadge(sportKey: g.sportId, size: 36),
           title: Text(g.name),
-          subtitle: Text(ref.watch(sportsByIdProvider)[g.sportId]?.name ?? g.sportId),
+          subtitle: Text(ref.watch(sportsByIdProvider)[g.sportId]?.label(context) ?? g.sportId),
         ),
       SectionHeader(l.profileCoaches),
       if (coachIds.isEmpty) _empty(context),

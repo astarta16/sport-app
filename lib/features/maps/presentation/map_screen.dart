@@ -16,6 +16,7 @@ import '../../../core/utils/geo.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../sports/presentation/sports_providers.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../domain/location_repository.dart';
 
 final placesProvider = FutureProvider.autoDispose.family<List<MapPlace>, (String?, String)>((ref, q) {
@@ -108,7 +109,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ChoiceChip(
           key: Key('map-filter-${s.id}'),
           avatar: Icon(SportVisuals.icon(s.icon), size: 16, color: SportVisuals.color(s.icon)),
-          label: Text(s.name),
+          label: Text(s.label(context)),
           selected: _sportId == s.id,
           onSelected: (_) => setState(() {
             _sportId = s.id;
@@ -468,7 +469,7 @@ class PlaceCard extends ConsumerWidget {
             children: [
               for (final s in place.sportIds)
                 StatusPill(
-                  label: sports[s]?.name ?? s,
+                  label: sports[s]?.label(context) ?? s,
                   color: SportVisuals.color(s),
                   icon: SportVisuals.icon(s),
                   dense: true,

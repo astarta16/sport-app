@@ -51,7 +51,7 @@ void main() {
     expectNoLayoutErrors();
   }
 
-  int count(DemoBackend db, BrainGame g) => db.brainResults.where((r) => r.game == g).length;
+  int count(DemoBackend db, BrainGame g) => db.brainResults.where((r) => r.game == g && r.childId == 'child-1').length;
 
   testWidgets('demo student login → student dashboard; no parent-only areas', (tester) async {
     final db = await boot(tester, phone);

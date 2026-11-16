@@ -15,6 +15,7 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../domain/club.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'clubs_providers.dart';
 
 /// Club page: info, venues, groups and the membership request flow.
@@ -73,7 +74,7 @@ class ClubScreen extends ConsumerWidget {
                         children: [
                           for (final s in club.sportIds)
                             Chip(
-                              label: Text(sports[s]?.name ?? s),
+                              label: Text(sports[s]?.label(context) ?? s),
                               backgroundColor: Colors.white,
                               side: BorderSide.none,
                               visualDensity: VisualDensity.compact,

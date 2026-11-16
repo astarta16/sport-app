@@ -22,6 +22,7 @@ import '../../trainings/domain/training.dart';
 import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/child.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'children_providers.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
@@ -117,7 +118,7 @@ class _Body extends ConsumerWidget {
             for (final s in child.sportIds)
               Chip(
                 avatar: Icon(SportVisuals.icon(s), size: 18, color: SportVisuals.color(s)),
-                label: Text(sports[s]?.name ?? s),
+                label: Text(sports[s]?.label(context) ?? s),
               ),
           ],
         ),

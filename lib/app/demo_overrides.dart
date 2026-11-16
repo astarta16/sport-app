@@ -20,6 +20,7 @@ import '../features/media/data/demo_media_repository.dart';
 import '../features/medical_certificates/data/demo_certificates_repository.dart';
 import '../features/moderation/data/demo_moderation_repository.dart';
 import '../features/notifications/data/demo_notifications_repository.dart';
+import '../features/organizations/data/demo_org_repositories.dart';
 import '../features/payments/data/demo_payment_proofs_repository.dart';
 import '../features/payments/data/demo_payments_repository.dart';
 import '../features/sports/data/demo_sports_repository.dart';
@@ -69,4 +70,8 @@ List<Override> demoOverrides(DemoBackend db) => [
     return DemoBrainAcademyRepository(db, prefs);
   }),
   studentRepositoryProvider.overrideWithValue(DemoStudentRepository(db)),
+  organizationsRepositoryProvider.overrideWithValue(DemoOrganizationsRepository(db)),
+  schedulingRepositoryProvider.overrideWithValue(DemoSchedulingRepository(db)),
+  leaderboardRepositoryProvider.overrideWithValue(DemoLeaderboardRepository(db)),
+  coachContactRepositoryProvider.overrideWithValue(DemoCoachContactRepository(db)),
 ];

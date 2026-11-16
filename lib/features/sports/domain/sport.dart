@@ -19,6 +19,7 @@ class Sport {
     bool? requiresMedicalCert,
     this.active = true,
     this.order = 100,
+    this.names = const {},
   }) : requiresMedicalCert = requiresMedicalCert ?? category == SportCategory.combat;
 
   final String id;
@@ -36,6 +37,12 @@ class Sport {
   final bool active;
   final int order;
 
+  /// v1.7 localized names (`ka`, `en`, `ru`); [name] is the Georgian
+  /// default kept for older documents.
+  final Map<String, String> names;
+
+  String localizedName(String locale) => names[locale] ?? names['ka'] ?? name;
+
   Sport copyWith({
     String? name,
     String? icon,
@@ -45,6 +52,7 @@ class Sport {
     bool? requiresMedicalCert,
     bool? active,
     int? order,
+    Map<String, String>? names,
   }) => Sport(
     id: id,
     name: name ?? this.name,
@@ -54,6 +62,7 @@ class Sport {
     requiresMedicalCert: requiresMedicalCert ?? this.requiresMedicalCert,
     active: active ?? this.active,
     order: order ?? this.order,
+    names: names ?? this.names,
   );
 
   Map<String, dynamic> toMap() => {
@@ -64,6 +73,7 @@ class Sport {
     'requiresMedicalCert': requiresMedicalCert,
     'active': active,
     'order': order,
+    'names': names,
   };
 
   factory Sport.fromMap(String id, Map<String, dynamic> m) {
@@ -77,6 +87,7 @@ class Sport {
       requiresMedicalCert: m['requiresMedicalCert'] as bool? ?? category == SportCategory.combat,
       active: m['active'] as bool? ?? true,
       order: (m['order'] as num?)?.toInt() ?? 100,
+      names: {for (final e in ((m['names'] as Map?) ?? const {}).entries) e.key.toString(): e.value.toString()},
     );
   }
 }

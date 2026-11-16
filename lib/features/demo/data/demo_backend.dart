@@ -17,6 +17,10 @@ import '../../matches/domain/match.dart';
 import '../../media/domain/media_post.dart';
 import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../moderation/domain/report.dart';
+import '../../organizations/domain/organization.dart';
+import '../../organizations/domain/scheduling.dart';
+import '../../organizations/domain/coach_contact.dart';
+import '../../brain_academy/domain/scoring.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../../payments/domain/payment.dart';
 import '../../payments/domain/payment_proof.dart';
@@ -100,6 +104,60 @@ class DemoBackend {
   // v1.6 Brain Academy (`brainResults`, `brainAssignments`).
   final brainResults = <GameResult>[];
   final brainAssignments = <String, ChallengeAssignment>{};
+
+  // v1.7 multi-tenant SaaS (see docs/multi-tenant-architecture.md).
+  /// `orgConfigs/{clubId}`; a club without one uses [OrgConfig.legacy].
+  final orgConfigs = <String, OrgConfig>{};
+
+  /// `clubs/{clubId}/members/{uid}` keyed `clubId|uid`.
+  final memberships = <String, OrgMembership>{};
+  final programs = <String, SportsProgram>{};
+  final rooms = <String, Room>{};
+  final bookings = <String, Booking>{};
+
+  /// `clubs/{clubId}/leaderboardConsents/{childId}` keyed `clubId|childId`.
+  final leaderboardConsents = <String, LeaderboardConsent>{};
+
+  /// Append-only RSVP history (`rsvps/{id}/history`).
+  final rsvpHistory = <RsvpHistoryEntry>[];
+
+  /// Student → parent "please contact my coach" requests.
+  final coachContactRequests = <String, CoachContactRequest>{};
+
+  OrgConfig orgConfig(String clubId) => orgConfigs[clubId] ?? OrgConfig.legacy(clubId);
+
+  /// Server-side feature flag check (same as the `moduleOn()` rule).
+  void requireModule(String? clubId, OrgModule m) {
+    if (clubId == null || clubId.isEmpty) return;
+    if (!orgConfig(clubId).isEnabled(m)) throw ValidationException('moduleDisabled:${m.name}');
+  }
+
+  /// Keeps a room reservation in step with its training (shared source of
+  /// truth). Rejects the change when the room is not free at the new time.
+  void moveLinkedBooking(String eventId, DateTime start, int durationMin) {
+    final b = bookings.values.where((x) => x.eventId == eventId && x.isActive).firstOrNull;
+    if (b == null) return;
+    final room = rooms[b.roomId];
+    if (room == null) return;
+    final cfg = orgConfig(b.orgId);
+    final moved = b.copyWith(
+      startAt: start,
+      endAt: start.add(Duration(minutes: durationMin)),
+      updatedAt: clock(),
+    );
+    final conflicts = ConflictChecker.check(
+      moved,
+      room: room,
+      existing: bookings.values.where((x) => x.orgId == b.orgId),
+      timezone: cfg.timezone,
+      bufferMin: cfg.bookingBufferMin,
+    );
+    if (ConflictChecker.isBlocked(conflicts)) throw const ValidationException('roomConflict');
+    bookings[b.id] = moved;
+  }
+
+  /// Organization of a group (tenant id).
+  String? clubOfGroup(String groupId) => groups[groupId]?.clubId;
 
   /// Demo transfer simulation: delay per 10 % chunk, and a one-shot failure.
   Duration downloadChunkDelay = const Duration(milliseconds: 40);
@@ -267,9 +325,16 @@ class DemoBackend {
   }
 
   /// Server-written chat line (`type: system`), e.g. on cancellation.
-  void systemMessage(String groupId, String text, {String? key, Map<String, String> args = const {}}) {
+  void systemMessage(
+    String groupId,
+    String text, {
+    String? key,
+    Map<String, String> args = const {},
+    bool requiresAck = false,
+  }) {
     (messages[groupId] ??= []).add(
       ChatMessage(
+        requiresAck: requiresAck,
         id: newId('msg'),
         groupId: groupId,
         senderId: 'system',
@@ -282,6 +347,43 @@ class DemoBackend {
         systemArgs: args,
       ),
     );
+  }
+
+  /// v1.7 material schedule change of a training or match: a system notice
+  /// that reuses the "გავეცანი" acknowledgment flow (recipient snapshot =
+  /// current parents of the group). Acknowledging it never sets an RSVP.
+  void announceScheduleChange(
+    Group g, {
+    required String eventId,
+    required String eventType,
+    required int version,
+    required String text,
+    required String route,
+    Map<String, String> args = const {},
+  }) {
+    systemMessage(
+      g.id,
+      text,
+      key: 'scheduleChanged',
+      args: {...args, 'eventId': eventId, 'eventType': eventType, 'version': '$version'},
+      requiresAck: true,
+    );
+    final m = messages[g.id]!.last;
+    final ids = <String>{
+      for (final p in g.parentIds)
+        if (users[p]?.isParent ?? false) p,
+    }.toList()..sort();
+    msgRecipients[m.id] = ids;
+    for (final p in ids) {
+      notifyUser(
+        p,
+        NotificationType.ackRequested,
+        route: route,
+        args: {'group': g.name, 'groupId': g.id, 'messageId': m.id, ...args},
+        groupId: g.id,
+        dedupeKey: 'sched:$eventId:$version',
+      );
+    }
   }
 
   /// Append-only audit trail (server `auditLog`).

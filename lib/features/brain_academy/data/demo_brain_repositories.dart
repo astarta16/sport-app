@@ -7,6 +7,7 @@ import '../../authentication/domain/access_policy.dart';
 import '../../children/domain/child.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../groups/domain/group.dart';
+import '../../organizations/domain/organization.dart';
 import '../../training_plans/domain/training_plan.dart';
 import '../domain/brain_models.dart';
 import '../domain/student_view.dart';
@@ -82,9 +83,20 @@ class DemoBrainAcademyRepository implements BrainAcademyRepository {
     if (!AccessPolicy.isStudentOf(me, c)) throw const PermissionDeniedException('brain');
     final errors = GameResult.validate(result);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
+    // v1.7: Brain Academy must be enabled for (one of) the child's organizations.
+    final orgs = {for (final g in _groupsOf(c)) g.clubId};
+    if (orgs.isNotEmpty && !orgs.any((o) => db.orgConfig(o).isEnabled(OrgModule.brainAcademy))) {
+      throw const ValidationException('moduleDisabled:brainAcademy');
+    }
+    // Idempotency: a client-generated id is stored once; a duplicate
+    // submission (double finish, retry after reconnect) returns the original.
+    if (result.id.isNotEmpty) {
+      final existing = db.brainResults.where((r) => r.id == result.id).firstOrNull;
+      if (existing != null) return existing;
+    }
     // Results are stored offline as well — the games never need a network.
     final stored = GameResult(
-      id: db.newId('brain-${DateTime.now().microsecondsSinceEpoch}'),
+      id: result.id.isNotEmpty ? result.id : db.newId('brain-${DateTime.now().microsecondsSinceEpoch}'),
       childId: result.childId,
       game: result.game,
       difficulty: result.difficulty,

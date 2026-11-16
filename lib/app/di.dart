@@ -28,6 +28,7 @@ import '../features/sports/domain/sports_repository.dart';
 import '../features/training_plans/domain/training_plan.dart';
 import '../features/trainings/domain/trainings_repository.dart';
 import 'config.dart';
+import '../features/organizations/domain/repositories.dart';
 
 /// Composition root: every repository is bound in `bootstrap.dart` to either
 /// the demo or the Firebase implementation behind the same interface.
@@ -77,3 +78,9 @@ final childThreadsRepositoryProvider = Provider<ChildThreadsRepository>((_) => _
 // v1.6
 final brainAcademyRepositoryProvider = Provider<BrainAcademyRepository>((_) => _unbound('BrainAcademyRepository'));
 final studentRepositoryProvider = Provider<StudentRepository>((_) => _unbound('StudentRepository'));
+
+// v1.7 multi-tenant SaaS.
+final organizationsRepositoryProvider = Provider<OrganizationsRepository>((_) => _unbound('OrganizationsRepository'));
+final schedulingRepositoryProvider = Provider<SchedulingRepository>((_) => _unbound('SchedulingRepository'));
+final leaderboardRepositoryProvider = Provider<LeaderboardRepository>((_) => _unbound('LeaderboardRepository'));
+final coachContactRepositoryProvider = Provider<CoachContactRepository>((_) => _unbound('CoachContactRepository'));

@@ -82,11 +82,22 @@ class Training {
     this.seriesId,
     this.occurrenceDate,
     this.detached = false,
+    this.scheduleVersion = 1,
+    this.previousVenueId,
+    this.roomId,
   });
 
   final String id;
   final String groupId;
   final String venueId;
+
+  /// v1.7: bumped by every material change (date, time or location).
+  /// RSVPs given for an older version need reconfirmation.
+  final int scheduleVersion;
+  final String? previousVenueId;
+
+  /// v1.7 room reservation linked to this training (`clubs/{c}/rooms`).
+  final String? roomId;
   final DateTime startAt;
   final int durationMin;
   final List<TrainingFocus> focus;
@@ -129,6 +140,9 @@ class Training {
     DateTime? cancelledAt,
     String? cancelledBy,
     bool? detached,
+    int? scheduleVersion,
+    String? previousVenueId,
+    String? roomId,
   }) => Training(
     id: id,
     groupId: groupId,
@@ -149,9 +163,19 @@ class Training {
     seriesId: seriesId,
     occurrenceDate: occurrenceDate,
     detached: detached ?? this.detached,
+    scheduleVersion: scheduleVersion ?? this.scheduleVersion,
+    previousVenueId: previousVenueId ?? this.previousVenueId,
+    roomId: roomId ?? this.roomId,
   );
 
+  /// Whether going from this to [next] is a material schedule change.
+  bool materiallyDiffers(Training next) =>
+      next.startAt != startAt || next.venueId != venueId || next.durationMin != durationMin;
+
   Map<String, dynamic> toMap() => {
+    'scheduleVersion': scheduleVersion,
+    'previousVenueId': previousVenueId,
+    'roomId': roomId,
     'groupId': groupId,
     'venueId': venueId,
     'startAt': startAt,
@@ -192,6 +216,9 @@ class Training {
     seriesId: m['seriesId'] as String?,
     occurrenceDate: m['occurrenceDate'] as String?,
     detached: m['detached'] as bool? ?? false,
+    scheduleVersion: (m['scheduleVersion'] as num?)?.toInt() ?? 1,
+    previousVenueId: m['previousVenueId'] as String?,
+    roomId: m['roomId'] as String?,
   );
 }
 

@@ -12,6 +12,7 @@ import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../parent/presentation/parent_context.dart';
 import '../../sports/presentation/sports_providers.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../domain/child.dart';
 
 /// Add a child to the parent's account (spec §4.2): name, birth date, sports.
@@ -138,7 +139,7 @@ class _ChildFormScreenState extends ConsumerState<ChildFormScreen> {
                         FilterChip(
                           key: Key('child-sport-${s.id}'),
                           avatar: Icon(SportVisuals.icon(s.icon), size: 18, color: SportVisuals.color(s.icon)),
-                          label: Text(s.name),
+                          label: Text(s.label(context)),
                           selected: _sports.contains(s.id),
                           onSelected: (v) => setState(() => v ? _sports.add(s.id) : _sports.remove(s.id)),
                         ),

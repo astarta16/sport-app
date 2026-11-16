@@ -11,6 +11,7 @@ import '../../../core/widgets/visuals.dart';
 import '../../clubs/presentation/clubs_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../domain/access_policy.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../domain/app_user.dart';
 
 /// Registration flow (spec §4.1): role → required fields + sports → consent.
@@ -261,7 +262,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 for (final s in list)
                   FilterChip(
                     avatar: Icon(SportVisuals.icon(s.icon), size: 18, color: SportVisuals.color(s.icon)),
-                    label: Text(s.name),
+                    label: Text(s.label(context)),
                     selected: _sports.contains(s.id),
                     onSelected: (v) => setState(() => v ? _sports.add(s.id) : _sports.remove(s.id)),
                   ),

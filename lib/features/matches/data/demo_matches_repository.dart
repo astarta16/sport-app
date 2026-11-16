@@ -1,6 +1,7 @@
 import '../../../core/errors/app_exception.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../demo/data/demo_backend.dart';
+import '../../organizations/domain/organization.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/match.dart';
@@ -42,6 +43,7 @@ class DemoMatchesRepository implements MatchesRepository {
   Future<SportMatch> create(MatchDraft d) async {
     db.requireOnline();
     _guard(d.groupId);
+    db.requireModule(db.clubOfGroup(d.groupId), OrgModule.matches);
     final errors = MatchDraft.validate(d, now: db.clock());
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final g = db.groups[d.groupId]!;
@@ -86,7 +88,10 @@ class DemoMatchesRepository implements MatchesRepository {
     final errors = MatchDraft.validate(d, now: db.clock(), isEdit: true);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
+    final material = moved || d.venueId != old.venueId;
     final m = old.copyWith(
+      scheduleVersion: material ? old.scheduleVersion + 1 : null,
+      previousVenueId: d.venueId != old.venueId ? old.venueId : null,
       venueId: d.venueId,
       startAt: d.startAt,
       opponentName: d.opponentName.trim(),
@@ -98,8 +103,17 @@ class DemoMatchesRepository implements MatchesRepository {
       updatedAt: db.clock(),
     );
     db.matches[id] = m;
-    if (moved || d.venueId != old.venueId) {
+    if (material) {
       final g = db.groups[old.groupId]!;
+      db.announceScheduleChange(
+        g,
+        eventId: id,
+        eventType: 'match',
+        version: m.scheduleVersion,
+        text: 'თამაშის განრიგი შეიცვალა: ${_fmt(m.startAt)}. გთხოვთ, დაადასტუროთ დასწრება.',
+        route: '/match/$id',
+        args: {'when': _fmt(m.startAt), 'opponent': m.opponentName},
+      );
       db.dispatch(
         NotificationType.matchChanged,
         g,

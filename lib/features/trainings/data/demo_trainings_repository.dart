@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import '../../../core/errors/app_exception.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../demo/data/demo_backend.dart';
+import '../../organizations/domain/organization.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/series.dart';
 import '../domain/training.dart';
@@ -52,6 +53,7 @@ class DemoTrainingsRepository implements TrainingsRepository {
   Future<Training> create(TrainingDraft d) async {
     db.requireOnline();
     _guard(d.groupId);
+    db.requireModule(db.clubOfGroup(d.groupId), OrgModule.trainings);
     final errors = TrainingValidator.validate(d, now: db.clock());
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final t = Training(
@@ -81,7 +83,10 @@ class DemoTrainingsRepository implements TrainingsRepository {
     final errors = TrainingValidator.validate(d, now: db.clock(), isEdit: true);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
+    final material = moved || d.venueId != old.venueId || d.durationMin != old.durationMin;
     final t = old.copyWith(
+      scheduleVersion: material ? old.scheduleVersion + 1 : null,
+      previousVenueId: d.venueId != old.venueId ? old.venueId : null,
       venueId: d.venueId,
       startAt: d.startAt,
       durationMin: d.durationMin,
@@ -94,9 +99,24 @@ class DemoTrainingsRepository implements TrainingsRepository {
       // Editing one occurrence of a series detaches it ("only this one").
       detached: old.isRecurring ? true : null,
     );
+    if (material) db.moveLinkedBooking(id, t.startAt, t.durationMin);
     db.trainings[id] = t;
-    if (moved || d.venueId != old.venueId) {
-      db.dispatch(NotificationType.trainingChanged, db.groups[old.groupId]!, route: '/training/$id');
+    if (material) {
+      db.dispatch(
+        NotificationType.trainingChanged,
+        db.groups[old.groupId]!,
+        route: '/training/$id',
+        dedupeKey: 'training:$id:v${t.scheduleVersion}',
+      );
+      db.announceScheduleChange(
+        db.groups[old.groupId]!,
+        eventId: id,
+        eventType: 'training',
+        version: t.scheduleVersion,
+        text: 'ვარჯიშის განრიგი შეიცვალა: ${_fmt(t.startAt)}. გთხოვთ, დაადასტუროთ დასწრება.',
+        route: '/training/$id',
+        args: {'when': _fmt(t.startAt)},
+      );
     }
     if (d.newPhotos.isNotEmpty) {
       db.dispatch(NotificationType.newPhotos, db.groups[old.groupId]!, route: '/training/$id');
@@ -148,12 +168,23 @@ class DemoTrainingsRepository implements TrainingsRepository {
     final t = db.trainings[id] ?? (throw const NotFoundException());
     _guard(t.groupId);
     if (newStart.isBefore(db.clock())) throw const ValidationException('startInPast');
+    db.moveLinkedBooking(id, newStart, t.durationMin);
     db.trainings[id] = t.copyWith(
       status: TrainingStatus.moved,
       previousStartAt: t.startAt,
       startAt: newStart,
       updatedAt: db.clock(),
       detached: t.isRecurring ? true : null,
+      scheduleVersion: t.scheduleVersion + 1,
+    );
+    db.announceScheduleChange(
+      db.groups[t.groupId]!,
+      eventId: id,
+      eventType: 'training',
+      version: t.scheduleVersion + 1,
+      text: 'ვარჯიშის განრიგი შეიცვალა: ${_fmt(newStart)}. გთხოვთ, დაადასტუროთ დასწრება.',
+      route: '/training/$id',
+      args: {'when': _fmt(newStart)},
     );
     db.systemMessage(
       t.groupId,

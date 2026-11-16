@@ -19,6 +19,7 @@ import '../../children/presentation/children_providers.dart';
 import '../domain/medical_certificate.dart';
 import '../../sports/presentation/sports_providers.dart';
 import 'certificate_actions.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'certificates_providers.dart';
 
 class CertificatesScreen extends ConsumerWidget {
@@ -186,7 +187,7 @@ class _CertificateCard extends ConsumerWidget {
                 l.certAppliesTo(
                   cert.sportId == null
                       ? l.certAllSports
-                      : (ref.watch(sportsByIdProvider)[cert.sportId]?.name ?? cert.sportId!),
+                      : (ref.watch(sportsByIdProvider)[cert.sportId]?.label(context) ?? cert.sportId!),
                 ),
                 style: Theme.of(context).textTheme.bodySmall,
               ),

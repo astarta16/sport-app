@@ -22,6 +22,7 @@ import '../../training_plans/domain/training_plan.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/brain_models.dart';
 import '../domain/student_view.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'brain_providers.dart';
 
 /// `/kid/home` — v1.6 student experience (demo mode only): Home, Brain
@@ -194,7 +195,7 @@ class _HomeTab extends ConsumerWidget {
           for (final g in view.groups)
             Chip(
               avatar: SportBadge(sportKey: g.sportId, size: 24),
-              label: Text('${sports[g.sportId]?.name ?? g.sportId} · ${g.name}'),
+              label: Text('${sports[g.sportId]?.label(context) ?? g.sportId} · ${g.name}'),
             ),
         ],
       ),

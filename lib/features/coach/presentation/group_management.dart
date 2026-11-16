@@ -17,6 +17,7 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../../trainings/domain/series.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../../trainings/presentation/series_form_screen.dart';
 
 /// Top of the coach's group page: invite code, add-child entry points,
@@ -479,7 +480,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
               key: const Key('group-sport'),
               initialValue: clubSports.any((s) => s.id == _sportId) ? _sportId : null,
               isExpanded: true,
-              items: [for (final s in clubSports) DropdownMenuItem(value: s.id, child: Text(s.name))],
+              items: [for (final s in clubSports) DropdownMenuItem(value: s.id, child: Text(s.label(context)))],
               onChanged: (v) => setState(() => _sportId = v),
             ),
             SectionHeader(l.groupName),

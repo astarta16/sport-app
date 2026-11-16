@@ -14,6 +14,7 @@ import '../../children/presentation/children_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/medical_certificate.dart';
+import '../../sports/presentation/sport_label.dart';
 import 'certificates_providers.dart';
 
 /// Two steps (spec §7.1): consent screen first, then file + dates.
@@ -244,7 +245,7 @@ class _UploadCertificateScreenState extends ConsumerState<UploadCertificateScree
             decoration: InputDecoration(labelText: l.certSportLabel),
             items: [
               DropdownMenuItem(value: null, child: Text(l.certAllSports)),
-              for (final s in child!.sportIds) DropdownMenuItem(value: s, child: Text(sports[s]?.name ?? s)),
+              for (final s in child!.sportIds) DropdownMenuItem(value: s, child: Text(sports[s]?.label(context) ?? s)),
             ],
             onChanged: (v) => setState(() => _sportId = v),
           ),

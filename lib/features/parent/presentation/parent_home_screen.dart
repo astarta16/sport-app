@@ -40,6 +40,7 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import 'parent_context.dart';
 import '../../chat/presentation/chat_providers.dart';
+import '../../sports/presentation/sport_label.dart';
 import '../../matches/presentation/match_result_widgets.dart';
 
 /// Sports dashboard for the selected child and sport (spec §6.1).
@@ -388,7 +389,7 @@ class _SportTabs extends ConsumerWidget {
                   size: 18,
                   color: id == selectedSportId ? Theme.of(context).colorScheme.primary : SportVisuals.color(id),
                 ),
-                label: Text(sports[id]?.name ?? id),
+                label: Text(sports[id]?.label(context) ?? id),
                 selected: id == selectedSportId,
                 onSelected: (_) => ref.read(selectionContextProvider.notifier).selectSport(id),
               ),

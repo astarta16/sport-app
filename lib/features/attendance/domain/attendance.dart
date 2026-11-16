@@ -9,6 +9,44 @@ enum RsvpResponse {
   static RsvpResponse fromName(String? n) => values.firstWhere((v) => v.name == n, orElse: () => maybe);
 }
 
+/// Training or match (v1.7: RSVP and attendance cover both).
+enum EventType {
+  training,
+  match;
+
+  static EventType fromName(String? n) => values.firstWhere((v) => v.name == n, orElse: () => training);
+}
+
+/// One guardian's answer for one child (v1.7, multiple guardians).
+class GuardianResponse {
+  const GuardianResponse({required this.response, required this.version, required this.at, this.reason});
+
+  final RsvpResponse response;
+
+  /// Event schedule version the answer was given for.
+  final int version;
+  final DateTime at;
+  final String? reason;
+
+  Map<String, dynamic> toMap() => {'response': response.name, 'version': version, 'at': at, 'reason': reason};
+
+  factory GuardianResponse.fromMap(Object? m) {
+    final map = m is Map ? m : const {};
+    return GuardianResponse(
+      response: RsvpResponse.fromName(map['response'] as String?),
+      version: (map['version'] as num?)?.toInt() ?? 1,
+      at: readDateOrNull(map['at']) ?? DateTime.fromMillisecondsSinceEpoch(0),
+      reason: map['reason'] as String?,
+    );
+  }
+}
+
+/// Child-level attendance expectation for one event (`rsvps/{eventId}_{childId}`).
+///
+/// Several guardians may answer; each answer is kept in [guardianResponses]
+/// (and appended to `rsvps/{id}/history`). The explicit child-level rule:
+/// the most recent answer for the CURRENT schedule version is the child's
+/// expectation ([response]/[parentId] mirror it). The child is counted once.
 class Rsvp {
   const Rsvp({
     required this.trainingId,
@@ -18,8 +56,12 @@ class Rsvp {
     required this.response,
     required this.updatedAt,
     this.reason,
+    this.eventType = EventType.training,
+    this.scheduleVersion = 1,
+    this.guardianResponses = const {},
   });
 
+  /// Event id (training or match — see [eventType]). Name kept for v1.2 data.
   final String trainingId;
   final String groupId;
   final String childId;
@@ -27,6 +69,20 @@ class Rsvp {
   final RsvpResponse response;
   final String? reason;
   final DateTime updatedAt;
+  final EventType eventType;
+
+  /// Schedule version of the event this answer refers to. Lower than the
+  /// event's current version = needs reconfirmation (the old answer stays).
+  final int scheduleVersion;
+  final Map<String, GuardianResponse> guardianResponses;
+
+  String get eventId => trainingId;
+
+  bool needsReconfirmation(int currentVersion) => scheduleVersion < currentVersion;
+
+  /// Guardians disagree on the current version (shown to the coach).
+  bool conflictingFor(int currentVersion) =>
+      guardianResponses.values.where((g) => g.version == currentVersion).map((g) => g.response).toSet().length > 1;
 
   static String docId(String trainingId, String childId) => '${trainingId}_$childId';
   String get id => docId(trainingId, childId);
@@ -35,23 +91,105 @@ class Rsvp {
 
   Map<String, dynamic> toMap() => {
     'trainingId': trainingId,
+    'eventId': trainingId,
+    'eventType': eventType.name,
     'groupId': groupId,
     'childId': childId,
     'parentId': parentId,
     'response': response.name,
     'reason': reason,
     'updatedAt': updatedAt,
+    'scheduleVersion': scheduleVersion,
+    'guardianResponses': {for (final e in guardianResponses.entries) e.key: e.value.toMap()},
   };
 
   factory Rsvp.fromMap(Map<String, dynamic> m) => Rsvp(
-    trainingId: m['trainingId'] as String,
+    trainingId: (m['eventId'] ?? m['trainingId']) as String,
     groupId: m['groupId'] as String? ?? '',
     childId: m['childId'] as String,
     parentId: m['parentId'] as String? ?? '',
     response: RsvpResponse.fromName(m['response'] as String?),
     reason: m['reason'] as String?,
     updatedAt: readDate(m['updatedAt']),
+    eventType: EventType.fromName(m['eventType'] as String?),
+    scheduleVersion: (m['scheduleVersion'] as num?)?.toInt() ?? 1,
+    guardianResponses: {
+      for (final e in ((m['guardianResponses'] as Map?) ?? const {}).entries)
+        e.key.toString(): GuardianResponse.fromMap(e.value),
+    },
   );
+
+  /// Applies one guardian's answer and returns the new child-level record.
+  Rsvp withGuardianAnswer({
+    required String guardianId,
+    required RsvpResponse answer,
+    required int version,
+    required DateTime at,
+    String? reason,
+  }) {
+    final responses = {
+      ...guardianResponses,
+      guardianId: GuardianResponse(response: answer, version: version, at: at, reason: reason),
+    };
+    return Rsvp(
+      trainingId: trainingId,
+      groupId: groupId,
+      childId: childId,
+      parentId: guardianId,
+      response: answer,
+      reason: reason,
+      updatedAt: at,
+      eventType: eventType,
+      scheduleVersion: version,
+      guardianResponses: responses,
+    );
+  }
+}
+
+/// One entry of the append-only RSVP history (`rsvps/{id}/history/{n}`).
+class RsvpHistoryEntry {
+  const RsvpHistoryEntry({
+    required this.rsvpId,
+    required this.guardianId,
+    required this.response,
+    required this.version,
+    required this.at,
+    this.reason,
+  });
+
+  final String rsvpId;
+  final String guardianId;
+  final RsvpResponse response;
+  final int version;
+  final DateTime at;
+  final String? reason;
+}
+
+/// Child-level RSVP state the coach sees.
+enum RsvpState { confirmed, declined, uncertain, notResponded, needsReconfirmation }
+
+/// Counters for one event over its group members. Each child counts once.
+class RsvpSummary {
+  const RsvpSummary(this.byChild);
+
+  final Map<String, RsvpState> byChild;
+
+  int count(RsvpState s) => byChild.values.where((v) => v == s).length;
+
+  static RsvpState stateOf(Rsvp? r, int currentVersion) {
+    if (r == null) return RsvpState.notResponded;
+    if (r.needsReconfirmation(currentVersion)) return RsvpState.needsReconfirmation;
+    return switch (r.response) {
+      RsvpResponse.yes => RsvpState.confirmed,
+      RsvpResponse.no => RsvpState.declined,
+      RsvpResponse.maybe => RsvpState.uncertain,
+    };
+  }
+
+  static RsvpSummary compute(Iterable<String> memberChildIds, Iterable<Rsvp> rsvps, int currentVersion) {
+    final byChild = {for (final r in rsvps) r.childId: r};
+    return RsvpSummary({for (final c in memberChildIds.toSet()) c: stateOf(byChild[c], currentVersion)});
+  }
 }
 
 /// Coach-recorded actual attendance. "Not marked" = no record.
@@ -72,9 +210,12 @@ class AttendanceRecord {
     required this.markedBy,
     required this.markedAt,
     this.note,
+    this.eventType = EventType.training,
   });
 
+  /// Event id (training or match — see [eventType]).
   final String trainingId;
+  final EventType eventType;
   final String groupId;
   final String childId;
   final AttendanceStatus status;
@@ -87,6 +228,8 @@ class AttendanceRecord {
 
   Map<String, dynamic> toMap() => {
     'trainingId': trainingId,
+    'eventId': trainingId,
+    'eventType': eventType.name,
     'groupId': groupId,
     'childId': childId,
     'status': status.name,
@@ -96,7 +239,8 @@ class AttendanceRecord {
   };
 
   factory AttendanceRecord.fromMap(Map<String, dynamic> m) => AttendanceRecord(
-    trainingId: m['trainingId'] as String,
+    trainingId: (m['eventId'] ?? m['trainingId']) as String,
+    eventType: EventType.fromName(m['eventType'] as String?),
     groupId: m['groupId'] as String? ?? '',
     childId: m['childId'] as String,
     status: AttendanceStatus.fromName(m['status'] as String?),
@@ -312,6 +456,9 @@ abstract interface class AttendanceRepository {
   });
   Stream<List<Rsvp>> watchRsvpsForTraining(String trainingId);
   Stream<List<Rsvp>> watchRsvpsForChild(String childId);
+
+  /// v1.7 append-only answer history of one child for one event.
+  Stream<List<RsvpHistoryEntry>> watchRsvpHistory(String eventId, String childId);
 
   /// Coach of the training's group. `status == null` clears the mark.
   Future<void> mark({required String trainingId, required String childId, AttendanceStatus? status, String? note});

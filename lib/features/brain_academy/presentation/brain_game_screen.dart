@@ -78,6 +78,8 @@ class GameContext {
 /// Seed source; tests replace it for deterministic boards.
 int Function() gameSeed = () => Random().nextInt(1 << 30);
 
+final _idRandom = Random();
+
 String objectiveText(BuildContext context, BrainGame g) {
   final l = context.l10n;
   return switch (g) {
@@ -109,6 +111,9 @@ class _BrainGameScreenState extends ConsumerState<BrainGameScreen> with WidgetsB
   int _seed = 0;
   int _round = 0;
   final _stopwatch = Stopwatch();
+
+  /// Idempotency key of the current play (one stored result per play).
+  String _resultId = '';
   final _paused = ValueNotifier(false);
   Timer? _ticker;
   GameStats _stats = const GameStats();
@@ -146,6 +151,7 @@ class _BrainGameScreenState extends ConsumerState<BrainGameScreen> with WidgetsB
     setState(() {
       _seed = gameSeed();
       _round++;
+      _resultId = 'r${DateTime.now().microsecondsSinceEpoch}-${_idRandom.nextInt(1 << 30)}';
       _outcome = null;
       _stats = const GameStats();
       _newBadges = const {};
@@ -216,7 +222,7 @@ class _BrainGameScreenState extends ConsumerState<BrainGameScreen> with WidgetsB
           .read(brainAcademyRepositoryProvider)
           .recordResult(
             GameResult(
-              id: '',
+              id: _resultId,
               childId: childId,
               game: widget.game,
               difficulty: _difficulty,

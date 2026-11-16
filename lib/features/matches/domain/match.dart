@@ -119,10 +119,16 @@ class SportMatch {
     this.previousStartAt,
     this.updatedAt,
     this.result,
+    this.scheduleVersion = 1,
+    this.previousVenueId,
   });
 
   final String id;
   final String groupId;
+
+  /// v1.7: bumped on every material change (date, time or location).
+  final int scheduleVersion;
+  final String? previousVenueId;
   final String clubId;
   final String venueId;
   final DateTime startAt;
@@ -160,6 +166,8 @@ class SportMatch {
     DateTime? previousStartAt,
     DateTime? updatedAt,
     MatchResult? result,
+    int? scheduleVersion,
+    String? previousVenueId,
   }) => SportMatch(
     id: id,
     groupId: groupId,
@@ -180,9 +188,13 @@ class SportMatch {
     createdBy: createdBy,
     updatedAt: updatedAt ?? this.updatedAt,
     result: result ?? this.result,
+    scheduleVersion: scheduleVersion ?? this.scheduleVersion,
+    previousVenueId: previousVenueId ?? this.previousVenueId,
   );
 
   Map<String, dynamic> toMap() => {
+    'scheduleVersion': scheduleVersion,
+    'previousVenueId': previousVenueId,
     'groupId': groupId,
     'clubId': clubId,
     'venueId': venueId,
@@ -222,6 +234,8 @@ class SportMatch {
     createdBy: m['createdBy'] as String? ?? '',
     updatedAt: readDateOrNull(m['updatedAt']),
     result: MatchResult.fromMap(m['result']),
+    scheduleVersion: (m['scheduleVersion'] as num?)?.toInt() ?? 1,
+    previousVenueId: m['previousVenueId'] as String?,
   );
 }
 
