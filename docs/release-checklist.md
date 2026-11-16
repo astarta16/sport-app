@@ -1,3 +1,19 @@
+# Release checklist: beta v1.5
+
+## v1.5 local verification (done 2026-11-16)
+- [x] `dart format`, `flutter analyze`: no issues
+- [x] `flutter test`: 260 passed
+- [x] Functions build, typecheck, `npm test`: 215 passed
+- [x] Rules emulator tests: 158 passed (Firestore on port 8181)
+- [x] Functions smoke test (emulators): 43 steps passed
+- [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.5.apk`, 78,844,661 bytes (78.8 MB), versionName 1.5.0, versionCode 17
+- [x] Installed on the Pixel 6 API 33 emulator (package manager: 1.5.0 / 17). Checked by hand as the demo parent: dashboard "Profile · Luka" → profile (groups, two coaches, upcoming trainings) → "message the coach" → coach picker → conversation about Luka (banner, privacy note, call button) → Matches tab shows the 3:1 win and upcoming matches. The coach's score entry and the receipt review were verified by widget tests, not by hand on the device
+- iOS simulator: see the v1.5 progress doc
+
+## v1.5 production steps
+1. Deploy rules, indexes (`childThreads` coachId + lastMessageAt) and functions together; new callables `recordMatchResult` and the extended `getReceiptUrl {purpose}`; new trigger `onChildThreadMessageCreated`.
+2. Existing matches have no `result`; they keep working. Results can only be written through the callable.
+
 # Release checklist: beta v1.4
 
 ## v1.4 local verification (done 2026-11-12)

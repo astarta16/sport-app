@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -483,6 +484,12 @@ Future<void> downloadReceipt(BuildContext context, WidgetRef ref, PaymentProof p
   final l = context.l10n;
   try {
     final ticket = await ref.read(paymentProofsRepositoryProvider).receiptDownload(proof.id);
+    // Admin web (Firebase): the browser downloads the short-lived attachment URL itself.
+    if (kIsWeb && ticket.url != null) {
+      ref.read(lastReceiptDownloadProvider.notifier).state = ticket.fileName;
+      await launchUrl(Uri.parse(ticket.url!), webOnlyWindowName: '_blank');
+      return;
+    }
     final file = await ref
         .read(mediaDownloaderProvider)
         .fetch(ticket, onProgress: (_, _) {}, cancel: DownloadCancelToken());

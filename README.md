@@ -79,11 +79,18 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.4.0 --build-number=16
+  --build-name=1.5.0 --build-number=17
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.5
+
+- **Student profile** (`/student/<childId>`): one page per child with groups, coaches, upcoming trainings and matches, training and attendance history, plans and homework, coach media, match results, certificate and payment status. Parents see their own children; coaches see only their own groups' data.
+- **Message the coach about one child:** a private conversation per child and coach, visible only to that child's guardians and that coach; with a call button.
+- **Receipts reach the coach:** the reviewer's notification now opens the payment request directly (view, download, approve, reject); the parent's decision notification opens their payment.
+- **Match results:** coaches enter and correct the final score (win / draw / loss derived, corrections logged); parents are notified and see results on the dashboard, the student profile, match details and the calendar.
 
 ## What's new in v1.4
 
@@ -160,10 +167,10 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 246 tests (responsive, security, workflows, admin, l10n, v1.3/v1.4 flows)
-cd functions && npm install && npm run build && npm test      # 206 tests
-cd rules-tests && npm install && npm run test:emulator        # 150 rules tests (Java 17+)
-cd rules-tests && npm run smoke:functions                     # 40 end-to-end steps
+flutter test                                   # 260 tests (responsive, security, workflows, admin, l10n, v1.3–v1.5 flows)
+cd functions && npm install && npm run build && npm test      # 215 tests
+cd rules-tests && npm install && npm run test:emulator        # 158 rules tests (Java 17+)
+cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps
 ```
 
 ## Security model (summary)

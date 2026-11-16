@@ -82,6 +82,13 @@ Server rate limits per user per day: invites 30, reports 20, join-by-code 20, ve
 - **Media downloads** go through `getMediaDownload` only. It checks active membership, moderation (hidden posts), the consent-confirmed post and the group media policy. It returns a 5-minute attachment URL and logs `mediaDownloads` + `media.download`. No public URL is stored. The app explains that a downloaded copy cannot be revoked and does not claim it can't be shared. Medical certificates are not reachable through this path.
 - **Video playback** uses short-lived URLs that are re-requested on retry and never logged.
 
+## v1.5 additions
+
+- **Child-context conversations** (`childThreads/{childId}_{coachId}`): readable/writable only by the child's current guardians and by that coach while `children.coachIds` contains them (server-maintained). A parent can open a thread only with a current coach of the child. Messages: sender-bound, `createdAt == request.time`, immutable. Other parents, other coaches, admins and child accounts are refused (rules tests).
+- **Match results** are server-only: clients cannot write `result` (rules tests). `recordMatchResult` checks the approved coach of the group, validates scores and the finish time against trusted server time, writes an immutable `resultHistory` entry and audit for every change, and notifies parents once.
+- **Receipt download** is a separate audited purpose (`receipt.download`) with a short-lived attachment URL for the parent or an authorized reviewer only.
+- **Student profile** shows coaches only data of their own active groups; medical documents remain behind `getCertificateUrl`.
+
 ## Open items before production
 
 1. App Check enforcement (Firestore, Storage, Functions).

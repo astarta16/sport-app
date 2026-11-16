@@ -6624,7 +6624,7 @@ abstract class AppLocalizations {
   /// No description provided for @threadPrivacy.
   ///
   /// In ka, this message translates to:
-  /// **'ამ მიმოწერას ხედავენ მხოლოდ {child}-ის მშობლები და ეს მწვრთნელი.'**
+  /// **'ამ მიმოწერას ხედავენ მხოლოდ ბავშვის ({child}) მშობლები და ეს მწვრთნელი.'**
   String threadPrivacy(String child);
 
   /// No description provided for @threadEmpty.

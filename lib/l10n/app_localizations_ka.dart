@@ -3566,7 +3566,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String threadPrivacy(String child) {
-    return 'ამ მიმოწერას ხედავენ მხოლოდ $child-ის მშობლები და ეს მწვრთნელი.';
+    return 'ამ მიმოწერას ხედავენ მხოლოდ ბავშვის ($child) მშობლები და ეს მწვრთნელი.';
   }
 
   @override
