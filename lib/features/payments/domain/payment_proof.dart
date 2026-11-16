@@ -1,5 +1,6 @@
 import '../../../core/utils/dates.dart';
 import '../../trainings/domain/training.dart';
+import '../../media/domain/media_access.dart';
 import 'payment.dart';
 
 /// Verification workflow next to the authoritative payment status (v1.3).
@@ -204,7 +205,7 @@ class PaymentProofDraft {
   ];
 }
 
-enum VerificationAction { submitted, resubmitted, reviewStarted, approved, rejected, viewed }
+enum VerificationAction { submitted, resubmitted, reviewStarted, approved, rejected, viewed, downloaded }
 
 class PaymentVerificationEvent {
   const PaymentVerificationEvent({
@@ -233,6 +234,7 @@ class PaymentVerificationEvent {
     'approved' => VerificationAction.approved,
     'rejected' => VerificationAction.rejected,
     'viewed' => VerificationAction.viewed,
+    'downloaded' => VerificationAction.downloaded,
     _ => VerificationAction.submitted,
   };
 
@@ -267,4 +269,10 @@ abstract interface class PaymentProofsRepository {
   Future<void> review(String proofId, {required bool approve, String? reason});
   Future<ReceiptAccess> openReceipt(String proofId);
   Stream<List<PaymentVerificationEvent>> watchEvents(String paymentId);
+
+  /// v1.5: one proof (the reviewer's notification target, or the parent's own).
+  Stream<PaymentProof?> watchProof(String proofId);
+
+  /// v1.5: authorized, audited receipt download (attachment URL; demo bytes).
+  Future<DownloadTicket> receiptDownload(String proofId);
 }

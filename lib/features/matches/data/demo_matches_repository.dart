@@ -161,4 +161,77 @@ class DemoMatchesRepository implements MatchesRepository {
     db.matches[id] = m.copyWith(status: MatchStatus.played, updatedAt: db.clock());
     db.commit();
   }
+
+  /// Same rules as the recordMatchResult callable.
+  @override
+  Future<void> recordResult(
+    String id, {
+    required int our,
+    required int their,
+    String? summary,
+    DateTime? completedAt,
+  }) async {
+    db.requireOnline();
+    final m = db.matches[id] ?? (throw const NotFoundException());
+    _guard(m.groupId);
+    final now = db.clock();
+    final errors = MatchResult.validate(
+      our: our,
+      their: their,
+      match: m,
+      now: now,
+      summary: summary,
+      completedAt: completedAt,
+    );
+    if (errors.isNotEmpty) throw ValidationException(errors.first);
+    final prev = m.result;
+    final text = (summary ?? '').trim().isEmpty ? null : summary!.trim();
+    if (prev != null && prev.ourScore == our && prev.opponentScore == their && prev.summary == text) return;
+    final version = (prev?.version ?? 0) + 1;
+    final result = MatchResult(
+      ourScore: our,
+      opponentScore: their,
+      summary: text,
+      completedAt: completedAt ?? now,
+      version: version,
+      recordedBy: db.me.id,
+    );
+    db.matches[id] = m.copyWith(status: MatchStatus.played, result: result, updatedAt: now);
+    (db.matchResultHistory[id] ??= []).insert(
+      0,
+      MatchResultChange(
+        version: version,
+        by: db.me.id,
+        at: now,
+        from: prev == null ? null : (prev.ourScore, prev.opponentScore),
+        to: (our, their),
+      ),
+    );
+    final g = db.requireGroup(m.groupId);
+    db.auditLog(
+      prev == null ? 'match.result' : 'match.resultCorrected',
+      'match',
+      id,
+      clubId: g.clubId,
+      details: {'to': '$our-$their', if (prev != null) 'from': '${prev.ourScore}-${prev.opponentScore}'},
+    );
+    if (prev == null) {
+      db.dispatch(
+        NotificationType.matchResult,
+        g,
+        route: '/match/$id',
+        args: {'matchId': id, 'opponent': m.opponentName, 'our': '$our', 'their': '$their'},
+        excludeUserId: db.me.id,
+        dedupeKey: 'match:$id:result',
+      );
+    }
+    db.commit();
+  }
+
+  @override
+  Future<List<MatchResultChange>> resultHistory(String id) async {
+    final m = db.matches[id] ?? (throw const NotFoundException());
+    _guard(m.groupId);
+    return List.of(db.matchResultHistory[id] ?? const []);
+  }
 }

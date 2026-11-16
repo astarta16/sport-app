@@ -40,6 +40,7 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import 'parent_context.dart';
 import '../../chat/presentation/chat_providers.dart';
+import '../../matches/presentation/match_result_widgets.dart';
 
 /// Sports dashboard for the selected child and sport (spec §6.1).
 class ParentHomeScreen extends ConsumerWidget {
@@ -136,6 +137,19 @@ class ParentHomeScreen extends ConsumerWidget {
       ),
       SliverToBoxAdapter(
         child: _Bounded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const Key('open-student-profile'),
+              onPressed: () => context.push('/student/${child.id}'),
+              icon: const Icon(Icons.badge_rounded),
+              label: Text('${context.l10n.studentProfileOpen} · ${child.firstName}'),
+            ),
+          ),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: _Bounded(
           child: _SportTabs(child: child, selectedSportId: s.sportId),
         ),
       ),
@@ -154,7 +168,7 @@ class ParentHomeScreen extends ConsumerWidget {
                     const _PendingAcksBanner(),
                     const SizedBox(height: AppSpacing.md),
                     if (group == null) noGroup else _NextTrainingSection(group: group),
-                    if (group != null) _NextMatch(groupIds: {group.id}),
+                    if (group != null) _MatchesBlock(groupIds: {group.id}),
                     const SizedBox(height: AppSpacing.md),
                     tiles,
                     const SizedBox(height: AppSpacing.sm),
@@ -189,7 +203,7 @@ class ParentHomeScreen extends ConsumerWidget {
                           const _PendingAcksBanner(),
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
-                            _NextMatch(groupIds: {group.id}),
+                            _MatchesBlock(groupIds: {group.id}),
                             _PlansSection(child: child),
                             SectionHeader(l.weekSchedule),
                             _WeekStrip(groupIds: child.groupIds.toSet()),
@@ -682,6 +696,22 @@ class _NextMatch extends ConsumerWidget {
       child: NextMatchCard(match: m),
     );
   }
+}
+
+/// v1.5: latest final score + next match.
+class _MatchesBlock extends StatelessWidget {
+  const _MatchesBlock({required this.groupIds});
+
+  final Set<String> groupIds;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _NextMatch(groupIds: groupIds),
+      LatestResultCard(groupIds: groupIds),
+    ],
+  );
 }
 
 /// Recorded attendance this month (coach-recorded only).

@@ -2092,5 +2092,96 @@
   "adminMediaDownloadsNote": "მწვრთნელების ფოტოებისა და ვიდეოების ავტორიზებული ჩამოტვირთვები. ჩამოტვირთული ასლის გაუქმება შეუძლებელია.",
   "adminColPost": "პოსტი",
   "adminColUser": "მომხმარებელი",
-  "adminColDownloads": "ჩამოტვირთვა"
+  "adminColDownloads": "ჩამოტვირთვა",
+  "studentProfileTitle": "მოსწავლის პროფილი",
+  "studentProfileOpen": "პროფილი",
+  "tabOverview": "მიმოხილვა",
+  "tabTrainings": "ვარჯიშები",
+  "tabPlans": "გეგმები",
+  "tabMedia": "მედია",
+  "tabMatches": "მატჩები",
+  "profileSportsGroups": "სპორტი და ჯგუფები",
+  "profileCoaches": "მწვრთნელები",
+  "profileUpcomingTrainings": "მომავალი ვარჯიშები",
+  "profileUpcomingMatches": "მომავალი მატჩები",
+  "profileTrainingHistory": "ვარჯიშების ისტორია",
+  "profileAttendance": "დასწრება",
+  "profileHomework": "საშინაო დავალება",
+  "profileMatchResults": "მატჩების შედეგები",
+  "profileCertificate": "სამედიცინო ცნობა",
+  "profilePayments": "გადახდები",
+  "profileEmpty": "ჯერ არაფერია",
+  "profileCoachScope": "ნაჩვენებია მხოლოდ თქვენი ჯგუფების მონაცემები.",
+  "contactCoachAbout": "მწვრთნელისთვის მიწერა: {child}",
+  "@contactCoachAbout": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "threadAbout": "თემა: {child}",
+  "@threadAbout": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "threadPrivacy": "ამ მიმოწერას ხედავენ მხოლოდ {child}-ის მშობლები და ეს მწვრთნელი.",
+  "@threadPrivacy": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      }
+    }
+  },
+  "threadEmpty": "შეტყობინებები ჯერ არ არის. დაწერეთ პირველი.",
+  "threadsTitle": "მიმოწერა მოსწავლეების შესახებ",
+  "chooseCoach": "აირჩიეთ მწვრთნელი",
+  "notifChildMessage": "შეტყობინება ბავშვის შესახებ",
+  "matchResultEnter": "შედეგის შეყვანა",
+  "matchResultCorrect": "შედეგის შესწორება",
+  "matchResultTitle": "საბოლოო ანგარიში",
+  "matchResultOurTeam": "ჩვენი გუნდი",
+  "matchResultOpponent": "მეტოქე",
+  "matchResultSummary": "შეჯამება (არასავალდებულო)",
+  "matchResultFinishedAt": "დასრულდა: {time}",
+  "@matchResultFinishedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "matchWin": "მოგება",
+  "matchDraw": "ფრე",
+  "matchLoss": "წაგება",
+  "matchResultCorrected": "შესწორებულია",
+  "matchResultSaved": "შედეგი შენახულია",
+  "matchResultHistory": "შესწორებების ისტორია",
+  "matchResultLatest": "ბოლო შედეგი",
+  "matchResultNotice": "მშობლები შეტყობინებას პირველი შედეგის შენახვისას მიიღებენ. შესწორებები აღირიცხება.",
+  "notifMatchResult": "მატჩის შედეგი",
+  "notifBodyMatchResult": "{opponent}: {our}–{their}",
+  "@notifBodyMatchResult": {
+    "placeholders": {
+      "opponent": {
+        "type": "String"
+      },
+      "our": {
+        "type": "String"
+      },
+      "their": {
+        "type": "String"
+      }
+    }
+  },
+  "validationResultScore": "შეიყვანეთ ანგარიში 0-დან 999-მდე.",
+  "validationResultNotStarted": "შედეგის შეყვანა შესაძლებელია მატჩის დაწყების შემდეგ.",
+  "validationResultCancelled": "გაუქმებულ მატჩს შედეგი არ აქვს.",
+  "validationResultCompletedAt": "დასრულების დრო უნდა იყოს მატჩის დაწყებასა და ახლანდელ დროს შორის.",
+  "payDownloadReceipt": "ქვითრის ჩამოტვირთვა",
+  "payProofNotFound": "მოთხოვნა ვერ მოიძებნა ან უკვე განხილულია.",
+  "payEventDownloaded": "მიმომხილველმა ქვითარი ჩამოტვირთა"
 }

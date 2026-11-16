@@ -7,6 +7,7 @@ import '../features/authentication/data/demo_auth_repository.dart';
 import '../features/chat/data/demo_chat_repository.dart';
 import '../features/children/data/demo_children_repository.dart';
 import '../features/clubs/data/demo_clubs_repository.dart';
+import '../features/child_threads/data/demo_child_threads_repository.dart';
 import '../features/contacts/data/demo_contacts_repository.dart';
 import '../features/demo/data/demo_backend.dart';
 import '../features/groups/data/demo_groups_repository.dart';
@@ -54,4 +55,5 @@ List<Override> demoOverrides(DemoBackend db) => [
   contactsRepositoryProvider.overrideWithValue(DemoContactsRepository(db)),
   mediaAccessRepositoryProvider.overrideWithValue(DemoMediaAccessRepository(db)),
   mediaDownloaderProvider.overrideWithValue(DemoMediaDownloader(db)),
+  childThreadsRepositoryProvider.overrideWithValue(DemoChildThreadsRepository(db)),
 ];

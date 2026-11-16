@@ -13,6 +13,7 @@ import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
 import 'chat_providers.dart';
 import 'chat_room_screen.dart';
+import '../../child_threads/presentation/child_thread_screen.dart';
 
 class ChatListScreen extends ConsumerStatefulWidget {
   const ChatListScreen({super.key});
@@ -51,6 +52,8 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
           children: [
             DemoBanner(text: l.chatPrivacyNote),
             const SizedBox(height: AppSpacing.md),
+            // v1.5: private conversations about a specific child.
+            const ChildThreadsSection(),
             for (final g in list)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),

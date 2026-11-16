@@ -98,6 +98,12 @@ class GroupRosterScreen extends ConsumerWidget {
                       spacing: AppSpacing.xs,
                       children: [
                         TextButton.icon(
+                          key: Key('roster-profile-${c.id}'),
+                          onPressed: () => context.push('/student/${c.id}'),
+                          icon: const Icon(Icons.badge_rounded),
+                          label: Text(l.studentProfileOpen),
+                        ),
+                        TextButton.icon(
                           key: Key('roster-progress-${c.id}'),
                           onPressed: () => context.push(Routes.progress(c.id)),
                           icon: const Icon(Icons.insights_rounded),

@@ -94,7 +94,7 @@ class DemoSeedV13 {
           title: '',
           body: '',
           createdAt: now.subtract(const Duration(hours: 5)),
-          route: '/payments/review',
+          route: '/payments/proofs/proof-1',
           args: {'child': 'დათო', 'amount': '80 ₾', 'group': 'U-10 · ახალგაზრდები'},
           groupId: 'g-football-u10',
         ),

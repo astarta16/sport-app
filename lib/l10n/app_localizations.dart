@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -6501,10 +6494,309 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ჩამოტვირთვა'**
   String get adminColDownloads;
+
+  /// No description provided for @studentProfileTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლის პროფილი'**
+  String get studentProfileTitle;
+
+  /// No description provided for @studentProfileOpen.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროფილი'**
+  String get studentProfileOpen;
+
+  /// No description provided for @tabOverview.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმოხილვა'**
+  String get tabOverview;
+
+  /// No description provided for @tabTrainings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშები'**
+  String get tabTrainings;
+
+  /// No description provided for @tabPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმები'**
+  String get tabPlans;
+
+  /// No description provided for @tabMedia.
+  ///
+  /// In ka, this message translates to:
+  /// **'მედია'**
+  String get tabMedia;
+
+  /// No description provided for @tabMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩები'**
+  String get tabMatches;
+
+  /// No description provided for @profileSportsGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტი და ჯგუფები'**
+  String get profileSportsGroups;
+
+  /// No description provided for @profileCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get profileCoaches;
+
+  /// No description provided for @profileUpcomingTrainings.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი ვარჯიშები'**
+  String get profileUpcomingTrainings;
+
+  /// No description provided for @profileUpcomingMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი მატჩები'**
+  String get profileUpcomingMatches;
+
+  /// No description provided for @profileTrainingHistory.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშების ისტორია'**
+  String get profileTrainingHistory;
+
+  /// No description provided for @profileAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get profileAttendance;
+
+  /// No description provided for @profileHomework.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშინაო დავალება'**
+  String get profileHomework;
+
+  /// No description provided for @profileMatchResults.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩების შედეგები'**
+  String get profileMatchResults;
+
+  /// No description provided for @profileCertificate.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამედიცინო ცნობა'**
+  String get profileCertificate;
+
+  /// No description provided for @profilePayments.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდები'**
+  String get profilePayments;
+
+  /// No description provided for @profileEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯერ არაფერია'**
+  String get profileEmpty;
+
+  /// No description provided for @profileCoachScope.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნაჩვენებია მხოლოდ თქვენი ჯგუფების მონაცემები.'**
+  String get profileCoachScope;
+
+  /// No description provided for @contactCoachAbout.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელისთვის მიწერა: {child}'**
+  String contactCoachAbout(String child);
+
+  /// No description provided for @threadAbout.
+  ///
+  /// In ka, this message translates to:
+  /// **'თემა: {child}'**
+  String threadAbout(String child);
+
+  /// No description provided for @threadPrivacy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ მიმოწერას ხედავენ მხოლოდ {child}-ის მშობლები და ეს მწვრთნელი.'**
+  String threadPrivacy(String child);
+
+  /// No description provided for @threadEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინებები ჯერ არ არის. დაწერეთ პირველი.'**
+  String get threadEmpty;
+
+  /// No description provided for @threadsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმოწერა მოსწავლეების შესახებ'**
+  String get threadsTitle;
+
+  /// No description provided for @chooseCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ მწვრთნელი'**
+  String get chooseCoach;
+
+  /// No description provided for @notifChildMessage.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინება ბავშვის შესახებ'**
+  String get notifChildMessage;
+
+  /// No description provided for @matchResultEnter.
+  ///
+  /// In ka, this message translates to:
+  /// **'შედეგის შეყვანა'**
+  String get matchResultEnter;
+
+  /// No description provided for @matchResultCorrect.
+  ///
+  /// In ka, this message translates to:
+  /// **'შედეგის შესწორება'**
+  String get matchResultCorrect;
+
+  /// No description provided for @matchResultTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'საბოლოო ანგარიში'**
+  String get matchResultTitle;
+
+  /// No description provided for @matchResultOurTeam.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩვენი გუნდი'**
+  String get matchResultOurTeam;
+
+  /// No description provided for @matchResultOpponent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეტოქე'**
+  String get matchResultOpponent;
+
+  /// No description provided for @matchResultSummary.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჯამება (არასავალდებულო)'**
+  String get matchResultSummary;
+
+  /// No description provided for @matchResultFinishedAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულდა: {time}'**
+  String matchResultFinishedAt(String time);
+
+  /// No description provided for @matchWin.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოგება'**
+  String get matchWin;
+
+  /// No description provided for @matchDraw.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფრე'**
+  String get matchDraw;
+
+  /// No description provided for @matchLoss.
+  ///
+  /// In ka, this message translates to:
+  /// **'წაგება'**
+  String get matchLoss;
+
+  /// No description provided for @matchResultCorrected.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესწორებულია'**
+  String get matchResultCorrected;
+
+  /// No description provided for @matchResultSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'შედეგი შენახულია'**
+  String get matchResultSaved;
+
+  /// No description provided for @matchResultHistory.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესწორებების ისტორია'**
+  String get matchResultHistory;
+
+  /// No description provided for @matchResultLatest.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბოლო შედეგი'**
+  String get matchResultLatest;
+
+  /// No description provided for @matchResultNotice.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლები შეტყობინებას პირველი შედეგის შენახვისას მიიღებენ. შესწორებები აღირიცხება.'**
+  String get matchResultNotice;
+
+  /// No description provided for @notifMatchResult.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩის შედეგი'**
+  String get notifMatchResult;
+
+  /// No description provided for @notifBodyMatchResult.
+  ///
+  /// In ka, this message translates to:
+  /// **'{opponent}: {our}–{their}'**
+  String notifBodyMatchResult(String opponent, String our, String their);
+
+  /// No description provided for @validationResultScore.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიყვანეთ ანგარიში 0-დან 999-მდე.'**
+  String get validationResultScore;
+
+  /// No description provided for @validationResultNotStarted.
+  ///
+  /// In ka, this message translates to:
+  /// **'შედეგის შეყვანა შესაძლებელია მატჩის დაწყების შემდეგ.'**
+  String get validationResultNotStarted;
+
+  /// No description provided for @validationResultCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმებულ მატჩს შედეგი არ აქვს.'**
+  String get validationResultCancelled;
+
+  /// No description provided for @validationResultCompletedAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულების დრო უნდა იყოს მატჩის დაწყებასა და ახლანდელ დროს შორის.'**
+  String get validationResultCompletedAt;
+
+  /// No description provided for @payDownloadReceipt.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვითრის ჩამოტვირთვა'**
+  String get payDownloadReceipt;
+
+  /// No description provided for @payProofNotFound.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოთხოვნა ვერ მოიძებნა ან უკვე განხილულია.'**
+  String get payProofNotFound;
+
+  /// No description provided for @payEventDownloaded.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმომხილველმა ქვითარი ჩამოტვირთა'**
+  String get payEventDownloaded;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -6513,8 +6805,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

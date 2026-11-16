@@ -29,7 +29,13 @@ enum NotificationType {
   trainingPlanPublished,
 
   /// v1.4: a coach message asks the parent to confirm they read it.
-  ackRequested;
+  ackRequested,
+
+  /// v1.5: final match score published.
+  matchResult,
+
+  /// v1.5: a message in a child-context parent↔coach conversation.
+  childMessage;
 
   static NotificationType fromName(String name) =>
       NotificationType.values.firstWhere((t) => t.name == name, orElse: () => NotificationType.newTraining);
@@ -40,7 +46,7 @@ enum NotificationType {
     trainingReminder ||
     scheduleChanged ||
     trainingPlanPublished => NotificationCategory.trainings,
-    newMatch || matchChanged || matchReminder => NotificationCategory.matches,
+    newMatch || matchChanged || matchReminder || matchResult => NotificationCategory.matches,
     groupInvite || inviteAnswered => NotificationCategory.invitations,
     attendanceRecorded || feedbackAdded => NotificationCategory.attendance,
     paymentReminder ||
@@ -48,7 +54,7 @@ enum NotificationType {
     paymentProofSubmitted ||
     paymentProofApproved ||
     paymentProofRejected => NotificationCategory.payments,
-    chatMessage => NotificationCategory.chat,
+    chatMessage || childMessage => NotificationCategory.chat,
     certificateExpiry => NotificationCategory.certificates,
     announcement || newPhotos || newMedia || ackRequested => NotificationCategory.announcements,
   };

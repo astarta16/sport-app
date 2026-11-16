@@ -18,6 +18,9 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/calendar_logic.dart';
 import '../../clubs/presentation/clubs_providers.dart';
+import '../../matches/domain/match.dart';
+import '../../matches/presentation/match_result_widgets.dart';
+import '../../matches/presentation/matches_providers.dart';
 import 'add_to_calendar.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
@@ -98,6 +101,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final selected = _selected ?? DateUtils.dateOnly(now);
           final dayList = CalendarLogic.onDay(byDay, selected);
           final upcoming = CalendarLogic.upcoming(visible, now, limit: 8);
+          // v1.5: matches of the same groups on the selected day, with final scores.
+          final visibleGroups = groupFilter ?? groups.keys.toSet();
+          final allMatches = ref.watch(myMatchesProvider).value ?? const <SportMatch>[];
+          final dayMatches =
+              allMatches.where((m) => visibleGroups.contains(m.groupId) && isSameDay(m.startAt, selected)).toList()
+                ..sort((a, b) => a.startAt.compareTo(b.startAt));
+          final recentResults = resultsFor(allMatches, visibleGroups).take(3).toList();
           final calendarCard = AppCard(
             padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
             child: TableCalendar<Training>(
@@ -169,6 +179,20 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               )
             else
               ..._tiles(dayList, groups, showDate: false, selectable: selectable),
+            for (final m in dayMatches)
+              Padding(
+                key: Key('calendar-match-${m.id}'),
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                child: MatchResultTile(match: m),
+              ),
+            if (recentResults.isNotEmpty) ...[
+              SectionHeader(l.profileMatchResults),
+              for (final m in recentResults)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                  child: MatchResultTile(match: m),
+                ),
+            ],
             SectionHeader(l.upcoming),
             if (upcoming.isEmpty)
               AppCard(

@@ -131,6 +131,17 @@ const parentV14 = [
   '/children/child-1',
 ];
 
+const parentV15 = ['/student/child-1', '/student/child-1/coach/coach-1', '/match/match-res-1', '/parent/calendar'];
+
+const coachV15 = [
+  '/student/child-1',
+  '/student/child-1/coach/coach-1',
+  '/match/match-res-1',
+  '/match/match-past-1',
+  '/payments/proofs/proof-1',
+  '/chats',
+];
+
 const coachV14 = [
   '/group/g-football-u10/contacts',
   '/group/g-football-u10/contacts?childId=child-1',
@@ -190,6 +201,7 @@ void main() {
         // v1.3
         ...parentV13,
         ...parentV14,
+        ...parentV15,
       ]);
       expectNoLayoutErrors();
     });
@@ -227,6 +239,7 @@ void main() {
         // v1.3
         ...coachV13,
         ...coachV14,
+        ...coachV15,
       ]);
       expectNoLayoutErrors();
     });
@@ -264,7 +277,13 @@ void main() {
           ...parentV14,
         ]);
         await signInAs(tester, db, DemoIds.coach);
-        await visit(tester, '$name $locale coach', ['/coach/home', '/group/g-football-u10', ...coachV13, ...coachV14]);
+        await visit(tester, '$name $locale coach', [
+          '/coach/home',
+          '/group/g-football-u10',
+          ...coachV13,
+          ...coachV14,
+          ...coachV15,
+        ]);
       }
       expectNoLayoutErrors();
     });

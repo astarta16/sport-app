@@ -5,6 +5,7 @@ import '../../authentication/domain/access_policy.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../groups/domain/group.dart';
+import '../../media/domain/media_access.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/payment.dart';
 import '../domain/payment_proof.dart';
@@ -103,8 +104,9 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
       db.notifyUser(
         r,
         NotificationType.paymentProofSubmitted,
-        route: '/payments/review',
-        args: {'child': child?.firstName ?? '', 'amount': '${pay.amount} ₾', 'group': g.name},
+        // Same target as the server: the single proof to review.
+        route: '/payments/proofs/$id',
+        args: {'child': child?.firstName ?? '', 'amount': '${pay.amount} ₾', 'group': g.name, 'proofId': id},
         groupId: g.id,
         dedupeKey: 'proof:$id:submitted',
       );
@@ -219,7 +221,7 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
     db.notifyUser(
       p.parentId,
       approve ? NotificationType.paymentProofApproved : NotificationType.paymentProofRejected,
-      route: '/payments',
+      route: '/payments/${pay.id}/proof',
       args: {'child': child?.firstName ?? '', 'amount': '${pay.amount} ₾', 'reason': r},
       childId: pay.childId,
       groupId: g.id,
@@ -267,4 +269,33 @@ class DemoPaymentProofsRepository implements PaymentProofsRepository {
     'status': p.status.wire,
     'submittedAt': p.submittedAt,
   };
+
+  @override
+  Stream<PaymentProof?> watchProof(String proofId) => db.watch(() {
+    final p = db.paymentProofs[proofId];
+    if (p == null) return null;
+    if (!_canSeeProof(db.me, p)) throw const PermissionDeniedException('proof');
+    return p;
+  });
+
+  @override
+  Future<DownloadTicket> receiptDownload(String proofId) async {
+    db.requireOnline();
+    final p = db.paymentProofs[proofId] ?? (throw const NotFoundException('proof'));
+    final me = db.me;
+    if (!_canSeeProof(me, p)) throw const PermissionDeniedException('receipt');
+    final bytes = db.receiptFiles[p.receiptPath] ?? (throw const NotFoundException('receipt'));
+    if (me.id != p.parentId) {
+      _event(p, 'downloaded');
+      db.auditLog('receipt.download', 'paymentProof', proofId, clubId: p.clubId);
+      db.commit();
+    }
+    final ext = p.receiptPath.contains('.') ? p.receiptPath.split('.').last.toLowerCase() : 'bin';
+    return DownloadTicket(
+      fileName: 'receipt_$proofId.$ext',
+      mimeType: p.receiptMime,
+      sizeBytes: bytes.length,
+      bytes: bytes,
+    );
+  }
 }

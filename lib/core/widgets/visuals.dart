@@ -155,6 +155,8 @@ String notificationTitle(BuildContext context, NotificationType t) {
     NotificationType.paymentProofRejected => l.notifPaymentProofRejected,
     NotificationType.trainingPlanPublished => l.notifTrainingPlanPublished,
     NotificationType.ackRequested => l.notifAckRequested,
+    NotificationType.matchResult => l.notifMatchResult,
+    NotificationType.childMessage => l.notifChildMessage,
   };
 }
 
@@ -181,6 +183,8 @@ IconData notificationIcon(NotificationType t) => switch (t) {
   NotificationType.paymentProofRejected => Icons.report_gmailerrorred_rounded,
   NotificationType.trainingPlanPublished => Icons.assignment_rounded,
   NotificationType.ackRequested => Icons.task_alt_rounded,
+  NotificationType.matchResult => Icons.scoreboard_rounded,
+  NotificationType.childMessage => Icons.forum_rounded,
 };
 
 String notificationBody(BuildContext context, AppNotification n) {
@@ -209,6 +213,11 @@ String notificationBody(BuildContext context, AppNotification n) {
     NotificationType.attendanceRecorded || NotificationType.feedbackAdded => l.notifBodyChild(a['child'] ?? ''),
     NotificationType.newMedia => a['coach'] ?? l.notifBodyGroup(a['group'] ?? ''),
     NotificationType.ackRequested when n.body.isNotEmpty => n.body,
+    NotificationType.matchResult => l.notifBodyMatchResult(a['opponent'] ?? '', a['our'] ?? '', a['their'] ?? ''),
+    NotificationType.childMessage => [
+      a['child'],
+      a['sender'],
+    ].whereType<String>().where((x) => x.isNotEmpty).join(' · '),
     _ => l.notifBodyGroup(a['group'] ?? ''),
   };
 }

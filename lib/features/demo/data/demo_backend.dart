@@ -8,6 +8,7 @@ import '../../attendance/domain/attendance.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/domain/app_user.dart';
 import '../../chat/domain/chat_message.dart';
+import '../../child_threads/domain/child_thread.dart';
 import '../../children/domain/child.dart';
 import '../../clubs/domain/club.dart';
 import '../../groups/domain/group.dart';
@@ -86,6 +87,14 @@ class DemoBackend {
 
   /// Media download events (`mediaDownloads`) and the acknowledgment audit.
   final mediaDownloads = <MediaDownloadEvent>[];
+
+  // v1.5
+  /// matchId → result corrections, newest first (`matches/{id}/resultHistory`).
+  final matchResultHistory = <String, List<MatchResultChange>>{};
+
+  /// `childThreads/{childId}_{coachId}` and their messages.
+  final childThreads = <String, ChildThread>{};
+  final childThreadMessages = <String, List<ChildThreadMessage>>{};
 
   /// Demo transfer simulation: delay per 10 % chunk, and a one-shot failure.
   Duration downloadChunkDelay = const Duration(milliseconds: 40);

@@ -363,8 +363,9 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // Scrollable so the error never overflows short panes (phone landscape).
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.all(compact ? AppSpacing.md : AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,

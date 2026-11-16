@@ -12,6 +12,7 @@ import '../features/clubs/domain/clubs_repository.dart';
 import '../features/groups/domain/groups_repository.dart';
 import '../features/maps/domain/location_repository.dart';
 import '../features/matches/domain/match.dart';
+import '../features/child_threads/domain/child_thread.dart';
 import '../features/contacts/domain/contact.dart';
 import '../features/media/domain/media_access.dart';
 import '../features/media/domain/media_post.dart';
@@ -67,3 +68,6 @@ final trainingPlansRepositoryProvider = Provider<TrainingPlansRepository>((_) =>
 final contactsRepositoryProvider = Provider<ContactsRepository>((_) => _unbound('ContactsRepository'));
 final mediaAccessRepositoryProvider = Provider<MediaAccessRepository>((_) => _unbound('MediaAccessRepository'));
 final mediaDownloaderProvider = Provider<MediaDownloader>((_) => _unbound('MediaDownloader'));
+
+// v1.5
+final childThreadsRepositoryProvider = Provider<ChildThreadsRepository>((_) => _unbound('ChildThreadsRepository'));

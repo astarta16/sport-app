@@ -1,17 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/errors/app_exception.dart';
 import '../../../core/firebase/firebase_utils.dart';
+import '../../../core/utils/dates.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/match.dart';
 
 /// `matches/{id}`. Push + system chat messages and the 1-day / 2-hour
 /// reminders are sent by Cloud Functions (onMatchWritten, matchReminders).
 class FirebaseMatchesRepository implements MatchesRepository {
-  FirebaseMatchesRepository(this.auth, this.db, {DateTime Function()? clock}) : clock = clock ?? DateTime.now;
+  FirebaseMatchesRepository(this.auth, this.db, {this.functions, DateTime Function()? clock})
+    : clock = clock ?? DateTime.now;
 
   final FirebaseAuth auth;
+  final FirebaseFunctions? functions;
   final FirebaseFirestore db;
   final DateTime Function() clock;
 
@@ -99,4 +103,40 @@ class FirebaseMatchesRepository implements MatchesRepository {
   @override
   Future<void> markPlayed(String id) =>
       guardFirebase(() => _col.doc(id).update({'status': MatchStatus.played.name, 'updatedAt': clock()}));
+
+  /// v1.5: server callable (validation, trusted time, audit, notification).
+  @override
+  Future<void> recordResult(
+    String id, {
+    required int our,
+    required int their,
+    String? summary,
+    DateTime? completedAt,
+  }) => guardFirebase(() async {
+    final f = functions ?? (throw StateError('functions not configured'));
+    await callFunction(f, 'recordMatchResult', {
+      'matchId': id,
+      'ourScore': our,
+      'opponentScore': their,
+      'summary': ?summary,
+      if (completedAt != null) 'completedAt': completedAt.toUtc().toIso8601String(),
+    });
+  });
+
+  @override
+  Future<List<MatchResultChange>> resultHistory(String id) => guardFirebase(() async {
+    final s = await _col.doc(id).collection('resultHistory').orderBy('version', descending: true).get();
+    (int, int)? pair(Object? m) =>
+        m is Map ? ((m['ourScore'] as num).toInt(), (m['opponentScore'] as num).toInt()) : null;
+    return [
+      for (final d in s.docs)
+        MatchResultChange(
+          version: (d.data()['version'] as num?)?.toInt() ?? 0,
+          by: d.data()['by'] as String? ?? '',
+          at: readDateOrNull(d.data()['at']) ?? DateTime.now(),
+          from: pair(d.data()['from']),
+          to: pair(d.data()['to']),
+        ),
+    ];
+  });
 }

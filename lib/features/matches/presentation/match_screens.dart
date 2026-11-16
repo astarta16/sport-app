@@ -20,6 +20,7 @@ import '../../groups/presentation/groups_providers.dart';
 import '../domain/match.dart';
 import 'matches_providers.dart';
 import '../../calendar/presentation/add_to_calendar.dart';
+import 'match_result_widgets.dart';
 
 /// Coach adds / edits a match (v1.1 §8): group, date & time, venue,
 /// opponent, type, home/away, comment.
@@ -297,6 +298,8 @@ class _MatchBody extends ConsumerWidget {
               kind: 'match',
               slug: match.id,
             ),
+          if (match.result != null) ...[const SizedBox(height: AppSpacing.sm), MatchResultCard(match: match)],
+          if (isCoach && match.result != null) _ResultHistory(matchId: match.id),
           if (cancelled && match.cancelReason != null) ...[
             const SizedBox(height: AppSpacing.sm),
             AppCard(
@@ -350,7 +353,14 @@ class _MatchBody extends ConsumerWidget {
                   icon: const Icon(Icons.edit_rounded),
                   label: Text(l.edit),
                 ),
-                if (match.status != MatchStatus.played && match.startAt.isBefore(now))
+                if (match.startAt.isBefore(now))
+                  FilledButton.icon(
+                    key: const Key('match-result-enter'),
+                    onPressed: () => showMatchResultDialog(context, ref, match),
+                    icon: const Icon(Icons.scoreboard_rounded),
+                    label: Text(match.result == null ? l.matchResultEnter : l.matchResultCorrect),
+                  ),
+                if (match.status != MatchStatus.played && match.result == null && match.startAt.isBefore(now))
                   OutlinedButton.icon(
                     onPressed: () =>
                         runGuarded(context, () => ref.read(matchesRepositoryProvider).markPlayed(match.id)),
@@ -377,6 +387,42 @@ class _MatchBody extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Coach: score corrections (who / when / from → to), newest first.
+class _ResultHistory extends ConsumerWidget {
+  const _ResultHistory({required this.matchId});
+
+  final String matchId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final f = Fmt.of(context);
+    // Re-read whenever the match (its result version) changes.
+    final version = ref.watch(matchProvider(matchId)).value?.result?.version;
+    return FutureBuilder<List<MatchResultChange>>(
+      key: ValueKey('history-$matchId-$version'),
+      future: ref.read(matchesRepositoryProvider).resultHistory(matchId),
+      builder: (context, snap) {
+        final list = snap.data ?? const <MatchResultChange>[];
+        if (list.length < 2) return const SizedBox.shrink();
+        String pair((int, int)? p) => p == null ? '—' : '${p.$1}:${p.$2}';
+        return Column(
+          key: const Key('match-result-history'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionHeader(l.matchResultHistory),
+            for (final c in list)
+              Text(
+                '${f.dateTime(c.at)} · ${pair(c.from)} → ${pair(c.to)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+          ],
+        );
+      },
     );
   }
 }

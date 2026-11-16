@@ -23,6 +23,7 @@ class DownloadTicket {
     required this.sizeBytes,
     this.url,
     this.assetPath,
+    this.bytes,
     this.expiresAt,
   });
 
@@ -31,6 +32,9 @@ class DownloadTicket {
   final int sizeBytes;
   final String? url;
   final String? assetPath;
+
+  /// Demo only: in-memory content (mock receipts).
+  final List<int>? bytes;
   final DateTime? expiresAt;
 }
 

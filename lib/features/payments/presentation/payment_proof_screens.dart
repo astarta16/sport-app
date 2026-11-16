@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/config.dart';
@@ -19,6 +21,7 @@ import '../../authentication/presentation/session_providers.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../trainings/domain/training.dart';
+import '../../media/domain/media_access.dart';
 import '../domain/payment.dart';
 import '../domain/payment_proof.dart';
 import 'payments_providers.dart';
@@ -26,6 +29,12 @@ import 'payments_providers.dart';
 final proofsForPaymentProvider = StreamProvider.autoDispose.family<List<PaymentProof>, String>((ref, id) {
   ref.watch(currentUidProvider);
   return ref.watch(paymentProofsRepositoryProvider).watchForPayment(id);
+});
+
+/// v1.5: one proof by id (notification target).
+final proofProvider = StreamProvider.autoDispose.family<PaymentProof?, String>((ref, id) {
+  ref.watch(currentUidProvider);
+  return ref.watch(paymentProofsRepositoryProvider).watchProof(id);
 });
 
 final paymentEventsProvider = StreamProvider.autoDispose.family<List<PaymentVerificationEvent>, String>((ref, id) {
@@ -47,6 +56,7 @@ String eventLabel(BuildContext context, VerificationAction a) {
     VerificationAction.approved => l.payEventApproved,
     VerificationAction.rejected => l.payEventRejected,
     VerificationAction.viewed => l.payEventViewed,
+    VerificationAction.downloaded => l.payEventDownloaded,
   };
 }
 
@@ -434,23 +444,119 @@ class ProofReviewCard extends ConsumerWidget {
                 icon: const Icon(Icons.visibility_rounded),
                 label: Text(l.payViewReceipt),
               ),
-              FilledButton.icon(
-                key: Key('approve-${proof.id}'),
-                style: FilledButton.styleFrom(backgroundColor: AppColors.success),
-                onPressed: () => _decide(context, ref, true),
-                icon: const Icon(Icons.check_rounded),
-                label: Text(l.payApprove),
-              ),
               OutlinedButton.icon(
-                key: Key('reject-${proof.id}'),
-                style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
-                onPressed: () => _decide(context, ref, false),
-                icon: const Icon(Icons.close_rounded),
-                label: Text(l.payReject),
+                key: Key('download-receipt-${proof.id}'),
+                onPressed: () => downloadReceipt(context, ref, proof),
+                icon: const Icon(Icons.download_rounded),
+                label: Text(l.payDownloadReceipt),
               ),
+              if (proof.status.isOpen) ...[
+                FilledButton.icon(
+                  key: Key('approve-${proof.id}'),
+                  style: FilledButton.styleFrom(backgroundColor: AppColors.success),
+                  onPressed: () => _decide(context, ref, true),
+                  icon: const Icon(Icons.check_rounded),
+                  label: Text(l.payApprove),
+                ),
+                OutlinedButton.icon(
+                  key: Key('reject-${proof.id}'),
+                  style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
+                  onPressed: () => _decide(context, ref, false),
+                  icon: const Icon(Icons.close_rounded),
+                  label: Text(l.payReject),
+                ),
+              ],
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Last receipt handed to the share sheet (file name). Tests read it.
+final lastReceiptDownloadProvider = StateProvider<String?>((_) => null);
+
+/// v1.5: authorized, audited download (attachment URL / demo bytes), then the
+/// system share/save sheet. No public URL is stored.
+Future<void> downloadReceipt(BuildContext context, WidgetRef ref, PaymentProof proof) async {
+  final l = context.l10n;
+  try {
+    final ticket = await ref.read(paymentProofsRepositoryProvider).receiptDownload(proof.id);
+    final file = await ref
+        .read(mediaDownloaderProvider)
+        .fetch(ticket, onProgress: (_, _) {}, cancel: DownloadCancelToken());
+    ref.read(lastReceiptDownloadProvider.notifier).state = file.fileName;
+    final x = file.path != null
+        ? XFile(file.path!, mimeType: file.mimeType, name: file.fileName)
+        : XFile.fromData(Uint8List.fromList(file.bytes!), mimeType: file.mimeType, name: file.fileName);
+    await SharePlus.instance.share(ShareParams(files: [x], fileNameOverrides: [file.fileName]));
+    if (context.mounted) showAppSnack(context, l.downloadDone(file.fileName));
+  } catch (e) {
+    if (context.mounted) showAppSnack(context, errorText(context, e), error: true);
+  }
+}
+
+String proofStatusLabel(BuildContext context, ProofStatus s) {
+  final l = context.l10n;
+  return switch (s) {
+    ProofStatus.submitted => l.payEventSubmitted,
+    ProofStatus.underReview => l.payEventReviewStarted,
+    ProofStatus.approved => l.payEventApproved,
+    ProofStatus.rejected => l.payEventRejected,
+    ProofStatus.superseded => l.payEventResubmitted,
+  };
+}
+
+/// `/payments/proofs/:id` — target of the reviewer's notification: payment
+/// details, receipt view/download, approve / reject (open proofs only).
+class ProofDetailScreen extends ConsumerWidget {
+  const ProofDetailScreen({super.key, required this.proofId});
+
+  final String proofId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final proof = ref.watch(proofProvider(proofId));
+    return Scaffold(
+      appBar: AppBar(title: Text(l.payProofTitle)),
+      body: AsyncView<PaymentProof?>(
+        value: proof,
+        onRetry: () => ref.invalidate(proofProvider(proofId)),
+        data: (p) {
+          if (p == null) return EmptyState(icon: Icons.search_off_rounded, title: l.payProofNotFound);
+          final events = ref.watch(paymentEventsProvider(p.paymentId)).value ?? const <PaymentVerificationEvent>[];
+          return ConstrainedContent(
+            maxWidth: Breakpoints.readable,
+            child: ListView(
+              key: const Key('proof-detail'),
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: StatusPill(
+                    key: const Key('proof-status'),
+                    label: proofStatusLabel(context, p.status),
+                    color: p.status.isOpen
+                        ? AppColors.warning
+                        : (p.status == ProofStatus.approved ? AppColors.success : AppColors.danger),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                ProofReviewCard(proof: p),
+                if (events.isNotEmpty) ...[
+                  SectionHeader(l.payHistory),
+                  for (final e in events.take(10))
+                    Text(
+                      '${Fmt.of(context).dateTime(e.at)} · ${eventLabel(context, e.action)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ],
+            ),
+          );
+        },
       ),
     );
   }

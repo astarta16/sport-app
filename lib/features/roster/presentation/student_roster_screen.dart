@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di.dart';
-import '../../../app/routes.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
@@ -240,7 +239,7 @@ class _RosterRow extends ConsumerWidget {
     return AppCard(
       key: Key('student-${c.id}'),
       padding: const EdgeInsets.all(AppSpacing.sm),
-      onTap: () => context.push(Routes.progress(c.id)),
+      onTap: () => context.push('/student/${c.id}'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

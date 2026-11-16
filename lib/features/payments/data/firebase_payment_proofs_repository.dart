@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../../../core/errors/app_exception.dart';
 import '../../../core/firebase/bytes.dart';
 import '../../../core/firebase/firebase_utils.dart';
+import '../../media/domain/media_access.dart';
 import '../domain/payment_proof.dart';
 
 /// Receipt goes to private Storage `receipts/{uid}/{proofId}/{file}` (resumable
@@ -150,4 +151,23 @@ class FirebasePaymentProofsRepository implements PaymentProofsRepository {
               ..sort((a, b) => b.at.compareTo(a.at)),
       )
       .mapFirebaseErrors();
+
+  @override
+  Stream<PaymentProof?> watchProof(String proofId) => _col
+      .doc(proofId)
+      .snapshots()
+      .map((d) => d.exists ? PaymentProof.fromMap(d.id, d.data()!) : null)
+      .mapFirebaseErrors();
+
+  @override
+  Future<DownloadTicket> receiptDownload(String proofId) async {
+    final r = await callFunction(functions, 'getReceiptUrl', {'proofId': proofId, 'purpose': 'download'});
+    return DownloadTicket(
+      url: r['url'] as String?,
+      fileName: r['fileName'] as String? ?? 'receipt_$proofId',
+      mimeType: r['mimeType'] as String? ?? 'application/octet-stream',
+      sizeBytes: (r['sizeBytes'] as num?)?.toInt() ?? 0,
+      expiresAt: DateTime.tryParse(r['expiresAt'] as String? ?? ''),
+    );
+  }
 }

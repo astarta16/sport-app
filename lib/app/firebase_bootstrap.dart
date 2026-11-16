@@ -1,3 +1,4 @@
+import '../features/child_threads/data/firebase_child_threads_repository.dart';
 import '../features/contacts/data/firebase_contacts_repository.dart';
 import '../features/media/data/firebase_media_access_repository.dart';
 import '../features/media/data/http_media_downloader.dart';
@@ -73,7 +74,7 @@ Future<List<Override>> firebaseOverrides() async {
     paymentsRepositoryProvider.overrideWithValue(FirebasePaymentsRepository(auth, db)),
     locationRepositoryProvider.overrideWithValue(FirebaseLocationRepository(db)),
     mediaRepositoryProvider.overrideWithValue(FirebaseMediaRepository(storage)),
-    matchesRepositoryProvider.overrideWithValue(FirebaseMatchesRepository(auth, db)),
+    matchesRepositoryProvider.overrideWithValue(FirebaseMatchesRepository(auth, db, functions: functions)),
     attendanceRepositoryProvider.overrideWithValue(FirebaseAttendanceRepository(auth, db)),
     mediaPostsRepositoryProvider.overrideWithValue(FirebaseMediaPostsRepository(auth, db, storage)),
     moderationRepositoryProvider.overrideWithValue(FirebaseModerationRepository(functions)),
@@ -84,5 +85,6 @@ Future<List<Override>> firebaseOverrides() async {
     contactsRepositoryProvider.overrideWithValue(FirebaseContactsRepository(functions)),
     mediaAccessRepositoryProvider.overrideWithValue(FirebaseMediaAccessRepository(functions)),
     mediaDownloaderProvider.overrideWithValue(HttpMediaDownloader()),
+    childThreadsRepositoryProvider.overrideWithValue(FirebaseChildThreadsRepository(auth, db)),
   ];
 }

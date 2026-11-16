@@ -47,6 +47,8 @@ import 'settings.dart';
 import 'shell.dart';
 import '../features/contacts/presentation/contacts_screens.dart';
 import '../features/chat/presentation/receipt_details_screen.dart';
+import '../features/children/presentation/student_profile_screen.dart';
+import '../features/child_threads/presentation/child_thread_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -182,6 +184,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: Routes.paymentReview, builder: (_, _) => const PaymentReviewScreen()),
       GoRoute(
+        path: '/payments/proofs/:id',
+        builder: (_, s) => ProofDetailScreen(proofId: s.pathParameters['id']!),
+      ),
+      GoRoute(
         path: '/payments/:id/proof',
         builder: (_, s) => PaymentProofScreen(paymentId: s.pathParameters['id']!),
       ),
@@ -263,6 +269,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/group/:groupId',
         builder: (_, s) => GroupRosterScreen(groupId: s.pathParameters['groupId']!),
+      ),
+      GoRoute(
+        path: '/student/:childId',
+        builder: (_, s) => StudentProfileScreen(childId: s.pathParameters['childId']!),
+      ),
+      GoRoute(
+        path: '/student/:childId/coach/:coachId',
+        builder: (_, s) =>
+            ChildThreadScreen(childId: s.pathParameters['childId']!, coachId: s.pathParameters['coachId']!),
       ),
       GoRoute(
         path: '/group/:groupId/contacts',

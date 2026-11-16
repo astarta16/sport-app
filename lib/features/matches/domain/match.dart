@@ -28,7 +28,76 @@ enum MatchStatus {
   bool get isActive => this == scheduled || this == moved;
 }
 
-/// A game against another team (v1.1 §8). Results are out of scope.
+enum MatchOutcome {
+  win,
+  draw,
+  loss;
+
+  static MatchOutcome of(int our, int opponent) => our > opponent ? win : (our < opponent ? loss : draw);
+}
+
+/// v1.5 final score, always from the coached team's side. Written only by
+/// the server (`recordMatchResult`): trusted times, correction history.
+class MatchResult {
+  const MatchResult({
+    required this.ourScore,
+    required this.opponentScore,
+    required this.completedAt,
+    this.summary,
+    this.version = 1,
+    this.recordedBy,
+  });
+
+  final int ourScore;
+  final int opponentScore;
+  final String? summary;
+  final DateTime completedAt;
+  final int version;
+  final String? recordedBy;
+
+  /// Derived, never stored independently of the score.
+  MatchOutcome get outcome => MatchOutcome.of(ourScore, opponentScore);
+
+  bool get corrected => version > 1;
+
+  static MatchResult? fromMap(Object? raw) {
+    if (raw is! Map) return null;
+    final our = (raw['ourScore'] as num?)?.toInt();
+    final their = (raw['opponentScore'] as num?)?.toInt();
+    if (our == null || their == null) return null;
+    return MatchResult(
+      ourScore: our,
+      opponentScore: their,
+      summary: raw['summary'] as String?,
+      completedAt: readDateOrNull(raw['completedAt']) ?? DateTime.now(),
+      version: (raw['version'] as num?)?.toInt() ?? 1,
+      recordedBy: raw['recordedBy'] as String?,
+    );
+  }
+
+  static const maxScore = 999;
+  static const maxSummary = 1000;
+
+  /// Mirrors functions/src/lib/matchResults.ts validateResult.
+  static List<String> validate({
+    required int? our,
+    required int? their,
+    required SportMatch match,
+    required DateTime now,
+    String? summary,
+    DateTime? completedAt,
+  }) => [
+    if (match.status == MatchStatus.cancelled) 'resultCancelled',
+    if (match.startAt.isAfter(now)) 'resultNotStarted',
+    if (our == null || their == null || our < 0 || their < 0 || our > maxScore || their > maxScore) 'resultScore',
+    if ((summary ?? '').length > maxSummary) 'descriptionTooLong',
+    if (completedAt != null &&
+        (completedAt.isBefore(match.startAt) || completedAt.isAfter(now.add(const Duration(minutes: 5)))))
+      'resultCompletedAt',
+  ];
+}
+
+/// A game against another team (v1.1 §8); v1.5 adds the final [result].
 class SportMatch {
   const SportMatch({
     required this.id,
@@ -49,6 +118,7 @@ class SportMatch {
     this.cancelledBy,
     this.previousStartAt,
     this.updatedAt,
+    this.result,
   });
 
   final String id;
@@ -70,6 +140,9 @@ class SportMatch {
   final String createdBy;
   final DateTime? updatedAt;
 
+  /// v1.5 final score (server-written).
+  final MatchResult? result;
+
   DateTime get endAt => startAt.add(Duration(minutes: durationMin));
 
   SportMatch copyWith({
@@ -86,6 +159,7 @@ class SportMatch {
     String? cancelledBy,
     DateTime? previousStartAt,
     DateTime? updatedAt,
+    MatchResult? result,
   }) => SportMatch(
     id: id,
     groupId: groupId,
@@ -105,6 +179,7 @@ class SportMatch {
     previousStartAt: previousStartAt ?? this.previousStartAt,
     createdBy: createdBy,
     updatedAt: updatedAt ?? this.updatedAt,
+    result: result ?? this.result,
   );
 
   Map<String, dynamic> toMap() => {
@@ -146,6 +221,7 @@ class SportMatch {
     previousStartAt: readDateOrNull(m['previousStartAt']),
     createdBy: m['createdBy'] as String? ?? '',
     updatedAt: readDateOrNull(m['updatedAt']),
+    result: MatchResult.fromMap(m['result']),
   );
 }
 
@@ -188,4 +264,21 @@ abstract interface class MatchesRepository {
   /// Reason is mandatory (v1.1 §7).
   Future<void> cancel(String id, CancelReason reason);
   Future<void> markPlayed(String id);
+
+  /// v1.5: coach of the group records or corrects the final score. Parents
+  /// are notified on the first result; corrections are audited.
+  Future<void> recordResult(String id, {required int our, required int their, String? summary, DateTime? completedAt});
+
+  /// v1.5: correction history (coach of the group), newest first.
+  Future<List<MatchResultChange>> resultHistory(String id);
+}
+
+class MatchResultChange {
+  const MatchResultChange({required this.version, required this.by, required this.at, this.from, this.to});
+
+  final int version;
+  final String by;
+  final DateTime at;
+  final (int, int)? from;
+  final (int, int)? to;
 }

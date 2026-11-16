@@ -76,7 +76,9 @@ class DemoMediaDownloader implements MediaDownloader {
     required void Function(int received, int total) onProgress,
     required DownloadCancelToken cancel,
   }) async {
-    final data = (await rootBundle.load(ticket.assetPath!)).buffer.asUint8List();
+    final data = ticket.bytes != null
+        ? Uint8List.fromList(ticket.bytes!)
+        : (await rootBundle.load(ticket.assetPath!)).buffer.asUint8List();
     final total = data.length;
     const steps = 10;
     for (var i = 1; i <= steps; i++) {
