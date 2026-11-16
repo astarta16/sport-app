@@ -6461,4 +6461,19 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get a191FeatureWhat => 'რას აკეთებს';
+
+  @override
+  String get a191PrevWeek => 'წინა კვირა';
+
+  @override
+  String get a191NextWeek => 'შემდეგი კვირა';
+
+  @override
+  String get a191PrevDay => 'წინა დღე';
+
+  @override
+  String get a191NextDay => 'შემდეგი დღე';
+
+  @override
+  String get a191PickDate => 'თარიღზე გადასვლა';
 }

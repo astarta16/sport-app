@@ -1518,6 +1518,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
               ),
               IconButton(
                 key: const Key('schedule-prev'),
+                tooltip: _week ? l.a191PrevWeek : l.a191PrevDay,
                 onPressed: () => setState(() => _day = day.subtract(Duration(days: days))),
                 icon: const Icon(Icons.chevron_left_rounded),
               ),
@@ -1528,13 +1529,29 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
               ),
               IconButton(
                 key: const Key('schedule-next'),
+                tooltip: _week ? l.a191NextWeek : l.a191NextDay,
                 onPressed: () => setState(() => _day = day.add(Duration(days: days))),
                 icon: const Icon(Icons.chevron_right_rounded),
               ),
-              Text(
-                _week ? '${f.wdm(from, tz)} – ${f.wdm(to.subtract(const Duration(days: 1)), tz)}' : f.wd(from, tz),
-                key: const Key('schedule-range'),
-                style: Theme.of(context).textTheme.titleMedium,
+              // v1.9.1: the date is a date picker (jump to any day).
+              TextButton.icon(
+                key: const Key('schedule-pick-date'),
+                icon: const Icon(Icons.event_rounded),
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(day.year, day.month, day.day),
+                    firstDate: DateTime(day.year - 1),
+                    lastDate: DateTime(day.year + 2),
+                    helpText: l.a191PickDate,
+                  );
+                  if (picked != null) setState(() => _day = DateTime.utc(picked.year, picked.month, picked.day));
+                },
+                label: Text(
+                  _week ? '${f.wdm(from, tz)} – ${f.wdm(to.subtract(const Duration(days: 1)), tz)}' : f.wd(from, tz),
+                  key: const Key('schedule-range'),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
               DropdownButton<String?>(
                 key: const Key('schedule-coach-filter'),
@@ -1638,6 +1655,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     final dayEnd = dayStart.add(const Duration(days: 1));
     final top = dayStart.add(const Duration(hours: _firstHour));
     final inDay = bookings.where((b) => b.startAt.isBefore(dayEnd) && b.endAt.isAfter(dayStart)).toList();
+    final lanes = bookingLanes(inDay);
     final busyMin = inDay.fold<int>(0, (a, b) => a + b.duration.inMinutes);
     double y(DateTime t) => t.difference(top).inMinutes / 60 * _hourHeight;
     final now = ref.watch(clockProvider)();
@@ -1661,80 +1679,84 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
         ),
         SizedBox(
           height: (_lastHour - _firstHour) * _hourHeight,
-          child: Stack(
-            children: [
-              // Free 30-minute slots: tap to create, drop to move.
-              for (var s = 0; s < (_lastHour - _firstHour) * 2; s++)
-                Positioned(
-                  top: s * _hourHeight / 2,
-                  left: 0,
-                  right: 0,
-                  height: _hourHeight / 2,
-                  child: DragTarget<Booking>(
-                    onAcceptWithDetails: (d) =>
-                        _move(d.data, top.add(Duration(minutes: s * 30)), room?.id ?? d.data.roomId),
-                    builder: (context, cand, _) => InkWell(
-                      key: Key('slot-${room?.id ?? 'all'}-${dayStart.toIso8601String()}-$s'),
-                      onTap: () => showBookingDialog(
-                        context,
-                        ref,
-                        orgId: orgId,
-                        roomId: room?.id ?? rooms.first.id,
-                        start: top.add(Duration(minutes: s * 30)),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: cand.isNotEmpty ? AppColors.blue.withValues(alpha: .15) : null,
-                          border: Border(
-                            top: BorderSide(
-                              color: Theme.of(context).dividerColor.withValues(alpha: s.isEven ? .6 : .25),
+          // v1.9.1: LayoutBuilder gives the column width so overlapping
+          // bookings can share it side by side (never on top of each other).
+          child: LayoutBuilder(
+            builder: (context, box) => Stack(
+              children: [
+                // Free 30-minute slots: tap to create, drop to move.
+                for (var s = 0; s < (_lastHour - _firstHour) * 2; s++)
+                  Positioned(
+                    top: s * _hourHeight / 2,
+                    left: 0,
+                    right: 0,
+                    height: _hourHeight / 2,
+                    child: DragTarget<Booking>(
+                      onAcceptWithDetails: (d) =>
+                          _move(d.data, top.add(Duration(minutes: s * 30)), room?.id ?? d.data.roomId),
+                      builder: (context, cand, _) => InkWell(
+                        key: Key('slot-${room?.id ?? 'all'}-${dayStart.toIso8601String()}-$s'),
+                        onTap: () => showBookingDialog(
+                          context,
+                          ref,
+                          orgId: orgId,
+                          roomId: room?.id ?? rooms.first.id,
+                          start: top.add(Duration(minutes: s * 30)),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: cand.isNotEmpty ? AppColors.blue.withValues(alpha: .15) : null,
+                            border: Border(
+                              top: BorderSide(
+                                color: Theme.of(context).dividerColor.withValues(alpha: s.isEven ? .6 : .25),
+                              ),
+                              left: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: .4)),
                             ),
-                            left: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: .4)),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              // v1.9: current-time line ("now"), beneath bookings.
-              if (!now.isBefore(top) && now.isBefore(top.add(const Duration(hours: _lastHour - _firstHour))))
-                Positioned(
-                  top: y(now),
-                  left: 0,
-                  right: 0,
-                  height: 2,
-                  child: IgnorePointer(
-                    child: Container(key: const Key('schedule-now-line'), color: AppColors.danger),
+                // v1.9: current-time line ("now"), beneath bookings.
+                if (!now.isBefore(top) && now.isBefore(top.add(const Duration(hours: _lastHour - _firstHour))))
+                  Positioned(
+                    top: y(now),
+                    left: 0,
+                    right: 0,
+                    height: 2,
+                    child: IgnorePointer(
+                      child: Container(key: const Key('schedule-now-line'), color: AppColors.danger),
+                    ),
                   ),
-                ),
-              for (final b in inDay)
-                Positioned(
-                  top: y(b.startAt).clamp(0, (_lastHour - _firstHour) * _hourHeight),
-                  left: 2,
-                  right: 2,
-                  height: (b.duration.inMinutes / 60 * _hourHeight - 2).clamp(14, 2000),
-                  child: Draggable<Booking>(
-                    data: b,
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: SizedBox(
-                        width: 140,
-                        height: 40,
-                        child: _BookingChip(booking: b, rooms: rooms, showRoom: true, tz: tz),
+                for (final b in inDay)
+                  Positioned(
+                    top: y(b.startAt).clamp(0, (_lastHour - _firstHour) * _hourHeight),
+                    left: 2 + lanes[b.id]!.$1 * (box.maxWidth - 4) / lanes[b.id]!.$2,
+                    width: (box.maxWidth - 4) / lanes[b.id]!.$2 - 2,
+                    height: (b.duration.inMinutes / 60 * _hourHeight - 2).clamp(14, 2000),
+                    child: Draggable<Booking>(
+                      data: b,
+                      feedback: Material(
+                        color: Colors.transparent,
+                        child: SizedBox(
+                          width: 140,
+                          height: 40,
+                          child: _BookingChip(booking: b, rooms: rooms, showRoom: true, tz: tz),
+                        ),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: .3,
+                        child: _BookingChip(booking: b, rooms: rooms, showRoom: _week, tz: tz),
+                      ),
+                      child: InkWell(
+                        key: Key('booking-${b.id}'),
+                        onTap: () => showBookingDialog(context, ref, orgId: orgId, existing: b),
+                        child: _BookingChip(booking: b, rooms: rooms, showRoom: _week, tz: tz),
                       ),
                     ),
-                    childWhenDragging: Opacity(
-                      opacity: .3,
-                      child: _BookingChip(booking: b, rooms: rooms, showRoom: _week, tz: tz),
-                    ),
-                    child: InkWell(
-                      key: Key('booking-${b.id}'),
-                      onTap: () => showBookingDialog(context, ref, orgId: orgId, existing: b),
-                      child: _BookingChip(booking: b, rooms: rooms, showRoom: _week, tz: tz),
-                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -2638,4 +2660,39 @@ class _OrgReportsPageState extends ConsumerState<OrgReportsPage> {
     }
     return table(s.data!);
   }
+}
+
+/// v1.9.1: (lane, lanes) per booking so bookings that overlap in time are
+/// drawn side by side. Bookings are grouped into clusters of transitively
+/// overlapping intervals; each gets the first free lane of its cluster.
+Map<String, (int, int)> bookingLanes(List<Booking> list) {
+  final sorted = [...list]..sort((a, b) => a.startAt.compareTo(b.startAt));
+  final out = <String, (int, int)>{};
+  var cluster = <Booking>[];
+  var laneEnds = <DateTime>[];
+  var clusterEnd = DateTime.fromMillisecondsSinceEpoch(0);
+  final laneOf = <String, int>{};
+  void flush() {
+    for (final b in cluster) {
+      out[b.id] = (laneOf[b.id]!, laneEnds.length);
+    }
+    cluster = [];
+    laneEnds = [];
+  }
+
+  for (final b in sorted) {
+    if (cluster.isNotEmpty && !b.startAt.isBefore(clusterEnd)) flush();
+    var lane = laneEnds.indexWhere((end) => !b.startAt.isBefore(end));
+    if (lane < 0) {
+      laneEnds.add(b.endAt);
+      lane = laneEnds.length - 1;
+    } else {
+      laneEnds[lane] = b.endAt;
+    }
+    laneOf[b.id] = lane;
+    cluster.add(b);
+    if (b.endAt.isAfter(clusterEnd)) clusterEnd = b.endAt;
+  }
+  flush();
+  return out;
 }

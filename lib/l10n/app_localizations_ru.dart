@@ -6538,4 +6538,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get a191FeatureWhat => 'Что делает';
+
+  @override
+  String get a191PrevWeek => 'Предыдущая неделя';
+
+  @override
+  String get a191NextWeek => 'Следующая неделя';
+
+  @override
+  String get a191PrevDay => 'Предыдущий день';
+
+  @override
+  String get a191NextDay => 'Следующий день';
+
+  @override
+  String get a191PickDate => 'Перейти к дате';
 }

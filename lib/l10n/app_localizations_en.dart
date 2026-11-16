@@ -6510,4 +6510,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a191FeatureWhat => 'What it does';
+
+  @override
+  String get a191PrevWeek => 'Previous week';
+
+  @override
+  String get a191NextWeek => 'Next week';
+
+  @override
+  String get a191PrevDay => 'Previous day';
+
+  @override
+  String get a191NextDay => 'Next day';
+
+  @override
+  String get a191PickDate => 'Go to date';
 }

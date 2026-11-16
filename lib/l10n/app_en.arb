@@ -1923,5 +1923,10 @@
   "featDesc_facilities": "Rooms and halls of the organization with capacity and hours.",
   "featDesc_reports": "Attendance and activity reports for administrators.",
   "featDesc_dataExports": "Coaches and admins export rosters and attendance.",
-  "a191FeatureWhat": "What it does"
+  "a191FeatureWhat": "What it does",
+  "a191PrevWeek": "Previous week",
+  "a191NextWeek": "Next week",
+  "a191PrevDay": "Previous day",
+  "a191NextDay": "Next day",
+  "a191PickDate": "Go to date"
 }

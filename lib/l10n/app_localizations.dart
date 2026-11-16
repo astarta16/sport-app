@@ -11643,6 +11643,36 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'რას აკეთებს'**
   String get a191FeatureWhat;
+
+  /// No description provided for @a191PrevWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'წინა კვირა'**
+  String get a191PrevWeek;
+
+  /// No description provided for @a191NextWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი კვირა'**
+  String get a191NextWeek;
+
+  /// No description provided for @a191PrevDay.
+  ///
+  /// In ka, this message translates to:
+  /// **'წინა დღე'**
+  String get a191PrevDay;
+
+  /// No description provided for @a191NextDay.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი დღე'**
+  String get a191NextDay;
+
+  /// No description provided for @a191PickDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'თარიღზე გადასვლა'**
+  String get a191PickDate;
 }
 
 class _AppLocalizationsDelegate
