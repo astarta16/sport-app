@@ -6398,4 +6398,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get a191LimitUploadMb => 'Макс. файл (МБ)';
+
+  @override
+  String get a191NoCoachYet => 'У группы пока нет тренера — связаться не с кем.';
 }

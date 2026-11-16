@@ -1932,5 +1932,6 @@
   "a191SortBy": "Sort by {column}",
   "a191SortAsc": "ascending",
   "a191SortDesc": "descending",
-  "a191LimitUploadMb": "Largest upload (MB)"
+  "a191LimitUploadMb": "Largest upload (MB)",
+  "a191NoCoachYet": "This group has no coach yet, so there is nobody to contact."
 }

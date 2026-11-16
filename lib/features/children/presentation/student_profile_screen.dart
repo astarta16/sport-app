@@ -279,7 +279,11 @@ class _ContactActions extends ConsumerWidget {
       await context.push('/student/${child.id}/coach/${me.id}');
       return;
     }
-    if (coachIds.isEmpty) return;
+    if (coachIds.isEmpty) {
+      // v1.9.1: say why instead of silently doing nothing.
+      showAppSnack(context, context.l10n.a191NoCoachYet);
+      return;
+    }
     var coachId = coachIds.first;
     if (coachIds.length > 1) {
       final picked = await showModalBottomSheet<String>(

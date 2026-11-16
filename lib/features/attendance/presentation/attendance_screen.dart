@@ -117,6 +117,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
               ),
         body: AsyncView<ScheduledEvent?>(
           value: training,
+          onRetry: () => ref.invalidate(scheduledEventProvider(widget.trainingId)),
           data: (t) {
             if (t == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
             return _body(context, t);
@@ -136,6 +137,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
     final stats = ref.watch(groupStatsProvider(training.groupId)).value;
     return AsyncView<List<Child>>(
       value: members,
+      onRetry: () => ref.invalidate(groupMembersProvider(training.groupId)),
       data: (kids) {
         int count(AttendanceStatus s) => kids.where((c) => _effective(c.id, recs) == s).length;
         final unmarked = kids.where((c) => _effective(c.id, recs) == null).length;

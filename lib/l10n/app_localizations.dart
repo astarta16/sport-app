@@ -11690,6 +11690,12 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'მაქს. ფაილი (MB)'**
   String get a191LimitUploadMb;
+
+  /// No description provided for @a191NoCoachYet.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფს ჯერ მწვრთნელი არ ჰყავს — დასაკავშირებელი არავინაა.'**
+  String get a191NoCoachYet;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

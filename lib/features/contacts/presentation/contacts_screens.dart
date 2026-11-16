@@ -101,7 +101,8 @@ class GuardianContactsSection extends ConsumerWidget {
     final contacts = ref.watch(groupContactsProvider(groupId));
     return contacts.when(
       loading: () => const Padding(padding: EdgeInsets.all(AppSpacing.sm), child: LinearProgressIndicator()),
-      error: (e, _) => Text(errorText(context, e), style: Theme.of(context).textTheme.bodySmall),
+      error: (e, _) =>
+          ErrorView(error: e, compact: true, onRetry: () => ref.invalidate(groupContactsProvider(groupId))),
       data: (all) {
         final mine = all.where((c) => !c.isCoach && c.children.any((k) => k.id == childId)).toList();
         if (mine.isEmpty) return Text(context.l10n.contactsEmpty, style: Theme.of(context).textTheme.bodySmall);

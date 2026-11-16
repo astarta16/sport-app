@@ -6312,4 +6312,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get a191LimitUploadMb => 'მაქს. ფაილი (MB)';
+
+  @override
+  String get a191NoCoachYet => 'ჯგუფს ჯერ მწვრთნელი არ ჰყავს — დასაკავშირებელი არავინაა.';
 }

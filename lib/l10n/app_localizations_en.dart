@@ -6343,4 +6343,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a191LimitUploadMb => 'Largest upload (MB)';
+
+  @override
+  String get a191NoCoachYet => 'This group has no coach yet, so there is nobody to contact.';
 }

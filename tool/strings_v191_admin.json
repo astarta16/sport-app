@@ -526,5 +526,10 @@
   "en": "Largest upload (MB)",
   "ka": "მაქს. ფაილი (MB)",
   "ru": "Макс. файл (МБ)"
+ },
+ "a191NoCoachYet": {
+  "en": "This group has no coach yet, so there is nobody to contact.",
+  "ka": "ჯგუფს ჯერ მწვრთნელი არ ჰყავს — დასაკავშირებელი არავინაა.",
+  "ru": "У группы пока нет тренера — связаться не с кем."
  }
 }
