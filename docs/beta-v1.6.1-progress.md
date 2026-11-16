@@ -159,6 +159,7 @@ Everything runs locally in demo mode. Nothing was pushed or deployed, and no Fir
   - a wrong pick (red banner, "Best choice" and "Your choice" marks, coach's tip);
   - a right pick (green banner, score 150);
   - the success screen (1 star at 67%, score 300, "coach's challenge completed", "level 2 unlocked", confetti, Next level / Play again / Back).
+- After the fixes, a rebuilt app was checked again: all option letters are readable on top of the players, the status-bar icons are dark, and every option fits on screen without scrolling.
 - Sound and haptics cannot be judged on the simulator; checking them on a real phone is still open.
 
 ## Build
