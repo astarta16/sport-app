@@ -2,6 +2,7 @@ import { logger } from 'firebase-functions';
 import { onDocumentDeleted, onDocumentUpdated, onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { FieldValue } from 'firebase-admin/firestore';
 import { db } from '../admin';
+import { hasRoom } from '../lib/groupAdmin';
 import { groupFrom, loadChildren } from '../convert';
 import { generateInviteCode } from '../lib/inviteCode';
 import { computeChildCoachIds, computeGroupParentIds, diffIds, sameSet } from '../lib/membership';
@@ -171,6 +172,11 @@ export const onMembershipRequestUpdated = onDocumentUpdated('membershipRequests/
   if (!valid) {
     logger.warn('membership approval rejected by server check', { requestId: event.params.requestId });
     await event.data!.after.ref.update({ status: 'rejected' });
+    return;
+  }
+  // v1.9.1: optional group capacity — a full group rejects with a reason.
+  if (!hasRoom(groupSnap.get('capacity'), groupSnap.get('memberChildIds') ?? [], after.childId)) {
+    await event.data!.after.ref.update({ status: 'rejected', reason: 'groupFull' });
     return;
   }
   await groupSnap.ref.update({ memberChildIds: FieldValue.arrayUnion(after.childId) });

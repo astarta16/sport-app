@@ -3,6 +3,7 @@
 import { logger } from 'firebase-functions';
 import { CallableRequest, HttpsError, onCall } from 'firebase-functions/v2/https';
 import { FieldValue, GeoPoint, Timestamp } from 'firebase-admin/firestore';
+import { parseCapacity } from '../lib/groupAdmin';
 import { auth, db } from '../admin';
 import { actorRoleOf, writeAudit } from '../audit';
 import { loadUser } from '../convert';
@@ -280,6 +281,37 @@ export const upsertSport = onCall(async (request) => {
  *   Audited separately as group.paymentManagers {from, to}.
  * - approved coach of the group: name and status only.
  */
+/**
+ * v1.9.1 adminGroupRoster {groupId} -> {children: [{childId, firstName, lastInitial, birthYear}]}
+ * Organization admins of the group's club (or the platform) only. Minimal
+ * fields so an admin can manage membership; no contacts, health data or
+ * other groups. Child records stay unreadable for admins in the rules.
+ */
+export const adminGroupRoster = onCall(async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'sign in required');
+  const scope = adminScopeFromClaims(request.auth.token as Record<string, unknown>);
+  const groupId = idArg((request.data ?? {}).groupId, 'groupId');
+  const g = await db.doc(`groups/${groupId}`).get();
+  if (!g.exists) throw new HttpsError('not-found', 'group not found');
+  if (!canActOnClub(scope, g.get('clubId'))) throw new HttpsError('permission-denied', 'organization admins only');
+  const ids: string[] = g.get('memberChildIds') ?? [];
+  const snaps = ids.length ? await db.getAll(...ids.map((c) => db.doc(`children/${c}`))) : [];
+  const children = snaps
+    .filter((s) => s.exists)
+    .map((s) => {
+      const d = s.data()!;
+      const birth = d.birthDate?.toDate?.() as Date | undefined;
+      return {
+        childId: s.id,
+        firstName: String(d.firstName ?? ''),
+        lastInitial: String(d.lastName ?? '').slice(0, 1),
+        birthYear: birth ? birth.getUTCFullYear() : 0,
+      };
+    })
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+  return { children };
+});
+
 export const updateGroup = onCall(async (request) => {
   if (!request.auth) throw new HttpsError('unauthenticated', 'sign in required');
   const uid = request.auth.uid;
@@ -303,6 +335,29 @@ export const updateGroup = onCall(async (request) => {
   if (d.status !== undefined) {
     if (d.status !== 'active' && d.status !== 'archived') throw new HttpsError('invalid-argument', 'status');
     patch.status = d.status;
+  }
+  // v1.9.1: organization administrators manage the group's details and
+  // members (removal only; children join through guardian consent).
+  if (d.ageMin !== undefined || d.ageMax !== undefined) {
+    const ageMin = Number(d.ageMin ?? g.get('ageMin')), ageMax = Number(d.ageMax ?? g.get('ageMax'));
+    if (!Number.isInteger(ageMin) || !Number.isInteger(ageMax) || ageMin < 0 || ageMax > 30 || ageMin > ageMax) {
+      throw new HttpsError('invalid-argument', 'age range');
+    }
+    patch.ageMin = ageMin;
+    patch.ageMax = ageMax;
+  }
+  if (d.scheduleNote !== undefined) patch.scheduleNote = d.scheduleNote == null ? null : String(d.scheduleNote).slice(0, 500);
+  if (d.capacity !== undefined) {
+    if (!isAdminOfClub) throw new HttpsError('permission-denied', 'only organization admins change capacity');
+    const cap = parseCapacity(d.capacity);
+    if (cap === 'invalid') throw new HttpsError('invalid-argument', 'capacity');
+    if (cap !== null && (g.get('memberChildIds') ?? []).length > cap) throw new HttpsError('failed-precondition', 'capacityBelowMembers');
+    patch.capacity = cap === null ? FieldValue.delete() : cap;
+  }
+  if (d.removeChildIds !== undefined) {
+    if (!isAdminOfClub) throw new HttpsError('permission-denied', 'only organization admins remove members here');
+    const ids = strList(d.removeChildIds, 'removeChildIds', 100);
+    if (ids.length) patch.memberChildIds = FieldValue.arrayRemove(...ids);
   }
   if (d.coachIds !== undefined) {
     if (!isAdminOfClub) throw new HttpsError('permission-denied', 'only admins change coaches');

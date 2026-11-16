@@ -1,0 +1,106 @@
+{
+ "s191CalendarWhose": {
+  "en": "Whose schedule",
+  "ka": "ვისი განრიგი",
+  "ru": "Чьё расписание"
+ },
+ "s191CalendarLegendTraining": {
+  "en": "Training",
+  "ka": "ვარჯიში",
+  "ru": "Тренировка"
+ },
+ "s191CalendarLegendMatch": {
+  "en": "Match",
+  "ka": "მატჩი",
+  "ru": "Матч"
+ },
+ "s191CalendarMatchesError": {
+  "en": "Matches could not be loaded.",
+  "ka": "მატჩები ვერ ჩაიტვირთა.",
+  "ru": "Не удалось загрузить матчи."
+ },
+ "s191GroupClubHelper": {
+  "en": "Only clubs where you coach",
+  "ka": "მხოლოდ კლუბები, სადაც მწვრთნელი ხართ",
+  "ru": "Только клубы, где вы тренируете"
+ },
+ "s191GroupSportHelper": {
+  "en": "Only sports offered by the chosen club",
+  "ka": "მხოლოდ არჩეული კლუბის სახეობები",
+  "ru": "Только виды спорта выбранного клуба"
+ },
+ "s191GroupNameHint": {
+  "en": "For example: U10 beginners",
+  "ka": "მაგალითად: დამწყებები, 10 წლამდე",
+  "ru": "Например: начинающие до 10 лет"
+ },
+ "s191RosterEmptyTitle": {
+  "en": "No children in this group yet",
+  "ka": "ამ ჯგუფში ჯერ ბავშვები არ არიან",
+  "ru": "В этой группе пока нет детей"
+ },
+ "s191RosterEmptyBody": {
+  "en": "Share the group code with parents or add a child by name.",
+  "ka": "გაუზიარეთ ჯგუფის კოდი მშობლებს ან დაამატეთ ბავშვი სახელით.",
+  "ru": "Отправьте код группы родителям или добавьте ребёнка по имени."
+ },
+ "s191RosterSearchHint": {
+  "en": "Search by child's name",
+  "ka": "ბავშვის სახელით ძიება",
+  "ru": "Поиск по имени ребёнка"
+ },
+ "s191RosterNoMatches": {
+  "en": "No child named “{query}” in this group.",
+  "ka": "ამ ჯგუფში „{query}“ ვერ მოიძებნა.",
+  "ru": "В группе нет ребёнка «{query}».",
+  "ph": {
+   "query": "String"
+  }
+ },
+ "s191RosterMoreActions": {
+  "en": "More actions for {name}",
+  "ka": "სხვა მოქმედებები: {name}",
+  "ru": "Другие действия: {name}",
+  "ph": {
+   "name": "String"
+  }
+ },
+ "s191ChildDetails": {
+  "en": "{name}'s details",
+  "ka": "{name} — მონაცემები",
+  "ru": "Данные: {name}",
+  "ph": {
+   "name": "String"
+  }
+ },
+ "s191ChildChipHint": {
+  "en": "Tap to choose, long-press for details",
+  "ka": "შეეხეთ ასარჩევად, ხანგრძლივად დააჭირეთ მონაცემებისთვის",
+  "ru": "Нажмите, чтобы выбрать; удерживайте, чтобы открыть данные"
+ },
+ "s191RsvpAllTitle": {
+  "en": "Same answer for all children",
+  "ka": "ერთი პასუხი ყველა ბავშვისთვის",
+  "ru": "Один ответ за всех детей"
+ },
+ "s191RsvpAllSaved": {
+  "en": "Answer saved for all children",
+  "ka": "პასუხი შენახულია ყველა ბავშვისთვის",
+  "ru": "Ответ сохранён для всех детей"
+ },
+ "s191JoinAlreadyMember": {
+  "en": "Already in this group",
+  "ka": "უკვე ამ ჯგუფშია",
+  "ru": "Уже в этой группе"
+ },
+ "s191JoinAgeOutside": {
+  "en": "Age {age}; the group is for ages {min}–{max}",
+  "ka": "ასაკი {age}; ჯგუფი {min}–{max} წლისთვისაა",
+  "ru": "Возраст {age}; группа для возраста {min}–{max}",
+  "ph": {
+   "age": "int",
+   "min": "int",
+   "max": "int"
+  }
+ }
+}

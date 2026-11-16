@@ -317,6 +317,26 @@ abstract interface class AdminRepository {
   Stream<List<GroupOverview>> watchGroups();
   Future<void> archiveGroup(String groupId, {required bool archived});
 
+  /// v1.9.1: organization admin edits a group of their organization.
+  Future<void> updateGroupDetails(
+    String groupId, {
+    String? name,
+    List<String>? coachIds,
+    int? ageMin,
+    int? ageMax,
+    int? capacity,
+    bool clearCapacity = false,
+    String? scheduleNote,
+  });
+
+  /// v1.9.1: minimal roster for an organization admin of the group's club —
+  /// first name, last-name initial and birth year only (data minimisation;
+  /// admins still never read child records directly).
+  Future<List<AdminRosterEntry>> groupRoster(String groupId);
+
+  /// Removes a child from a group (organization admin). History is kept.
+  Future<void> removeGroupMember(String groupId, String childId);
+
   Stream<List<ContentReport>> watchReports();
   Future<void> moderate(String reportId, ModerationDecision decision);
 
@@ -327,4 +347,28 @@ abstract interface class AdminRepository {
 
   /// Platform admins only.
   Future<void> setAdminRole(String uid, AdminRole? role, {List<String> clubIds});
+}
+
+/// One row of [AdminRepository.groupRoster].
+class AdminRosterEntry {
+  const AdminRosterEntry({
+    required this.childId,
+    required this.firstName,
+    required this.lastInitial,
+    required this.birthYear,
+  });
+
+  factory AdminRosterEntry.fromMap(Map<String, dynamic> m) => AdminRosterEntry(
+    childId: m['childId'] as String? ?? '',
+    firstName: m['firstName'] as String? ?? '',
+    lastInitial: m['lastInitial'] as String? ?? '',
+    birthYear: (m['birthYear'] as num?)?.toInt() ?? 0,
+  );
+
+  final String childId;
+  final String firstName;
+  final String lastInitial;
+  final int birthYear;
+
+  String get displayName => lastInitial.isEmpty ? firstName : '$firstName $lastInitial.';
 }

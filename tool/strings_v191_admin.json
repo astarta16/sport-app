@@ -1,0 +1,265 @@
+{
+ "a191ErrCoachNotInOrg": {
+  "en": "Choose coaches who belong to this organization.",
+  "ka": "აირჩიეთ ამ ორგანიზაციის მწვრთნელები.",
+  "ru": "Выберите тренеров этой организации."
+ },
+ "a191ErrGroupFull": {
+  "en": "This group is full. Increase its capacity or choose another group.",
+  "ka": "ჯგუფი სავსეა. გაზარდეთ ადგილების რაოდენობა ან აირჩიეთ სხვა ჯგუფი.",
+  "ru": "Группа заполнена. Увеличьте вместимость или выберите другую группу."
+ },
+ "a191ErrGroupCapacity": {
+  "en": "Capacity must be a number from 1 to 500.",
+  "ka": "ადგილების რაოდენობა უნდა იყოს 1-დან 500-მდე.",
+  "ru": "Вместимость — число от 1 до 500."
+ },
+ "a191ErrCapacityBelowMembers": {
+  "en": "The group already has more children than this capacity.",
+  "ka": "ჯგუფში უკვე მეტი ბავშვია, ვიდრე ეს რაოდენობა.",
+  "ru": "В группе уже больше детей, чем эта вместимость."
+ },
+ "a191ErrDuplicateName": {
+  "en": "Something with this name already exists.",
+  "ka": "ამ სახელით უკვე არსებობს ჩანაწერი.",
+  "ru": "Запись с таким названием уже существует."
+ },
+ "a191ChooseSport": {
+  "en": "Choose a sport or program",
+  "ka": "აირჩიეთ სპორტი ან პროგრამა",
+  "ru": "Выберите вид спорта или программу"
+ },
+ "a191ChooseCoach": {
+  "en": "Choose at least one coach",
+  "ka": "აირჩიეთ მინიმუმ ერთი მწვრთნელი",
+  "ru": "Выберите хотя бы одного тренера"
+ },
+ "a191GroupCreated": {
+  "en": "Group “{name}” created. Next: invite guardians from Members.",
+  "ka": "ჯგუფი „{name}“ შეიქმნა. შემდეგი: მოიწვიეთ მშობლები „წევრებიდან“.",
+  "ru": "Группа «{name}» создана. Далее: пригласите родителей в разделе «Участники».",
+  "ph": {
+   "name": "String"
+  }
+ },
+ "a191StepSport": {
+  "en": "Sport",
+  "ka": "სპორტი",
+  "ru": "Спорт"
+ },
+ "a191StepName": {
+  "en": "Name & ages",
+  "ka": "სახელი და ასაკი",
+  "ru": "Название и возраст"
+ },
+ "a191StepCoach": {
+  "en": "Coach",
+  "ka": "მწვრთნელი",
+  "ru": "Тренер"
+ },
+ "a191StepCapacity": {
+  "en": "Places",
+  "ka": "ადგილები",
+  "ru": "Места"
+ },
+ "a191FromProgram": {
+  "en": "Program (optional)",
+  "ka": "პროგრამა (არასავალდებულო)",
+  "ru": "Программа (необязательно)"
+ },
+ "a191FromProgramHint": {
+  "en": "Fills sport, ages, coaches and places from the program",
+  "ka": "სპორტს, ასაკს, მწვრთნელებს და ადგილებს პროგრამიდან შეავსებს",
+  "ru": "Заполнит спорт, возраст, тренеров и места из программы"
+ },
+ "a191GroupName": {
+  "en": "Group name",
+  "ka": "ჯგუფის სახელი",
+  "ru": "Название группы"
+ },
+ "a191GroupNameHint": {
+  "en": "e.g. Volleyball U-12",
+  "ka": "მაგ. ფრენბურთი U-12",
+  "ru": "напр. Волейбол U-12"
+ },
+ "a191Ages": {
+  "en": "Ages {from}–{to}",
+  "ka": "ასაკი {from}–{to}",
+  "ru": "Возраст {from}–{to}",
+  "ph": {
+   "from": "int",
+   "to": "int"
+  }
+ },
+ "a191NoCoachesYet": {
+  "en": "This organization has no coaches yet. Add a coach in Organization settings first.",
+  "ka": "ორგანიზაციას ჯერ მწვრთნელი არ ჰყავს. ჯერ დაამატეთ მწვრთნელი ორგანიზაციის პარამეტრებში.",
+  "ru": "В организации пока нет тренеров. Сначала добавьте тренера в настройках организации."
+ },
+ "a191Coaches": {
+  "en": "Coaches",
+  "ka": "მწვრთნელები",
+  "ru": "Тренеры"
+ },
+ "a191Capacity": {
+  "en": "Places (optional)",
+  "ka": "ადგილები (არასავალდებულო)",
+  "ru": "Места (необязательно)"
+ },
+ "a191CapacityHint": {
+  "en": "Maximum number of children. Leave empty for no limit.",
+  "ka": "ბავშვების მაქსიმალური რაოდენობა. ცარიელი = შეზღუდვის გარეშე.",
+  "ru": "Максимум детей. Пусто — без ограничения."
+ },
+ "a191ScheduleNote": {
+  "en": "Schedule note (optional)",
+  "ka": "განრიგის შენიშვნა (არასავალდებულო)",
+  "ru": "Заметка о расписании (необязательно)"
+ },
+ "a191ScheduleNoteHint": {
+  "en": "e.g. Mon, Wed 16:00 · Hall A",
+  "ka": "მაგ. ორშ, ოთხ 16:00 · დარბაზი A",
+  "ru": "напр. Пн, Ср 16:00 · Зал A"
+ },
+ "a191RoomLater": {
+  "en": "Rooms and recurring sessions are booked in Room schedule after the group exists.",
+  "ka": "ოთახები და განმეორებადი ვარჯიშები იჯავშნება „ოთახების განრიგში“ ჯგუფის შექმნის შემდეგ.",
+  "ru": "Помещения и регулярные занятия бронируются в «Расписании помещений» после создания группы."
+ },
+ "a191NoLimit": {
+  "en": "No limit",
+  "ka": "შეზღუდვის გარეშე",
+  "ru": "Без ограничения"
+ },
+ "a191AfterCreate": {
+  "en": "After creating: invite guardians from Members and book sessions in Room schedule.",
+  "ka": "შექმნის შემდეგ: მოიწვიეთ მშობლები „წევრებიდან“ და დაჯავშნეთ ვარჯიშები „ოთახების განრიგში“.",
+  "ru": "После создания: пригласите родителей в «Участниках» и забронируйте занятия в «Расписании помещений»."
+ },
+ "a191CreateGroup": {
+  "en": "Create group",
+  "ka": "ჯგუფის შექმნა",
+  "ru": "Создать группу"
+ },
+ "a191GroupSaved": {
+  "en": "Group saved",
+  "ka": "ჯგუფი შენახულია",
+  "ru": "Группа сохранена"
+ },
+ "a191EditGroup": {
+  "en": "Edit group",
+  "ka": "ჯგუფის რედაქტირება",
+  "ru": "Изменить группу"
+ },
+ "a191InviteFieldsRequired": {
+  "en": "Enter the child's first name, birth date and the guardian's phone.",
+  "ka": "შეიყვანეთ ბავშვის სახელი, დაბადების თარიღი და მშობლის ტელეფონი.",
+  "ru": "Укажите имя ребёнка, дату рождения и телефон родителя."
+ },
+ "a191InviteSent": {
+  "en": "Invitation sent. The child joins when the guardian accepts.",
+  "ka": "მოწვევა გაიგზავნა. ბავშვი დაემატება, როცა მშობელი დათანხმდება.",
+  "ru": "Приглашение отправлено. Ребёнок вступит, когда родитель согласится."
+ },
+ "a191MembersCount": {
+  "en": "{count, plural, =0{No children yet} =1{1 child} other{{count} children}}",
+  "ka": "{count, plural, =0{ბავშვები ჯერ არ არის} other{{count} ბავშვი}}",
+  "ru": "{count, plural, =0{Детей пока нет} one{{count} ребёнок} few{{count} ребёнка} other{{count} детей}}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "a191MembersOfCapacity": {
+  "en": "{count} of {capacity} places taken",
+  "ka": "დაკავებულია {count} ადგილი {capacity}-დან",
+  "ru": "Занято {count} из {capacity} мест",
+  "ph": {
+   "count": "int",
+   "capacity": "int"
+  }
+ },
+ "a191RosterPrivacy": {
+  "en": "Only first name, last-name initial and birth year are shown to administrators.",
+  "ka": "ადმინისტრატორები ხედავენ მხოლოდ სახელს, გვარის პირველ ასოს და დაბადების წელს.",
+  "ru": "Администраторам видны только имя, первая буква фамилии и год рождения."
+ },
+ "a191NoMembersYet": {
+  "en": "No children in this group yet. Invite guardians below.",
+  "ka": "ჯგუფში ბავშვები ჯერ არ არის. მოიწვიეთ მშობლები ქვემოთ.",
+  "ru": "В группе пока нет детей. Пригласите родителей ниже."
+ },
+ "a191RemoveFromGroup": {
+  "en": "Remove from group",
+  "ka": "ჯგუფიდან მოხსნა",
+  "ru": "Убрать из группы"
+ },
+ "a191RemoveFromGroupBody": {
+  "en": "{child} will no longer be in “{group}”. Attendance history is kept; the guardian keeps the child profile.",
+  "ka": "{child} აღარ იქნება „{group}“-ში. დასწრების ისტორია შენარჩუნდება; მშობელს ბავშვის პროფილი რჩება.",
+  "ru": "{child} больше не будет в «{group}». История посещаемости сохранится, профиль ребёнка останется у родителя.",
+  "ph": {
+   "child": "String",
+   "group": "String"
+  }
+ },
+ "a191RemovedSnack": {
+  "en": "Removed from the group",
+  "ka": "ჯგუფიდან მოიხსნა",
+  "ru": "Убран из группы"
+ },
+ "a191InviteGuardian": {
+  "en": "Enroll through the guardian",
+  "ka": "ჩარიცხვა მშობლის მეშვეობით",
+  "ru": "Зачисление через родителя"
+ },
+ "a191InviteGuardianHint": {
+  "en": "The guardian receives an invitation and decides. If they already registered this child, they link the existing profile — no duplicate is created.",
+  "ka": "მშობელი მიიღებს მოწვევას და თავად გადაწყვეტს. თუ ბავშვი უკვე დარეგისტრირებულია, მშობელი არსებულ პროფილს დაუკავშირებს — დუბლიკატი არ შეიქმნება.",
+  "ru": "Родитель получит приглашение и решит сам. Если ребёнок уже зарегистрирован, родитель привяжет существующий профиль — дубликат не создаётся."
+ },
+ "a191GuardianPhone": {
+  "en": "Guardian's phone",
+  "ka": "მშობლის ტელეფონი",
+  "ru": "Телефон родителя"
+ },
+ "a191SendInvite": {
+  "en": "Send invitation",
+  "ka": "მოწვევის გაგზავნა",
+  "ru": "Отправить приглашение"
+ },
+ "a191Invitations": {
+  "en": "Invitations",
+  "ka": "მოწვევები",
+  "ru": "Приглашения"
+ },
+ "a191InviteWaiting": {
+  "en": "Waiting for guardian",
+  "ka": "ელოდება მშობელს",
+  "ru": "Ждёт родителя"
+ },
+ "a191InviteAccepted": {
+  "en": "Joined",
+  "ka": "შემოუერთდა",
+  "ru": "Вступил"
+ },
+ "a191InviteDeclined": {
+  "en": "Declined",
+  "ka": "უარი",
+  "ru": "Отказ"
+ },
+ "a191InviteRevoked": {
+  "en": "Withdrawn",
+  "ka": "გაუქმებული",
+  "ru": "Отозвано"
+ },
+ "birthDate": {
+  "en": "Birth date",
+  "ka": "დაბადების თარიღი",
+  "ru": "Дата рождения"
+ },
+ "a191Members": {
+  "en": "Members",
+  "ka": "წევრები",
+  "ru": "Участники"
+ }
+}

@@ -459,7 +459,10 @@ service cloud.firestore {
         || isClubAdmin(resource.data.get('clubId', ''));
 
       // An approved coach assigned to an active club may create a group in it
-      // (or use the createGroup callable). They must be its only coach; the
+      // (or use the createGroup callable). v1.9.1: organization admins create
+      // and edit their organization's groups only through the createGroup /
+      // updateGroup callables (coach membership, limits and capacity are
+      // checked on the server) — never by direct client writes. They must be its only coach; the
       // invite code is assigned by the server (inviteCode absent or '').
       // paymentManagerIds is server-managed (updateGroup callable, audited) —
       // not even a platform admin writes it directly.
@@ -469,7 +472,10 @@ service cloud.firestore {
             && request.resource.data.keys().hasOnly([
                  'clubId', 'sportId', 'coachIds', 'name', 'ageMin', 'ageMax',
                  'memberChildIds', 'parentIds', 'scheduleNote', 'inviteCode',
-                 'createdBy', 'status', 'createdAt'])
+                 'createdBy', 'status', 'createdAt', 'capacity'])
+            && (!('capacity' in request.resource.data)
+                || (request.resource.data.capacity is int
+                    && request.resource.data.capacity >= 1 && request.resource.data.capacity <= 500))
             && request.resource.data.clubId is string
             && request.resource.data.clubId in me().get('clubIds', [])
             && get(/databases/$(database)/documents/clubs/$(request.resource.data.clubId))
@@ -1023,9 +1029,12 @@ service cloud.firestore {
     // Created/answered only through callables (createInvite, respondInvite,
     // revokeInvite). The addressed parent and the group's coaches read.
     match /invites/{inviteId} {
+      // v1.9.1: an organization admin sees the invitations of their own
+      // organization's groups (status only — the child joins on consent).
       allow read: if isAdmin()
         || (isParent() && resource.data.get('parentId', '') == uid())
-        || isGroupCoach(resource.data.groupId);
+        || isGroupCoach(resource.data.groupId)
+        || isClubAdmin(resource.data.get('clubId', ''));
       allow write: if false;
     }
 

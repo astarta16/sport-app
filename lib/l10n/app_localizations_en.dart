@@ -6028,4 +6028,335 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get featLegend =>
       'Package = what the package includes · Org = the organization\'s own switch · Active/blocked = what users get right now · Rollout = timing · The switch on the right = allowed by the platform (what you change here).';
+
+  @override
+  String get m191UnsavedTitle => 'You have unsaved changes';
+
+  @override
+  String get m191UnsavedBody => 'If you leave now, they will be lost.';
+
+  @override
+  String get m191Stay => 'Stay';
+
+  @override
+  String get m191Discard => 'Discard';
+
+  @override
+  String get m191FieldGenericError =>
+      'Something is not right with this field — please check it.';
+
+  @override
+  String get m191PhoneHint => '5XX XX XX XX';
+
+  @override
+  String get m191DiscardMessage => 'Discard message';
+
+  @override
+  String get m191ClearSearch => 'Clear search';
+
+  @override
+  String get m191ClearEndDate => 'Clear end date';
+
+  @override
+  String get m191RemoveAttachment => 'Remove attachment';
+
+  @override
+  String m191RatingStars(String category, int stars) {
+    return '$category: $stars of 5';
+  }
+
+  @override
+  String get m191LevelDown => 'Lower level';
+
+  @override
+  String get m191LevelUp => 'Higher level';
+
+  @override
+  String get m191PhotoLibrary => 'Photo library';
+
+  @override
+  String get m191PdfFile => 'PDF file';
+
+  @override
+  String m191FileGuidance(int mb) {
+    return 'Photo (JPG, PNG) or PDF · up to $mb MB';
+  }
+
+  @override
+  String m191FileSize(int kb) {
+    return '$kb KB';
+  }
+
+  @override
+  String get m191ReplaceFile => 'Replace';
+
+  @override
+  String get m191RemoveFile => 'Remove file';
+
+  @override
+  String get m191Uploading => 'Uploading…';
+
+  @override
+  String get m191UploadFailedTitle => 'Not uploaded';
+
+  @override
+  String m191InputsKept(String reason) {
+    return '$reason Your file and details are kept — you can try again.';
+  }
+
+  @override
+  String m191CertExistingValid(String status, String date) {
+    return 'Current certificate: $status · until $date';
+  }
+
+  @override
+  String get m191CertReplacesExisting =>
+      'The new certificate replaces this one.';
+
+  @override
+  String get m191CertAddsToExisting =>
+      'The new certificate is added; the one valid the longest applies.';
+
+  @override
+  String get m191ReceiptNotSentTitle => 'Not sent';
+
+  @override
+  String get s191CalendarWhose => 'Whose schedule';
+
+  @override
+  String get s191CalendarLegendTraining => 'Training';
+
+  @override
+  String get s191CalendarLegendMatch => 'Match';
+
+  @override
+  String get s191CalendarMatchesError => 'Matches could not be loaded.';
+
+  @override
+  String get s191GroupClubHelper => 'Only clubs where you coach';
+
+  @override
+  String get s191GroupSportHelper => 'Only sports offered by the chosen club';
+
+  @override
+  String get s191GroupNameHint => 'For example: U10 beginners';
+
+  @override
+  String get s191RosterEmptyTitle => 'No children in this group yet';
+
+  @override
+  String get s191RosterEmptyBody =>
+      'Share the group code with parents or add a child by name.';
+
+  @override
+  String get s191RosterSearchHint => 'Search by child\'s name';
+
+  @override
+  String s191RosterNoMatches(String query) {
+    return 'No child named “$query” in this group.';
+  }
+
+  @override
+  String s191RosterMoreActions(String name) {
+    return 'More actions for $name';
+  }
+
+  @override
+  String s191ChildDetails(String name) {
+    return '$name\'s details';
+  }
+
+  @override
+  String get s191ChildChipHint => 'Tap to choose, long-press for details';
+
+  @override
+  String get s191RsvpAllTitle => 'Same answer for all children';
+
+  @override
+  String get s191RsvpAllSaved => 'Answer saved for all children';
+
+  @override
+  String get s191JoinAlreadyMember => 'Already in this group';
+
+  @override
+  String s191JoinAgeOutside(int age, int min, int max) {
+    return 'Age $age; the group is for ages $min–$max';
+  }
+
+  @override
+  String get a191ErrCoachNotInOrg =>
+      'Choose coaches who belong to this organization.';
+
+  @override
+  String get a191ErrGroupFull =>
+      'This group is full. Increase its capacity or choose another group.';
+
+  @override
+  String get a191ErrGroupCapacity => 'Capacity must be a number from 1 to 500.';
+
+  @override
+  String get a191ErrCapacityBelowMembers =>
+      'The group already has more children than this capacity.';
+
+  @override
+  String get a191ErrDuplicateName => 'Something with this name already exists.';
+
+  @override
+  String get a191ChooseSport => 'Choose a sport or program';
+
+  @override
+  String get a191ChooseCoach => 'Choose at least one coach';
+
+  @override
+  String a191GroupCreated(String name) {
+    return 'Group “$name” created. Next: invite guardians from Members.';
+  }
+
+  @override
+  String get a191StepSport => 'Sport';
+
+  @override
+  String get a191StepName => 'Name & ages';
+
+  @override
+  String get a191StepCoach => 'Coach';
+
+  @override
+  String get a191StepCapacity => 'Places';
+
+  @override
+  String get a191FromProgram => 'Program (optional)';
+
+  @override
+  String get a191FromProgramHint =>
+      'Fills sport, ages, coaches and places from the program';
+
+  @override
+  String get a191GroupName => 'Group name';
+
+  @override
+  String get a191GroupNameHint => 'e.g. Volleyball U-12';
+
+  @override
+  String a191Ages(int from, int to) {
+    return 'Ages $from–$to';
+  }
+
+  @override
+  String get a191NoCoachesYet =>
+      'This organization has no coaches yet. Add a coach in Organization settings first.';
+
+  @override
+  String get a191Coaches => 'Coaches';
+
+  @override
+  String get a191Capacity => 'Places (optional)';
+
+  @override
+  String get a191CapacityHint =>
+      'Maximum number of children. Leave empty for no limit.';
+
+  @override
+  String get a191ScheduleNote => 'Schedule note (optional)';
+
+  @override
+  String get a191ScheduleNoteHint => 'e.g. Mon, Wed 16:00 · Hall A';
+
+  @override
+  String get a191RoomLater =>
+      'Rooms and recurring sessions are booked in Room schedule after the group exists.';
+
+  @override
+  String get a191NoLimit => 'No limit';
+
+  @override
+  String get a191AfterCreate =>
+      'After creating: invite guardians from Members and book sessions in Room schedule.';
+
+  @override
+  String get a191CreateGroup => 'Create group';
+
+  @override
+  String get a191GroupSaved => 'Group saved';
+
+  @override
+  String get a191EditGroup => 'Edit group';
+
+  @override
+  String get a191InviteFieldsRequired =>
+      'Enter the child\'s first name, birth date and the guardian\'s phone.';
+
+  @override
+  String get a191InviteSent =>
+      'Invitation sent. The child joins when the guardian accepts.';
+
+  @override
+  String a191MembersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count children',
+      one: '1 child',
+      zero: 'No children yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a191MembersOfCapacity(int count, int capacity) {
+    return '$count of $capacity places taken';
+  }
+
+  @override
+  String get a191RosterPrivacy =>
+      'Only first name, last-name initial and birth year are shown to administrators.';
+
+  @override
+  String get a191NoMembersYet =>
+      'No children in this group yet. Invite guardians below.';
+
+  @override
+  String get a191RemoveFromGroup => 'Remove from group';
+
+  @override
+  String a191RemoveFromGroupBody(String child, String group) {
+    return '$child will no longer be in “$group”. Attendance history is kept; the guardian keeps the child profile.';
+  }
+
+  @override
+  String get a191RemovedSnack => 'Removed from the group';
+
+  @override
+  String get a191InviteGuardian => 'Enroll through the guardian';
+
+  @override
+  String get a191InviteGuardianHint =>
+      'The guardian receives an invitation and decides. If they already registered this child, they link the existing profile — no duplicate is created.';
+
+  @override
+  String get a191GuardianPhone => 'Guardian\'s phone';
+
+  @override
+  String get a191SendInvite => 'Send invitation';
+
+  @override
+  String get a191Invitations => 'Invitations';
+
+  @override
+  String get a191InviteWaiting => 'Waiting for guardian';
+
+  @override
+  String get a191InviteAccepted => 'Joined';
+
+  @override
+  String get a191InviteDeclined => 'Declined';
+
+  @override
+  String get a191InviteRevoked => 'Withdrawn';
+
+  @override
+  String get birthDate => 'Birth date';
+
+  @override
+  String get a191Members => 'Members';
 }

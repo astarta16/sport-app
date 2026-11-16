@@ -129,6 +129,41 @@ class FirebaseAdminRepository implements AdminRepository {
       callFunction(functions, 'updateGroup', {'groupId': groupId, 'status': archived ? 'archived' : 'active'});
 
   @override
+  Future<void> updateGroupDetails(
+    String groupId, {
+    String? name,
+    List<String>? coachIds,
+    int? ageMin,
+    int? ageMax,
+    int? capacity,
+    bool clearCapacity = false,
+    String? scheduleNote,
+  }) => callFunction(functions, 'updateGroup', {
+    'groupId': groupId,
+    'name': ?name,
+    'coachIds': ?coachIds,
+    'ageMin': ?ageMin,
+    'ageMax': ?ageMax,
+    if (capacity != null || clearCapacity) 'capacity': capacity,
+    'scheduleNote': ?scheduleNote,
+  });
+
+  @override
+  Future<List<AdminRosterEntry>> groupRoster(String groupId) async {
+    final r = await callFunction(functions, 'adminGroupRoster', {'groupId': groupId});
+    return [
+      for (final e in (r['children'] as List? ?? const []))
+        AdminRosterEntry.fromMap(Map<String, dynamic>.from(e as Map)),
+    ];
+  }
+
+  @override
+  Future<void> removeGroupMember(String groupId, String childId) => callFunction(functions, 'updateGroup', {
+    'groupId': groupId,
+    'removeChildIds': [childId],
+  });
+
+  @override
   Stream<List<ContentReport>> watchReports() => _scoped('reports', ContentReport.fromMap);
 
   @override

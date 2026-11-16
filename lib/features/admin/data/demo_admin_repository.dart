@@ -224,6 +224,82 @@ class DemoAdminRepository implements AdminRepository {
   });
 
   @override
+  Future<void> updateGroupDetails(
+    String groupId, {
+    String? name,
+    List<String>? coachIds,
+    int? ageMin,
+    int? ageMax,
+    int? capacity,
+    bool clearCapacity = false,
+    String? scheduleNote,
+  }) async {
+    db.requireOnline();
+    final me = _admin();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManageClub(me, g.clubId)) throw const PermissionDeniedException('club scope');
+    if (name != null && (name.trim().length < 2 || name.trim().length > 60)) {
+      throw const ValidationException('groupNameRequired');
+    }
+    final aMin = ageMin ?? g.ageMin, aMax = ageMax ?? g.ageMax;
+    if (aMin < 3 || aMax > 18 || aMin > aMax) throw const ValidationException('groupAgeRange');
+    if (capacity != null && (capacity < 1 || capacity > 500)) throw const ValidationException('groupCapacity');
+    if (capacity != null && g.memberChildIds.length > capacity) {
+      throw const ValidationException('capacityBelowMembers');
+    }
+    if (coachIds != null) {
+      final ok =
+          coachIds.isNotEmpty &&
+          coachIds.every((c) {
+            final u = db.users[c];
+            return u != null && u.isApprovedCoach && u.clubIds.contains(g.clubId);
+          });
+      if (!ok) throw const ValidationException('groupCoachNotInOrg');
+    }
+    db.groups[groupId] = g.copyWith(
+      name: name?.trim(),
+      coachIds: coachIds,
+      ageMin: aMin,
+      ageMax: aMax,
+      capacity: capacity,
+      clearCapacity: clearCapacity,
+      scheduleNote: scheduleNote,
+    );
+    db.recomputeMemberships();
+    db.auditLog('group.update', 'group', groupId, clubId: g.clubId, details: {'by': 'orgAdmin'});
+    db.commit();
+  }
+
+  @override
+  Future<List<AdminRosterEntry>> groupRoster(String groupId) async {
+    final me = _admin();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManageClub(me, g.clubId)) throw const PermissionDeniedException('club scope');
+    return [
+      for (final id in g.memberChildIds)
+        if (db.children[id] case final c?)
+          AdminRosterEntry(
+            childId: c.id,
+            firstName: c.firstName,
+            lastInitial: c.lastName.isEmpty ? '' : c.lastName.substring(0, 1),
+            birthYear: c.birthDate.year,
+          ),
+    ]..sort((a, b) => a.firstName.compareTo(b.firstName));
+  }
+
+  @override
+  Future<void> removeGroupMember(String groupId, String childId) async {
+    db.requireOnline();
+    final me = _admin();
+    final g = db.requireGroup(groupId);
+    if (!AccessPolicy.canManageClub(me, g.clubId)) throw const PermissionDeniedException('club scope');
+    db.groups[groupId] = g.copyWith(memberChildIds: g.memberChildIds.where((c) => c != childId).toList());
+    db.recomputeMemberships();
+    db.auditLog('group.removeMember', 'group', groupId, clubId: g.clubId, details: {'childId': childId});
+    db.commit();
+  }
+
+  @override
   Future<void> archiveGroup(String groupId, {required bool archived}) async {
     db.requireOnline();
     final me = _admin();

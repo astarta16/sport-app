@@ -10833,6 +10833,564 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება).'**
   String get featLegend;
+
+  /// No description provided for @m191UnsavedTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაქვთ შეუნახავი ცვლილებები'**
+  String get m191UnsavedTitle;
+
+  /// No description provided for @m191UnsavedBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'თუ ახლა გახვალთ, ისინი დაიკარგება.'**
+  String get m191UnsavedBody;
+
+  /// No description provided for @m191Stay.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარჩენა'**
+  String get m191Stay;
+
+  /// No description provided for @m191Discard.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმება'**
+  String get m191Discard;
+
+  /// No description provided for @m191FieldGenericError.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ველში რაღაც არასწორადაა — გთხოვთ, გადაამოწმოთ.'**
+  String get m191FieldGenericError;
+
+  /// No description provided for @m191PhoneHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'5XX XX XX XX'**
+  String get m191PhoneHint;
+
+  /// No description provided for @m191DiscardMessage.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინების გაუქმება'**
+  String get m191DiscardMessage;
+
+  /// No description provided for @m191ClearSearch.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიების გასუფთავება'**
+  String get m191ClearSearch;
+
+  /// No description provided for @m191ClearEndDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულების თარიღის მოხსნა'**
+  String get m191ClearEndDate;
+
+  /// No description provided for @m191RemoveAttachment.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმაგრებული ფაილის წაშლა'**
+  String get m191RemoveAttachment;
+
+  /// No description provided for @m191RatingStars.
+  ///
+  /// In ka, this message translates to:
+  /// **'{category}: {stars} 5-დან'**
+  String m191RatingStars(String category, int stars);
+
+  /// No description provided for @m191LevelDown.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაბალი დონე'**
+  String get m191LevelDown;
+
+  /// No description provided for @m191LevelUp.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაღალი დონე'**
+  String get m191LevelUp;
+
+  /// No description provided for @m191PhotoLibrary.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფოტოგალერეა'**
+  String get m191PhotoLibrary;
+
+  /// No description provided for @m191PdfFile.
+  ///
+  /// In ka, this message translates to:
+  /// **'PDF ფაილი'**
+  String get m191PdfFile;
+
+  /// No description provided for @m191FileGuidance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფოტო (JPG, PNG) ან PDF · მაქსიმუმ {mb} მბ'**
+  String m191FileGuidance(int mb);
+
+  /// No description provided for @m191FileSize.
+  ///
+  /// In ka, this message translates to:
+  /// **'{kb} კბ'**
+  String m191FileSize(int kb);
+
+  /// No description provided for @m191ReplaceFile.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეცვლა'**
+  String get m191ReplaceFile;
+
+  /// No description provided for @m191RemoveFile.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფაილის წაშლა'**
+  String get m191RemoveFile;
+
+  /// No description provided for @m191Uploading.
+  ///
+  /// In ka, this message translates to:
+  /// **'იტვირთება…'**
+  String get m191Uploading;
+
+  /// No description provided for @m191UploadFailedTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვერ აიტვირთა'**
+  String get m191UploadFailedTitle;
+
+  /// No description provided for @m191InputsKept.
+  ///
+  /// In ka, this message translates to:
+  /// **'{reason} თქვენი ფაილი და მონაცემები შენახულია — შეგიძლიათ თავიდან სცადოთ.'**
+  String m191InputsKept(String reason);
+
+  /// No description provided for @m191CertExistingValid.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმდინარე ცნობა: {status} · {date}-მდე'**
+  String m191CertExistingValid(String status, String date);
+
+  /// No description provided for @m191CertReplacesExisting.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი ცნობა ამას ჩაანაცვლებს.'**
+  String get m191CertReplacesExisting;
+
+  /// No description provided for @m191CertAddsToExisting.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი ცნობა დაემატება; მოქმედებს ის, რომელიც ყველაზე დიდხანს ძალაშია.'**
+  String get m191CertAddsToExisting;
+
+  /// No description provided for @m191ReceiptNotSentTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვერ გაიგზავნა'**
+  String get m191ReceiptNotSentTitle;
+
+  /// No description provided for @s191CalendarWhose.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვისი განრიგი'**
+  String get s191CalendarWhose;
+
+  /// No description provided for @s191CalendarLegendTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიში'**
+  String get s191CalendarLegendTraining;
+
+  /// No description provided for @s191CalendarLegendMatch.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩი'**
+  String get s191CalendarLegendMatch;
+
+  /// No description provided for @s191CalendarMatchesError.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩები ვერ ჩაიტვირთა.'**
+  String get s191CalendarMatchesError;
+
+  /// No description provided for @s191GroupClubHelper.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ კლუბები, სადაც მწვრთნელი ხართ'**
+  String get s191GroupClubHelper;
+
+  /// No description provided for @s191GroupSportHelper.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ არჩეული კლუბის სახეობები'**
+  String get s191GroupSportHelper;
+
+  /// No description provided for @s191GroupNameHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაგალითად: დამწყებები, 10 წლამდე'**
+  String get s191GroupNameHint;
+
+  /// No description provided for @s191RosterEmptyTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ჯგუფში ჯერ ბავშვები არ არიან'**
+  String get s191RosterEmptyTitle;
+
+  /// No description provided for @s191RosterEmptyBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუზიარეთ ჯგუფის კოდი მშობლებს ან დაამატეთ ბავშვი სახელით.'**
+  String get s191RosterEmptyBody;
+
+  /// No description provided for @s191RosterSearchHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვის სახელით ძიება'**
+  String get s191RosterSearchHint;
+
+  /// No description provided for @s191RosterNoMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ჯგუფში „{query}“ ვერ მოიძებნა.'**
+  String s191RosterNoMatches(String query);
+
+  /// No description provided for @s191RosterMoreActions.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა მოქმედებები: {name}'**
+  String s191RosterMoreActions(String name);
+
+  /// No description provided for @s191ChildDetails.
+  ///
+  /// In ka, this message translates to:
+  /// **'{name} — მონაცემები'**
+  String s191ChildDetails(String name);
+
+  /// No description provided for @s191ChildChipHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეეხეთ ასარჩევად, ხანგრძლივად დააჭირეთ მონაცემებისთვის'**
+  String get s191ChildChipHint;
+
+  /// No description provided for @s191RsvpAllTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ერთი პასუხი ყველა ბავშვისთვის'**
+  String get s191RsvpAllTitle;
+
+  /// No description provided for @s191RsvpAllSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'პასუხი შენახულია ყველა ბავშვისთვის'**
+  String get s191RsvpAllSaved;
+
+  /// No description provided for @s191JoinAlreadyMember.
+  ///
+  /// In ka, this message translates to:
+  /// **'უკვე ამ ჯგუფშია'**
+  String get s191JoinAlreadyMember;
+
+  /// No description provided for @s191JoinAgeOutside.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკი {age}; ჯგუფი {min}–{max} წლისთვისაა'**
+  String s191JoinAgeOutside(int age, int min, int max);
+
+  /// No description provided for @a191ErrCoachNotInOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ ამ ორგანიზაციის მწვრთნელები.'**
+  String get a191ErrCoachNotInOrg;
+
+  /// No description provided for @a191ErrGroupFull.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი სავსეა. გაზარდეთ ადგილების რაოდენობა ან აირჩიეთ სხვა ჯგუფი.'**
+  String get a191ErrGroupFull;
+
+  /// No description provided for @a191ErrGroupCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადგილების რაოდენობა უნდა იყოს 1-დან 500-მდე.'**
+  String get a191ErrGroupCapacity;
+
+  /// No description provided for @a191ErrCapacityBelowMembers.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფში უკვე მეტი ბავშვია, ვიდრე ეს რაოდენობა.'**
+  String get a191ErrCapacityBelowMembers;
+
+  /// No description provided for @a191ErrDuplicateName.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ სახელით უკვე არსებობს ჩანაწერი.'**
+  String get a191ErrDuplicateName;
+
+  /// No description provided for @a191ChooseSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ სპორტი ან პროგრამა'**
+  String get a191ChooseSport;
+
+  /// No description provided for @a191ChooseCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ მინიმუმ ერთი მწვრთნელი'**
+  String get a191ChooseCoach;
+
+  /// No description provided for @a191GroupCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი „{name}“ შეიქმნა. შემდეგი: მოიწვიეთ მშობლები „წევრებიდან“.'**
+  String a191GroupCreated(String name);
+
+  /// No description provided for @a191StepSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტი'**
+  String get a191StepSport;
+
+  /// No description provided for @a191StepName.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი და ასაკი'**
+  String get a191StepName;
+
+  /// No description provided for @a191StepCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი'**
+  String get a191StepCoach;
+
+  /// No description provided for @a191StepCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადგილები'**
+  String get a191StepCapacity;
+
+  /// No description provided for @a191FromProgram.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრამა (არასავალდებულო)'**
+  String get a191FromProgram;
+
+  /// No description provided for @a191FromProgramHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტს, ასაკს, მწვრთნელებს და ადგილებს პროგრამიდან შეავსებს'**
+  String get a191FromProgramHint;
+
+  /// No description provided for @a191GroupName.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფის სახელი'**
+  String get a191GroupName;
+
+  /// No description provided for @a191GroupNameHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაგ. ფრენბურთი U-12'**
+  String get a191GroupNameHint;
+
+  /// No description provided for @a191Ages.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკი {from}–{to}'**
+  String a191Ages(int from, int to);
+
+  /// No description provided for @a191NoCoachesYet.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციას ჯერ მწვრთნელი არ ჰყავს. ჯერ დაამატეთ მწვრთნელი ორგანიზაციის პარამეტრებში.'**
+  String get a191NoCoachesYet;
+
+  /// No description provided for @a191Coaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get a191Coaches;
+
+  /// No description provided for @a191Capacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადგილები (არასავალდებულო)'**
+  String get a191Capacity;
+
+  /// No description provided for @a191CapacityHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვების მაქსიმალური რაოდენობა. ცარიელი = შეზღუდვის გარეშე.'**
+  String get a191CapacityHint;
+
+  /// No description provided for @a191ScheduleNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგის შენიშვნა (არასავალდებულო)'**
+  String get a191ScheduleNote;
+
+  /// No description provided for @a191ScheduleNoteHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაგ. ორშ, ოთხ 16:00 · დარბაზი A'**
+  String get a191ScheduleNoteHint;
+
+  /// No description provided for @a191RoomLater.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოთახები და განმეორებადი ვარჯიშები იჯავშნება „ოთახების განრიგში“ ჯგუფის შექმნის შემდეგ.'**
+  String get a191RoomLater;
+
+  /// No description provided for @a191NoLimit.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეზღუდვის გარეშე'**
+  String get a191NoLimit;
+
+  /// No description provided for @a191AfterCreate.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმნის შემდეგ: მოიწვიეთ მშობლები „წევრებიდან“ და დაჯავშნეთ ვარჯიშები „ოთახების განრიგში“.'**
+  String get a191AfterCreate;
+
+  /// No description provided for @a191CreateGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფის შექმნა'**
+  String get a191CreateGroup;
+
+  /// No description provided for @a191GroupSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი შენახულია'**
+  String get a191GroupSaved;
+
+  /// No description provided for @a191EditGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფის რედაქტირება'**
+  String get a191EditGroup;
+
+  /// No description provided for @a191InviteFieldsRequired.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიყვანეთ ბავშვის სახელი, დაბადების თარიღი და მშობლის ტელეფონი.'**
+  String get a191InviteFieldsRequired;
+
+  /// No description provided for @a191InviteSent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევა გაიგზავნა. ბავშვი დაემატება, როცა მშობელი დათანხმდება.'**
+  String get a191InviteSent;
+
+  /// No description provided for @a191MembersCount.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count, plural, =0{ბავშვები ჯერ არ არის} other{{count} ბავშვი}}'**
+  String a191MembersCount(int count);
+
+  /// No description provided for @a191MembersOfCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაკავებულია {count} ადგილი {capacity}-დან'**
+  String a191MembersOfCapacity(int count, int capacity);
+
+  /// No description provided for @a191RosterPrivacy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორები ხედავენ მხოლოდ სახელს, გვარის პირველ ასოს და დაბადების წელს.'**
+  String get a191RosterPrivacy;
+
+  /// No description provided for @a191NoMembersYet.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფში ბავშვები ჯერ არ არის. მოიწვიეთ მშობლები ქვემოთ.'**
+  String get a191NoMembersYet;
+
+  /// No description provided for @a191RemoveFromGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფიდან მოხსნა'**
+  String get a191RemoveFromGroup;
+
+  /// No description provided for @a191RemoveFromGroupBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} აღარ იქნება „{group}“-ში. დასწრების ისტორია შენარჩუნდება; მშობელს ბავშვის პროფილი რჩება.'**
+  String a191RemoveFromGroupBody(String child, String group);
+
+  /// No description provided for @a191RemovedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფიდან მოიხსნა'**
+  String get a191RemovedSnack;
+
+  /// No description provided for @a191InviteGuardian.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩარიცხვა მშობლის მეშვეობით'**
+  String get a191InviteGuardian;
+
+  /// No description provided for @a191InviteGuardianHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობელი მიიღებს მოწვევას და თავად გადაწყვეტს. თუ ბავშვი უკვე დარეგისტრირებულია, მშობელი არსებულ პროფილს დაუკავშირებს — დუბლიკატი არ შეიქმნება.'**
+  String get a191InviteGuardianHint;
+
+  /// No description provided for @a191GuardianPhone.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლის ტელეფონი'**
+  String get a191GuardianPhone;
+
+  /// No description provided for @a191SendInvite.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევის გაგზავნა'**
+  String get a191SendInvite;
+
+  /// No description provided for @a191Invitations.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევები'**
+  String get a191Invitations;
+
+  /// No description provided for @a191InviteWaiting.
+  ///
+  /// In ka, this message translates to:
+  /// **'ელოდება მშობელს'**
+  String get a191InviteWaiting;
+
+  /// No description provided for @a191InviteAccepted.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემოუერთდა'**
+  String get a191InviteAccepted;
+
+  /// No description provided for @a191InviteDeclined.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარი'**
+  String get a191InviteDeclined;
+
+  /// No description provided for @a191InviteRevoked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმებული'**
+  String get a191InviteRevoked;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაბადების თარიღი'**
+  String get birthDate;
+
+  /// No description provided for @a191Members.
+  ///
+  /// In ka, this message translates to:
+  /// **'წევრები'**
+  String get a191Members;
 }
 
 class _AppLocalizationsDelegate

@@ -5982,4 +5982,334 @@ class AppLocalizationsKa extends AppLocalizations {
   @override
   String get featLegend =>
       'პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება).';
+
+  @override
+  String get m191UnsavedTitle => 'გაქვთ შეუნახავი ცვლილებები';
+
+  @override
+  String get m191UnsavedBody => 'თუ ახლა გახვალთ, ისინი დაიკარგება.';
+
+  @override
+  String get m191Stay => 'დარჩენა';
+
+  @override
+  String get m191Discard => 'გაუქმება';
+
+  @override
+  String get m191FieldGenericError =>
+      'ამ ველში რაღაც არასწორადაა — გთხოვთ, გადაამოწმოთ.';
+
+  @override
+  String get m191PhoneHint => '5XX XX XX XX';
+
+  @override
+  String get m191DiscardMessage => 'შეტყობინების გაუქმება';
+
+  @override
+  String get m191ClearSearch => 'ძიების გასუფთავება';
+
+  @override
+  String get m191ClearEndDate => 'დასრულების თარიღის მოხსნა';
+
+  @override
+  String get m191RemoveAttachment => 'მიმაგრებული ფაილის წაშლა';
+
+  @override
+  String m191RatingStars(String category, int stars) {
+    return '$category: $stars 5-დან';
+  }
+
+  @override
+  String get m191LevelDown => 'დაბალი დონე';
+
+  @override
+  String get m191LevelUp => 'მაღალი დონე';
+
+  @override
+  String get m191PhotoLibrary => 'ფოტოგალერეა';
+
+  @override
+  String get m191PdfFile => 'PDF ფაილი';
+
+  @override
+  String m191FileGuidance(int mb) {
+    return 'ფოტო (JPG, PNG) ან PDF · მაქსიმუმ $mb მბ';
+  }
+
+  @override
+  String m191FileSize(int kb) {
+    return '$kb კბ';
+  }
+
+  @override
+  String get m191ReplaceFile => 'შეცვლა';
+
+  @override
+  String get m191RemoveFile => 'ფაილის წაშლა';
+
+  @override
+  String get m191Uploading => 'იტვირთება…';
+
+  @override
+  String get m191UploadFailedTitle => 'ვერ აიტვირთა';
+
+  @override
+  String m191InputsKept(String reason) {
+    return '$reason თქვენი ფაილი და მონაცემები შენახულია — შეგიძლიათ თავიდან სცადოთ.';
+  }
+
+  @override
+  String m191CertExistingValid(String status, String date) {
+    return 'მიმდინარე ცნობა: $status · $date-მდე';
+  }
+
+  @override
+  String get m191CertReplacesExisting => 'ახალი ცნობა ამას ჩაანაცვლებს.';
+
+  @override
+  String get m191CertAddsToExisting =>
+      'ახალი ცნობა დაემატება; მოქმედებს ის, რომელიც ყველაზე დიდხანს ძალაშია.';
+
+  @override
+  String get m191ReceiptNotSentTitle => 'ვერ გაიგზავნა';
+
+  @override
+  String get s191CalendarWhose => 'ვისი განრიგი';
+
+  @override
+  String get s191CalendarLegendTraining => 'ვარჯიში';
+
+  @override
+  String get s191CalendarLegendMatch => 'მატჩი';
+
+  @override
+  String get s191CalendarMatchesError => 'მატჩები ვერ ჩაიტვირთა.';
+
+  @override
+  String get s191GroupClubHelper => 'მხოლოდ კლუბები, სადაც მწვრთნელი ხართ';
+
+  @override
+  String get s191GroupSportHelper => 'მხოლოდ არჩეული კლუბის სახეობები';
+
+  @override
+  String get s191GroupNameHint => 'მაგალითად: დამწყებები, 10 წლამდე';
+
+  @override
+  String get s191RosterEmptyTitle => 'ამ ჯგუფში ჯერ ბავშვები არ არიან';
+
+  @override
+  String get s191RosterEmptyBody =>
+      'გაუზიარეთ ჯგუფის კოდი მშობლებს ან დაამატეთ ბავშვი სახელით.';
+
+  @override
+  String get s191RosterSearchHint => 'ბავშვის სახელით ძიება';
+
+  @override
+  String s191RosterNoMatches(String query) {
+    return 'ამ ჯგუფში „$query“ ვერ მოიძებნა.';
+  }
+
+  @override
+  String s191RosterMoreActions(String name) {
+    return 'სხვა მოქმედებები: $name';
+  }
+
+  @override
+  String s191ChildDetails(String name) {
+    return '$name — მონაცემები';
+  }
+
+  @override
+  String get s191ChildChipHint =>
+      'შეეხეთ ასარჩევად, ხანგრძლივად დააჭირეთ მონაცემებისთვის';
+
+  @override
+  String get s191RsvpAllTitle => 'ერთი პასუხი ყველა ბავშვისთვის';
+
+  @override
+  String get s191RsvpAllSaved => 'პასუხი შენახულია ყველა ბავშვისთვის';
+
+  @override
+  String get s191JoinAlreadyMember => 'უკვე ამ ჯგუფშია';
+
+  @override
+  String s191JoinAgeOutside(int age, int min, int max) {
+    return 'ასაკი $age; ჯგუფი $min–$max წლისთვისაა';
+  }
+
+  @override
+  String get a191ErrCoachNotInOrg => 'აირჩიეთ ამ ორგანიზაციის მწვრთნელები.';
+
+  @override
+  String get a191ErrGroupFull =>
+      'ჯგუფი სავსეა. გაზარდეთ ადგილების რაოდენობა ან აირჩიეთ სხვა ჯგუფი.';
+
+  @override
+  String get a191ErrGroupCapacity =>
+      'ადგილების რაოდენობა უნდა იყოს 1-დან 500-მდე.';
+
+  @override
+  String get a191ErrCapacityBelowMembers =>
+      'ჯგუფში უკვე მეტი ბავშვია, ვიდრე ეს რაოდენობა.';
+
+  @override
+  String get a191ErrDuplicateName => 'ამ სახელით უკვე არსებობს ჩანაწერი.';
+
+  @override
+  String get a191ChooseSport => 'აირჩიეთ სპორტი ან პროგრამა';
+
+  @override
+  String get a191ChooseCoach => 'აირჩიეთ მინიმუმ ერთი მწვრთნელი';
+
+  @override
+  String a191GroupCreated(String name) {
+    return 'ჯგუფი „$name“ შეიქმნა. შემდეგი: მოიწვიეთ მშობლები „წევრებიდან“.';
+  }
+
+  @override
+  String get a191StepSport => 'სპორტი';
+
+  @override
+  String get a191StepName => 'სახელი და ასაკი';
+
+  @override
+  String get a191StepCoach => 'მწვრთნელი';
+
+  @override
+  String get a191StepCapacity => 'ადგილები';
+
+  @override
+  String get a191FromProgram => 'პროგრამა (არასავალდებულო)';
+
+  @override
+  String get a191FromProgramHint =>
+      'სპორტს, ასაკს, მწვრთნელებს და ადგილებს პროგრამიდან შეავსებს';
+
+  @override
+  String get a191GroupName => 'ჯგუფის სახელი';
+
+  @override
+  String get a191GroupNameHint => 'მაგ. ფრენბურთი U-12';
+
+  @override
+  String a191Ages(int from, int to) {
+    return 'ასაკი $from–$to';
+  }
+
+  @override
+  String get a191NoCoachesYet =>
+      'ორგანიზაციას ჯერ მწვრთნელი არ ჰყავს. ჯერ დაამატეთ მწვრთნელი ორგანიზაციის პარამეტრებში.';
+
+  @override
+  String get a191Coaches => 'მწვრთნელები';
+
+  @override
+  String get a191Capacity => 'ადგილები (არასავალდებულო)';
+
+  @override
+  String get a191CapacityHint =>
+      'ბავშვების მაქსიმალური რაოდენობა. ცარიელი = შეზღუდვის გარეშე.';
+
+  @override
+  String get a191ScheduleNote => 'განრიგის შენიშვნა (არასავალდებულო)';
+
+  @override
+  String get a191ScheduleNoteHint => 'მაგ. ორშ, ოთხ 16:00 · დარბაზი A';
+
+  @override
+  String get a191RoomLater =>
+      'ოთახები და განმეორებადი ვარჯიშები იჯავშნება „ოთახების განრიგში“ ჯგუფის შექმნის შემდეგ.';
+
+  @override
+  String get a191NoLimit => 'შეზღუდვის გარეშე';
+
+  @override
+  String get a191AfterCreate =>
+      'შექმნის შემდეგ: მოიწვიეთ მშობლები „წევრებიდან“ და დაჯავშნეთ ვარჯიშები „ოთახების განრიგში“.';
+
+  @override
+  String get a191CreateGroup => 'ჯგუფის შექმნა';
+
+  @override
+  String get a191GroupSaved => 'ჯგუფი შენახულია';
+
+  @override
+  String get a191EditGroup => 'ჯგუფის რედაქტირება';
+
+  @override
+  String get a191InviteFieldsRequired =>
+      'შეიყვანეთ ბავშვის სახელი, დაბადების თარიღი და მშობლის ტელეფონი.';
+
+  @override
+  String get a191InviteSent =>
+      'მოწვევა გაიგზავნა. ბავშვი დაემატება, როცა მშობელი დათანხმდება.';
+
+  @override
+  String a191MembersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ბავშვი',
+      zero: 'ბავშვები ჯერ არ არის',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a191MembersOfCapacity(int count, int capacity) {
+    return 'დაკავებულია $count ადგილი $capacity-დან';
+  }
+
+  @override
+  String get a191RosterPrivacy =>
+      'ადმინისტრატორები ხედავენ მხოლოდ სახელს, გვარის პირველ ასოს და დაბადების წელს.';
+
+  @override
+  String get a191NoMembersYet =>
+      'ჯგუფში ბავშვები ჯერ არ არის. მოიწვიეთ მშობლები ქვემოთ.';
+
+  @override
+  String get a191RemoveFromGroup => 'ჯგუფიდან მოხსნა';
+
+  @override
+  String a191RemoveFromGroupBody(String child, String group) {
+    return '$child აღარ იქნება „$group“-ში. დასწრების ისტორია შენარჩუნდება; მშობელს ბავშვის პროფილი რჩება.';
+  }
+
+  @override
+  String get a191RemovedSnack => 'ჯგუფიდან მოიხსნა';
+
+  @override
+  String get a191InviteGuardian => 'ჩარიცხვა მშობლის მეშვეობით';
+
+  @override
+  String get a191InviteGuardianHint =>
+      'მშობელი მიიღებს მოწვევას და თავად გადაწყვეტს. თუ ბავშვი უკვე დარეგისტრირებულია, მშობელი არსებულ პროფილს დაუკავშირებს — დუბლიკატი არ შეიქმნება.';
+
+  @override
+  String get a191GuardianPhone => 'მშობლის ტელეფონი';
+
+  @override
+  String get a191SendInvite => 'მოწვევის გაგზავნა';
+
+  @override
+  String get a191Invitations => 'მოწვევები';
+
+  @override
+  String get a191InviteWaiting => 'ელოდება მშობელს';
+
+  @override
+  String get a191InviteAccepted => 'შემოუერთდა';
+
+  @override
+  String get a191InviteDeclined => 'უარი';
+
+  @override
+  String get a191InviteRevoked => 'გაუქმებული';
+
+  @override
+  String get birthDate => 'დაბადების თარიღი';
+
+  @override
+  String get a191Members => 'წევრები';
 }

@@ -1,0 +1,149 @@
+{
+  "m191UnsavedTitle": {
+    "en": "You have unsaved changes",
+    "ka": "გაქვთ შეუნახავი ცვლილებები",
+    "ru": "Есть несохранённые изменения"
+  },
+  "m191UnsavedBody": {
+    "en": "If you leave now, they will be lost.",
+    "ka": "თუ ახლა გახვალთ, ისინი დაიკარგება.",
+    "ru": "Если выйти сейчас, они будут потеряны."
+  },
+  "m191Stay": {
+    "en": "Stay",
+    "ka": "დარჩენა",
+    "ru": "Остаться"
+  },
+  "m191Discard": {
+    "en": "Discard",
+    "ka": "გაუქმება",
+    "ru": "Не сохранять"
+  },
+  "m191FieldGenericError": {
+    "en": "Something is not right with this field — please check it.",
+    "ka": "ამ ველში რაღაც არასწორადაა — გთხოვთ, გადაამოწმოთ.",
+    "ru": "С этим полем что-то не так — пожалуйста, проверьте его."
+  },
+  "m191PhoneHint": {
+    "en": "5XX XX XX XX",
+    "ka": "5XX XX XX XX",
+    "ru": "5XX XX XX XX"
+  },
+  "m191DiscardMessage": {
+    "en": "Discard message",
+    "ka": "შეტყობინების გაუქმება",
+    "ru": "Удалить сообщение"
+  },
+  "m191ClearSearch": {
+    "en": "Clear search",
+    "ka": "ძიების გასუფთავება",
+    "ru": "Очистить поиск"
+  },
+  "m191ClearEndDate": {
+    "en": "Clear end date",
+    "ka": "დასრულების თარიღის მოხსნა",
+    "ru": "Убрать дату окончания"
+  },
+  "m191RemoveAttachment": {
+    "en": "Remove attachment",
+    "ka": "მიმაგრებული ფაილის წაშლა",
+    "ru": "Убрать вложение"
+  },
+  "m191RatingStars": {
+    "en": "{category}: {stars} of 5",
+    "ka": "{category}: {stars} 5-დან",
+    "ru": "{category}: {stars} из 5",
+    "ph": {
+      "category": "String",
+      "stars": "int"
+    }
+  },
+  "m191LevelDown": {
+    "en": "Lower level",
+    "ka": "დაბალი დონე",
+    "ru": "Уровень ниже"
+  },
+  "m191LevelUp": {
+    "en": "Higher level",
+    "ka": "მაღალი დონე",
+    "ru": "Уровень выше"
+  },
+  "m191PhotoLibrary": {
+    "en": "Photo library",
+    "ka": "ფოტოგალერეა",
+    "ru": "Фотогалерея"
+  },
+  "m191PdfFile": {
+    "en": "PDF file",
+    "ka": "PDF ფაილი",
+    "ru": "Файл PDF"
+  },
+  "m191FileGuidance": {
+    "en": "Photo (JPG, PNG) or PDF · up to {mb} MB",
+    "ka": "ფოტო (JPG, PNG) ან PDF · მაქსიმუმ {mb} მბ",
+    "ru": "Фото (JPG, PNG) или PDF · до {mb} МБ",
+    "ph": {
+      "mb": "int"
+    }
+  },
+  "m191FileSize": {
+    "en": "{kb} KB",
+    "ka": "{kb} კბ",
+    "ru": "{kb} КБ",
+    "ph": {
+      "kb": "int"
+    }
+  },
+  "m191ReplaceFile": {
+    "en": "Replace",
+    "ka": "შეცვლა",
+    "ru": "Заменить"
+  },
+  "m191RemoveFile": {
+    "en": "Remove file",
+    "ka": "ფაილის წაშლა",
+    "ru": "Убрать файл"
+  },
+  "m191Uploading": {
+    "en": "Uploading…",
+    "ka": "იტვირთება…",
+    "ru": "Загрузка…"
+  },
+  "m191UploadFailedTitle": {
+    "en": "Not uploaded",
+    "ka": "ვერ აიტვირთა",
+    "ru": "Не загружено"
+  },
+  "m191InputsKept": {
+    "en": "{reason} Your file and details are kept — you can try again.",
+    "ka": "{reason} თქვენი ფაილი და მონაცემები შენახულია — შეგიძლიათ თავიდან სცადოთ.",
+    "ru": "{reason} Файл и данные сохранены — можно попробовать ещё раз.",
+    "ph": {
+      "reason": "String"
+    }
+  },
+  "m191CertExistingValid": {
+    "en": "Current certificate: {status} · until {date}",
+    "ka": "მიმდინარე ცნობა: {status} · {date}-მდე",
+    "ru": "Текущая справка: {status} · до {date}",
+    "ph": {
+      "status": "String",
+      "date": "String"
+    }
+  },
+  "m191CertReplacesExisting": {
+    "en": "The new certificate replaces this one.",
+    "ka": "ახალი ცნობა ამას ჩაანაცვლებს.",
+    "ru": "Новая справка заменит эту."
+  },
+  "m191CertAddsToExisting": {
+    "en": "The new certificate is added; the one valid the longest applies.",
+    "ka": "ახალი ცნობა დაემატება; მოქმედებს ის, რომელიც ყველაზე დიდხანს ძალაშია.",
+    "ru": "Новая справка добавится; действует та, что дольше всех в силе."
+  },
+  "m191ReceiptNotSentTitle": {
+    "en": "Not sent",
+    "ka": "ვერ გაიგზავნა",
+    "ru": "Не отправлено"
+  }
+}

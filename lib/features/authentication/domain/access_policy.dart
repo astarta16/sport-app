@@ -120,9 +120,14 @@ class AccessPolicy {
   // ── v1.1 / v1.2 ─────────────────────────────────────────────────────
 
   /// Approved coach of the club (v1.1 §2: coach creates groups).
-  static bool canCreateGroup(AppUser u, String clubId) => u.isApprovedCoach && u.clubIds.contains(clubId);
+  /// v1.9.1: an approved coach of the club (group for themself) or an
+  /// administrator of that organization (groups for its coaches).
+  static bool canCreateGroup(AppUser u, String clubId) =>
+      (u.isApprovedCoach && u.clubIds.contains(clubId)) || u.administersClub(clubId);
 
-  static bool canInviteToGroup(AppUser u, Group g) => isCoachOf(u, g) && g.isActive;
+  /// The group's coach or (v1.9.1) an administrator of its organization may
+  /// invite a guardian; the child joins only when the guardian accepts.
+  static bool canInviteToGroup(AppUser u, Group g) => (isCoachOf(u, g) || u.administersClub(g.clubId)) && g.isActive;
 
   /// The coach-created pending child: only first/last name are visible to
   /// the coach until a parent accepts (v1.1 §2).

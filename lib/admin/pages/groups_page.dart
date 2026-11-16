@@ -11,6 +11,8 @@ import '../../features/groups/domain/group.dart';
 import '../widgets.dart';
 import 'admin_providers.dart';
 import 'v13_pages.dart';
+import 'v17_pages.dart';
+import 'v191_group_pages.dart';
 
 /// Group oversight: sizes, coaches, schedules, pending requests — never
 /// the identities of the children (data minimisation).
@@ -20,15 +22,29 @@ class GroupsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    // v1.9.1: one organization at a time (the selected one) — an
+    // organization admin creates and manages its groups here.
+    final org = ref.watch(adminOrgProvider);
     final groups = ref.watch(adminGroupsProvider);
     final clubs = ref.watch(clubsByIdProvider);
     return AdminSection(
       title: l.adminNavGroups,
       subtitle: l.adminChildDataNote,
+      actions: [
+        const AdminOrgPicker(),
+        if (org != null)
+          FilledButton.icon(
+            key: const Key('group-new'),
+            onPressed: () => showGroupWizard(context, ref, org),
+            icon: const Icon(Icons.group_add_rounded),
+            label: Text(l.newGroup),
+          ),
+      ],
       child: AsyncView<List<GroupOverview>>(
         value: groups,
-        data: (list) => AdminTable<GroupOverview>(
-          rows: list,
+        onRetry: () => ref.invalidate(adminGroupsProvider),
+        data: (all) => AdminTable<GroupOverview>(
+          rows: org == null ? all : all.where((g) => g.group.clubId == org).toList(),
           searchText: (g) => '${g.group.name} ${clubs[g.group.clubId]?.name ?? ''} ${g.coachNames.join(' ')}',
           filters: [
             (l.adminFilterAll, (_) => true),
@@ -59,9 +75,23 @@ class GroupsPage extends ConsumerWidget {
             AdminColumn(l.adminColUpcoming, (g) => Text('${g.upcomingTrainings}')),
             AdminColumn(
               l.adminColActions,
-              (g) => Row(
+              // Wraps instead of overflowing on narrower windows.
+              (g) => Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   if (!g.group.isActive) StatusPill(label: l.adminArchived, color: AppColors.neutral, dense: true),
+                  IconButton(
+                    key: Key('group-edit-${g.group.id}'),
+                    tooltip: l.a191EditGroup,
+                    onPressed: () => showGroupEditDialog(context, ref, g.group),
+                    icon: const Icon(Icons.edit_rounded),
+                  ),
+                  IconButton(
+                    key: Key('group-members-${g.group.id}'),
+                    tooltip: l.a191Members,
+                    onPressed: () => showGroupMembersDialog(context, ref, g.group),
+                    icon: const Icon(Icons.people_alt_rounded),
+                  ),
                   IconButton(
                     key: Key('reviewers-${g.group.id}'),
                     tooltip: l.adminSetReviewers,

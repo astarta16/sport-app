@@ -98,6 +98,12 @@ String? validationText(BuildContext context, String? code) {
     'opponentRequired' => l.validationOpponentRequired,
     'groupNameRequired' => l.validationGroupNameRequired,
     'groupAgeRange' => l.validationGroupAgeRange,
+    // v1.9.1
+    'groupCoachNotInOrg' => l.a191ErrCoachNotInOrg,
+    'groupFull' => l.a191ErrGroupFull,
+    'groupCapacity' => l.a191ErrGroupCapacity,
+    'capacityBelowMembers' => l.a191ErrCapacityBelowMembers,
+    'duplicateName' => l.a191ErrDuplicateName,
     'invalidGroupCode' => l.validationInvalidGroupCode,
     'inviteExists' => l.validationInviteExists,
     'inviteClosed' => l.validationInviteClosed,

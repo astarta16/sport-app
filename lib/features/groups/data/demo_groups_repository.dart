@@ -68,11 +68,25 @@ class DemoGroupsRepository implements GroupsRepository {
     final errors = GroupDraft.validate(d);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     db.requireWithinLimit(d.clubId, 'groups');
+    // v1.9.1: an organization admin assigns coaches of the organization; a
+    // coach always creates the group for themself.
+    final asAdmin = me.administersClub(d.clubId) && !(me.isApprovedCoach && d.coachIds.isEmpty);
+    final coachIds = asAdmin ? d.coachIds.toSet().toList() : [me.id];
+    if (asAdmin) {
+      final ok =
+          coachIds.isNotEmpty &&
+          coachIds.every((c) {
+            final u = db.users[c];
+            return u != null && u.isApprovedCoach && u.clubIds.contains(d.clubId);
+          });
+      if (!ok) throw const ValidationException('groupCoachNotInOrg');
+    }
     final g = Group(
       id: db.newId('g'),
       clubId: d.clubId,
       sportId: d.sportId,
-      coachIds: [me.id],
+      coachIds: coachIds,
+      capacity: d.capacity,
       name: d.name.trim(),
       ageMin: d.ageMin,
       ageMax: d.ageMax,
@@ -232,7 +246,9 @@ class DemoGroupsRepository implements GroupsRepository {
   @override
   Stream<List<GroupInvite>> watchGroupInvites(String groupId) => db.watch(() {
     final g = db.requireGroup(groupId);
-    if (!AccessPolicy.isCoachOf(db.me, g)) throw const PermissionDeniedException();
+    if (!AccessPolicy.isCoachOf(db.me, g) && !db.me.administersClub(g.clubId)) {
+      throw const PermissionDeniedException();
+    }
     return db.invites.values.where((i) => i.groupId == groupId).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   });
@@ -320,6 +336,7 @@ class DemoGroupsRepository implements GroupsRepository {
       sportIds: child.sportIds.contains(g.sportId) ? null : [...child.sportIds, g.sportId],
     );
     if (!g.hasChild(childId)) {
+      if (g.isFull && !g.hasChild(childId)) throw const ValidationException('groupFull');
       db.requireStudentCapacity(g.clubId, childId);
       db.groups[g.id] = g.copyWith(memberChildIds: [...g.memberChildIds, childId]);
     }

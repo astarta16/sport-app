@@ -23,7 +23,7 @@ export { extendTrainingSeries, onSeriesWritten, splitTrainingSeries } from './tr
 export { getMediaUrl, onMediaPostWritten, onMediaUpload } from './triggers/media';
 export { createReport, moderate } from './triggers/moderation';
 export {
-  adminCompliance, adminStats, archiveClub, assignCoach, setAdminRole, setCoachStatus, updateGroup, upsertClub, upsertSport,
+  adminCompliance, adminGroupRoster, adminStats, archiveClub, assignCoach, setAdminRole, setCoachStatus, updateGroup, upsertClub, upsertSport,
 } from './triggers/adminCallables';
 export {
   getExportUrl, onAccountRequestCreated, requestAccountDeletion, requestDataExport,

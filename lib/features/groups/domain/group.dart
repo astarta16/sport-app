@@ -24,10 +24,16 @@ class Group {
     this.status = GroupStatus.active,
     this.paymentManagerIds = const [],
     this.mediaDownloadsEnabled = true,
+    this.capacity,
   });
 
   final String id;
   final String clubId;
+
+  /// v1.9.1: optional maximum number of children (null = no limit).
+  final int? capacity;
+
+  bool get isFull => capacity != null && memberChildIds.length >= capacity!;
   final String sportId;
   final List<String> coachIds;
   final String name;
@@ -68,6 +74,8 @@ class Group {
     String? inviteCode,
     GroupStatus? status,
     List<String>? paymentManagerIds,
+    int? capacity,
+    bool clearCapacity = false,
     bool? mediaDownloadsEnabled,
   }) => Group(
     id: id,
@@ -84,6 +92,7 @@ class Group {
     createdBy: createdBy,
     status: status ?? this.status,
     paymentManagerIds: paymentManagerIds ?? this.paymentManagerIds,
+    capacity: clearCapacity ? null : (capacity ?? this.capacity),
     mediaDownloadsEnabled: mediaDownloadsEnabled ?? this.mediaDownloadsEnabled,
   );
 
@@ -101,6 +110,7 @@ class Group {
     'createdBy': createdBy,
     'status': status.name,
     'paymentManagerIds': paymentManagerIds,
+    'capacity': ?capacity,
   };
 
   factory Group.fromMap(String id, Map<String, dynamic> m) => Group(
@@ -119,6 +129,7 @@ class Group {
     status: GroupStatus.fromName(m['status'] as String?),
     paymentManagerIds: readStringList(m['paymentManagerIds']),
     mediaDownloadsEnabled: m['mediaDownloadsEnabled'] as bool? ?? true,
+    capacity: (m['capacity'] as num?)?.toInt(),
   );
 }
 
@@ -131,6 +142,8 @@ class GroupDraft {
     required this.ageMin,
     required this.ageMax,
     this.scheduleNote,
+    this.coachIds = const [],
+    this.capacity,
   });
 
   final String clubId;
@@ -140,10 +153,16 @@ class GroupDraft {
   final int ageMax;
   final String? scheduleNote;
 
+  /// v1.9.1: set by an organization admin (coaches of the club). Empty when
+  /// a coach creates a group for themself.
+  final List<String> coachIds;
+  final int? capacity;
+
   static List<String> validate(GroupDraft d) => [
     if (d.name.trim().length < 2) 'groupNameRequired',
     if (d.name.trim().length > 60) 'validationTooLong',
     if (d.ageMin < 3 || d.ageMax > 18 || d.ageMin > d.ageMax) 'groupAgeRange',
+    if (d.capacity != null && (d.capacity! < 1 || d.capacity! > 500)) 'groupCapacity',
   ];
 }
 

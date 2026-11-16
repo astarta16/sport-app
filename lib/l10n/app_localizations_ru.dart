@@ -6061,4 +6061,334 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get featLegend =>
       'Пакет = что входит в пакет · Орг. = собственный переключатель организации · Активно/заблокировано = что пользователи получают сейчас · Запуск = сроки · Переключатель справа = разрешение платформы (меняется здесь).';
+
+  @override
+  String get m191UnsavedTitle => 'Есть несохранённые изменения';
+
+  @override
+  String get m191UnsavedBody => 'Если выйти сейчас, они будут потеряны.';
+
+  @override
+  String get m191Stay => 'Остаться';
+
+  @override
+  String get m191Discard => 'Не сохранять';
+
+  @override
+  String get m191FieldGenericError =>
+      'С этим полем что-то не так — пожалуйста, проверьте его.';
+
+  @override
+  String get m191PhoneHint => '5XX XX XX XX';
+
+  @override
+  String get m191DiscardMessage => 'Удалить сообщение';
+
+  @override
+  String get m191ClearSearch => 'Очистить поиск';
+
+  @override
+  String get m191ClearEndDate => 'Убрать дату окончания';
+
+  @override
+  String get m191RemoveAttachment => 'Убрать вложение';
+
+  @override
+  String m191RatingStars(String category, int stars) {
+    return '$category: $stars из 5';
+  }
+
+  @override
+  String get m191LevelDown => 'Уровень ниже';
+
+  @override
+  String get m191LevelUp => 'Уровень выше';
+
+  @override
+  String get m191PhotoLibrary => 'Фотогалерея';
+
+  @override
+  String get m191PdfFile => 'Файл PDF';
+
+  @override
+  String m191FileGuidance(int mb) {
+    return 'Фото (JPG, PNG) или PDF · до $mb МБ';
+  }
+
+  @override
+  String m191FileSize(int kb) {
+    return '$kb КБ';
+  }
+
+  @override
+  String get m191ReplaceFile => 'Заменить';
+
+  @override
+  String get m191RemoveFile => 'Убрать файл';
+
+  @override
+  String get m191Uploading => 'Загрузка…';
+
+  @override
+  String get m191UploadFailedTitle => 'Не загружено';
+
+  @override
+  String m191InputsKept(String reason) {
+    return '$reason Файл и данные сохранены — можно попробовать ещё раз.';
+  }
+
+  @override
+  String m191CertExistingValid(String status, String date) {
+    return 'Текущая справка: $status · до $date';
+  }
+
+  @override
+  String get m191CertReplacesExisting => 'Новая справка заменит эту.';
+
+  @override
+  String get m191CertAddsToExisting =>
+      'Новая справка добавится; действует та, что дольше всех в силе.';
+
+  @override
+  String get m191ReceiptNotSentTitle => 'Не отправлено';
+
+  @override
+  String get s191CalendarWhose => 'Чьё расписание';
+
+  @override
+  String get s191CalendarLegendTraining => 'Тренировка';
+
+  @override
+  String get s191CalendarLegendMatch => 'Матч';
+
+  @override
+  String get s191CalendarMatchesError => 'Не удалось загрузить матчи.';
+
+  @override
+  String get s191GroupClubHelper => 'Только клубы, где вы тренируете';
+
+  @override
+  String get s191GroupSportHelper => 'Только виды спорта выбранного клуба';
+
+  @override
+  String get s191GroupNameHint => 'Например: начинающие до 10 лет';
+
+  @override
+  String get s191RosterEmptyTitle => 'В этой группе пока нет детей';
+
+  @override
+  String get s191RosterEmptyBody =>
+      'Отправьте код группы родителям или добавьте ребёнка по имени.';
+
+  @override
+  String get s191RosterSearchHint => 'Поиск по имени ребёнка';
+
+  @override
+  String s191RosterNoMatches(String query) {
+    return 'В группе нет ребёнка «$query».';
+  }
+
+  @override
+  String s191RosterMoreActions(String name) {
+    return 'Другие действия: $name';
+  }
+
+  @override
+  String s191ChildDetails(String name) {
+    return 'Данные: $name';
+  }
+
+  @override
+  String get s191ChildChipHint =>
+      'Нажмите, чтобы выбрать; удерживайте, чтобы открыть данные';
+
+  @override
+  String get s191RsvpAllTitle => 'Один ответ за всех детей';
+
+  @override
+  String get s191RsvpAllSaved => 'Ответ сохранён для всех детей';
+
+  @override
+  String get s191JoinAlreadyMember => 'Уже в этой группе';
+
+  @override
+  String s191JoinAgeOutside(int age, int min, int max) {
+    return 'Возраст $age; группа для возраста $min–$max';
+  }
+
+  @override
+  String get a191ErrCoachNotInOrg => 'Выберите тренеров этой организации.';
+
+  @override
+  String get a191ErrGroupFull =>
+      'Группа заполнена. Увеличьте вместимость или выберите другую группу.';
+
+  @override
+  String get a191ErrGroupCapacity => 'Вместимость — число от 1 до 500.';
+
+  @override
+  String get a191ErrCapacityBelowMembers =>
+      'В группе уже больше детей, чем эта вместимость.';
+
+  @override
+  String get a191ErrDuplicateName => 'Запись с таким названием уже существует.';
+
+  @override
+  String get a191ChooseSport => 'Выберите вид спорта или программу';
+
+  @override
+  String get a191ChooseCoach => 'Выберите хотя бы одного тренера';
+
+  @override
+  String a191GroupCreated(String name) {
+    return 'Группа «$name» создана. Далее: пригласите родителей в разделе «Участники».';
+  }
+
+  @override
+  String get a191StepSport => 'Спорт';
+
+  @override
+  String get a191StepName => 'Название и возраст';
+
+  @override
+  String get a191StepCoach => 'Тренер';
+
+  @override
+  String get a191StepCapacity => 'Места';
+
+  @override
+  String get a191FromProgram => 'Программа (необязательно)';
+
+  @override
+  String get a191FromProgramHint =>
+      'Заполнит спорт, возраст, тренеров и места из программы';
+
+  @override
+  String get a191GroupName => 'Название группы';
+
+  @override
+  String get a191GroupNameHint => 'напр. Волейбол U-12';
+
+  @override
+  String a191Ages(int from, int to) {
+    return 'Возраст $from–$to';
+  }
+
+  @override
+  String get a191NoCoachesYet =>
+      'В организации пока нет тренеров. Сначала добавьте тренера в настройках организации.';
+
+  @override
+  String get a191Coaches => 'Тренеры';
+
+  @override
+  String get a191Capacity => 'Места (необязательно)';
+
+  @override
+  String get a191CapacityHint => 'Максимум детей. Пусто — без ограничения.';
+
+  @override
+  String get a191ScheduleNote => 'Заметка о расписании (необязательно)';
+
+  @override
+  String get a191ScheduleNoteHint => 'напр. Пн, Ср 16:00 · Зал A';
+
+  @override
+  String get a191RoomLater =>
+      'Помещения и регулярные занятия бронируются в «Расписании помещений» после создания группы.';
+
+  @override
+  String get a191NoLimit => 'Без ограничения';
+
+  @override
+  String get a191AfterCreate =>
+      'После создания: пригласите родителей в «Участниках» и забронируйте занятия в «Расписании помещений».';
+
+  @override
+  String get a191CreateGroup => 'Создать группу';
+
+  @override
+  String get a191GroupSaved => 'Группа сохранена';
+
+  @override
+  String get a191EditGroup => 'Изменить группу';
+
+  @override
+  String get a191InviteFieldsRequired =>
+      'Укажите имя ребёнка, дату рождения и телефон родителя.';
+
+  @override
+  String get a191InviteSent =>
+      'Приглашение отправлено. Ребёнок вступит, когда родитель согласится.';
+
+  @override
+  String a191MembersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count детей',
+      few: '$count ребёнка',
+      one: '$count ребёнок',
+      zero: 'Детей пока нет',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a191MembersOfCapacity(int count, int capacity) {
+    return 'Занято $count из $capacity мест';
+  }
+
+  @override
+  String get a191RosterPrivacy =>
+      'Администраторам видны только имя, первая буква фамилии и год рождения.';
+
+  @override
+  String get a191NoMembersYet =>
+      'В группе пока нет детей. Пригласите родителей ниже.';
+
+  @override
+  String get a191RemoveFromGroup => 'Убрать из группы';
+
+  @override
+  String a191RemoveFromGroupBody(String child, String group) {
+    return '$child больше не будет в «$group». История посещаемости сохранится, профиль ребёнка останется у родителя.';
+  }
+
+  @override
+  String get a191RemovedSnack => 'Убран из группы';
+
+  @override
+  String get a191InviteGuardian => 'Зачисление через родителя';
+
+  @override
+  String get a191InviteGuardianHint =>
+      'Родитель получит приглашение и решит сам. Если ребёнок уже зарегистрирован, родитель привяжет существующий профиль — дубликат не создаётся.';
+
+  @override
+  String get a191GuardianPhone => 'Телефон родителя';
+
+  @override
+  String get a191SendInvite => 'Отправить приглашение';
+
+  @override
+  String get a191Invitations => 'Приглашения';
+
+  @override
+  String get a191InviteWaiting => 'Ждёт родителя';
+
+  @override
+  String get a191InviteAccepted => 'Вступил';
+
+  @override
+  String get a191InviteDeclined => 'Отказ';
+
+  @override
+  String get a191InviteRevoked => 'Отозвано';
+
+  @override
+  String get birthDate => 'Дата рождения';
+
+  @override
+  String get a191Members => 'Участники';
 }

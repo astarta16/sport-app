@@ -3313,5 +3313,217 @@
   "itemGoneBody": "შესაძლოა წაიშალა ან გაუქმდა. დაბრუნდით და ნახეთ მიმდინარე სია.",
   "featOrgOn": "ორგ.: ჩართული",
   "featOrgOff": "ორგ.: გამორთული",
-  "featLegend": "პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება)."
+  "featLegend": "პაკეტი = რას მოიცავს პაკეტი · ორგ. = ორგანიზაციის საკუთარი გადამრთველი · აქტიური/დაბლოკილი = რას იღებენ მომხმარებლები ახლა · გაშვება = დრო · მარჯვენა გადამრთველი = პლატფორმის ნებართვა (აქ იცვლება).",
+  "m191UnsavedTitle": "გაქვთ შეუნახავი ცვლილებები",
+  "m191UnsavedBody": "თუ ახლა გახვალთ, ისინი დაიკარგება.",
+  "m191Stay": "დარჩენა",
+  "m191Discard": "გაუქმება",
+  "m191FieldGenericError": "ამ ველში რაღაც არასწორადაა — გთხოვთ, გადაამოწმოთ.",
+  "m191PhoneHint": "5XX XX XX XX",
+  "m191DiscardMessage": "შეტყობინების გაუქმება",
+  "m191ClearSearch": "ძიების გასუფთავება",
+  "m191ClearEndDate": "დასრულების თარიღის მოხსნა",
+  "m191RemoveAttachment": "მიმაგრებული ფაილის წაშლა",
+  "m191RatingStars": "{category}: {stars} 5-დან",
+  "@m191RatingStars": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "m191LevelDown": "დაბალი დონე",
+  "m191LevelUp": "მაღალი დონე",
+  "m191PhotoLibrary": "ფოტოგალერეა",
+  "m191PdfFile": "PDF ფაილი",
+  "m191FileGuidance": "ფოტო (JPG, PNG) ან PDF · მაქსიმუმ {mb} მბ",
+  "@m191FileGuidance": {
+    "placeholders": {
+      "mb": {
+        "type": "int"
+      }
+    }
+  },
+  "m191FileSize": "{kb} კბ",
+  "@m191FileSize": {
+    "placeholders": {
+      "kb": {
+        "type": "int"
+      }
+    }
+  },
+  "m191ReplaceFile": "შეცვლა",
+  "m191RemoveFile": "ფაილის წაშლა",
+  "m191Uploading": "იტვირთება…",
+  "m191UploadFailedTitle": "ვერ აიტვირთა",
+  "m191InputsKept": "{reason} თქვენი ფაილი და მონაცემები შენახულია — შეგიძლიათ თავიდან სცადოთ.",
+  "@m191InputsKept": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "m191CertExistingValid": "მიმდინარე ცნობა: {status} · {date}-მდე",
+  "@m191CertExistingValid": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "m191CertReplacesExisting": "ახალი ცნობა ამას ჩაანაცვლებს.",
+  "m191CertAddsToExisting": "ახალი ცნობა დაემატება; მოქმედებს ის, რომელიც ყველაზე დიდხანს ძალაშია.",
+  "m191ReceiptNotSentTitle": "ვერ გაიგზავნა",
+  "s191CalendarWhose": "ვისი განრიგი",
+  "s191CalendarLegendTraining": "ვარჯიში",
+  "s191CalendarLegendMatch": "მატჩი",
+  "s191CalendarMatchesError": "მატჩები ვერ ჩაიტვირთა.",
+  "s191GroupClubHelper": "მხოლოდ კლუბები, სადაც მწვრთნელი ხართ",
+  "s191GroupSportHelper": "მხოლოდ არჩეული კლუბის სახეობები",
+  "s191GroupNameHint": "მაგალითად: დამწყებები, 10 წლამდე",
+  "s191RosterEmptyTitle": "ამ ჯგუფში ჯერ ბავშვები არ არიან",
+  "s191RosterEmptyBody": "გაუზიარეთ ჯგუფის კოდი მშობლებს ან დაამატეთ ბავშვი სახელით.",
+  "s191RosterSearchHint": "ბავშვის სახელით ძიება",
+  "s191RosterNoMatches": "ამ ჯგუფში „{query}“ ვერ მოიძებნა.",
+  "@s191RosterNoMatches": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "s191RosterMoreActions": "სხვა მოქმედებები: {name}",
+  "@s191RosterMoreActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "s191ChildDetails": "{name} — მონაცემები",
+  "@s191ChildDetails": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "s191ChildChipHint": "შეეხეთ ასარჩევად, ხანგრძლივად დააჭირეთ მონაცემებისთვის",
+  "s191RsvpAllTitle": "ერთი პასუხი ყველა ბავშვისთვის",
+  "s191RsvpAllSaved": "პასუხი შენახულია ყველა ბავშვისთვის",
+  "s191JoinAlreadyMember": "უკვე ამ ჯგუფშია",
+  "s191JoinAgeOutside": "ასაკი {age}; ჯგუფი {min}–{max} წლისთვისაა",
+  "@s191JoinAgeOutside": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "a191ErrCoachNotInOrg": "აირჩიეთ ამ ორგანიზაციის მწვრთნელები.",
+  "a191ErrGroupFull": "ჯგუფი სავსეა. გაზარდეთ ადგილების რაოდენობა ან აირჩიეთ სხვა ჯგუფი.",
+  "a191ErrGroupCapacity": "ადგილების რაოდენობა უნდა იყოს 1-დან 500-მდე.",
+  "a191ErrCapacityBelowMembers": "ჯგუფში უკვე მეტი ბავშვია, ვიდრე ეს რაოდენობა.",
+  "a191ErrDuplicateName": "ამ სახელით უკვე არსებობს ჩანაწერი.",
+  "a191ChooseSport": "აირჩიეთ სპორტი ან პროგრამა",
+  "a191ChooseCoach": "აირჩიეთ მინიმუმ ერთი მწვრთნელი",
+  "a191GroupCreated": "ჯგუფი „{name}“ შეიქმნა. შემდეგი: მოიწვიეთ მშობლები „წევრებიდან“.",
+  "@a191GroupCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a191StepSport": "სპორტი",
+  "a191StepName": "სახელი და ასაკი",
+  "a191StepCoach": "მწვრთნელი",
+  "a191StepCapacity": "ადგილები",
+  "a191FromProgram": "პროგრამა (არასავალდებულო)",
+  "a191FromProgramHint": "სპორტს, ასაკს, მწვრთნელებს და ადგილებს პროგრამიდან შეავსებს",
+  "a191GroupName": "ჯგუფის სახელი",
+  "a191GroupNameHint": "მაგ. ფრენბურთი U-12",
+  "a191Ages": "ასაკი {from}–{to}",
+  "@a191Ages": {
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "a191NoCoachesYet": "ორგანიზაციას ჯერ მწვრთნელი არ ჰყავს. ჯერ დაამატეთ მწვრთნელი ორგანიზაციის პარამეტრებში.",
+  "a191Coaches": "მწვრთნელები",
+  "a191Capacity": "ადგილები (არასავალდებულო)",
+  "a191CapacityHint": "ბავშვების მაქსიმალური რაოდენობა. ცარიელი = შეზღუდვის გარეშე.",
+  "a191ScheduleNote": "განრიგის შენიშვნა (არასავალდებულო)",
+  "a191ScheduleNoteHint": "მაგ. ორშ, ოთხ 16:00 · დარბაზი A",
+  "a191RoomLater": "ოთახები და განმეორებადი ვარჯიშები იჯავშნება „ოთახების განრიგში“ ჯგუფის შექმნის შემდეგ.",
+  "a191NoLimit": "შეზღუდვის გარეშე",
+  "a191AfterCreate": "შექმნის შემდეგ: მოიწვიეთ მშობლები „წევრებიდან“ და დაჯავშნეთ ვარჯიშები „ოთახების განრიგში“.",
+  "a191CreateGroup": "ჯგუფის შექმნა",
+  "a191GroupSaved": "ჯგუფი შენახულია",
+  "a191EditGroup": "ჯგუფის რედაქტირება",
+  "a191InviteFieldsRequired": "შეიყვანეთ ბავშვის სახელი, დაბადების თარიღი და მშობლის ტელეფონი.",
+  "a191InviteSent": "მოწვევა გაიგზავნა. ბავშვი დაემატება, როცა მშობელი დათანხმდება.",
+  "a191MembersCount": "{count, plural, =0{ბავშვები ჯერ არ არის} other{{count} ბავშვი}}",
+  "@a191MembersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "a191MembersOfCapacity": "დაკავებულია {count} ადგილი {capacity}-დან",
+  "@a191MembersOfCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      }
+    }
+  },
+  "a191RosterPrivacy": "ადმინისტრატორები ხედავენ მხოლოდ სახელს, გვარის პირველ ასოს და დაბადების წელს.",
+  "a191NoMembersYet": "ჯგუფში ბავშვები ჯერ არ არის. მოიწვიეთ მშობლები ქვემოთ.",
+  "a191RemoveFromGroup": "ჯგუფიდან მოხსნა",
+  "a191RemoveFromGroupBody": "{child} აღარ იქნება „{group}“-ში. დასწრების ისტორია შენარჩუნდება; მშობელს ბავშვის პროფილი რჩება.",
+  "@a191RemoveFromGroupBody": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "a191RemovedSnack": "ჯგუფიდან მოიხსნა",
+  "a191InviteGuardian": "ჩარიცხვა მშობლის მეშვეობით",
+  "a191InviteGuardianHint": "მშობელი მიიღებს მოწვევას და თავად გადაწყვეტს. თუ ბავშვი უკვე დარეგისტრირებულია, მშობელი არსებულ პროფილს დაუკავშირებს — დუბლიკატი არ შეიქმნება.",
+  "a191GuardianPhone": "მშობლის ტელეფონი",
+  "a191SendInvite": "მოწვევის გაგზავნა",
+  "a191Invitations": "მოწვევები",
+  "a191InviteWaiting": "ელოდება მშობელს",
+  "a191InviteAccepted": "შემოუერთდა",
+  "a191InviteDeclined": "უარი",
+  "a191InviteRevoked": "გაუქმებული",
+  "birthDate": "დაბადების თარიღი",
+  "a191Members": "წევრები"
 }

@@ -115,7 +115,10 @@ class DemoClubsRepository implements ClubsRepository {
     final r = db.requests[requestId] ?? (throw const NotFoundException());
     final g = r.groupId == null ? null : db.groups[r.groupId];
     if (g == null || !AccessPolicy.isCoachOf(db.me, g)) throw const PermissionDeniedException();
-    if (approve && !g.hasChild(r.childId)) db.requireStudentCapacity(g.clubId, r.childId);
+    if (approve && !g.hasChild(r.childId)) {
+      if (g.isFull) throw const ValidationException('groupFull');
+      db.requireStudentCapacity(g.clubId, r.childId);
+    }
     db.requests[requestId] = r.withStatus(approve ? RequestStatus.approved : RequestStatus.rejected);
     if (approve && !g.hasChild(r.childId)) {
       db.groups[g.id] = g.copyWith(memberChildIds: [...g.memberChildIds, r.childId]);

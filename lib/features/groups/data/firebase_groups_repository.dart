@@ -71,6 +71,8 @@ class FirebaseGroupsRepository implements GroupsRepository {
       'ageMin': d.ageMin,
       'ageMax': d.ageMax,
       'scheduleNote': d.scheduleNote,
+      if (d.coachIds.isNotEmpty) 'coachIds': d.coachIds,
+      'capacity': ?d.capacity,
     });
     final snap = await db.collection('groups').doc(r['groupId'] as String).get();
     return Group.fromMap(snap.id, snap.data() ?? const {});

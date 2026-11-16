@@ -10,6 +10,8 @@ import { normalizeInviteCode } from '../lib/inviteCode';
 import { InviteLite, isInviteAddressee, isUnclaimedPendingChild, normalizePhone, planInviteResponse, validateNewChild } from '../lib/invites';
 import { SearchableChild, filterSearchResults, normalizeQuery, prefixVariants } from '../lib/search';
 import { assignInviteCode } from './groups';
+import { adminScopeFromClaims, canActOnClub } from '../lib/adminScope';
+import { CoachDoc, hasRoom, parseCapacity, validGroupCoaches, withinGroupLimit } from '../lib/groupAdmin';
 import { maskPhone } from '../lib/phone';
 import { tbilisiDateKey } from '../lib/series';
 import { smsSegments } from '../lib/sms/provider';
@@ -48,11 +50,15 @@ export const createInvite = onCall({ secrets: SMS_SECRETS }, async (request) => 
   const data = (request.data ?? {}) as Record<string, unknown>;
   const groupId = idArg(data.groupId, 'groupId');
   const coach = await loadUser(uid);
-  if (!coach || coach.role !== 'coach' || coach.coachStatus !== 'approved') throw new HttpsError('permission-denied', 'approved coaches only');
   const groupSnap = await db.doc(`groups/${groupId}`).get();
   if (!groupSnap.exists) throw new HttpsError('not-found', 'group not found');
   const group = groupFrom(groupSnap.id, groupSnap.data()!);
-  if (!group.coachIds.includes(uid)) throw new HttpsError('permission-denied', 'not a coach of this group');
+  // v1.9.1: the group's coach or an administrator of its organization.
+  const scope = adminScopeFromClaims((request.auth?.token ?? {}) as Record<string, unknown>);
+  const isCoach = !!coach && coach.role === 'coach' && coach.coachStatus === 'approved' && group.coachIds.includes(uid);
+  if (!isCoach && !canActOnClub(scope, group.clubId)) {
+    throw new HttpsError('permission-denied', 'coach of this group or its organization administrator only');
+  }
   if (groupSnap.get('status') === 'archived') throw new HttpsError('failed-precondition', 'group is archived');
 
   await consumeRateLimit(uid, 'invites');
@@ -184,6 +190,10 @@ export const respondInvite = onCall(async (request) => {
     if (plan.kind === 'error') throw new HttpsError(plan.code, plan.message);
     if (accept && (!groupSnap.exists || groupSnap.get('status') === 'archived')) {
       throw new HttpsError('failed-precondition', 'group is not available');
+    }
+    // v1.9.1: optional group capacity.
+    if (accept && plan.kind !== 'decline' && !hasRoom(groupSnap.get('capacity'), groupSnap.get('memberChildIds') ?? [], plan.memberChildId)) {
+      throw new HttpsError('resource-exhausted', 'groupFull');
     }
 
     const decided = { decidedAt: FieldValue.serverTimestamp(), decidedBy: uid, parentId: uid };
@@ -359,18 +369,50 @@ export const createGroup = onCall(async (request) => {
     throw new HttpsError('invalid-argument', 'age range');
   }
   const scheduleNote = d.scheduleNote == null ? null : String(d.scheduleNote).slice(0, 500);
-  const coach = await loadUser(uid);
-  const userSnap = await db.doc(`users/${uid}`).get();
-  if (!coach || coach.role !== 'coach' || coach.coachStatus !== 'approved' || !(userSnap.get('clubIds') ?? []).includes(clubId)) {
-    throw new HttpsError('permission-denied', 'approved coach of this club only');
+  const capacity = parseCapacity(d.capacity);
+  if (capacity === 'invalid') throw new HttpsError('invalid-argument', 'capacity');
+  // v1.9.1: an organization administrator of this club (or a platform
+  // admin) may create groups for its coaches; a coach creates groups for
+  // themself. Nobody else.
+  const scope = adminScopeFromClaims((request.auth?.token ?? {}) as Record<string, unknown>);
+  const orgAdmin = canActOnClub(scope, clubId);
+  let coachIds: string[];
+  if (orgAdmin) {
+    if (!Array.isArray(d.coachIds) || d.coachIds.length < 1 || d.coachIds.length > 20 ||
+        !d.coachIds.every((x) => typeof x === 'string' && x && !x.includes('/'))) {
+      throw new HttpsError('invalid-argument', 'coachIds');
+    }
+    coachIds = [...new Set(d.coachIds as string[])];
+    const snaps = await db.getAll(...coachIds.map((c) => db.doc(`users/${c}`)));
+    if (!validGroupCoaches(clubId, snaps.map((s) => (s.exists ? (s.data() as CoachDoc) : undefined)))) {
+      throw new HttpsError('failed-precondition', 'every coach must be an approved coach of this organization');
+    }
+  } else {
+    const coach = await loadUser(uid);
+    const userSnap = await db.doc(`users/${uid}`).get();
+    if (!coach || coach.role !== 'coach' || coach.coachStatus !== 'approved' || !(userSnap.get('clubIds') ?? []).includes(clubId)) {
+      throw new HttpsError('permission-denied', 'approved coach of this club or its administrator only');
+    }
+    coachIds = [uid];
   }
   const club = await db.doc(`clubs/${clubId}`).get();
   if (!club.exists || club.get('status') === 'archived') throw new HttpsError('failed-precondition', 'club not available');
+  // Organization must be active with full access, and within its group limit.
+  const cfgSnap = await db.doc(`orgConfigs/${clubId}`).get();
+  if (cfgSnap.exists) {
+    const cfg = cfgSnap.data()!;
+    if ((cfg.status ?? 'active') !== 'active' || (cfg.accessMode ?? 'full') !== 'full') {
+      throw new HttpsError('failed-precondition', 'orgInactive');
+    }
+    const active = (await db.collection('groups').where('clubId', '==', clubId).where('status', '==', 'active').count().get()).data().count;
+    if (!withinGroupLimit(active, cfg.limits?.maxGroups)) throw new HttpsError('resource-exhausted', 'limitGroups');
+  }
   await consumeRateLimit(uid, 'createGroup');
   const ref = db.collection('groups').doc();
   await ref.set({
-    clubId, sportId, name, ageMin, ageMax, scheduleNote, coachIds: [uid], memberChildIds: [], parentIds: [],
+    clubId, sportId, name, ageMin, ageMax, scheduleNote, coachIds, memberChildIds: [], parentIds: [],
     createdBy: uid, status: 'active', inviteCode: '', createdAt: FieldValue.serverTimestamp(),
+    ...(capacity === null ? {} : { capacity }),
   });
   const inviteCode = await assignInviteCode(ref.id);
   return { groupId: ref.id, inviteCode };
