@@ -54,6 +54,8 @@ import '../features/child_threads/presentation/child_thread_screen.dart';
 import '../features/brain_academy/domain/brain_models.dart';
 import '../features/brain_academy/presentation/student_home_screen.dart';
 import '../features/brain_academy/presentation/brain_game_screen.dart';
+import '../features/organizations/domain/organization.dart';
+import '../features/organizations/presentation/feature_gate.dart';
 import '../features/brain_academy/presentation/coach_challenges_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -64,7 +66,13 @@ String? resolveRedirect({
   required AsyncValue<AuthSession?> session,
   required bool onboardingSeen,
   bool studentAccountsEnabled = false,
+  Set<OrgModule>? availableModules,
 }) {
+  // v1.8: a route of a feature that none of the user's organizations has
+  // on is never shown (old deep links, stale clients). Server-side checks
+  // still reject the operations themselves.
+  final gated = routeModule(location);
+  final blocked = gated != null && availableModules != null && !availableModules.contains(gated);
   const publicPrefixes = [Routes.phone, Routes.otp, Routes.onboarding, Routes.explore, '/club/'];
   final isPublic = publicPrefixes.any(location.startsWith);
 
@@ -81,6 +89,7 @@ String? resolveRedirect({
   // sign-in disabled until age verification and parental consent exist.
   if (user.role == UserRole.child) {
     if (!studentAccountsEnabled) return location == Routes.childUnsupported ? null : Routes.childUnsupported;
+    if (blocked) return Routes.studentHome;
     return location.startsWith('/kid/') ? null : Routes.studentHome;
   }
   if (user.isCoach && !user.isApprovedCoach) return location == Routes.coachPending ? null : Routes.coachPending;
@@ -88,6 +97,7 @@ String? resolveRedirect({
   // Admins use the separate web dashboard (lib/main_admin.dart).
   if (user.role == UserRole.admin) return location == Routes.adminOnly ? null : Routes.adminOnly;
   final home = user.isCoach ? Routes.coachHome : Routes.parentHome;
+  if (blocked) return home;
   if (location == Routes.calendar) return user.isCoach ? Routes.coachCalendar : Routes.parentCalendar;
   if (location == Routes.splash || location.startsWith('/auth') || location == Routes.onboarding) return home;
   if (location == Routes.explore) return user.isCoach ? Routes.coachMap : Routes.parentMap;
@@ -121,6 +131,8 @@ final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier<int>(0);
   ref.listen(authSessionProvider, (_, _) => refresh.value++);
   ref.listen(appSettingsProvider.select((s) => s.onboardingSeen), (_, _) => refresh.value++);
+  // v1.8: feature changes re-run the route guard without an app rebuild.
+  ref.listen(availableModulesProvider, (_, _) => refresh.value++);
 
   StatefulShellBranch branch(String path, Widget child) => StatefulShellBranch(
     routes: [
@@ -140,6 +152,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       session: ref.read(authSessionProvider),
       onboardingSeen: ref.read(appSettingsProvider).onboardingSeen,
       studentAccountsEnabled: ref.read(appModeProvider) == AppMode.demo,
+      availableModules: ref.read(availableModulesProvider),
     ),
     routes: [
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),

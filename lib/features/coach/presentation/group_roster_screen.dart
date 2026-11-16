@@ -16,6 +16,8 @@ import '../../medical_certificates/domain/medical_certificate.dart';
 import '../../medical_certificates/presentation/certificates_providers.dart';
 import 'coach_home_screen.dart';
 import 'group_management.dart';
+import '../../organizations/presentation/org_widgets.dart';
+import '../../organizations/domain/organization.dart';
 import '../../contacts/presentation/contacts_screens.dart';
 
 /// Group roster with certificate status, parents (phone visible to the
@@ -37,12 +39,13 @@ class GroupRosterScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(group?.name ?? l.roster),
         actions: [
-          IconButton(
-            key: const Key('group-challenges'),
-            tooltip: l.coachChallengesTitle,
-            onPressed: () => context.push('/group/$groupId/challenges'),
-            icon: const Icon(Icons.psychology_rounded),
-          ),
+          if (ref.watch(moduleOnForGroupProvider((groupId, OrgModule.coachChallenges))))
+            IconButton(
+              key: const Key('group-challenges'),
+              tooltip: l.coachChallengesTitle,
+              onPressed: () => context.push('/group/$groupId/challenges'),
+              icon: const Icon(Icons.psychology_rounded),
+            ),
         ],
       ),
       body: AsyncView<List<Child>>(

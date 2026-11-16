@@ -42,6 +42,8 @@ import 'parent_context.dart';
 import '../../chat/presentation/chat_providers.dart';
 import '../../sports/presentation/sport_label.dart';
 import '../../organizations/presentation/org_widgets.dart';
+import '../../organizations/presentation/feature_gate.dart';
+import '../../organizations/domain/organization.dart';
 import '../../matches/presentation/match_result_widgets.dart';
 
 /// Sports dashboard for the selected child and sport (spec §6.1).
@@ -122,14 +124,18 @@ class ParentHomeScreen extends ConsumerWidget {
         onAction: () => context.go(Routes.parentMap),
       ),
     );
+    // v1.8: only features the child's organization offers.
+    final certOn = ref.watch(featureOnProvider(OrgModule.medicalCertificates));
+    final payOn = ref.watch(featureOnProvider(OrgModule.payments));
     final tiles = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: _CertificateTile(child: child)),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _PaymentTile(child: child, sportId: s.sportId),
-        ),
+        if (certOn) Expanded(child: _CertificateTile(child: child)),
+        if (certOn && payOn) const SizedBox(width: AppSpacing.sm),
+        if (payOn)
+          Expanded(
+            child: _PaymentTile(child: child, sportId: s.sportId),
+          ),
       ],
     );
     final group = s.group;
@@ -176,7 +182,10 @@ class ParentHomeScreen extends ConsumerWidget {
                     tiles,
                     const SizedBox(height: AppSpacing.sm),
                     _AttendanceCard(child: child),
-                    _PlansSection(child: child),
+                    FeatureGate(
+                      module: OrgModule.trainingPlans,
+                      child: _PlansSection(child: child),
+                    ),
                     if (group != null) ...[
                       SectionHeader(
                         l.weekSchedule,
@@ -185,7 +194,10 @@ class ParentHomeScreen extends ConsumerWidget {
                       ),
                       _WeekStrip(groupIds: child.groupIds.toSet()),
                       SectionHeader(l.mediaRecent),
-                      MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
+                      FeatureGate(
+                        module: OrgModule.media,
+                        child: MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
+                      ),
                     ],
                   ],
                 );
@@ -208,11 +220,17 @@ class ParentHomeScreen extends ConsumerWidget {
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
                             _MatchesBlock(groupIds: {group.id}),
-                            _PlansSection(child: child),
+                            FeatureGate(
+                              module: OrgModule.trainingPlans,
+                              child: _PlansSection(child: child),
+                            ),
                             SectionHeader(l.weekSchedule),
                             _WeekStrip(groupIds: child.groupIds.toSet()),
                             SectionHeader(l.mediaRecent),
-                            MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
+                            FeatureGate(
+                              module: OrgModule.media,
+                              child: MediaStrip(groupIds: {group.id}, sportKey: group.sportId),
+                            ),
                           ],
                         ],
                       ),

@@ -24,6 +24,8 @@ import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/child.dart';
 import '../../sports/presentation/sport_label.dart';
 import '../../organizations/presentation/org_widgets.dart';
+import '../../organizations/presentation/feature_gate.dart';
+import '../../organizations/domain/organization.dart';
 import 'children_providers.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
@@ -100,16 +102,17 @@ class _Body extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           _ProgressTile(childId: child.id),
           const SizedBox(height: AppSpacing.xs),
-          AppCard(
-            key: const Key('child-plans-tile'),
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            onTap: () => context.push('${Routes.plans}?childId=${child.id}'),
-            child: ListTile(
-              leading: const Icon(Icons.assignment_rounded, color: AppColors.blue),
-              title: Text(l.plansTitle),
-              trailing: const Icon(Icons.chevron_right_rounded),
+          if (ref.watch(featureOnProvider(OrgModule.trainingPlans)))
+            AppCard(
+              key: const Key('child-plans-tile'),
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              onTap: () => context.push('${Routes.plans}?childId=${child.id}'),
+              child: ListTile(
+                leading: const Icon(Icons.assignment_rounded, color: AppColors.blue),
+                title: Text(l.plansTitle),
+                trailing: const Icon(Icons.chevron_right_rounded),
+              ),
             ),
-          ),
         ],
         SectionHeader(l.sportsLabel),
         Wrap(
@@ -199,19 +202,20 @@ class _Body extends ConsumerWidget {
               trailing: StatusPill(label: l.requestPending, color: AppColors.warning, dense: true),
             ),
           ),
-        SectionHeader(l.medicalStatus),
-        AppCard(
-          onTap: () => context.push(Routes.certificates(child.id)),
-          child: Row(
-            children: [
-              Icon(status.icon, color: status.color),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(child: Text(l.certificatesTitle, style: t.titleSmall)),
-              StatusPill.of(status, dense: true),
-              const Icon(Icons.chevron_right_rounded),
-            ],
+        if (ref.watch(featureOnProvider(OrgModule.medicalCertificates))) SectionHeader(l.medicalStatus),
+        if (ref.watch(featureOnProvider(OrgModule.medicalCertificates)))
+          AppCard(
+            onTap: () => context.push(Routes.certificates(child.id)),
+            child: Row(
+              children: [
+                Icon(status.icon, color: status.color),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: Text(l.certificatesTitle, style: t.titleSmall)),
+                StatusPill.of(status, dense: true),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
           ),
-        ),
         if (canEdit) LeaderboardConsentSection(child: child),
         if (canEdit) ...[
           SectionHeader(l.privacyTitle),

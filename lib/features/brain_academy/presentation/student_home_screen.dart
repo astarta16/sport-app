@@ -24,6 +24,8 @@ import '../domain/brain_models.dart';
 import '../domain/student_view.dart';
 import '../../sports/presentation/sport_label.dart';
 import 'brain_providers.dart';
+import '../../organizations/presentation/feature_gate.dart';
+import '../../organizations/domain/organization.dart';
 import 'student_v17_widgets.dart';
 
 /// `/kid/home` — v1.6 student experience (demo mode only): Home, Brain
@@ -170,27 +172,28 @@ class _HomeTab extends ConsumerWidget {
       ),
       const SizedBox(height: AppSpacing.sm),
       // Brain Academy is the hero of the student dashboard.
-      AppCard(
-        key: const Key('student-brain-hero'),
-        onTap: openBrain,
-        color: const Color(0xFF7C4DFF).withValues(alpha: 0.14),
-        child: Row(
-          children: [
-            const Icon(Icons.psychology_rounded, size: 48, color: Color(0xFF7C4DFF)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l.brainAcademy, style: t.titleLarge),
-                  Text(l.brainTagline, style: t.bodyMedium),
-                ],
+      if (ref.watch(featureOnProvider(OrgModule.brainAcademy)))
+        AppCard(
+          key: const Key('student-brain-hero'),
+          onTap: openBrain,
+          color: const Color(0xFF7C4DFF).withValues(alpha: 0.14),
+          child: Row(
+            children: [
+              const Icon(Icons.psychology_rounded, size: 48, color: Color(0xFF7C4DFF)),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l.brainAcademy, style: t.titleLarge),
+                    Text(l.brainTagline, style: t.bodyMedium),
+                  ],
+                ),
               ),
-            ),
-            const Icon(Icons.chevron_right_rounded),
-          ],
+              const Icon(Icons.chevron_right_rounded),
+            ],
+          ),
         ),
-      ),
       ChallengesList(childId: c.id, compact: true),
       SectionHeader(l.studentMySports),
       Wrap(

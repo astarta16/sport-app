@@ -1515,5 +1515,8 @@
   "modulePaymentReminders": "Напоминания об оплате",
   "moduleFacilities": "Объекты и залы",
   "moduleReports": "Отчёты",
-  "moduleDataExports": "Экспорт данных"
+  "moduleDataExports": "Экспорт данных",
+  "orgAllAcademies": "Все академии",
+  "orgRoleAdmin": "Администратор",
+  "orgRoleStudent": "Ученик"
 }

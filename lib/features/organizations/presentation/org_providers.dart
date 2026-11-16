@@ -26,10 +26,12 @@ final myMembershipsProvider = StreamProvider.autoDispose<List<OrgMembership>>((r
   return ref.watch(organizationsRepositoryProvider).watchMyMemberships();
 });
 
-/// The organization context the user is working in. A user may belong to
-/// several organizations; the choice is remembered on the device and falls
-/// back to the first membership. It only scopes what is SHOWN — every
-/// request is still authorized server-side against the user's memberships.
+/// The organization context the user is working in. `null` = all of the
+/// user's organizations (default); a selected organization scopes the
+/// dashboards to its children, groups and features. The choice is
+/// remembered on the device and dropped if the membership ends. It only
+/// scopes what is SHOWN — every request is still authorized server-side
+/// against the target organization and resource, never against this value.
 class ActiveOrgNotifier extends Notifier<String?> {
   static const _key = 'org.active';
 
@@ -43,14 +45,23 @@ class ActiveOrgNotifier extends Notifier<String?> {
       saved = null;
     }
     if (saved != null && memberships.any((m) => m.orgId == saved)) return saved;
-    return memberships.firstOrNull?.orgId;
+    return null;
   }
 
-  void select(String orgId) {
+  /// Switches context and drops every tenant-scoped cache so data of the
+  /// previous organization can never appear in the new one.
+  void select(String? orgId) {
     state = orgId;
+    ref
+      ..invalidate(orgConfigProvider)
+      ..invalidate(programsProvider)
+      ..invalidate(roomsProvider)
+      ..invalidate(bookingsProvider)
+      ..invalidate(leaderboardProvider)
+      ..invalidate(leaderboardConsentProvider);
     try {
       final SharedPreferences p = ref.read(sharedPreferencesProvider);
-      p.setString(_key, orgId);
+      orgId == null ? p.remove(_key) : p.setString(_key, orgId);
     } catch (_) {
       // No local persistence (admin web demo): selection lasts the session.
     }

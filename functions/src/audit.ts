@@ -17,7 +17,11 @@ export type AuditAction =
   | 'org.create' | 'org.platform' | 'org.settings' | 'org.admin.assign' | 'org.admin.remove' | 'org.coach.add'
   | 'org.coach.remove' | 'program.upsert' | 'room.create' | 'room.update' | 'room.status' | 'booking.create'
   | 'booking.series' | 'booking.update' | 'booking.series.update' | 'booking.cancel'
-  | 'leaderboard.consent' | 'leaderboard.revoke';
+  | 'leaderboard.consent' | 'leaderboard.revoke'
+  // v1.8 platform
+  | 'org.provision' | 'org.template.apply' | 'org.entitlements' | 'org.subscription' | 'package.upsert'
+  | 'template.upsert' | 'template.archive' | 'template.restore' | 'invitation.create' | 'invitation.resend'
+  | 'invitation.revoke' | 'invitation.accept' | 'invitation.reject';
 
 export interface AuditEntry {
   action: AuditAction;

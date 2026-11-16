@@ -188,19 +188,45 @@ service cloud.firestore {
     // feature set stays on, the new restricted modules stay off.
     function legacyModuleOn(m) {
       return m in ['trainings', 'matches', 'attendance', 'communication', 'notifications', 'studentAccounts',
-                   'brainAcademy', 'trainingPlans', 'payments', 'medicalCertificates', 'media'];
+                   'brainAcademy', 'trainingPlans', 'payments', 'medicalCertificates', 'media',
+                   // v1.8 features implied by the v1.7 set
+                   'parentRsvp', 'messageAcks', 'coachChallenges', 'paymentReceipts', 'paymentVerification',
+                   'paymentReminders', 'reports', 'dataExports'];
+    }
+
+    // v1.7 configs (no featureSchema) used coarse modules; a v1.8 feature
+    // is on there when its v1.7 parent is on.
+    function legacyParent(m) {
+      return m in ['paymentReceipts', 'paymentVerification', 'paymentReminders'] ? 'payments'
+        : m == 'coachChallenges' ? 'brainAcademy'
+        : m == 'messageAcks' ? 'communication'
+        : m == 'parentRsvp' ? 'attendance'
+        : m == 'facilities' ? 'roomScheduling'
+        : m in ['reports', 'dataExports'] ? 'trainings'
+        : m;
     }
 
     // The single feature-flag check: organization active AND module allowed
     // by the platform AND enabled by the organization. Never grants access
     // on its own — it is always combined with a role check.
+    // v1.8: the server writes `effectiveModules` (entitlement × package ×
+    // rollout × organization switch × dependencies) together with
+    // `accessMode` (subscription) and `provisioning` on every change and
+    // from the scheduled refresh; rules only read the result.
     function moduleOn(clubId, m) {
       return clubId is string && clubId != ''
         && (!exists(orgCfgPath(clubId))
             ? legacyModuleOn(m)
-            : (get(orgCfgPath(clubId)).data.get('status', 'active') == 'active'
-               && m in get(orgCfgPath(clubId)).data.get('allowedModules', [])
-               && m in get(orgCfgPath(clubId)).data.get('enabledModules', [])));
+            : cfgModuleOn(get(orgCfgPath(clubId)).data, m));
+    }
+
+    function cfgModuleOn(c, m) {
+      return c.get('status', 'active') == 'active'
+        && c.get('accessMode', 'full') == 'full'
+        && c.get('provisioning', 'ready') == 'ready'
+        && (c.get('featureSchema', 1) >= 2
+            ? m in c.get('effectiveModules', [])
+            : (legacyParent(m) in c.get('allowedModules', []) && legacyParent(m) in c.get('enabledModules', [])));
     }
 
     function groupModuleOn(groupId, m) {
@@ -553,6 +579,8 @@ service cloud.firestore {
         // approved group coaches; hidden/reportCount are server-managed.
         // Hidden messages stay readable by members — the app filters them.
         allow create: if isChatMember()
+          && groupModuleOn(groupId, 'communication')
+          && (request.resource.data.get('requiresAck', false) == false || groupModuleOn(groupId, 'messageAcks'))
           && request.resource.data.keys().hasOnly([
                'senderId', 'senderName', 'senderRole', 'text',
                'attachments', 'createdAt', 'type', 'pinned', 'hidden', 'requiresAck'])
@@ -615,7 +643,8 @@ service cloud.firestore {
         match /msgAcks/{readerId} {
           allow read: if signedIn() && (resource.data.uid == uid() || isSenderCoach());
           allow create: if validMark(request.resource.data, readerId, 'ackAt') && canMark(readerId)
-            && receipt().requiresAck == true;
+            && receipt().requiresAck == true
+            && groupModuleOn(groupId, 'messageAcks');
           allow update, delete: if false;
         }
       }
@@ -664,6 +693,35 @@ service cloud.firestore {
     // out of an organization admin's reach.
     match /orgConfigs/{clubId} {
       allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // v1.8 platform collections — written only by platform callables.
+    match /subscriptionPackages/{packageId} {
+      allow read: if isPlatformAdmin() || clubAdminIds().size() > 0;
+      allow write: if false;
+    }
+
+    match /orgTemplates/{templateId} {
+      allow read: if isPlatformAdmin();
+      allow write: if false;
+    }
+
+    // Invitations hold only a token HASH; the invited person accepts
+    // through the acceptInvitation callable, never by reading this.
+    match /orgInvitations/{invitationId} {
+      allow read: if isPlatformAdmin() || isClubAdmin(resource.data.orgId);
+      allow write: if false;
+    }
+
+    // Configuration history (who / when / why / what), append-only.
+    match /orgConfigs/{clubId}/history/{version} {
+      allow read: if isAdminOfClub(clubId);
+      allow write: if false;
+    }
+
+    match /platformAdmins/{uid} {
+      allow read: if isPlatformAdmin();
       allow write: if false;
     }
 
@@ -757,6 +815,7 @@ service cloud.firestore {
         || isGroupParent(resource.data.groupId)
         || isChildAccountInGroup(resource.data.groupId);
       allow create: if isGroupCoach(request.resource.data.groupId)
+        && groupModuleOn(request.resource.data.groupId, 'coachChallenges')
         && request.resource.data.keys().hasOnly(['groupId', 'coachId', 'game', 'difficulty', 'createdAt', 'dueDate'])
         && request.resource.data.coachId == uid()
         && request.resource.data.createdAt == request.time
@@ -781,7 +840,11 @@ service cloud.firestore {
         || isParentOfChild(resource.data.childId)
         || isCoachOfChild(resource.data.childId);
 
+      // v1.8: the first group's organization must have certificates on
+      // (children without a group can always keep a certificate).
       allow create: if isParentOfChild(request.resource.data.childId)
+        && (childDoc(request.resource.data.childId).get('groupIds', []).size() == 0
+            || groupModuleOn(childDoc(request.resource.data.childId).groupIds[0], 'medicalCertificates'))
         && request.resource.data.keys().hasOnly([
              'childId', 'uploadedBy', 'storagePath', 'issuedAt',
              'validUntil', 'consentAt', 'status', 'groupId', 'sportId'])
@@ -883,6 +946,7 @@ service cloud.firestore {
       // / verifiedAt are server-only (reviewPaymentProof), even for admins.
       allow update: if (isAdmin() && !changed(['verification', 'verifiedBy', 'verifiedAt']))
         || (isPaymentReviewer(resource.data.groupId)
+            && groupModuleOn(resource.data.groupId, 'payments')
             && changedOnly(['status', 'paidAt', 'cancelledReason', 'updatedBy', 'updatedAt'])
             && request.resource.data.status in ['pending', 'paid', 'cancelled']
             && (!('paidAt' in request.resource.data)
@@ -1167,7 +1231,7 @@ service cloud.firestore {
           && request.time < eventDoc(kindOf(d), d.trainingId).startAt
           && d.get('scheduleVersion', 1) == eventDoc(kindOf(d), d.trainingId).get('scheduleVersion', 1)
           && d.childId in groupDoc(d.groupId).get('memberChildIds', [])
-          && groupModuleOn(d.groupId, 'attendance');
+          && groupModuleOn(d.groupId, 'parentRsvp');
       }
 
       allow read: if isAdmin()
@@ -1341,7 +1405,7 @@ service cloud.firestore {
           && optString(d, 'description', 4000)
           && optString(d, 'coachName', 200)
           && d.type in ['seasonal', 'monthly', 'weekly', 'exercise', 'homework']
-          && d.groupIds is list && d.groupIds.size() >= 1 && d.groupIds.size() <= 10
+          && d.groupIds is list && d.groupIds.size() >= 1 && d.groupIds.size() <= 8
           && d.groupIds.toSet().size() == d.groupIds.size()
           && d.clubId is string
           && d.startDate is string && d.startDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
@@ -1376,6 +1440,7 @@ service cloud.firestore {
 
       allow create: if validPlan(request.resource.data)
         && coachOfAll(request.resource.data.groupIds)
+        && moduleOn(request.resource.data.clubId, 'trainingPlans')
         && request.resource.data.clubId == groupDoc(request.resource.data.groupIds[0]).clubId
         && request.resource.data.createdBy == uid()
         && request.resource.data.get('updatedBy', uid()) == uid()
@@ -1498,6 +1563,7 @@ service cloud.firestore {
         || isClubAdmin(resource.data.get('clubId', ''));
 
       allow create: if isApprovedCoach()
+        && moduleOn(request.resource.data.clubId, 'media')
         && request.resource.data.keys().hasOnly([
              'coachId', 'coachName', 'groupIds', 'clubId', 'type', 'storagePath', 'thumbPath',
              'caption', 'durationSec', 'createdAt', 'consentConfirmed'])

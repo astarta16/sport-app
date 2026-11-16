@@ -334,11 +334,13 @@ describe('training plans', () => {
   // Firestore rules may read at most 10 documents per request (measured: also
   // inside a WriteBatch), i.e. the caller's users doc + 9 groups. Client-written
   // plans therefore list at most 9 groups (contract: 10) — documented deviation.
-  it('a coach of all 9 listed groups can create the plan; 10 groups are rejected', async () => {
+  // v1.8: the cap is 8 groups (was 9) because the rule also reads the
+  // organization's entitlement document (10 reads per rule evaluation).
+  it('a coach of all 8 listed groups can create the plan; 9 groups are rejected', async () => {
     const groupIds = ['g1', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'g10', 'g11'];
-    await assertSucceeds(setDoc(doc(as(UID.coach), 'trainingPlans/p9g'), plan({ groupIds: groupIds.slice(0, 9) })));
-    await assertFails(setDoc(doc(as(UID.coach), 'trainingPlans/p10'), plan({ groupIds })));
-    await assertFails(setDoc(doc(as(UID.coachNoPay), 'trainingPlans/p11'), plan({ groupIds: groupIds.slice(0, 9), createdBy: UID.coachNoPay })));
+    await assertSucceeds(setDoc(doc(as(UID.coach), 'trainingPlans/p8g'), plan({ groupIds: groupIds.slice(0, 8) })));
+    await assertFails(setDoc(doc(as(UID.coach), 'trainingPlans/p9'), plan({ groupIds: groupIds.slice(0, 9) })));
+    await assertFails(setDoc(doc(as(UID.coachNoPay), 'trainingPlans/p11'), plan({ groupIds: groupIds.slice(0, 8), createdBy: UID.coachNoPay })));
   });
 
   it('status transitions: draft→published→archived, published→draft; readerIds untouchable', async () => {

@@ -18,6 +18,8 @@ import '../../groups/presentation/groups_providers.dart';
 import '../../sports/presentation/sports_providers.dart';
 import '../../trainings/domain/series.dart';
 import '../../sports/presentation/sport_label.dart';
+import '../../organizations/presentation/org_widgets.dart';
+import '../../organizations/domain/organization.dart';
 import '../../trainings/presentation/series_form_screen.dart';
 
 /// Top of the coach's group page: invite code, add-child entry points,
@@ -101,11 +103,12 @@ class GroupManagementHeader extends ConsumerWidget {
                     icon: const Icon(Icons.assignment_rounded),
                     label: Text(l.planNew),
                   ),
-                  OutlinedButton.icon(
-                    onPressed: () => context.push(Routes.groupPayments(groupId)),
-                    icon: const Icon(Icons.payments_rounded),
-                    label: Text(l.paymentsTitle),
-                  ),
+                  if (ref.watch(moduleOnForGroupProvider((groupId, OrgModule.payments))))
+                    OutlinedButton.icon(
+                      onPressed: () => context.push(Routes.groupPayments(groupId)),
+                      icon: const Icon(Icons.payments_rounded),
+                      label: Text(l.paymentsTitle),
+                    ),
                 ],
               ),
             ],

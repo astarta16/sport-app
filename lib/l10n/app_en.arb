@@ -1515,5 +1515,8 @@
   "modulePaymentReminders": "Payment reminders",
   "moduleFacilities": "Facilities",
   "moduleReports": "Reports",
-  "moduleDataExports": "Data exports"
+  "moduleDataExports": "Data exports",
+  "orgAllAcademies": "All academies",
+  "orgRoleAdmin": "Administrator",
+  "orgRoleStudent": "Student"
 }

@@ -248,7 +248,9 @@ class PlanDraft {
   final Map<String, PhotoUpload> newFiles;
 
   /// Server limit: a rules request may read ≤ 10 docs (user + one per group).
-  static const maxGroups = 9;
+  /// v1.8: 8 (was 9) — the rules read the organization's entitlement
+  /// document too, and Firestore allows 10 document reads per rule check.
+  static const maxGroups = 8;
   static const maxExercises = 50;
   static const maxMedia = 10;
   static final _https = RegExp(r'^https://[^\s<>"]+$', caseSensitive: false);

@@ -21,6 +21,8 @@ import '../../children/presentation/children_providers.dart';
 import '../../clubs/presentation/clubs_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../sports/presentation/sport_label.dart';
+import '../../organizations/presentation/feature_gate.dart';
+import '../../organizations/domain/organization.dart';
 import '../../sports/presentation/sports_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -113,15 +115,16 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
               const SizedBox(height: AppSpacing.sm),
-              AppCard(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: ListTile(
-                  leading: const Icon(Icons.account_balance_wallet_rounded),
-                  title: Text(l.paymentsTitle),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => context.push(Routes.payments),
+              if (ref.watch(featureOnProvider(OrgModule.payments)))
+                AppCard(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: ListTile(
+                    leading: const Icon(Icons.account_balance_wallet_rounded),
+                    title: Text(l.paymentsTitle),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push(Routes.payments),
+                  ),
                 ),
-              ),
             ],
             if (user.isCoach) ...[
               SectionHeader(l.groupsLabel, actionLabel: l.newGroup, onAction: () => context.push(Routes.newGroup)),
@@ -141,18 +144,21 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              AppCard(
-                key: const Key('profile-plans'),
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                onTap: () => context.push(Routes.plans),
-                child: ListTile(
-                  leading: const Icon(Icons.assignment_rounded),
-                  title: Text(l.plansTitle),
-                  trailing: const Icon(Icons.chevron_right_rounded),
+              if (ref.watch(featureOnProvider(OrgModule.trainingPlans)))
+                AppCard(
+                  key: const Key('profile-plans'),
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  onTap: () => context.push(Routes.plans),
+                  child: ListTile(
+                    leading: const Icon(Icons.assignment_rounded),
+                    title: Text(l.plansTitle),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                  ),
                 ),
-              ),
-              SectionHeader(l.mediaTitle, actionLabel: l.addMedia, onAction: () => context.push(Routes.newMedia)),
-              _CoachMedia(coachId: user.id),
+              if (ref.watch(featureOnProvider(OrgModule.media))) ...[
+                SectionHeader(l.mediaTitle, actionLabel: l.addMedia, onAction: () => context.push(Routes.newMedia)),
+                _CoachMedia(coachId: user.id),
+              ],
             ],
           ];
           final right = <Widget>[

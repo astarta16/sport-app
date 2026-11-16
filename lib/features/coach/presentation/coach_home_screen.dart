@@ -24,6 +24,8 @@ import '../../parent/presentation/parent_context.dart';
 import '../../trainings/domain/training.dart';
 import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
+import '../../organizations/domain/organization.dart';
+import '../../organizations/presentation/org_widgets.dart';
 import 'coach_context.dart';
 
 /// Coach dashboard (spec §6.2): group selection, roster with certificate
@@ -259,24 +261,34 @@ class _GroupDashboard extends StatelessWidget {
   }
 }
 
-class _QuickActions extends StatelessWidget {
+class _QuickActions extends ConsumerWidget {
   const _QuickActions({required this.group});
 
   final Group group;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    // v1.8: actions of features the group's organization has switched off
+    // are not offered (the backend rejects them anyway).
+    bool on(OrgModule m) => ref.watch(moduleOnForGroupProvider((group.id, m)));
     final actions = [
-      (Icons.add_circle_rounded, l.newTraining, Routes.newTraining(group.id), const Key('qa-new-training')),
-      (Icons.chat_bubble_rounded, l.navChat, Routes.chat(group.id), const Key('qa-chat')),
-      (Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(group.id), const Key('qa-series')),
-      (Icons.badge_rounded, l.rosterTitle, Routes.students(group.id), const Key('qa-students')),
-      (Icons.assignment_rounded, l.plansTitle, Routes.plans, const Key('qa-plans')),
-      (Icons.fact_check_rounded, l.payReviewQueue, Routes.paymentReview, const Key('qa-review')),
-      (Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(group.id), const Key('qa-match')),
+      if (on(OrgModule.trainings))
+        (Icons.add_circle_rounded, l.newTraining, Routes.newTraining(group.id), const Key('qa-new-training')),
+      if (on(OrgModule.communication))
+        (Icons.chat_bubble_rounded, l.navChat, Routes.chat(group.id), const Key('qa-chat')),
+      if (on(OrgModule.trainings))
+        (Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(group.id), const Key('qa-series')),
+      if (on(OrgModule.dataExports))
+        (Icons.badge_rounded, l.rosterTitle, Routes.students(group.id), const Key('qa-students')),
+      if (on(OrgModule.trainingPlans)) (Icons.assignment_rounded, l.plansTitle, Routes.plans, const Key('qa-plans')),
+      if (on(OrgModule.paymentVerification))
+        (Icons.fact_check_rounded, l.payReviewQueue, Routes.paymentReview, const Key('qa-review')),
+      if (on(OrgModule.matches))
+        (Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(group.id), const Key('qa-match')),
       (Icons.groups_rounded, l.roster, Routes.roster(group.id), const Key('qa-roster')),
-      (Icons.payments_rounded, l.paymentsTitle, Routes.groupPayments(group.id), const Key('qa-payments')),
+      if (on(OrgModule.payments))
+        (Icons.payments_rounded, l.paymentsTitle, Routes.groupPayments(group.id), const Key('qa-payments')),
     ];
     return AppCard(
       key: const Key('coach-quick-actions'),
@@ -357,20 +369,22 @@ class _GroupOverview extends ConsumerWidget {
                   label: Text(l.navChat),
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: OutlinedButton.icon(
-                  key: const Key('group-payments-button'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white54),
-                    minimumSize: const Size(0, 44),
+              if (_on(context, group.id, OrgModule.payments)) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    key: const Key('group-payments-button'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white54),
+                      minimumSize: const Size(0, 44),
+                    ),
+                    onPressed: () => context.push(Routes.groupPayments(group.id)),
+                    icon: const Icon(Icons.payments_rounded, size: 18),
+                    label: Text(l.paymentsTitle),
                   ),
-                  onPressed: () => context.push(Routes.groupPayments(group.id)),
-                  icon: const Icon(Icons.payments_rounded, size: 18),
-                  label: Text(l.paymentsTitle),
                 ),
-              ),
+              ],
             ],
           ),
         ],
@@ -573,9 +587,12 @@ Future<void> showCoachAddSheet(BuildContext context, String groupId) async {
   final options = <(Key, IconData, String, String)>[
     (const Key('add-training'), Icons.event_rounded, l.addTrainingOne, Routes.newTraining(groupId)),
     (const Key('add-series'), Icons.event_repeat_rounded, l.addSeries, Routes.newSeries(groupId)),
-    (const Key('add-match'), Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(groupId)),
-    (const Key('add-media'), Icons.photo_camera_rounded, l.addMedia, Routes.newMediaFor(groupId)),
-    (const Key('add-plan'), Icons.assignment_rounded, l.planNew, Routes.newPlan(groupId)),
+    if (_on(context, groupId, OrgModule.matches))
+      (const Key('add-match'), Icons.emoji_events_rounded, l.addMatch, Routes.newMatch(groupId)),
+    if (_on(context, groupId, OrgModule.media))
+      (const Key('add-media'), Icons.photo_camera_rounded, l.addMedia, Routes.newMediaFor(groupId)),
+    if (_on(context, groupId, OrgModule.trainingPlans))
+      (const Key('add-plan'), Icons.assignment_rounded, l.planNew, Routes.newPlan(groupId)),
     (const Key('add-child'), Icons.person_add_alt_1_rounded, l.addChildToGroup, Routes.inviteChild(groupId)),
   ];
   final route = await showAdaptiveSheet<String>(
@@ -593,3 +610,6 @@ Future<void> showCoachAddSheet(BuildContext context, String groupId) async {
   );
   if (route != null && context.mounted) context.push(route);
 }
+
+bool _on(BuildContext context, String groupId, OrgModule m) =>
+    ProviderScope.containerOf(context, listen: false).read(moduleOnForGroupProvider((groupId, m)));

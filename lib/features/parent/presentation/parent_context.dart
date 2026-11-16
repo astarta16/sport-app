@@ -8,6 +8,7 @@ import '../../authentication/presentation/session_providers.dart';
 import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../groups/domain/group.dart';
+import '../../organizations/presentation/org_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
 
 /// Resolved dashboard selection for a parent.
@@ -92,5 +93,11 @@ final parentSelectionProvider = Provider<AsyncValue<ParentSelection>>((ref) {
   final c = children.value;
   final g = groups.value;
   if (c == null || g == null) return const AsyncLoading();
-  return AsyncData(resolveParentSelection(ctx, c, g));
+  // v1.8: with an organization selected, only its groups and the children
+  // enrolled there are shown (no data of another organization).
+  final org = ref.watch(activeOrgProvider);
+  if (org == null) return AsyncData(resolveParentSelection(ctx, c, g));
+  final orgGroups = g.where((x) => x.clubId == org).toList();
+  final ids = {for (final x in orgGroups) x.id};
+  return AsyncData(resolveParentSelection(ctx, c.where((k) => k.groupIds.any(ids.contains)).toList(), orgGroups));
 });

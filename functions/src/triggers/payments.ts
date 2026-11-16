@@ -15,6 +15,7 @@ import { writeAudit } from '../audit';
 import { notify } from '../notify';
 import { maskPhone, normalizeGeorgianPhone } from '../lib/phone';
 import { smsSegments } from '../lib/sms/provider';
+import { jobGate } from './v18';
 import { createSmsProvider } from '../sms';
 
 /**
@@ -43,7 +44,10 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
     .get();
 
   const claimed: ClaimedReminder[] = [];
+  // v1.8: only organizations with payment reminders on.
+  const gate = jobGate();
   for (const doc of snap.docs) {
+    if (!(await gate(doc.get('groupId'), 'paymentReminders'))) continue;
     const kind = decidePaymentReminder(paymentFrom(doc.id, doc.data()), now);
     if (!kind) continue;
     const ok = await db.runTransaction(async (tx) => {
@@ -150,8 +154,10 @@ export async function runRecurringPayments(now: Date): Promise<{ created: number
   const plans = await db.collection('paymentPlans').where('active', '==', true).get();
   let created = 0;
   let skipped = 0;
+  const gate = jobGate();
   for (const plan of plans.docs) {
     const p = plan.data();
+    if (!(await gate(p.groupId, 'payments'))) continue;
     const group = await db.doc(`groups/${p.groupId}`).get();
     if (!group.exists) continue;
     const memberIds: string[] = group.get('memberChildIds') ?? [];

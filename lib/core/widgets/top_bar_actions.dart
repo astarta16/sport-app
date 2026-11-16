@@ -6,6 +6,8 @@ import '../../app/routes.dart';
 import '../../features/authentication/presentation/session_providers.dart';
 import '../../features/chat/presentation/chat_providers.dart';
 import '../../features/notifications/presentation/notifications_providers.dart';
+import '../../features/organizations/presentation/feature_gate.dart';
+import '../../features/organizations/domain/organization.dart';
 import '../l10n/l10n.dart';
 
 /// Chat icon (v1.1 §4: moved from the bottom bar to the top bar) and the
@@ -24,7 +26,7 @@ class TopBarActions extends ConsumerWidget {
     final chatUnread = ref.watch(totalChatUnreadProvider);
     final unread = ref.watch(unreadCountProvider);
     final children = [
-      if (user?.canUseChat ?? false)
+      if ((user?.canUseChat ?? false) && ref.watch(featureOnProvider(OrgModule.communication)))
         IconButton(
           key: const Key('chat-button'),
           tooltip: l.chatTooltip,

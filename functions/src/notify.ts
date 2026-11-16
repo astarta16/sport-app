@@ -4,6 +4,8 @@
 // (the type is the preference key; invitations are always pushed).
 import { logger } from 'firebase-functions';
 import { FieldValue } from 'firebase-admin/firestore';
+import { jobGate } from './triggers/v18';
+import { moduleOfNotification } from './lib/orgs';
 import { db } from './admin';
 import { Locale, normalizeLocale } from './i18n';
 import { categoryFor, notificationId, pushAllowed } from './lib/notifications';
@@ -34,6 +36,14 @@ export interface NotifyInput {
 const ALREADY_EXISTS = 6;
 
 export async function notify(users: UserLite[], n: NotifyInput): Promise<{ created: number; pushed: number }> {
+  // v1.8: tenant-scoped notifications are dropped when the organization has
+  // notifications or the notification's own feature switched off.
+  if (n.groupId) {
+    const gate = jobGate();
+    if (!(await gate(n.groupId, 'notifications')) || !(await gate(n.groupId, moduleOfNotification(n.type)))) {
+      return { created: 0, pushed: 0 };
+    }
+  }
   const category = categoryFor(n.type);
   const unique = [...new Map(users.filter((u) => u && u.role !== 'child').map((u) => [u.uid, u])).values()];
   const fresh: UserLite[] = [];

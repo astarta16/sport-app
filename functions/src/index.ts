@@ -43,3 +43,9 @@ export {
   setOrgAdmin, setOrgCoach, setRoomStatus, tenantHealth, updateBooking, updateBookingSeries, updateOrgPlatform,
   updateOrgSettings, upsertProgram, upsertRoom,
 } from './triggers/v17';
+// v1.8 platform super admin
+export {
+  acceptInvitation, applyTemplate, archiveTemplate, duplicateTemplate, inviteOrgAdmin, orgUsage, platformStats,
+  previewTemplateChanges, provisionOrganization, refreshEntitlements, rejectInvitation, resendInvitation, revokeInvitation,
+  updateEntitlements, updateSubscription, upsertPackage, upsertTemplate,
+} from './triggers/v18';

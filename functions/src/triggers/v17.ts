@@ -30,6 +30,7 @@ import {
 import { Game, GAMES, Period, Result, ageBandOf, pseudonymFor, rank, score } from '../lib/scoring';
 import { TZ_OFFSETS_MIN as TZ_SHIFT } from '../lib/scheduling';
 import { postSystemMessage } from './chat';
+import { cfgFromDoc, writeConfig } from './v18';
 
 // ─── helpers ────────────────────────────────────────────────────────────
 
@@ -67,7 +68,7 @@ function requireOrgAdmin(request: CallableRequest, orgId: string): string {
 
 async function orgConfig(orgId: string): Promise<OrgConfigDoc | undefined> {
   const s = await db.doc(`orgConfigs/${orgId}`).get();
-  return s.exists ? (s.data() as OrgConfigDoc) : undefined;
+  return s.exists ? cfgFromDoc(s.data()) : undefined;
 }
 
 async function requireModule(orgId: string, m: Module): Promise<OrgConfigDoc | undefined> {
@@ -169,7 +170,7 @@ export const updateOrgPlatform = onCall(async (request) => {
       maxRooms: int(l.maxRooms, 'maxRooms', 0, 1000), maxGroups: int(l.maxGroups, 'maxGroups', 1, 10000),
     };
   }
-  await db.doc(`orgConfigs/${orgId}`).set(patch, { merge: true });
+  await writeConfig(orgId, actor, 'platform settings', null, () => ({ ...patch, featureSchema: 2 }));
   if (patch.status) await db.doc(`clubs/${orgId}`).set({ status: patch.status === 'deactivated' ? 'archived' : 'active' }, { merge: true });
   await audit('org.platform', actor, 'club', orgId, orgId, { status: patch.status ?? null, plan: patch.plan ?? null, allowed });
   return { ok: true };
@@ -238,7 +239,13 @@ export const updateOrgSettings = onCall(async (request) => {
     for (const s of ids) if (!(await db.doc(`sports/${s}`).get()).exists) throw new HttpsError('invalid-argument', 'sport');
     await db.doc(`clubs/${orgId}`).set({ sportIds: ids }, { merge: true });
   }
-  await db.doc(`orgConfigs/${orgId}`).set(patch, { merge: true });
+  const expected = typeof d.expectedVersion === 'number' ? d.expectedVersion : null;
+  const reason = typeof d.reason === 'string' && d.reason.trim() ? d.reason.trim().slice(0, 300) : 'organization settings';
+  if (d.settings && typeof d.settings === 'object') {
+    const st = d.settings as Record<string, unknown>;
+    patch.settings = { coachesCanBookRooms: st.coachesCanBookRooms === true, coachesCanExport: st.coachesCanExport !== false };
+  }
+  await writeConfig(orgId, actor, reason, expected, () => patch);
   await audit('org.settings', actor, 'club', orgId, orgId, { fields: Object.keys(patch) });
   return { ok: true };
 });

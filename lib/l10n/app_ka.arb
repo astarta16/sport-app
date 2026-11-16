@@ -2912,5 +2912,8 @@
   "modulePaymentReminders": "გადახდის შეხსენებები",
   "moduleFacilities": "ობიექტები და დარბაზები",
   "moduleReports": "ანგარიშები",
-  "moduleDataExports": "მონაცემების ექსპორტი"
+  "moduleDataExports": "მონაცემების ექსპორტი",
+  "orgAllAcademies": "ყველა აკადემია",
+  "orgRoleAdmin": "ადმინისტრატორი",
+  "orgRoleStudent": "მოსწავლე"
 }

@@ -24,18 +24,23 @@ class OrgSwitcherChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
     final memberships = ref.watch(myMembershipsProvider).value ?? const <OrgMembership>[];
+    if (memberships.isEmpty) return const SizedBox.shrink();
     final active = ref.watch(activeOrgProvider);
-    if (active == null) return const SizedBox.shrink();
-    final cfg = ref.watch(orgConfigProvider(active)).value;
+    final single = memberships.length == 1 ? memberships.first.orgId : null;
+    final shown = active ?? single;
+    final cfg = shown == null ? null : ref.watch(orgConfigProvider(shown)).value;
     final locale = Localizations.localeOf(context).languageCode;
-    final name = cfg?.branding.nameFor(locale, fallback: active) ?? active;
+    final name = shown == null ? l.orgAllAcademies : (cfg?.branding.nameFor(locale, fallback: shown) ?? shown);
     final color = Color(cfg?.branding.primaryColor ?? 0xFF1D4ED8);
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: ActionChip(
         key: const Key('org-switcher'),
-        avatar: CircleAvatar(backgroundColor: color, radius: 8),
+        avatar: shown == null
+            ? const Icon(Icons.apps_rounded, size: 18)
+            : CircleAvatar(backgroundColor: color, radius: 8),
         label: Text(name, overflow: TextOverflow.ellipsis),
         side: BorderSide(color: color.withValues(alpha: .5)),
         onPressed: memberships.length < 2 ? null : () => _pick(context, ref, memberships, active),
@@ -43,39 +48,59 @@ class OrgSwitcherChip extends ConsumerWidget {
     );
   }
 
-  Future<void> _pick(BuildContext context, WidgetRef ref, List<OrgMembership> ms, String active) async {
+  Future<void> _pick(BuildContext context, WidgetRef ref, List<OrgMembership> ms, String? active) async {
     final l = context.l10n;
-    final chosen = await showModalBottomSheet<String>(
+    final chosen = await showModalBottomSheet<(String?,)>(
       context: context,
       builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Text(l.orgSwitchTitle, style: Theme.of(context).textTheme.titleMedium),
-            ),
-            for (final m in ms)
-              Consumer(
-                builder: (context, ref, _) {
-                  final cfg = ref.watch(orgConfigProvider(m.orgId)).value;
-                  final locale = Localizations.localeOf(context).languageCode;
-                  return ListTile(
-                    key: Key('org-option-${m.orgId}'),
-                    leading: CircleAvatar(backgroundColor: Color(cfg?.branding.primaryColor ?? 0xFF1D4ED8), radius: 10),
-                    title: Text(cfg?.branding.nameFor(locale, fallback: m.orgId) ?? m.orgId),
-                    trailing: m.orgId == active ? const Icon(Icons.check_rounded) : null,
-                    onTap: () => Navigator.pop(context, m.orgId),
-                  );
-                },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Text(l.orgSwitchTitle, style: Theme.of(context).textTheme.titleMedium),
               ),
-          ],
+              ListTile(
+                key: const Key('org-option-all'),
+                leading: const Icon(Icons.apps_rounded),
+                title: Text(l.orgAllAcademies),
+                trailing: active == null ? const Icon(Icons.check_rounded) : null,
+                onTap: () => Navigator.pop(context, (null,)),
+              ),
+              for (final m in ms)
+                Consumer(
+                  builder: (context, ref, _) {
+                    final cfg = ref.watch(orgConfigProvider(m.orgId)).value;
+                    final locale = Localizations.localeOf(context).languageCode;
+                    return ListTile(
+                      key: Key('org-option-${m.orgId}'),
+                      leading: CircleAvatar(
+                        backgroundColor: Color(cfg?.branding.primaryColor ?? 0xFF1D4ED8),
+                        radius: 10,
+                      ),
+                      title: Text(cfg?.branding.nameFor(locale, fallback: m.orgId) ?? m.orgId),
+                      subtitle: Text(m.roles.map((r) => orgRoleLabel(context, r)).join(' · ')),
+                      trailing: m.orgId == active ? const Icon(Icons.check_rounded) : null,
+                      onTap: () => Navigator.pop(context, (m.orgId,)),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
-    if (chosen != null) ref.read(activeOrgProvider.notifier).select(chosen);
+    if (chosen != null) ref.read(activeOrgProvider.notifier).select(chosen.$1);
   }
 }
+
+String orgRoleLabel(BuildContext context, OrgRole r) => switch (r) {
+  OrgRole.admin => context.l10n.orgRoleAdmin,
+  OrgRole.coach => context.l10n.roleCoach,
+  OrgRole.parent => context.l10n.roleParent,
+  OrgRole.student => context.l10n.orgRoleStudent,
+};
 
 /// Parent: a child asked to contact a coach. The parent opens the existing
 /// parent–coach chat (phone numbers stay protected) and marks it done.

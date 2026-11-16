@@ -146,7 +146,10 @@ class DemoBackend {
   /// Child-level data (certificates, payments of a child): allowed when at
   /// least one organization of the child's groups has the feature on.
   void requireChildModule(String childId, OrgModule m) {
-    final orgs = {for (final g in groups.values) if (g.hasChild(childId)) g.clubId};
+    final orgs = {
+      for (final g in groups.values)
+        if (g.hasChild(childId)) g.clubId,
+    };
     if (orgs.isNotEmpty && !orgs.any((o) => moduleOn(o, m))) throw ValidationException('moduleDisabled:${m.name}');
   }
 
@@ -170,9 +173,11 @@ class DemoBackend {
       if (old.subscription.status != next.subscription.status)
         'subscription:${old.subscription.status.name}→${next.subscription.status.name}',
       if (old.status != next.status) 'status:${old.status.name}→${next.status.name}',
-      if (old.rollout.length != next.rollout.length || old.rollout.entries.any((e) => next.rollout[e.key]?.state != e.value.state))
+      if (old.rollout.length != next.rollout.length ||
+          old.rollout.entries.any((e) => next.rollout[e.key]?.state != e.value.state))
         'rollout',
-      if (old.branding.primaryColor != next.branding.primaryColor || old.branding.names.toString() != next.branding.names.toString())
+      if (old.branding.primaryColor != next.branding.primaryColor ||
+          old.branding.names.toString() != next.branding.names.toString())
         'branding',
       if (old.settings.coachesCanBookRooms != next.settings.coachesCanBookRooms) 'settings',
     ];
@@ -209,7 +214,9 @@ class DemoBackend {
       rooms: rooms.values.where((r) => r.orgId == orgId && r.status != RoomStatus.archived).length,
       // Demo storage: 2 MB per media post (synthetic, labelled in the UI).
       storageMb: mediaPosts.values.where((p) => p.groupIds.any(ids.contains)).length * 2,
-      notificationsThisMonth: notifications.where((n) => ids.contains(n.groupId) && !n.createdAt.isBefore(monthStart)).length,
+      notificationsThisMonth: notifications
+          .where((n) => ids.contains(n.groupId) && !n.createdAt.isBefore(monthStart))
+          .length,
       smsThisMonth: 0,
     );
   }
