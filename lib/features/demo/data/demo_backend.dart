@@ -7,6 +7,7 @@ import '../../admin/domain/admin_models.dart';
 import '../../attendance/domain/attendance.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/domain/app_user.dart';
+import '../../brain_academy/domain/brain_models.dart';
 import '../../chat/domain/chat_message.dart';
 import '../../child_threads/domain/child_thread.dart';
 import '../../children/domain/child.dart';
@@ -95,6 +96,10 @@ class DemoBackend {
   /// `childThreads/{childId}_{coachId}` and their messages.
   final childThreads = <String, ChildThread>{};
   final childThreadMessages = <String, List<ChildThreadMessage>>{};
+
+  // v1.6 Brain Academy (`brainResults`, `brainAssignments`).
+  final brainResults = <GameResult>[];
+  final brainAssignments = <String, ChallengeAssignment>{};
 
   /// Demo transfer simulation: delay per 10 % chunk, and a one-shot failure.
   Duration downloadChunkDelay = const Duration(milliseconds: 40);

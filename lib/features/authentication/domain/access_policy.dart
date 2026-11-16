@@ -41,6 +41,15 @@ class AccessPolicy {
 
   static bool canEditChild(AppUser u, Child c) => isParentOf(u, c);
 
+  /// v1.6: a student account linked to this child (both directions:
+  /// child.userId and the account's lastContext.childId).
+  static bool isStudentOf(AppUser u, Child c) => u.isStudent && c.userId == u.id && u.lastContext.childId == c.id;
+
+  /// v1.6 Brain Academy progress: the student, the child's parents and the
+  /// coaches of the child's current groups. Admins are not included.
+  static bool canViewBrainProgress(AppUser u, Child c, Iterable<Group> groups) =>
+      isStudentOf(u, c) || canViewChild(u, c, groups);
+
   static bool canManageTrainings(AppUser u, Group g) => isCoachOf(u, g);
 
   static bool canViewTrainings(AppUser u, Group g) => canViewGroup(u, g);

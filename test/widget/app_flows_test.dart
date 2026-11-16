@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,7 +34,9 @@ Future<void> tapAndPump(WidgetTester tester, Finder f) async {
   if (f.evaluate().isEmpty) {
     await tester.scrollUntilVisible(f, 300, scrollable: find.byType(Scrollable).first);
   }
-  await tester.ensureVisible(f);
+  // Centre the target (aligning it to the top edge can put it under the
+  // status-bar overlay on long, scrollable screens).
+  unawaited(Scrollable.ensureVisible(tester.element(f), alignment: 0.5));
   await tester.pump();
   await tester.tap(f);
   await pumpFor(tester);

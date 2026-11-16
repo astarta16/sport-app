@@ -2183,5 +2183,257 @@
   "validationResultCompletedAt": "დასრულების დრო უნდა იყოს მატჩის დაწყებასა და ახლანდელ დროს შორის.",
   "payDownloadReceipt": "ქვითრის ჩამოტვირთვა",
   "payProofNotFound": "მოთხოვნა ვერ მოიძებნა ან უკვე განხილულია.",
-  "payEventDownloaded": "მიმომხილველმა ქვითარი ჩამოტვირთა"
+  "payEventDownloaded": "მიმომხილველმა ქვითარი ჩამოტვირთა",
+  "roleStudent": "მოსწავლე",
+  "continueAsStudent": "გაგრძელება მოსწავლედ",
+  "studentDemoNote": "მოსწავლის შესვლა მხოლოდ დემო რეჟიმშია ხელმისაწვდომი.",
+  "studentWelcome": "გამარჯობა, {name}! ვიმეცადინოთ?",
+  "@studentWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "studentNavHome": "მთავარი",
+  "studentNavBrain": "ტვინის აკადემია",
+  "studentNavProgress": "პროგრესი",
+  "studentMySports": "ჩემი სპორტი",
+  "studentMyCoach": "ჩემი მწვრთნელი",
+  "studentNextTraining": "შემდეგი ვარჯიში",
+  "studentNoTraining": "დაგეგმილი ვარჯიში არ არის",
+  "studentUpcomingMatches": "მომავალი მატჩები",
+  "studentMatchResults": "მატჩების შედეგები",
+  "studentPlans": "ჩემი სავარჯიშო გეგმები",
+  "studentHomework": "საშინაო დავალება",
+  "studentAttendance": "ჩემი დასწრება",
+  "studentAttendanceRate": "{percent}% ვარჯიშზე ვიყავი",
+  "@studentAttendanceRate": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "studentAchievements": "მიღწევები",
+  "studentNothing": "ჯერ არაფერია",
+  "studentChallenges": "მწვრთნელის გამოწვევები",
+  "challengeDue": "ვადა: {date}",
+  "@challengeDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeDone": "შესრულებულია",
+  "challengeOpen": "შესასრულებელია",
+  "challengeOverdue": "ვადა გავიდა",
+  "brainAcademy": "ტვინის აკადემია",
+  "brainTagline": "ავარჯიშე გონება, როგორც ნამდვილმა სპორტსმენმა",
+  "brainNotIq": "ქულები სავარჯიშოდ და გასართობადაა — ეს IQ-ის ტესტი არ არის.",
+  "gameMemoryMatch": "მეხსიერების წყვილები",
+  "gameLogicQuest": "ლოგიკის თავგადასავალი",
+  "gameSmartPlay": "ჭკვიანი თამაში",
+  "gameQuickMind": "სწრაფი გონება",
+  "gameSequenceMaster": "თანმიმდევრობის ოსტატი",
+  "gamePathFinder": "გზის მაძიებელი",
+  "gameDescMemory": "იპოვე ერთნაირი სპორტული ბარათები",
+  "gameDescLogic": "გამოიცანი ფიგურების წესი",
+  "gameDescSmart": "აირჩიე საუკეთესო სვლა მოედანზე",
+  "gameDescQuick": "სწრაფად იპოვე სწორი სიმბოლო",
+  "gameDescSequence": "დაიმახსოვრე და გაიმეორე",
+  "gameDescPath": "მიიყვანე ბურთი კარამდე",
+  "gameHowToMemory": "შეეხე ორ ბარათს. თუ ერთნაირია, დარჩება ღია. იპოვე ყველა წყვილი რაც შეიძლება ნაკლები ცდით.",
+  "gameHowToLogic": "შეხედე რიგს და აირჩიე ფიგურა, რომელიც „?“-ის ადგილას უნდა იყოს.",
+  "gameHowToSmart": "ბურთი შენთანაა (ყვითელი რგოლი). აირჩიე საუკეთესო პასი ან მოძრაობა და წაიკითხე ახსნა.",
+  "gameHowToQuick": "ზემოთ ნაჩვენებია მიზანი. შეეხე იმავე ფიგურას იმავე ფერში, სანამ დრო ამოიწურება.",
+  "gameHowToSequence": "უყურე, როგორ ინთება ფერები, შემდეგ შეეხე მათ იმავე რიგით. ყოველ რაუნდში რიგი გრძელდება.",
+  "gameHowToPath": "ისრებით ან გადასმით გადაადგილე ბურთი კარამდე. კედლები და კონუსები გზას კეტავს.",
+  "diffEasy": "მარტივი",
+  "diffMedium": "საშუალო",
+  "diffHard": "რთული",
+  "gameLevel": "დონე {level}",
+  "@gameLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "gameStart": "თამაშის დაწყება",
+  "gamePause": "პაუზა",
+  "gameResume": "გაგრძელება",
+  "gameRestart": "თავიდან",
+  "gameQuit": "გასვლა",
+  "gamePaused": "თამაში შეჩერებულია",
+  "gameScore": "ქულა: {score}",
+  "@gameScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "gameTime": "დრო: {time}",
+  "@gameTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "gameAttempts": "ცდები: {count}",
+  "@gameAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gameAccuracy": "სიზუსტე: {percent}%",
+  "@gameAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "gameComplete": "ყოჩაღ!",
+  "gameTryAgain": "კარგი ცდა იყო! კიდევ ერთხელ?",
+  "gameNextLevel": "შემდეგი დონე",
+  "gamePlayAgain": "კიდევ ერთხელ",
+  "gameNewBadge": "ახალი ნიშანი!",
+  "gameBestScore": "საუკეთესო: {score}",
+  "@gameBestScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "gameCorrect": "სწორია!",
+  "gameWrong": "არა უშავს, სცადე ისევ",
+  "gameSaveFailed": "შედეგის შენახვა ვერ მოხერხდა.",
+  "gameRound": "რაუნდი {n}/{total}",
+  "@gameRound": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "gameWatch": "კარგად დააკვირდი…",
+  "gameYourTurn": "შენი ჯერია!",
+  "gameLives": "სიცოცხლე: {n}",
+  "@gameLives": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "gameMoves": "სვლები: {n}",
+  "@gameMoves": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "gameSound": "ხმოვანი ეფექტები",
+  "gameInstructions": "როგორ ვითამაშოთ",
+  "gameChooseDifficulty": "აირჩიე სირთულე",
+  "gameTimeUp": "დრო ამოიწურა",
+  "logicWhatsMissing": "რომელი აკლია?",
+  "spQuestion": "ბურთი შენთანაა. რომელია საუკეთესო სვლა?",
+  "spPassTo": "პასი №{n}-ს",
+  "@spPassTo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "spPassBack": "უკან პასი №{n}-ს",
+  "@spPassBack": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "spDribble": "წინ გავარბენინო",
+  "spShoot": "დარტყმა კარში",
+  "spHold": "ბურთის შეკავება",
+  "spNext": "შემდეგი",
+  "spExplain1": "№7 თავისუფალია ფლანგზე — მცველი შენ წინაა, ამიტომ გარბენა სარისკოა.",
+  "spExplain2": "კართან ახლოს ხარ და გზა თავისუფალია — დაარტყი!",
+  "spExplain3": "ორი მეტოქე გიტევს — უსაფრთხო პასი უკან №4-ს ბურთს შეინარჩუნებს.",
+  "spExplain4": "№10 მეურვეობის ქვეშაა, №11 კი თავისუფალ სივრცეშია.",
+  "spExplain5": "№9-მდე პასს მცველი გადაჭრის; №10 თავისუფალია და შეუძლია შემობრუნება.",
+  "spExplain6": "მარცხნივ მეტოქე №5-ს ფარავს — პასი მარჯვნივ №6-ს უსაფრთხოა.",
+  "spExplain7": "ცენტრი ჩაკეტილია ორი მცველით; №7 ფლანგზე თავისუფალია.",
+  "spExplain8": "კუთხე ძალიან ვიწროა დასარტყმელად და №9 დაფარულია; №10 უკეთეს პოზიციაშია.",
+  "spExplain9": "სამი მეტოქე ცენტრშია — მოედნის გაშლა №2-ზე სივრცეს ქმნის.",
+  "mazeGoal": "კარი",
+  "mazeUp": "ზემოთ",
+  "mazeDown": "ქვემოთ",
+  "mazeLeft": "მარცხნივ",
+  "mazeRight": "მარჯვნივ",
+  "brainProgressTitle": "ჩემი პროგრესი",
+  "brainPlays": "{n} თამაში",
+  "@brainPlays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "brainNoPlays": "ჯერ არ გითამაშია",
+  "brainRecentScores": "ბოლო ქულები",
+  "brainBadges": "ნიშნები",
+  "brainUnlocked": "გახსნილი: {level}",
+  "@brainUnlocked": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "badgeFirstGame": "პირველი თამაში",
+  "badgeExplorer": "ყველა თამაშის მკვლევარი",
+  "badgeTenCompleted": "10 დასრულებული თამაში",
+  "badgeMemoryHard": "მეხსიერების ჩემპიონი",
+  "badgePerfectLogic": "უშეცდომო ლოგიკა",
+  "badgeTactician": "ტაქტიკოსი",
+  "badgeQuickReflexes": "ელვისებური რეაქცია",
+  "badgeSequenceSeven": "7-იანი თანმიმდევრობა",
+  "badgeMazeHard": "ლაბირინთის ოსტატი",
+  "coachChallengesTitle": "ტვინის აკადემიის გამოწვევები",
+  "challengeAssign": "გამოწვევის მიცემა",
+  "challengeGame": "თამაში",
+  "challengeDifficulty": "სირთულე",
+  "challengeDueDate": "ვადა (არასავალდებულო)",
+  "challengeNoDue": "ვადის გარეშე",
+  "challengeAssigned": "გამოწვევა მიცემულია",
+  "challengeRemove": "წაშლა",
+  "challengeCompletion": "შეასრულა: {done}/{total}",
+  "@challengeCompletion": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "challengeEmpty": "გამოწვევები ჯერ არ არის",
+  "challengeOpenAction": "თამაში",
+  "validationDueInPast": "ვადა წარსულში ვერ იქნება.",
+  "brainParentNote": "ქულები სავარჯიშოა და არა ინტელექტის შეფასება."
 }

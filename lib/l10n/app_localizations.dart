@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -6801,10 +6794,771 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'მიმომხილველმა ქვითარი ჩამოტვირთა'**
   String get payEventDownloaded;
+
+  /// No description provided for @roleStudent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლე'**
+  String get roleStudent;
+
+  /// No description provided for @continueAsStudent.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგრძელება მოსწავლედ'**
+  String get continueAsStudent;
+
+  /// No description provided for @studentDemoNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლის შესვლა მხოლოდ დემო რეჟიმშია ხელმისაწვდომი.'**
+  String get studentDemoNote;
+
+  /// No description provided for @studentWelcome.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამარჯობა, {name}! ვიმეცადინოთ?'**
+  String studentWelcome(String name);
+
+  /// No description provided for @studentNavHome.
+  ///
+  /// In ka, this message translates to:
+  /// **'მთავარი'**
+  String get studentNavHome;
+
+  /// No description provided for @studentNavBrain.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტვინის აკადემია'**
+  String get studentNavBrain;
+
+  /// No description provided for @studentNavProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრესი'**
+  String get studentNavProgress;
+
+  /// No description provided for @studentMySports.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი სპორტი'**
+  String get studentMySports;
+
+  /// No description provided for @studentMyCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი მწვრთნელი'**
+  String get studentMyCoach;
+
+  /// No description provided for @studentNextTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი ვარჯიში'**
+  String get studentNextTraining;
+
+  /// No description provided for @studentNoTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაგეგმილი ვარჯიში არ არის'**
+  String get studentNoTraining;
+
+  /// No description provided for @studentUpcomingMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი მატჩები'**
+  String get studentUpcomingMatches;
+
+  /// No description provided for @studentMatchResults.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩების შედეგები'**
+  String get studentMatchResults;
+
+  /// No description provided for @studentPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი სავარჯიშო გეგმები'**
+  String get studentPlans;
+
+  /// No description provided for @studentHomework.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშინაო დავალება'**
+  String get studentHomework;
+
+  /// No description provided for @studentAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი დასწრება'**
+  String get studentAttendance;
+
+  /// No description provided for @studentAttendanceRate.
+  ///
+  /// In ka, this message translates to:
+  /// **'{percent}% ვარჯიშზე ვიყავი'**
+  String studentAttendanceRate(int percent);
+
+  /// No description provided for @studentAchievements.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიღწევები'**
+  String get studentAchievements;
+
+  /// No description provided for @studentNothing.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯერ არაფერია'**
+  String get studentNothing;
+
+  /// No description provided for @studentChallenges.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის გამოწვევები'**
+  String get studentChallenges;
+
+  /// No description provided for @challengeDue.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა: {date}'**
+  String challengeDue(String date);
+
+  /// No description provided for @challengeDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებულია'**
+  String get challengeDone;
+
+  /// No description provided for @challengeOpen.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესასრულებელია'**
+  String get challengeOpen;
+
+  /// No description provided for @challengeOverdue.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა გავიდა'**
+  String get challengeOverdue;
+
+  /// No description provided for @brainAcademy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტვინის აკადემია'**
+  String get brainAcademy;
+
+  /// No description provided for @brainTagline.
+  ///
+  /// In ka, this message translates to:
+  /// **'ავარჯიშე გონება, როგორც ნამდვილმა სპორტსმენმა'**
+  String get brainTagline;
+
+  /// No description provided for @brainNotIq.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულები სავარჯიშოდ და გასართობადაა — ეს IQ-ის ტესტი არ არის.'**
+  String get brainNotIq;
+
+  /// No description provided for @gameMemoryMatch.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეხსიერების წყვილები'**
+  String get gameMemoryMatch;
+
+  /// No description provided for @gameLogicQuest.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლოგიკის თავგადასავალი'**
+  String get gameLogicQuest;
+
+  /// No description provided for @gameSmartPlay.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჭკვიანი თამაში'**
+  String get gameSmartPlay;
+
+  /// No description provided for @gameQuickMind.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწრაფი გონება'**
+  String get gameQuickMind;
+
+  /// No description provided for @gameSequenceMaster.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანმიმდევრობის ოსტატი'**
+  String get gameSequenceMaster;
+
+  /// No description provided for @gamePathFinder.
+  ///
+  /// In ka, this message translates to:
+  /// **'გზის მაძიებელი'**
+  String get gamePathFinder;
+
+  /// No description provided for @gameDescMemory.
+  ///
+  /// In ka, this message translates to:
+  /// **'იპოვე ერთნაირი სპორტული ბარათები'**
+  String get gameDescMemory;
+
+  /// No description provided for @gameDescLogic.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოიცანი ფიგურების წესი'**
+  String get gameDescLogic;
+
+  /// No description provided for @gameDescSmart.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიე საუკეთესო სვლა მოედანზე'**
+  String get gameDescSmart;
+
+  /// No description provided for @gameDescQuick.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწრაფად იპოვე სწორი სიმბოლო'**
+  String get gameDescQuick;
+
+  /// No description provided for @gameDescSequence.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაიმახსოვრე და გაიმეორე'**
+  String get gameDescSequence;
+
+  /// No description provided for @gameDescPath.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიიყვანე ბურთი კარამდე'**
+  String get gameDescPath;
+
+  /// No description provided for @gameHowToMemory.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეეხე ორ ბარათს. თუ ერთნაირია, დარჩება ღია. იპოვე ყველა წყვილი რაც შეიძლება ნაკლები ცდით.'**
+  String get gameHowToMemory;
+
+  /// No description provided for @gameHowToLogic.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეხედე რიგს და აირჩიე ფიგურა, რომელიც „?“-ის ადგილას უნდა იყოს.'**
+  String get gameHowToLogic;
+
+  /// No description provided for @gameHowToSmart.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბურთი შენთანაა (ყვითელი რგოლი). აირჩიე საუკეთესო პასი ან მოძრაობა და წაიკითხე ახსნა.'**
+  String get gameHowToSmart;
+
+  /// No description provided for @gameHowToQuick.
+  ///
+  /// In ka, this message translates to:
+  /// **'ზემოთ ნაჩვენებია მიზანი. შეეხე იმავე ფიგურას იმავე ფერში, სანამ დრო ამოიწურება.'**
+  String get gameHowToQuick;
+
+  /// No description provided for @gameHowToSequence.
+  ///
+  /// In ka, this message translates to:
+  /// **'უყურე, როგორ ინთება ფერები, შემდეგ შეეხე მათ იმავე რიგით. ყოველ რაუნდში რიგი გრძელდება.'**
+  String get gameHowToSequence;
+
+  /// No description provided for @gameHowToPath.
+  ///
+  /// In ka, this message translates to:
+  /// **'ისრებით ან გადასმით გადაადგილე ბურთი კარამდე. კედლები და კონუსები გზას კეტავს.'**
+  String get gameHowToPath;
+
+  /// No description provided for @diffEasy.
+  ///
+  /// In ka, this message translates to:
+  /// **'მარტივი'**
+  String get diffEasy;
+
+  /// No description provided for @diffMedium.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშუალო'**
+  String get diffMedium;
+
+  /// No description provided for @diffHard.
+  ///
+  /// In ka, this message translates to:
+  /// **'რთული'**
+  String get diffHard;
+
+  /// No description provided for @gameLevel.
+  ///
+  /// In ka, this message translates to:
+  /// **'დონე {level}'**
+  String gameLevel(int level);
+
+  /// No description provided for @gameStart.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაშის დაწყება'**
+  String get gameStart;
+
+  /// No description provided for @gamePause.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაუზა'**
+  String get gamePause;
+
+  /// No description provided for @gameResume.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაგრძელება'**
+  String get gameResume;
+
+  /// No description provided for @gameRestart.
+  ///
+  /// In ka, this message translates to:
+  /// **'თავიდან'**
+  String get gameRestart;
+
+  /// No description provided for @gameQuit.
+  ///
+  /// In ka, this message translates to:
+  /// **'გასვლა'**
+  String get gameQuit;
+
+  /// No description provided for @gamePaused.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში შეჩერებულია'**
+  String get gamePaused;
+
+  /// No description provided for @gameScore.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულა: {score}'**
+  String gameScore(int score);
+
+  /// No description provided for @gameTime.
+  ///
+  /// In ka, this message translates to:
+  /// **'დრო: {time}'**
+  String gameTime(String time);
+
+  /// No description provided for @gameAttempts.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცდები: {count}'**
+  String gameAttempts(int count);
+
+  /// No description provided for @gameAccuracy.
+  ///
+  /// In ka, this message translates to:
+  /// **'სიზუსტე: {percent}%'**
+  String gameAccuracy(int percent);
+
+  /// No description provided for @gameComplete.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოჩაღ!'**
+  String get gameComplete;
+
+  /// No description provided for @gameTryAgain.
+  ///
+  /// In ka, this message translates to:
+  /// **'კარგი ცდა იყო! კიდევ ერთხელ?'**
+  String get gameTryAgain;
+
+  /// No description provided for @gameNextLevel.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი დონე'**
+  String get gameNextLevel;
+
+  /// No description provided for @gamePlayAgain.
+  ///
+  /// In ka, this message translates to:
+  /// **'კიდევ ერთხელ'**
+  String get gamePlayAgain;
+
+  /// No description provided for @gameNewBadge.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი ნიშანი!'**
+  String get gameNewBadge;
+
+  /// No description provided for @gameBestScore.
+  ///
+  /// In ka, this message translates to:
+  /// **'საუკეთესო: {score}'**
+  String gameBestScore(int score);
+
+  /// No description provided for @gameCorrect.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწორია!'**
+  String get gameCorrect;
+
+  /// No description provided for @gameWrong.
+  ///
+  /// In ka, this message translates to:
+  /// **'არა უშავს, სცადე ისევ'**
+  String get gameWrong;
+
+  /// No description provided for @gameSaveFailed.
+  ///
+  /// In ka, this message translates to:
+  /// **'შედეგის შენახვა ვერ მოხერხდა.'**
+  String get gameSaveFailed;
+
+  /// No description provided for @gameRound.
+  ///
+  /// In ka, this message translates to:
+  /// **'რაუნდი {n}/{total}'**
+  String gameRound(int n, int total);
+
+  /// No description provided for @gameWatch.
+  ///
+  /// In ka, this message translates to:
+  /// **'კარგად დააკვირდი…'**
+  String get gameWatch;
+
+  /// No description provided for @gameYourTurn.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენი ჯერია!'**
+  String get gameYourTurn;
+
+  /// No description provided for @gameLives.
+  ///
+  /// In ka, this message translates to:
+  /// **'სიცოცხლე: {n}'**
+  String gameLives(int n);
+
+  /// No description provided for @gameMoves.
+  ///
+  /// In ka, this message translates to:
+  /// **'სვლები: {n}'**
+  String gameMoves(int n);
+
+  /// No description provided for @gameSound.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხმოვანი ეფექტები'**
+  String get gameSound;
+
+  /// No description provided for @gameInstructions.
+  ///
+  /// In ka, this message translates to:
+  /// **'როგორ ვითამაშოთ'**
+  String get gameInstructions;
+
+  /// No description provided for @gameChooseDifficulty.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიე სირთულე'**
+  String get gameChooseDifficulty;
+
+  /// No description provided for @gameTimeUp.
+  ///
+  /// In ka, this message translates to:
+  /// **'დრო ამოიწურა'**
+  String get gameTimeUp;
+
+  /// No description provided for @logicWhatsMissing.
+  ///
+  /// In ka, this message translates to:
+  /// **'რომელი აკლია?'**
+  String get logicWhatsMissing;
+
+  /// No description provided for @spQuestion.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბურთი შენთანაა. რომელია საუკეთესო სვლა?'**
+  String get spQuestion;
+
+  /// No description provided for @spPassTo.
+  ///
+  /// In ka, this message translates to:
+  /// **'პასი №{n}-ს'**
+  String spPassTo(String n);
+
+  /// No description provided for @spPassBack.
+  ///
+  /// In ka, this message translates to:
+  /// **'უკან პასი №{n}-ს'**
+  String spPassBack(String n);
+
+  /// No description provided for @spDribble.
+  ///
+  /// In ka, this message translates to:
+  /// **'წინ გავარბენინო'**
+  String get spDribble;
+
+  /// No description provided for @spShoot.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარტყმა კარში'**
+  String get spShoot;
+
+  /// No description provided for @spHold.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბურთის შეკავება'**
+  String get spHold;
+
+  /// No description provided for @spNext.
+  ///
+  /// In ka, this message translates to:
+  /// **'შემდეგი'**
+  String get spNext;
+
+  /// No description provided for @spExplain1.
+  ///
+  /// In ka, this message translates to:
+  /// **'№7 თავისუფალია ფლანგზე — მცველი შენ წინაა, ამიტომ გარბენა სარისკოა.'**
+  String get spExplain1;
+
+  /// No description provided for @spExplain2.
+  ///
+  /// In ka, this message translates to:
+  /// **'კართან ახლოს ხარ და გზა თავისუფალია — დაარტყი!'**
+  String get spExplain2;
+
+  /// No description provided for @spExplain3.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორი მეტოქე გიტევს — უსაფრთხო პასი უკან №4-ს ბურთს შეინარჩუნებს.'**
+  String get spExplain3;
+
+  /// No description provided for @spExplain4.
+  ///
+  /// In ka, this message translates to:
+  /// **'№10 მეურვეობის ქვეშაა, №11 კი თავისუფალ სივრცეშია.'**
+  String get spExplain4;
+
+  /// No description provided for @spExplain5.
+  ///
+  /// In ka, this message translates to:
+  /// **'№9-მდე პასს მცველი გადაჭრის; №10 თავისუფალია და შეუძლია შემობრუნება.'**
+  String get spExplain5;
+
+  /// No description provided for @spExplain6.
+  ///
+  /// In ka, this message translates to:
+  /// **'მარცხნივ მეტოქე №5-ს ფარავს — პასი მარჯვნივ №6-ს უსაფრთხოა.'**
+  String get spExplain6;
+
+  /// No description provided for @spExplain7.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცენტრი ჩაკეტილია ორი მცველით; №7 ფლანგზე თავისუფალია.'**
+  String get spExplain7;
+
+  /// No description provided for @spExplain8.
+  ///
+  /// In ka, this message translates to:
+  /// **'კუთხე ძალიან ვიწროა დასარტყმელად და №9 დაფარულია; №10 უკეთეს პოზიციაშია.'**
+  String get spExplain8;
+
+  /// No description provided for @spExplain9.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამი მეტოქე ცენტრშია — მოედნის გაშლა №2-ზე სივრცეს ქმნის.'**
+  String get spExplain9;
+
+  /// No description provided for @mazeGoal.
+  ///
+  /// In ka, this message translates to:
+  /// **'კარი'**
+  String get mazeGoal;
+
+  /// No description provided for @mazeUp.
+  ///
+  /// In ka, this message translates to:
+  /// **'ზემოთ'**
+  String get mazeUp;
+
+  /// No description provided for @mazeDown.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვემოთ'**
+  String get mazeDown;
+
+  /// No description provided for @mazeLeft.
+  ///
+  /// In ka, this message translates to:
+  /// **'მარცხნივ'**
+  String get mazeLeft;
+
+  /// No description provided for @mazeRight.
+  ///
+  /// In ka, this message translates to:
+  /// **'მარჯვნივ'**
+  String get mazeRight;
+
+  /// No description provided for @brainProgressTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩემი პროგრესი'**
+  String get brainProgressTitle;
+
+  /// No description provided for @brainPlays.
+  ///
+  /// In ka, this message translates to:
+  /// **'{n} თამაში'**
+  String brainPlays(int n);
+
+  /// No description provided for @brainNoPlays.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯერ არ გითამაშია'**
+  String get brainNoPlays;
+
+  /// No description provided for @brainRecentScores.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბოლო ქულები'**
+  String get brainRecentScores;
+
+  /// No description provided for @brainBadges.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნიშნები'**
+  String get brainBadges;
+
+  /// No description provided for @brainUnlocked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გახსნილი: {level}'**
+  String brainUnlocked(String level);
+
+  /// No description provided for @badgeFirstGame.
+  ///
+  /// In ka, this message translates to:
+  /// **'პირველი თამაში'**
+  String get badgeFirstGame;
+
+  /// No description provided for @badgeExplorer.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა თამაშის მკვლევარი'**
+  String get badgeExplorer;
+
+  /// No description provided for @badgeTenCompleted.
+  ///
+  /// In ka, this message translates to:
+  /// **'10 დასრულებული თამაში'**
+  String get badgeTenCompleted;
+
+  /// No description provided for @badgeMemoryHard.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეხსიერების ჩემპიონი'**
+  String get badgeMemoryHard;
+
+  /// No description provided for @badgePerfectLogic.
+  ///
+  /// In ka, this message translates to:
+  /// **'უშეცდომო ლოგიკა'**
+  String get badgePerfectLogic;
+
+  /// No description provided for @badgeTactician.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტაქტიკოსი'**
+  String get badgeTactician;
+
+  /// No description provided for @badgeQuickReflexes.
+  ///
+  /// In ka, this message translates to:
+  /// **'ელვისებური რეაქცია'**
+  String get badgeQuickReflexes;
+
+  /// No description provided for @badgeSequenceSeven.
+  ///
+  /// In ka, this message translates to:
+  /// **'7-იანი თანმიმდევრობა'**
+  String get badgeSequenceSeven;
+
+  /// No description provided for @badgeMazeHard.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლაბირინთის ოსტატი'**
+  String get badgeMazeHard;
+
+  /// No description provided for @coachChallengesTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტვინის აკადემიის გამოწვევები'**
+  String get coachChallengesTitle;
+
+  /// No description provided for @challengeAssign.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწვევის მიცემა'**
+  String get challengeAssign;
+
+  /// No description provided for @challengeGame.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში'**
+  String get challengeGame;
+
+  /// No description provided for @challengeDifficulty.
+  ///
+  /// In ka, this message translates to:
+  /// **'სირთულე'**
+  String get challengeDifficulty;
+
+  /// No description provided for @challengeDueDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა (არასავალდებულო)'**
+  String get challengeDueDate;
+
+  /// No description provided for @challengeNoDue.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადის გარეშე'**
+  String get challengeNoDue;
+
+  /// No description provided for @challengeAssigned.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწვევა მიცემულია'**
+  String get challengeAssigned;
+
+  /// No description provided for @challengeRemove.
+  ///
+  /// In ka, this message translates to:
+  /// **'წაშლა'**
+  String get challengeRemove;
+
+  /// No description provided for @challengeCompletion.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეასრულა: {done}/{total}'**
+  String challengeCompletion(int done, int total);
+
+  /// No description provided for @challengeEmpty.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწვევები ჯერ არ არის'**
+  String get challengeEmpty;
+
+  /// No description provided for @challengeOpenAction.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში'**
+  String get challengeOpenAction;
+
+  /// No description provided for @validationDueInPast.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა წარსულში ვერ იქნება.'**
+  String get validationDueInPast;
+
+  /// No description provided for @brainParentNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულები სავარჯიშოა და არა ინტელექტის შეფასება.'**
+  String get brainParentNote;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -6813,8 +7567,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

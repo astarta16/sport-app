@@ -68,6 +68,7 @@ export async function syncChildMembership(childId: string): Promise<void> {
  */
 export function publicGroupFields(data: FirebaseFirestore.DocumentData): Record<string, unknown> {
   return {
+    groupId: data.groupId ?? data.id ?? null,
     name: data.name ?? '',
     sportId: data.sportId ?? '',
     ageMin: data.ageMin ?? 0,
@@ -81,7 +82,7 @@ async function syncPublicGroup(groupId: string, beforeClubId: string | undefined
     await db.doc(`clubs/${beforeClubId}/publicGroups/${groupId}`).delete();
   }
   if (after?.clubId) {
-    await db.doc(`clubs/${after.clubId}/publicGroups/${groupId}`).set(publicGroupFields(after));
+    await db.doc(`clubs/${after.clubId}/publicGroups/${groupId}`).set({ ...publicGroupFields(after), groupId });
   }
 }
 

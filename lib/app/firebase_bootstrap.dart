@@ -1,3 +1,4 @@
+import '../features/brain_academy/data/firebase_brain_repositories.dart';
 import '../features/child_threads/data/firebase_child_threads_repository.dart';
 import '../features/contacts/data/firebase_contacts_repository.dart';
 import '../features/media/data/firebase_media_access_repository.dart';
@@ -86,5 +87,7 @@ Future<List<Override>> firebaseOverrides() async {
     mediaAccessRepositoryProvider.overrideWithValue(FirebaseMediaAccessRepository(functions)),
     mediaDownloaderProvider.overrideWithValue(HttpMediaDownloader()),
     childThreadsRepositoryProvider.overrideWithValue(FirebaseChildThreadsRepository(auth, db)),
+    brainAcademyRepositoryProvider.overrideWithValue(FirebaseBrainAcademyRepository(auth, db)),
+    studentRepositoryProvider.overrideWithValue(FirebaseStudentRepository(auth, db)),
   ];
 }

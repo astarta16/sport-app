@@ -153,6 +153,12 @@ service cloud.firestore {
       return me().get('lastContext', {}).get('childId', '');
     }
 
+    // v1.6 student account linked to this child (both directions).
+    function isStudentOf(childId) {
+      return isChildAccount() && myChildId() == childId
+        && childDoc(childId).get('userId', '') == uid();
+    }
+
     function isChildAccountInGroup(groupId) {
       return isChildAccount()
         && myChildId() != ''
@@ -193,6 +199,12 @@ service cloud.firestore {
         allow read: if true;
         allow write: if false;
       }
+    }
+
+    // v1.6: the same public projection, queried as a collection group by
+    // `groupId` (the student view uses it instead of the full group doc).
+    match /{path=**}/publicGroups/{groupId} {
+      allow read: if true;
     }
 
     // Approved coaches may add UNVERIFIED venues; only a platform admin verifies.
@@ -569,6 +581,48 @@ service cloud.firestore {
     match /mediaDownloads/{id} {
       allow read: if isPlatformAdmin() || isClubAdmin(resource.data.get('clubId', ''));
       allow write: if false;
+    }
+
+    // ------------------------------------------------- v1.6 Brain Academy
+    // Results: created only by the linked student (server time), immutable;
+    // readable by the student, the child's parents and the child's coaches.
+    // Admins are not included. Scores are practice points, not IQ.
+    match /brainResults/{resultId} {
+      allow read: if isStudentOf(resource.data.childId)
+        || isParentOfChild(resource.data.childId)
+        || isCoachOfChild(resource.data.childId);
+      allow create: if isStudentOf(request.resource.data.childId)
+        && request.resource.data.keys().hasOnly([
+             'childId', 'game', 'difficulty', 'level', 'score', 'accuracy', 'attempts',
+             'durationMs', 'completed', 'playedAt', 'detail'])
+        && request.resource.data.game in ['memoryMatch', 'logicQuest', 'smartPlay', 'quickMind', 'sequenceMaster', 'pathFinder']
+        && request.resource.data.difficulty in ['easy', 'medium', 'hard']
+        && request.resource.data.level is int && request.resource.data.level >= 1 && request.resource.data.level <= 10
+        && request.resource.data.score is int && request.resource.data.score >= 0 && request.resource.data.score <= 100000
+        && request.resource.data.accuracy is number && request.resource.data.accuracy >= 0 && request.resource.data.accuracy <= 1
+        && request.resource.data.attempts is int && request.resource.data.attempts >= 0 && request.resource.data.attempts <= 10000
+        && request.resource.data.durationMs is int && request.resource.data.durationMs >= 0
+        && request.resource.data.durationMs <= 10800000
+        && request.resource.data.completed is bool
+        && request.resource.data.playedAt == request.time
+        && request.resource.data.detail is map && request.resource.data.detail.size() <= 10;
+      allow update, delete: if false;
+    }
+
+    // Challenges: a coach of the group assigns a game (+ optional due date).
+    match /brainAssignments/{assignmentId} {
+      allow read: if isGroupCoach(resource.data.groupId)
+        || isGroupParent(resource.data.groupId)
+        || isChildAccountInGroup(resource.data.groupId);
+      allow create: if isGroupCoach(request.resource.data.groupId)
+        && request.resource.data.keys().hasOnly(['groupId', 'coachId', 'game', 'difficulty', 'createdAt', 'dueDate'])
+        && request.resource.data.coachId == uid()
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.game in ['memoryMatch', 'logicQuest', 'smartPlay', 'quickMind', 'sequenceMaster', 'pathFinder']
+        && request.resource.data.difficulty in ['easy', 'medium', 'hard']
+        && (request.resource.data.get('dueDate', null) == null || request.resource.data.dueDate is timestamp);
+      allow delete: if isGroupCoach(resource.data.groupId);
+      allow update: if false;
     }
 
     // Unread counters maintained by onChatMessageCreated / onChatMemberWritten.
@@ -983,6 +1037,7 @@ service cloud.firestore {
 
       allow read: if isAdmin()
         || isParentOfChild(resource.data.childId)
+        || isStudentOf(resource.data.childId)
         || isGroupCoach(resource.data.groupId)
         || isGroupCoach(trainingDoc(resource.data.trainingId).groupId);
 
@@ -1117,6 +1172,9 @@ service cloud.firestore {
         || isClubAdmin(resource.data.get('clubId', ''))
         || (isParent() && resource.data.status == 'published'
             && uid() in resource.data.get('readerIds', []))
+        || (resource.data.status == 'published'
+            && (isChildAccountInGroup(resource.data.groupIds[0])
+                || (resource.data.groupIds.size() > 1 && isChildAccountInGroup(resource.data.groupIds[1]))))
         || (isApprovedCoach() && uid() in resource.data.get('coachIds', []))
         || (isApprovedCoach() && resource.data.get('createdBy', '') == uid())
         || (isApprovedCoach()

@@ -34,7 +34,17 @@ class GroupRosterScreen extends ConsumerWidget {
     final certs =
         ref.watch(certificatesForChildrenProvider(childrenKey(group?.memberChildIds ?? const []))).value ?? const [];
     return Scaffold(
-      appBar: AppBar(title: Text(group?.name ?? l.roster)),
+      appBar: AppBar(
+        title: Text(group?.name ?? l.roster),
+        actions: [
+          IconButton(
+            key: const Key('group-challenges'),
+            tooltip: l.coachChallengesTitle,
+            onPressed: () => context.push('/group/$groupId/challenges'),
+            icon: const Icon(Icons.psychology_rounded),
+          ),
+        ],
+      ),
       body: AsyncView<List<Child>>(
         value: members,
         onRetry: () => ref.invalidate(groupMembersProvider(groupId)),

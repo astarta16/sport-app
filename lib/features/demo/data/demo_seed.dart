@@ -17,6 +17,7 @@ import 'demo_seed_v12.dart';
 import 'demo_seed_v13.dart';
 import 'demo_seed_v14.dart';
 import 'demo_seed_v15.dart';
+import 'demo_seed_v16.dart';
 
 /// Demo identities. All names, numbers and places are fictional.
 class DemoIds {
@@ -28,6 +29,9 @@ class DemoIds {
   static const platformAdmin = 'admin-1';
   static const clubAdmin = 'admin-2';
   static const otpCode = '123456';
+
+  /// v1.6 demo student account (Luka, linked to child-1 and Nino).
+  static const student = 'student-1';
 }
 
 /// Seeds a [DemoBackend] with realistic Georgian sample data relative to
@@ -300,7 +304,7 @@ class DemoSeed {
         id: 'child-1',
         firstName: 'ლუკა',
         lastName: 'ბერიძე',
-        birthDate: yearsAgo(9, 40),
+        birthDate: yearsAgo(11, 40),
         parentIds: [DemoIds.parent],
         sportIds: ['football', 'swimming'],
         photoConsent: true,
@@ -753,5 +757,6 @@ class DemoSeed {
     DemoSeedV13.seed(db);
     DemoSeedV14.seed(db);
     DemoSeedV15.seed(db);
+    DemoSeedV16.seed(db);
   }
 }

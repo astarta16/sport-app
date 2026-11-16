@@ -151,7 +151,7 @@ class _DemoAccounts extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(l.demoAccountsSubtitle, style: t.bodySmall?.copyWith(color: Colors.white70)),
           const SizedBox(height: AppSpacing.sm),
-          for (final (uid, label, role, phone) in accounts)
+          for (final (uid, label, role, phone) in accounts.where((a) => a.$3 != UserRole.child))
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.xs),
               child: Material(
@@ -162,7 +162,7 @@ class _DemoAccounts extends ConsumerWidget {
                   leading: InitialsAvatar(name: label, size: 38),
                   title: Text(label, style: t.titleSmall?.copyWith(color: Colors.white)),
                   subtitle: Text(
-                    '${uid == 'coach-4' ? l.demoPendingCoach : (role == UserRole.coach ? l.roleCoach : l.roleParent)} · ${Validators.formatPhone(phone)}',
+                    '${uid == 'coach-4' ? l.demoPendingCoach : (role == UserRole.coach ? l.roleCoach : (role == UserRole.child ? l.roleStudent : l.roleParent))} · ${Validators.formatPhone(phone)}',
                     style: t.bodySmall?.copyWith(color: Colors.white60),
                   ),
                   trailing: const Icon(Icons.arrow_forward_rounded, color: AppColors.volt),
@@ -170,6 +170,26 @@ class _DemoAccounts extends ConsumerWidget {
                 ),
               ),
             ),
+          // v1.6: explicit student entry (demo mode only).
+          for (final (uid, _, role, _) in accounts)
+            if (role == UserRole.child) ...[
+              const SizedBox(height: AppSpacing.sm),
+              FilledButton.icon(
+                key: const Key('demo-continue-student'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.volt,
+                  foregroundColor: AppColors.navy,
+                  minimumSize: const Size.fromHeight(52),
+                ),
+                onPressed: () => runGuarded(context, () => ref.read(authRepositoryProvider).signInAsDemo(uid)),
+                icon: const Icon(Icons.psychology_rounded),
+                label: Text(l.continueAsStudent),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(l.studentDemoNote, style: t.bodySmall?.copyWith(color: Colors.white60)),
+              ),
+            ],
         ],
       ),
     );

@@ -263,7 +263,9 @@ describe('training plans', () => {
     await assertFails(getDoc(doc(db, 'trainingPlans/plan2')));
     await assertSucceeds(getDocs(query(collection(db, 'trainingPlans'), where('readerIds', 'array-contains', UID.parentA), where('status', '==', 'published'))));
     await assertFails(getDocs(query(collection(db, 'trainingPlans'), where('groupIds', 'array-contains', 'g1'))));
-    await assertFails(getDoc(doc(as(UID.childUser), 'trainingPlans/plan1')));
+    // v1.6: the linked student account may read PUBLISHED plans of its own group.
+    await assertSucceeds(getDoc(doc(as(UID.childUser), 'trainingPlans/plan1')));
+    await assertFails(getDoc(doc(as(UID.childUser), 'trainingPlans/plan2')));
   });
 
   it('parent loses plan read after the child is removed (readerIds updated by the server)', async () => {

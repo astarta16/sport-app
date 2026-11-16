@@ -12,6 +12,8 @@ import '../features/clubs/domain/clubs_repository.dart';
 import '../features/groups/domain/groups_repository.dart';
 import '../features/maps/domain/location_repository.dart';
 import '../features/matches/domain/match.dart';
+import '../features/brain_academy/domain/brain_models.dart';
+import '../features/brain_academy/domain/student_view.dart';
 import '../features/child_threads/domain/child_thread.dart';
 import '../features/contacts/domain/contact.dart';
 import '../features/media/domain/media_access.dart';
@@ -71,3 +73,7 @@ final mediaDownloaderProvider = Provider<MediaDownloader>((_) => _unbound('Media
 
 // v1.5
 final childThreadsRepositoryProvider = Provider<ChildThreadsRepository>((_) => _unbound('ChildThreadsRepository'));
+
+// v1.6
+final brainAcademyRepositoryProvider = Provider<BrainAcademyRepository>((_) => _unbound('BrainAcademyRepository'));
+final studentRepositoryProvider = Provider<StudentRepository>((_) => _unbound('StudentRepository'));

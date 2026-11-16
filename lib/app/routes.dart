@@ -12,6 +12,10 @@ class Routes {
   static const register = '/auth/register';
   static const coachPending = '/auth/pending';
   static const childUnsupported = '/auth/child';
+
+  /// v1.6 student area (demo mode only).
+  static const studentHome = '/kid/home';
+  static String brainGame(String game) => '/kid/brain/$game';
   static const explore = '/explore';
 
   static const parentHome = '/parent/home';

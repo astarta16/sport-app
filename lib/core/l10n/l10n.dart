@@ -72,6 +72,7 @@ String? validationText(BuildContext context, String? code) {
     'focusRequired' => l.validationFocusRequired,
     'descriptionTooLong' => l.validationDescriptionTooLong,
     'resultScore' => l.validationResultScore,
+    'dueInPast' => l.validationDueInPast,
     'resultNotStarted' => l.validationResultNotStarted,
     'resultCancelled' => l.validationResultCancelled,
     'resultCompletedAt' => l.validationResultCompletedAt,

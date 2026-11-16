@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/misc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/account/data/demo_account_repository.dart';
 import '../features/admin/data/demo_admin_repository.dart';
@@ -7,6 +8,7 @@ import '../features/authentication/data/demo_auth_repository.dart';
 import '../features/chat/data/demo_chat_repository.dart';
 import '../features/children/data/demo_children_repository.dart';
 import '../features/clubs/data/demo_clubs_repository.dart';
+import '../features/brain_academy/data/demo_brain_repositories.dart';
 import '../features/child_threads/data/demo_child_threads_repository.dart';
 import '../features/contacts/data/demo_contacts_repository.dart';
 import '../features/demo/data/demo_backend.dart';
@@ -56,4 +58,15 @@ List<Override> demoOverrides(DemoBackend db) => [
   mediaAccessRepositoryProvider.overrideWithValue(DemoMediaAccessRepository(db)),
   mediaDownloaderProvider.overrideWithValue(DemoMediaDownloader(db)),
   childThreadsRepositoryProvider.overrideWithValue(DemoChildThreadsRepository(db)),
+  // Demo progress survives restarts (SharedPreferences); never Firebase.
+  brainAcademyRepositoryProvider.overrideWith((ref) {
+    SharedPreferences? prefs;
+    try {
+      prefs = ref.watch(sharedPreferencesProvider);
+    } catch (_) {
+      prefs = null; // admin web demo: no local persistence needed
+    }
+    return DemoBrainAcademyRepository(db, prefs);
+  }),
+  studentRepositoryProvider.overrideWithValue(DemoStudentRepository(db)),
 ];

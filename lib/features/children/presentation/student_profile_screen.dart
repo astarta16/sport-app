@@ -35,6 +35,7 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/child.dart';
 import 'children_providers.dart';
+import '../../brain_academy/presentation/student_home_screen.dart';
 
 /// Who is looking at the profile, and which groups they may see data of.
 /// Parents: all of the child's groups. Coaches: only their own active
@@ -81,7 +82,7 @@ class StudentProfileScreen extends ConsumerWidget {
             body: EmptyState(icon: Icons.lock_outline_rounded, title: l.errorPermission),
           );
         }
-        final tabs = [l.tabOverview, l.tabTrainings, l.tabPlans, l.tabMedia, l.tabMatches];
+        final tabs = [l.tabOverview, l.tabTrainings, l.tabPlans, l.tabMedia, l.tabMatches, l.brainAcademy];
         return DefaultTabController(
           length: tabs.length,
           child: Scaffold(
@@ -101,6 +102,12 @@ class StudentProfileScreen extends ConsumerWidget {
                 _PlansTab(groups: scope.groups),
                 _MediaTab(groups: scope.groups),
                 _MatchesTab(groups: scope.groups),
+                // v1.6: Brain Academy progress, badges and challenge status.
+                _page(key: const Key('profile-brain'), [
+                  Text(l.brainParentNote, style: Theme.of(context).textTheme.bodySmall),
+                  ChallengesList(childId: c.id),
+                  BrainProgressView(childId: c.id),
+                ]),
               ],
             ),
           ),

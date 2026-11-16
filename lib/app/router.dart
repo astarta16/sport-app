@@ -42,6 +42,8 @@ import '../features/profile/presentation/profile_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/trainings/presentation/training_detail_screen.dart';
 import '../features/trainings/presentation/training_form_screen.dart';
+import 'config.dart';
+import 'di.dart';
 import 'routes.dart';
 import 'settings.dart';
 import 'shell.dart';
@@ -49,6 +51,10 @@ import '../features/contacts/presentation/contacts_screens.dart';
 import '../features/chat/presentation/receipt_details_screen.dart';
 import '../features/children/presentation/student_profile_screen.dart';
 import '../features/child_threads/presentation/child_thread_screen.dart';
+import '../features/brain_academy/domain/brain_models.dart';
+import '../features/brain_academy/presentation/student_home_screen.dart';
+import '../features/brain_academy/presentation/brain_game_screen.dart';
+import '../features/brain_academy/presentation/coach_challenges_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -57,6 +63,7 @@ String? resolveRedirect({
   required String location,
   required AsyncValue<AuthSession?> session,
   required bool onboardingSeen,
+  bool studentAccountsEnabled = false,
 }) {
   const publicPrefixes = [Routes.phone, Routes.otp, Routes.onboarding, Routes.explore, '/club/'];
   final isPublic = publicPrefixes.any(location.startsWith);
@@ -70,7 +77,12 @@ String? resolveRedirect({
   }
   final user = s.user;
   if (user == null) return location == Routes.register ? null : Routes.register;
-  if (user.role == UserRole.child) return location == Routes.childUnsupported ? null : Routes.childUnsupported;
+  // v1.6: student accounts only in demo mode; production keeps child
+  // sign-in disabled until age verification and parental consent exist.
+  if (user.role == UserRole.child) {
+    if (!studentAccountsEnabled) return location == Routes.childUnsupported ? null : Routes.childUnsupported;
+    return location.startsWith('/kid/') ? null : Routes.studentHome;
+  }
   if (user.isCoach && !user.isApprovedCoach) return location == Routes.coachPending ? null : Routes.coachPending;
 
   // Admins use the separate web dashboard (lib/main_admin.dart).
@@ -127,6 +139,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       location: state.matchedLocation,
       session: ref.read(authSessionProvider),
       onboardingSeen: ref.read(appSettingsProvider).onboardingSeen,
+      studentAccountsEnabled: ref.read(appModeProvider) == AppMode.demo,
     ),
     routes: [
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
@@ -140,6 +153,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.register, builder: (_, _) => const RegistrationScreen()),
       GoRoute(path: Routes.coachPending, builder: (_, _) => const CoachPendingScreen()),
       GoRoute(path: Routes.childUnsupported, builder: (_, _) => const ChildUnsupportedScreen()),
+      GoRoute(path: Routes.studentHome, builder: (_, _) => const StudentHomeScreen()),
+      GoRoute(
+        path: '/kid/brain/:game',
+        builder: (_, s) => BrainGameScreen(game: BrainGame.fromName(s.pathParameters['game']) ?? BrainGame.memoryMatch),
+      ),
       GoRoute(path: Routes.explore, builder: (_, _) => const MapScreen(guest: true)),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
@@ -278,6 +296,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/student/:childId/coach/:coachId',
         builder: (_, s) =>
             ChildThreadScreen(childId: s.pathParameters['childId']!, coachId: s.pathParameters['coachId']!),
+      ),
+      GoRoute(
+        path: '/group/:groupId/challenges',
+        builder: (_, s) => CoachChallengesScreen(groupId: s.pathParameters['groupId']!),
       ),
       GoRoute(
         path: '/group/:groupId/contacts',

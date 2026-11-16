@@ -167,6 +167,9 @@ class AppUser {
 
   bool get isParent => role == UserRole.parent;
   bool get isCoach => role == UserRole.coach;
+
+  /// v1.6 student account (role `child`), linked to one child via lastContext.
+  bool get isStudent => role == UserRole.child;
   bool get isApprovedCoach => role == UserRole.coach && coachStatus == CoachStatus.approved;
 
   /// Admin rights come from the server-set claims (mirrored in [adminRole]);

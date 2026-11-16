@@ -164,7 +164,7 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   List<DemoAccount> get demoAccounts => [
-    for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.pendingCoach])
+    for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.student, DemoIds.pendingCoach])
       if (db.users[id] != null)
         DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
   ];
