@@ -265,10 +265,16 @@ class _BrainGameScreenState extends ConsumerState<BrainGameScreen> with WidgetsB
                     padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.xs, AppSpacing.md, 0),
                     child: Row(
                       children: [
-                        StatusPill(label: difficultyLabel(context, _difficulty), color: color, dense: true),
-                        const SizedBox(width: AppSpacing.xs),
-                        StatusPill(label: l.gameLevel(_level), color: AppColors.blue, dense: true),
-                        const Spacer(),
+                        Expanded(
+                          child: Wrap(
+                            spacing: AppSpacing.xs,
+                            runSpacing: 4,
+                            children: [
+                              StatusPill(label: difficultyLabel(context, _difficulty), color: color, dense: true),
+                              StatusPill(label: l.gameLevel(_level), color: AppColors.blue, dense: true),
+                            ],
+                          ),
+                        ),
                         Text(
                           l.gameTime(formatGameTime(_stopwatch.elapsedMilliseconds)),
                           key: const Key('game-timer'),

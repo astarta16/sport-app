@@ -156,7 +156,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.studentHome, builder: (_, _) => const StudentHomeScreen()),
       GoRoute(
         path: '/kid/brain/:game',
-        builder: (_, s) => BrainGameScreen(game: BrainGame.fromName(s.pathParameters['game']) ?? BrainGame.memoryMatch),
+        builder: (_, s) {
+          final game = BrainGame.fromName(s.pathParameters['game']) ?? BrainGame.memoryMatch;
+          // One state per game: switching games never reuses a running session.
+          return BrainGameScreen(key: ValueKey('brain-${game.name}'), game: game);
+        },
       ),
       GoRoute(path: Routes.explore, builder: (_, _) => const MapScreen(guest: true)),
       StatefulShellRoute.indexedStack(

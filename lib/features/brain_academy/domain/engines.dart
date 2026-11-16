@@ -686,7 +686,9 @@ class MazeEngine {
   late final List<List<bool>> walls;
   late final MazePos start;
   late final MazePos goal;
-  late final Set<MazePos> obstacles;
+
+  /// Empty while the maze is carved and the clear path computed.
+  Set<MazePos> obstacles = {};
   late final int optimal;
   late MazePos player;
   int moves = 0;
