@@ -2506,7 +2506,7 @@ class _RefreshButtonState extends ConsumerState<_RefreshButton> {
               });
               if (!mounted) return;
               setState(() => _busy = false);
-              if (ok) showAppSnack(context, l.refreshDone(changed.length));
+              if (ok) showAppSnack(this.context, l.refreshDone(changed.length));
             },
       icon: _busy
           ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
