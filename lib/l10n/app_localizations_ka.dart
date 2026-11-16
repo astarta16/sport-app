@@ -5070,4 +5070,13 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get moduleDataExports => 'მონაცემების ექსპორტი';
+
+  @override
+  String get orgAllAcademies => 'ყველა აკადემია';
+
+  @override
+  String get orgRoleAdmin => 'ადმინისტრატორი';
+
+  @override
+  String get orgRoleStudent => 'მოსწავლე';
 }

@@ -5148,4 +5148,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get moduleDataExports => 'Экспорт данных';
+
+  @override
+  String get orgAllAcademies => 'Все академии';
+
+  @override
+  String get orgRoleAdmin => 'Администратор';
+
+  @override
+  String get orgRoleStudent => 'Ученик';
 }

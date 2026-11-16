@@ -5115,4 +5115,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moduleDataExports => 'Data exports';
+
+  @override
+  String get orgAllAcademies => 'All academies';
+
+  @override
+  String get orgRoleAdmin => 'Administrator';
+
+  @override
+  String get orgRoleStudent => 'Student';
 }

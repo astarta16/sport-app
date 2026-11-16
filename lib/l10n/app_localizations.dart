@@ -9195,6 +9195,24 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'მონაცემების ექსპორტი'**
   String get moduleDataExports;
+
+  /// No description provided for @orgAllAcademies.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა აკადემია'**
+  String get orgAllAcademies;
+
+  /// No description provided for @orgRoleAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორი'**
+  String get orgRoleAdmin;
+
+  /// No description provided for @orgRoleStudent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლე'**
+  String get orgRoleStudent;
 }
 
 class _AppLocalizationsDelegate
