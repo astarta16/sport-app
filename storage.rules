@@ -172,6 +172,23 @@ service firebase.storage {
       allow delete: if isApprovedCoach() && plan().get('createdBy', '') == request.auth.uid;
     }
 
+    // v1.7 organization branding (logos). Public read; write only by the
+    // platform admin or an administrator of THIS organization (claims), so
+    // one tenant can never overwrite another tenant's files.
+    match /orgs/{clubId}/branding/{file} {
+      allow read: if true;
+      allow write: if signedIn()
+        && (request.auth.token.get('admin', false) == true
+            || clubId in request.auth.token.get('clubAdmin', []))
+        && (request.resource == null
+            || (request.resource.contentType.matches('image/(png|jpeg|webp)') && request.resource.size <= 1024 * 1024));
+    }
+
+    // Any other tenant-scoped path is closed by default.
+    match /orgs/{clubId}/{allPaths=**} {
+      allow read, write: if false;
+    }
+
     // Data exports: never client-accessible (getExportUrl returns a signed URL).
     match /exports/{allPaths=**} {
       allow read, write: if false;

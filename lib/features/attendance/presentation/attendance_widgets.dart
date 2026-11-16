@@ -187,17 +187,22 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
                   label: attendanceLabel(context, rec.status),
                   color: attendanceColor(rec.status),
                 )
-              else if (needsReconfirm)
-                StatusPill(
-                  key: Key('reconfirm-${widget.child.id}'),
-                  label: l.rsvpNeedsReconfirm,
-                  color: AppColors.warning,
-                  icon: Icons.priority_high_rounded,
-                )
-              else if (!widget.open && rsvp != null)
+              else if (!needsReconfirm && !widget.open && rsvp != null)
                 StatusPill(label: rsvpLabel(context, rsvp.response), color: rsvpColor(rsvp.response)),
             ],
           ),
+          // Own line: the label is long in Georgian and Russian.
+          if (rec == null && needsReconfirm)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.xs),
+              child: StatusPill(
+                key: Key('reconfirm-${widget.child.id}'),
+                label: l.rsvpNeedsReconfirm,
+                color: AppColors.warning,
+                icon: Icons.priority_high_rounded,
+                dense: true,
+              ),
+            ),
           if (widget.open) ...[
             const SizedBox(height: AppSpacing.xs),
             // The current schedule, shown before the parent answers.
@@ -355,10 +360,13 @@ class _ChildResponseRow extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(child: Text(child.fullName, style: Theme.of(context).textTheme.bodyMedium)),
-              StatusPill(label: rsvpStateLabel(context, state), color: rsvpStateColor(state)),
+              Text(child.fullName, style: Theme.of(context).textTheme.bodyMedium),
+              StatusPill(label: rsvpStateLabel(context, state), color: rsvpStateColor(state), dense: true),
             ],
           ),
           if (r != null && r.conflictingFor(version))

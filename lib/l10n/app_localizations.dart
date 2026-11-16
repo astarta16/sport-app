@@ -8217,6 +8217,918 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'აირჩიეთ აკადემია'**
   String get orgSwitchTitle;
+
+  /// No description provided for @adminColSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტი'**
+  String get adminColSport;
+
+  /// No description provided for @adminNavOrganizations.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციები'**
+  String get adminNavOrganizations;
+
+  /// No description provided for @adminNavOrgSettings.
+  ///
+  /// In ka, this message translates to:
+  /// **'აკადემიის პარამეტრები'**
+  String get adminNavOrgSettings;
+
+  /// No description provided for @adminNavPrograms.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრამები'**
+  String get adminNavPrograms;
+
+  /// No description provided for @adminNavReports.
+  ///
+  /// In ka, this message translates to:
+  /// **'ანგარიშები'**
+  String get adminNavReports;
+
+  /// No description provided for @adminNavRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზები'**
+  String get adminNavRooms;
+
+  /// No description provided for @adminNavSchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზების განრიგი'**
+  String get adminNavSchedule;
+
+  /// No description provided for @adminNavSectionPlatform.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმა'**
+  String get adminNavSectionPlatform;
+
+  /// No description provided for @adminNavSectionTenant.
+  ///
+  /// In ka, this message translates to:
+  /// **'აკადემია'**
+  String get adminNavSectionTenant;
+
+  /// No description provided for @bookingAllowGroupOverlap.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა'**
+  String get bookingAllowGroupOverlap;
+
+  /// No description provided for @bookingAlternatives.
+  ///
+  /// In ka, this message translates to:
+  /// **'იმავე დღეს თავისუფალი დრო: {times}'**
+  String bookingAlternatives(String times);
+
+  /// No description provided for @bookingCancel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშნის გაუქმება'**
+  String get bookingCancel;
+
+  /// No description provided for @bookingCancelFuture.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამის და ყველა მომდევნოს გაუქმება'**
+  String get bookingCancelFuture;
+
+  /// No description provided for @bookingCancelOccurrence.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ამის გაუქმება'**
+  String get bookingCancelOccurrence;
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშანი გაუქმდა'**
+  String get bookingCancelled;
+
+  /// No description provided for @bookingCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი'**
+  String get bookingCoach;
+
+  /// No description provided for @bookingConflictsFound.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეამოწმეთ შენახვამდე'**
+  String get bookingConflictsFound;
+
+  /// No description provided for @bookingEdit.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშნის რედაქტირება'**
+  String get bookingEdit;
+
+  /// No description provided for @bookingFreeRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ დროს თავისუფალი დარბაზები: {rooms}'**
+  String bookingFreeRooms(String rooms);
+
+  /// No description provided for @bookingGroup.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფი'**
+  String get bookingGroup;
+
+  /// No description provided for @bookingKind.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტიპი'**
+  String get bookingKind;
+
+  /// No description provided for @bookingKindEvent.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპეციალური ღონისძიება'**
+  String get bookingKindEvent;
+
+  /// No description provided for @bookingKindMaintenance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტექ. მომსახურება'**
+  String get bookingKindMaintenance;
+
+  /// No description provided for @bookingKindMatch.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაში'**
+  String get bookingKindMatch;
+
+  /// No description provided for @bookingKindTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიში'**
+  String get bookingKindTraining;
+
+  /// No description provided for @bookingMoved.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშანი გადატანილია'**
+  String get bookingMoved;
+
+  /// No description provided for @bookingNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი ჯავშანი'**
+  String get bookingNew;
+
+  /// No description provided for @bookingRecurring.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოველკვირეული გამეორება'**
+  String get bookingRecurring;
+
+  /// No description provided for @bookingRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზის დაჯავშნა შეუძლებელია'**
+  String get bookingRejected;
+
+  /// No description provided for @bookingSaveFuture.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამის და მომდევნოების შენახვა'**
+  String get bookingSaveFuture;
+
+  /// No description provided for @bookingSaveOccurrence.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ამის შენახვა'**
+  String get bookingSaveOccurrence;
+
+  /// No description provided for @bookingSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშანი შენახულია'**
+  String get bookingSaved;
+
+  /// No description provided for @bookingSeriesNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენახვამდე მოწმდება ყველა გამეორება ({weeks} კვირამდე წინ).'**
+  String bookingSeriesNote(int weeks);
+
+  /// No description provided for @bookingTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'სათაური'**
+  String get bookingTitle;
+
+  /// No description provided for @bookingTryInstead.
+  ///
+  /// In ka, this message translates to:
+  /// **'სცადეთ ერთ-ერთი:'**
+  String get bookingTryInstead;
+
+  /// No description provided for @bookingUntil.
+  ///
+  /// In ka, this message translates to:
+  /// **'{date}-მდე'**
+  String bookingUntil(String date);
+
+  /// No description provided for @conflictCoachOverlap.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი ამ დროს უკვე დაკავებულია'**
+  String get conflictCoachOverlap;
+
+  /// No description provided for @conflictGroupOverlap.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფს ამ დროს უკვე აქვს სესია'**
+  String get conflictGroupOverlap;
+
+  /// No description provided for @conflictInvalidRange.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასასრული დაწყების შემდეგ უნდა იყოს'**
+  String get conflictInvalidRange;
+
+  /// No description provided for @conflictMaintenance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზი დაბლოკილია ტექ. მომსახურებისთვის'**
+  String get conflictMaintenance;
+
+  /// No description provided for @conflictOutsideHours.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზის სამუშაო საათების გარეთ'**
+  String get conflictOutsideHours;
+
+  /// No description provided for @conflictOverCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზის ტევადობაზე მეტი ადამიანი'**
+  String get conflictOverCapacity;
+
+  /// No description provided for @conflictRoomNotBookable.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზი მიუწვდომელია ან დაარქივებულია'**
+  String get conflictRoomNotBookable;
+
+  /// No description provided for @conflictRoomOverlap.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზი ამ დროს უკვე დაჯავშნილია'**
+  String get conflictRoomOverlap;
+
+  /// No description provided for @conflictTooLong.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯავშანი მაქსიმუმ 12 საათს გრძელდება'**
+  String get conflictTooLong;
+
+  /// No description provided for @conflictWrongTenant.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზი სხვა ორგანიზაციას ეკუთვნის'**
+  String get conflictWrongTenant;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In ka, this message translates to:
+  /// **'{minutes} წთ'**
+  String minutesShort(int minutes);
+
+  /// No description provided for @moduleAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get moduleAttendance;
+
+  /// No description provided for @moduleBrainAcademy.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy'**
+  String get moduleBrainAcademy;
+
+  /// No description provided for @moduleCommunication.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლებთან კომუნიკაცია'**
+  String get moduleCommunication;
+
+  /// No description provided for @moduleDisabledRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზების განრიგი ამ ორგანიზაციისთვის ჩართული არ არის. პლატფორმის ადმინისტრატორს შეუძლია ნებართვა, შემდეგ აკადემიის პარამეტრებში ჩართავთ.'**
+  String get moduleDisabledRooms;
+
+  /// No description provided for @moduleDisabledTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოდული გამორთულია'**
+  String get moduleDisabledTitle;
+
+  /// No description provided for @moduleLeaderboards.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდები'**
+  String get moduleLeaderboards;
+
+  /// No description provided for @moduleMatches.
+  ///
+  /// In ka, this message translates to:
+  /// **'თამაშები'**
+  String get moduleMatches;
+
+  /// No description provided for @moduleMedia.
+  ///
+  /// In ka, this message translates to:
+  /// **'მედია გალერეა'**
+  String get moduleMedia;
+
+  /// No description provided for @moduleMedical.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამედიცინო ცნობები'**
+  String get moduleMedical;
+
+  /// No description provided for @moduleNotifications.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინებები'**
+  String get moduleNotifications;
+
+  /// No description provided for @modulePayments.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდები'**
+  String get modulePayments;
+
+  /// No description provided for @moduleRoomScheduling.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზების განრიგი'**
+  String get moduleRoomScheduling;
+
+  /// No description provided for @moduleStudentAccounts.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლის ანგარიშები'**
+  String get moduleStudentAccounts;
+
+  /// No description provided for @moduleTrainingPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავარჯიშო გეგმები'**
+  String get moduleTrainingPlans;
+
+  /// No description provided for @moduleTrainings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშები'**
+  String get moduleTrainings;
+
+  /// No description provided for @none.
+  ///
+  /// In ka, this message translates to:
+  /// **'არცერთი'**
+  String get none;
+
+  /// No description provided for @orgAddCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის დამატება'**
+  String get orgAddCoach;
+
+  /// No description provided for @orgAdminAssigned.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორი დაინიშნა'**
+  String get orgAdminAssigned;
+
+  /// No description provided for @orgAdminHelp.
+  ///
+  /// In ka, this message translates to:
+  /// **'პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.'**
+  String get orgAdminHelp;
+
+  /// No description provided for @orgAdmins.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინები'**
+  String get orgAdmins;
+
+  /// No description provided for @orgAllowedModules.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმის მიერ დაშვებული მოდულები'**
+  String get orgAllowedModules;
+
+  /// No description provided for @orgAssignAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის დანიშვნა'**
+  String get orgAssignAdmin;
+
+  /// No description provided for @orgBookingBuffer.
+  ///
+  /// In ka, this message translates to:
+  /// **'შუალედი ჯავშნებს შორის'**
+  String get orgBookingBuffer;
+
+  /// No description provided for @orgBookingsWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზის ჯავშნები მომდევნო 7 დღეში'**
+  String get orgBookingsWeek;
+
+  /// No description provided for @orgBrainPlays.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy თამაშები (7 დღე)'**
+  String get orgBrainPlays;
+
+  /// No description provided for @orgBrandColor.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბრენდის ფერი'**
+  String get orgBrandColor;
+
+  /// No description provided for @orgBranding.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბრენდი და კონტაქტები'**
+  String get orgBranding;
+
+  /// No description provided for @orgCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get orgCoaches;
+
+  /// No description provided for @orgContactEmail.
+  ///
+  /// In ka, this message translates to:
+  /// **'საკონტაქტო ელფოსტა'**
+  String get orgContactEmail;
+
+  /// No description provided for @orgContactPhone.
+  ///
+  /// In ka, this message translates to:
+  /// **'საკონტაქტო ტელეფონი'**
+  String get orgContactPhone;
+
+  /// No description provided for @orgCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია შეიქმნა'**
+  String get orgCreated;
+
+  /// No description provided for @orgDefaultLanguage.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნაგულისხმევი ენა'**
+  String get orgDefaultLanguage;
+
+  /// No description provided for @orgDescription.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღწერა'**
+  String get orgDescription;
+
+  /// No description provided for @orgHealth.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის მდგომარეობა'**
+  String get orgHealth;
+
+  /// No description provided for @orgInactiveBanner.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის სტატუსი: {status}. პარამეტრები მხოლოდ სანახავია და ახლის შექმნა შეუძლებელია.'**
+  String orgInactiveBanner(String status);
+
+  /// No description provided for @orgLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია'**
+  String get orgLabel;
+
+  /// No description provided for @orgLeaderboardByAge.
+  ///
+  /// In ka, this message translates to:
+  /// **'რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით'**
+  String get orgLeaderboardByAge;
+
+  /// No description provided for @orgLeaderboardEnable.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy-ის ლიდერბორდის ჩართვა'**
+  String get orgLeaderboardEnable;
+
+  /// No description provided for @orgLeaderboardMin.
+  ///
+  /// In ka, this message translates to:
+  /// **'მინიმალური მონაწილე ერთ ცხრილში'**
+  String get orgLeaderboardMin;
+
+  /// No description provided for @orgLeaderboardNotAllowed.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.'**
+  String get orgLeaderboardNotAllowed;
+
+  /// No description provided for @orgLeaderboardPrivacy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩანან მხოლოდ ის მოსწავლეები, რომელთა მეურვემაც თანხმობა მისცა — ფსევდონიმით ან სახელით და ინიციალით.'**
+  String get orgLeaderboardPrivacy;
+
+  /// No description provided for @orgLeaderboardSettings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდი'**
+  String get orgLeaderboardSettings;
+
+  /// No description provided for @orgLimitCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები'**
+  String get orgLimitCoaches;
+
+  /// No description provided for @orgLimitGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფები'**
+  String get orgLimitGroups;
+
+  /// No description provided for @orgLimitRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზები'**
+  String get orgLimitRooms;
+
+  /// No description provided for @orgLimitStudents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეები'**
+  String get orgLimitStudents;
+
+  /// No description provided for @orgLimits.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიმიტები'**
+  String get orgLimits;
+
+  /// No description provided for @orgLogoUrl.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლოგოს ბმული'**
+  String get orgLogoUrl;
+
+  /// No description provided for @orgManage.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმა, სტატუსი და მოდულები'**
+  String get orgManage;
+
+  /// No description provided for @orgModules.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩართული მოდულები'**
+  String get orgModules;
+
+  /// No description provided for @orgModulesHelp.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.'**
+  String get orgModulesHelp;
+
+  /// No description provided for @orgModulesOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩართული მოდულები'**
+  String get orgModulesOn;
+
+  /// No description provided for @orgNameEn.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი (ინგლისური)'**
+  String get orgNameEn;
+
+  /// No description provided for @orgNameKa.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი (ქართული)'**
+  String get orgNameKa;
+
+  /// No description provided for @orgNameRu.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი (რუსული)'**
+  String get orgNameRu;
+
+  /// No description provided for @orgNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი ორგანიზაცია'**
+  String get orgNew;
+
+  /// No description provided for @orgNoneSelected.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამართავი ორგანიზაცია არ არის'**
+  String get orgNoneSelected;
+
+  /// No description provided for @orgOverLimit.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმის ერთი ან მეტი ლიმიტი გადაჭარბებულია.'**
+  String get orgOverLimit;
+
+  /// No description provided for @orgPickUser.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ მომხმარებელი'**
+  String get orgPickUser;
+
+  /// No description provided for @orgPlan.
+  ///
+  /// In ka, this message translates to:
+  /// **'გეგმა'**
+  String get orgPlan;
+
+  /// No description provided for @orgPlatformSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.'**
+  String get orgPlatformSubtitle;
+
+  /// No description provided for @orgRemoveAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის მოხსნა'**
+  String get orgRemoveAdmin;
+
+  /// No description provided for @orgRemoveCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოხსნა'**
+  String get orgRemoveCoach;
+
+  /// No description provided for @orgSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენახულია'**
+  String get orgSaved;
+
+  /// No description provided for @orgStatusActive.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური'**
+  String get orgStatusActive;
+
+  /// No description provided for @orgStatusDeactivated.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამორთული'**
+  String get orgStatusDeactivated;
+
+  /// No description provided for @orgStatusHelp.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერებული ან გამორთული: მონაცემები ინახება და იკითხება, მაგრამ ყველა მოდული გამორთულია და ახლის შექმნა შეუძლებელია.'**
+  String get orgStatusHelp;
+
+  /// No description provided for @orgStatusSuspended.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერებული'**
+  String get orgStatusSuspended;
+
+  /// No description provided for @orgTimezone.
+  ///
+  /// In ka, this message translates to:
+  /// **'დროის სარტყელი'**
+  String get orgTimezone;
+
+  /// No description provided for @orgUpcomingEvents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი ვარჯიშები და თამაშები'**
+  String get orgUpcomingEvents;
+
+  /// No description provided for @orgUserId.
+  ///
+  /// In ka, this message translates to:
+  /// **'…ან მომხმარებლის ID'**
+  String get orgUserId;
+
+  /// No description provided for @planFree.
+  ///
+  /// In ka, this message translates to:
+  /// **'უფასო'**
+  String get planFree;
+
+  /// No description provided for @planPremium.
+  ///
+  /// In ka, this message translates to:
+  /// **'პრემიუმი'**
+  String get planPremium;
+
+  /// No description provided for @planStandard.
+  ///
+  /// In ka, this message translates to:
+  /// **'სტანდარტული'**
+  String get planStandard;
+
+  /// No description provided for @programAges.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკი'**
+  String get programAges;
+
+  /// No description provided for @programCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადგილები'**
+  String get programCapacity;
+
+  /// No description provided for @programNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი პროგრამა'**
+  String get programNew;
+
+  /// No description provided for @programPaused.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერებული'**
+  String get programPaused;
+
+  /// No description provided for @programScheduleNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგის შენიშვნა'**
+  String get programScheduleNote;
+
+  /// No description provided for @reportAllGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა ჯგუფი'**
+  String get reportAllGroups;
+
+  /// No description provided for @reportAttendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრება'**
+  String get reportAttendance;
+
+  /// No description provided for @reportBrain.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy'**
+  String get reportBrain;
+
+  /// No description provided for @reportDays.
+  ///
+  /// In ka, this message translates to:
+  /// **'{days} დღე'**
+  String reportDays(int days);
+
+  /// No description provided for @reportLastPlayed.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბოლოს ითამაშა'**
+  String get reportLastPlayed;
+
+  /// No description provided for @reportRsvp.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლების პასუხები'**
+  String get reportRsvp;
+
+  /// No description provided for @reportWhen.
+  ///
+  /// In ka, this message translates to:
+  /// **'როდის'**
+  String get reportWhen;
+
+  /// No description provided for @roomAnySport.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნებისმიერი სპორტი'**
+  String get roomAnySport;
+
+  /// No description provided for @roomCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტევადობა'**
+  String get roomCapacity;
+
+  /// No description provided for @roomHours.
+  ///
+  /// In ka, this message translates to:
+  /// **'სამუშაო საათები'**
+  String get roomHours;
+
+  /// No description provided for @roomLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზი'**
+  String get roomLabel;
+
+  /// No description provided for @roomMaintenance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ტექ. მომსახურების დამატება'**
+  String get roomMaintenance;
+
+  /// No description provided for @roomNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი დარბაზი'**
+  String get roomNew;
+
+  /// No description provided for @roomNone.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯერ დაამატეთ დარბაზი'**
+  String get roomNone;
+
+  /// No description provided for @roomNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენიშვნა'**
+  String get roomNote;
+
+  /// No description provided for @roomSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტის სახეობები (ცარიელი = ნებისმიერი)'**
+  String get roomSports;
+
+  /// No description provided for @roomStatusActive.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხელმისაწვდომი'**
+  String get roomStatusActive;
+
+  /// No description provided for @roomStatusUnavailable.
+  ///
+  /// In ka, this message translates to:
+  /// **'დროებით მიუწვდომელი'**
+  String get roomStatusUnavailable;
+
+  /// No description provided for @scheduleAllCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა მწვრთნელი'**
+  String get scheduleAllCoaches;
+
+  /// No description provided for @scheduleAllRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა დარბაზი'**
+  String get scheduleAllRooms;
+
+  /// No description provided for @scheduleAllSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა სპორტი'**
+  String get scheduleAllSports;
+
+  /// No description provided for @scheduleBusy.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაკავებული {hours} სთ {minutes} წთ'**
+  String scheduleBusy(int hours, int minutes);
+
+  /// No description provided for @scheduleDay.
+  ///
+  /// In ka, this message translates to:
+  /// **'დღე'**
+  String get scheduleDay;
+
+  /// No description provided for @scheduleFree.
+  ///
+  /// In ka, this message translates to:
+  /// **'თავისუფალი'**
+  String get scheduleFree;
+
+  /// No description provided for @scheduleSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'დრო ნაჩვენებია {tz}-ის მიხედვით. დააჭირეთ თავისუფალ უჯრას დასაჯავშნად, გადაათრიეთ ჯავშანი გადასატანად.'**
+  String scheduleSubtitle(String tz);
+
+  /// No description provided for @scheduleWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'კვირა'**
+  String get scheduleWeek;
 }
 
 class _AppLocalizationsDelegate

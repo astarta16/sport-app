@@ -5,6 +5,7 @@ import '../../account/data/demo_account_repository.dart';
 import '../../../core/utils/validators.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../demo/data/demo_seed.dart';
+import '../../demo/data/demo_seed_v17.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/access_policy.dart';
 import '../domain/app_user.dart';
@@ -164,7 +165,15 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   List<DemoAccount> get demoAccounts => [
-    for (final id in [DemoIds.parent, DemoIds.coach, DemoIds.student, DemoIds.pendingCoach])
+    for (final id in [
+      DemoIds.parent,
+      DemoIds.coach,
+      DemoIds.student,
+      DemoIds.pendingCoach,
+      // v1.7 Tianeti Sports School (second organization).
+      DemoSeedV17.tianetiParent,
+      DemoSeedV17.volleyCoach,
+    ])
       if (db.users[id] != null)
         DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
   ];
@@ -172,7 +181,7 @@ class DemoAuthRepository implements AuthRepository {
   /// Admin demo accounts are offered only by the admin web app.
   @override
   List<DemoAccount> get demoAdminAccounts => [
-    for (final id in [DemoIds.platformAdmin, DemoIds.clubAdmin])
+    for (final id in [DemoIds.platformAdmin, DemoIds.clubAdmin, DemoSeedV17.tianetiAdmin, DemoSeedV17.mtskhetaAdmin])
       if (db.users[id] != null)
         DemoAccount(uid: id, label: db.users[id]!.fullName, role: db.users[id]!.role, phone: db.users[id]!.phone),
   ];

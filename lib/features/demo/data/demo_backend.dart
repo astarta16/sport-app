@@ -109,7 +109,7 @@ class DemoBackend {
   /// `orgConfigs/{clubId}`; a club without one uses [OrgConfig.legacy].
   final orgConfigs = <String, OrgConfig>{};
 
-  /// `clubs/{clubId}/members/{uid}` keyed `clubId|uid`.
+  /// `clubs/{clubId}/orgMembers/{uid}` keyed `clubId|uid`.
   final memberships = <String, OrgMembership>{};
   final programs = <String, SportsProgram>{};
   final rooms = <String, Room>{};

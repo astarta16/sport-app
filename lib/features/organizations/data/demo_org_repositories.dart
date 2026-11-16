@@ -8,6 +8,8 @@ import '../../brain_academy/domain/scoring.dart';
 import '../../clubs/domain/club.dart';
 import '../../demo/data/demo_backend.dart';
 import '../../notifications/domain/notification_models.dart';
+import '../../attendance/domain/attendance.dart';
+import '../../matches/domain/match.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/coach_contact.dart';
 import '../domain/organization.dart';
@@ -300,6 +302,121 @@ class DemoOrganizationsRepository implements OrganizationsRepository {
     return saved;
   }
 
+  List<({String id, EventType type, String groupId, DateTime startAt, int version, bool cancelled})> _events(
+    String orgId,
+    DateTime from,
+    DateTime to,
+    String? groupId,
+  ) {
+    final groups = {
+      for (final g in db.groups.values)
+        if (g.clubId == orgId && (groupId == null || g.id == groupId)) g.id,
+    };
+    return [
+      for (final t in db.trainings.values)
+        if (groups.contains(t.groupId) && !t.startAt.isBefore(from) && t.startAt.isBefore(to))
+          (
+            id: t.id,
+            type: EventType.training,
+            groupId: t.groupId,
+            startAt: t.startAt,
+            version: t.scheduleVersion,
+            cancelled: t.status == TrainingStatus.cancelled,
+          ),
+      for (final m in db.matches.values)
+        if (groups.contains(m.groupId) && !m.startAt.isBefore(from) && m.startAt.isBefore(to))
+          (
+            id: m.id,
+            type: EventType.match,
+            groupId: m.groupId,
+            startAt: m.startAt,
+            version: m.scheduleVersion,
+            cancelled: m.status == MatchStatus.cancelled,
+          ),
+    ]..sort((a, b) => a.startAt.compareTo(b.startAt));
+  }
+
+  @override
+  Future<List<EventRsvpRow>> rsvpReport(String orgId, {required DateTime from, required DateTime to}) async {
+    _orgAdmin(orgId);
+    db.requireModule(orgId, OrgModule.attendance);
+    return [
+      for (final e in _events(orgId, from, to, null))
+        if (!e.cancelled)
+          EventRsvpRow(
+            eventId: e.id,
+            type: e.type,
+            groupId: e.groupId,
+            groupName: db.groups[e.groupId]?.name ?? '',
+            startAt: e.startAt,
+            version: e.version,
+            counts: {
+              for (final st in RsvpState.values)
+                st: RsvpSummary.compute(
+                  db.groups[e.groupId]?.memberChildIds ?? const [],
+                  db.rsvps.values.where((r) => r.trainingId == e.id),
+                  e.version,
+                ).count(st),
+            },
+          ),
+    ];
+  }
+
+  @override
+  Future<List<EventAttendanceRow>> attendanceReport(
+    String orgId, {
+    required DateTime from,
+    required DateTime to,
+    String? groupId,
+  }) async {
+    _orgAdmin(orgId);
+    db.requireModule(orgId, OrgModule.attendance);
+    if (groupId != null && db.groups[groupId]?.clubId != orgId) throw const PermissionDeniedException('wrongTenant');
+    return [
+      for (final e in _events(orgId, from, to, groupId))
+        if (!e.cancelled)
+          () {
+            final recs = db.attendance.values.where((a) => a.trainingId == e.id).toList();
+            int n(AttendanceStatus s) => recs.where((r) => r.status == s).length;
+            final members = db.groups[e.groupId]?.memberChildIds.length ?? 0;
+            return EventAttendanceRow(
+              eventId: e.id,
+              type: e.type,
+              groupId: e.groupId,
+              groupName: db.groups[e.groupId]?.name ?? '',
+              startAt: e.startAt,
+              present: n(AttendanceStatus.present),
+              absent: n(AttendanceStatus.absent),
+              excused: n(AttendanceStatus.excused),
+              unmarked: (members - recs.length).clamp(0, members),
+            );
+          }(),
+    ];
+  }
+
+  @override
+  Future<List<BrainSummaryRow>> brainSummary(String orgId) async {
+    _orgAdmin(orgId);
+    final groups = db.groups.values.where((g) => g.clubId == orgId).toList();
+    final kids = {for (final g in groups) ...g.memberChildIds};
+    return [
+      for (final id in kids)
+        if (db.children[id] case final c?)
+          () {
+            final results = db.brainResults.where((r) => r.childId == id).toList();
+            final s = ScoringService.summarize(results, now: db.clock());
+            return BrainSummaryRow(
+              childId: id,
+              displayName: LeaderboardConsent.firstNameInitial(c.firstName, c.lastName),
+              groupNames: [for (final g in groups.where((g) => g.hasChild(id))) g.name],
+              points: s.totalPoints,
+              gamesCompleted: s.gamesCompleted,
+              lastPlayed: results.isEmpty ? null : ScoringService.ordered(results).last.playedAt,
+            );
+          }(),
+    ]..sort((a, b) => b.points.compareTo(a.points));
+  }
+
   @override
   Future<TenantHealth> health(String orgId) async {
     final me = db.me;
@@ -467,7 +584,7 @@ class DemoSchedulingRepository implements SchedulingRepository {
       id: db.newId('tr'),
       groupId: b.groupId!,
       venueId: room.venueId ?? '',
-      startAt: b.startAt,
+      startAt: b.startAt.toLocal(),
       durationMin: b.duration.inMinutes,
       focus: const [],
       description: b.title,
@@ -555,7 +672,7 @@ class DemoSchedulingRepository implements SchedulingRepository {
     if (!moved) return;
     final room = db.rooms[after.roomId];
     final next = t.copyWith(
-      startAt: after.startAt,
+      startAt: after.startAt.toLocal(),
       durationMin: after.duration.inMinutes,
       venueId: room?.venueId ?? t.venueId,
       roomId: after.roomId,
@@ -600,13 +717,13 @@ class DemoSchedulingRepository implements SchedulingRepository {
 
   @override
   Future<List<Booking>> updateSeriesFrom(
-    String bookingId, {
+    Booking anchorRef, {
     required int startMinute,
     required int durationMin,
     String? roomId,
   }) async {
     db.requireOnline();
-    final anchor = db.bookings[bookingId] ?? (throw const NotFoundException('booking'));
+    final anchor = db.bookings[anchorRef.id] ?? (throw const NotFoundException('booking'));
     _orgAdmin(anchor.orgId);
     final sid = anchor.seriesId ?? (throw const ValidationException('notRecurring'));
     final cfg = db.orgConfig(anchor.orgId);
@@ -643,8 +760,9 @@ class DemoSchedulingRepository implements SchedulingRepository {
   }
 
   @override
-  Future<void> cancelBooking(String bookingId, {SeriesEditScope scope = SeriesEditScope.thisOccurrence}) async {
+  Future<void> cancelBooking(Booking booking, {SeriesEditScope scope = SeriesEditScope.thisOccurrence}) async {
     db.requireOnline();
+    final bookingId = booking.id;
     final b = db.bookings[bookingId] ?? (throw const NotFoundException('booking'));
     _orgAdmin(b.orgId);
     final targets = scope == SeriesEditScope.thisAndFuture && b.seriesId != null

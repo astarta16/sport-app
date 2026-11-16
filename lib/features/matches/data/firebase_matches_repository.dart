@@ -72,7 +72,10 @@ class FirebaseMatchesRepository implements MatchesRepository {
     final errors = MatchDraft.validate(d, now: clock(), isEdit: true);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
+    final material = moved || d.venueId != old.venueId;
     await _col.doc(id).update({
+      if (material) 'scheduleVersion': old.scheduleVersion + 1,
+      if (d.venueId != old.venueId) 'previousVenueId': old.venueId,
       'venueId': d.venueId,
       'startAt': d.startAt,
       'opponentName': d.opponentName.trim(),

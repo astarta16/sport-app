@@ -281,8 +281,9 @@ class StudentCoachesSection extends ConsumerWidget {
     final group = view.groups.where((g) => g.coachIds.contains(coachId)).first;
     final topic = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       builder: (context) => SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           key: const Key('contact-coach-sheet'),
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(

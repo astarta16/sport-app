@@ -4551,4 +4551,487 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get orgSwitchTitle => 'აირჩიეთ აკადემია';
+
+  @override
+  String get adminColSport => 'სპორტი';
+
+  @override
+  String get adminNavOrganizations => 'ორგანიზაციები';
+
+  @override
+  String get adminNavOrgSettings => 'აკადემიის პარამეტრები';
+
+  @override
+  String get adminNavPrograms => 'პროგრამები';
+
+  @override
+  String get adminNavReports => 'ანგარიშები';
+
+  @override
+  String get adminNavRooms => 'დარბაზები';
+
+  @override
+  String get adminNavSchedule => 'დარბაზების განრიგი';
+
+  @override
+  String get adminNavSectionPlatform => 'პლატფორმა';
+
+  @override
+  String get adminNavSectionTenant => 'აკადემია';
+
+  @override
+  String get bookingAllowGroupOverlap =>
+      'ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა';
+
+  @override
+  String bookingAlternatives(String times) {
+    return 'იმავე დღეს თავისუფალი დრო: $times';
+  }
+
+  @override
+  String get bookingCancel => 'ჯავშნის გაუქმება';
+
+  @override
+  String get bookingCancelFuture => 'ამის და ყველა მომდევნოს გაუქმება';
+
+  @override
+  String get bookingCancelOccurrence => 'მხოლოდ ამის გაუქმება';
+
+  @override
+  String get bookingCancelled => 'ჯავშანი გაუქმდა';
+
+  @override
+  String get bookingCoach => 'მწვრთნელი';
+
+  @override
+  String get bookingConflictsFound => 'შეამოწმეთ შენახვამდე';
+
+  @override
+  String get bookingEdit => 'ჯავშნის რედაქტირება';
+
+  @override
+  String bookingFreeRooms(String rooms) {
+    return 'ამ დროს თავისუფალი დარბაზები: $rooms';
+  }
+
+  @override
+  String get bookingGroup => 'ჯგუფი';
+
+  @override
+  String get bookingKind => 'ტიპი';
+
+  @override
+  String get bookingKindEvent => 'სპეციალური ღონისძიება';
+
+  @override
+  String get bookingKindMaintenance => 'ტექ. მომსახურება';
+
+  @override
+  String get bookingKindMatch => 'თამაში';
+
+  @override
+  String get bookingKindTraining => 'ვარჯიში';
+
+  @override
+  String get bookingMoved => 'ჯავშანი გადატანილია';
+
+  @override
+  String get bookingNew => 'ახალი ჯავშანი';
+
+  @override
+  String get bookingRecurring => 'ყოველკვირეული გამეორება';
+
+  @override
+  String get bookingRejected => 'დარბაზის დაჯავშნა შეუძლებელია';
+
+  @override
+  String get bookingSaveFuture => 'ამის და მომდევნოების შენახვა';
+
+  @override
+  String get bookingSaveOccurrence => 'მხოლოდ ამის შენახვა';
+
+  @override
+  String get bookingSaved => 'ჯავშანი შენახულია';
+
+  @override
+  String bookingSeriesNote(int weeks) {
+    return 'შენახვამდე მოწმდება ყველა გამეორება ($weeks კვირამდე წინ).';
+  }
+
+  @override
+  String get bookingTitle => 'სათაური';
+
+  @override
+  String get bookingTryInstead => 'სცადეთ ერთ-ერთი:';
+
+  @override
+  String bookingUntil(String date) {
+    return '$date-მდე';
+  }
+
+  @override
+  String get conflictCoachOverlap => 'მწვრთნელი ამ დროს უკვე დაკავებულია';
+
+  @override
+  String get conflictGroupOverlap => 'ჯგუფს ამ დროს უკვე აქვს სესია';
+
+  @override
+  String get conflictInvalidRange => 'დასასრული დაწყების შემდეგ უნდა იყოს';
+
+  @override
+  String get conflictMaintenance => 'დარბაზი დაბლოკილია ტექ. მომსახურებისთვის';
+
+  @override
+  String get conflictOutsideHours => 'დარბაზის სამუშაო საათების გარეთ';
+
+  @override
+  String get conflictOverCapacity => 'დარბაზის ტევადობაზე მეტი ადამიანი';
+
+  @override
+  String get conflictRoomNotBookable => 'დარბაზი მიუწვდომელია ან დაარქივებულია';
+
+  @override
+  String get conflictRoomOverlap => 'დარბაზი ამ დროს უკვე დაჯავშნილია';
+
+  @override
+  String get conflictTooLong => 'ჯავშანი მაქსიმუმ 12 საათს გრძელდება';
+
+  @override
+  String get conflictWrongTenant => 'დარბაზი სხვა ორგანიზაციას ეკუთვნის';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes წთ';
+  }
+
+  @override
+  String get moduleAttendance => 'დასწრება';
+
+  @override
+  String get moduleBrainAcademy => 'Brain Academy';
+
+  @override
+  String get moduleCommunication => 'მშობლებთან კომუნიკაცია';
+
+  @override
+  String get moduleDisabledRooms =>
+      'დარბაზების განრიგი ამ ორგანიზაციისთვის ჩართული არ არის. პლატფორმის ადმინისტრატორს შეუძლია ნებართვა, შემდეგ აკადემიის პარამეტრებში ჩართავთ.';
+
+  @override
+  String get moduleDisabledTitle => 'მოდული გამორთულია';
+
+  @override
+  String get moduleLeaderboards => 'ლიდერბორდები';
+
+  @override
+  String get moduleMatches => 'თამაშები';
+
+  @override
+  String get moduleMedia => 'მედია გალერეა';
+
+  @override
+  String get moduleMedical => 'სამედიცინო ცნობები';
+
+  @override
+  String get moduleNotifications => 'შეტყობინებები';
+
+  @override
+  String get modulePayments => 'გადახდები';
+
+  @override
+  String get moduleRoomScheduling => 'დარბაზების განრიგი';
+
+  @override
+  String get moduleStudentAccounts => 'მოსწავლის ანგარიშები';
+
+  @override
+  String get moduleTrainingPlans => 'სავარჯიშო გეგმები';
+
+  @override
+  String get moduleTrainings => 'ვარჯიშები';
+
+  @override
+  String get none => 'არცერთი';
+
+  @override
+  String get orgAddCoach => 'მწვრთნელის დამატება';
+
+  @override
+  String get orgAdminAssigned => 'ადმინისტრატორი დაინიშნა';
+
+  @override
+  String get orgAdminHelp =>
+      'პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.';
+
+  @override
+  String get orgAdmins => 'ადმინები';
+
+  @override
+  String get orgAllowedModules => 'პლატფორმის მიერ დაშვებული მოდულები';
+
+  @override
+  String get orgAssignAdmin => 'ადმინისტრატორის დანიშვნა';
+
+  @override
+  String get orgBookingBuffer => 'შუალედი ჯავშნებს შორის';
+
+  @override
+  String get orgBookingsWeek => 'დარბაზის ჯავშნები მომდევნო 7 დღეში';
+
+  @override
+  String get orgBrainPlays => 'Brain Academy თამაშები (7 დღე)';
+
+  @override
+  String get orgBrandColor => 'ბრენდის ფერი';
+
+  @override
+  String get orgBranding => 'ბრენდი და კონტაქტები';
+
+  @override
+  String get orgCoaches => 'მწვრთნელები';
+
+  @override
+  String get orgContactEmail => 'საკონტაქტო ელფოსტა';
+
+  @override
+  String get orgContactPhone => 'საკონტაქტო ტელეფონი';
+
+  @override
+  String get orgCreated => 'ორგანიზაცია შეიქმნა';
+
+  @override
+  String get orgDefaultLanguage => 'ნაგულისხმევი ენა';
+
+  @override
+  String get orgDescription => 'აღწერა';
+
+  @override
+  String get orgHealth => 'ორგანიზაციის მდგომარეობა';
+
+  @override
+  String orgInactiveBanner(String status) {
+    return 'ორგანიზაციის სტატუსი: $status. პარამეტრები მხოლოდ სანახავია და ახლის შექმნა შეუძლებელია.';
+  }
+
+  @override
+  String get orgLabel => 'ორგანიზაცია';
+
+  @override
+  String get orgLeaderboardByAge =>
+      'რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით';
+
+  @override
+  String get orgLeaderboardEnable => 'Brain Academy-ის ლიდერბორდის ჩართვა';
+
+  @override
+  String get orgLeaderboardMin => 'მინიმალური მონაწილე ერთ ცხრილში';
+
+  @override
+  String get orgLeaderboardNotAllowed =>
+      'პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.';
+
+  @override
+  String get orgLeaderboardPrivacy =>
+      'ჩანან მხოლოდ ის მოსწავლეები, რომელთა მეურვემაც თანხმობა მისცა — ფსევდონიმით ან სახელით და ინიციალით.';
+
+  @override
+  String get orgLeaderboardSettings => 'ლიდერბორდი';
+
+  @override
+  String get orgLimitCoaches => 'მწვრთნელები';
+
+  @override
+  String get orgLimitGroups => 'ჯგუფები';
+
+  @override
+  String get orgLimitRooms => 'დარბაზები';
+
+  @override
+  String get orgLimitStudents => 'მოსწავლეები';
+
+  @override
+  String get orgLimits => 'ლიმიტები';
+
+  @override
+  String get orgLogoUrl => 'ლოგოს ბმული';
+
+  @override
+  String get orgManage => 'გეგმა, სტატუსი და მოდულები';
+
+  @override
+  String get orgModules => 'ჩართული მოდულები';
+
+  @override
+  String get orgModulesHelp =>
+      'დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.';
+
+  @override
+  String get orgModulesOn => 'ჩართული მოდულები';
+
+  @override
+  String get orgNameEn => 'სახელი (ინგლისური)';
+
+  @override
+  String get orgNameKa => 'სახელი (ქართული)';
+
+  @override
+  String get orgNameRu => 'სახელი (რუსული)';
+
+  @override
+  String get orgNew => 'ახალი ორგანიზაცია';
+
+  @override
+  String get orgNoneSelected => 'სამართავი ორგანიზაცია არ არის';
+
+  @override
+  String get orgOverLimit => 'გეგმის ერთი ან მეტი ლიმიტი გადაჭარბებულია.';
+
+  @override
+  String get orgPickUser => 'აირჩიეთ მომხმარებელი';
+
+  @override
+  String get orgPlan => 'გეგმა';
+
+  @override
+  String get orgPlatformSubtitle =>
+      'თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.';
+
+  @override
+  String get orgRemoveAdmin => 'ადმინისტრატორის მოხსნა';
+
+  @override
+  String get orgRemoveCoach => 'მოხსნა';
+
+  @override
+  String get orgSaved => 'შენახულია';
+
+  @override
+  String get orgStatusActive => 'აქტიური';
+
+  @override
+  String get orgStatusDeactivated => 'გამორთული';
+
+  @override
+  String get orgStatusHelp =>
+      'შეჩერებული ან გამორთული: მონაცემები ინახება და იკითხება, მაგრამ ყველა მოდული გამორთულია და ახლის შექმნა შეუძლებელია.';
+
+  @override
+  String get orgStatusSuspended => 'შეჩერებული';
+
+  @override
+  String get orgTimezone => 'დროის სარტყელი';
+
+  @override
+  String get orgUpcomingEvents => 'მომავალი ვარჯიშები და თამაშები';
+
+  @override
+  String get orgUserId => '…ან მომხმარებლის ID';
+
+  @override
+  String get planFree => 'უფასო';
+
+  @override
+  String get planPremium => 'პრემიუმი';
+
+  @override
+  String get planStandard => 'სტანდარტული';
+
+  @override
+  String get programAges => 'ასაკი';
+
+  @override
+  String get programCapacity => 'ადგილები';
+
+  @override
+  String get programNew => 'ახალი პროგრამა';
+
+  @override
+  String get programPaused => 'შეჩერებული';
+
+  @override
+  String get programScheduleNote => 'განრიგის შენიშვნა';
+
+  @override
+  String get reportAllGroups => 'ყველა ჯგუფი';
+
+  @override
+  String get reportAttendance => 'დასწრება';
+
+  @override
+  String get reportBrain => 'Brain Academy';
+
+  @override
+  String reportDays(int days) {
+    return '$days დღე';
+  }
+
+  @override
+  String get reportLastPlayed => 'ბოლოს ითამაშა';
+
+  @override
+  String get reportRsvp => 'მშობლების პასუხები';
+
+  @override
+  String get reportWhen => 'როდის';
+
+  @override
+  String get roomAnySport => 'ნებისმიერი სპორტი';
+
+  @override
+  String get roomCapacity => 'ტევადობა';
+
+  @override
+  String get roomHours => 'სამუშაო საათები';
+
+  @override
+  String get roomLabel => 'დარბაზი';
+
+  @override
+  String get roomMaintenance => 'ტექ. მომსახურების დამატება';
+
+  @override
+  String get roomNew => 'ახალი დარბაზი';
+
+  @override
+  String get roomNone => 'ჯერ დაამატეთ დარბაზი';
+
+  @override
+  String get roomNote => 'შენიშვნა';
+
+  @override
+  String get roomSports => 'სპორტის სახეობები (ცარიელი = ნებისმიერი)';
+
+  @override
+  String get roomStatusActive => 'ხელმისაწვდომი';
+
+  @override
+  String get roomStatusUnavailable => 'დროებით მიუწვდომელი';
+
+  @override
+  String get scheduleAllCoaches => 'ყველა მწვრთნელი';
+
+  @override
+  String get scheduleAllRooms => 'ყველა დარბაზი';
+
+  @override
+  String get scheduleAllSports => 'ყველა სპორტი';
+
+  @override
+  String scheduleBusy(int hours, int minutes) {
+    return 'დაკავებული $hours სთ $minutes წთ';
+  }
+
+  @override
+  String get scheduleDay => 'დღე';
+
+  @override
+  String get scheduleFree => 'თავისუფალი';
+
+  @override
+  String scheduleSubtitle(String tz) {
+    return 'დრო ნაჩვენებია $tz-ის მიხედვით. დააჭირეთ თავისუფალ უჯრას დასაჯავშნად, გადაათრიეთ ჯავშანი გადასატანად.';
+  }
+
+  @override
+  String get scheduleWeek => 'კვირა';
 }

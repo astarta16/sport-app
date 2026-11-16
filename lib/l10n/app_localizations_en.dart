@@ -4596,4 +4596,487 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgSwitchTitle => 'Choose academy';
+
+  @override
+  String get adminColSport => 'Sport';
+
+  @override
+  String get adminNavOrganizations => 'Organizations';
+
+  @override
+  String get adminNavOrgSettings => 'Academy settings';
+
+  @override
+  String get adminNavPrograms => 'Programs';
+
+  @override
+  String get adminNavReports => 'Reports';
+
+  @override
+  String get adminNavRooms => 'Rooms and halls';
+
+  @override
+  String get adminNavSchedule => 'Room schedule';
+
+  @override
+  String get adminNavSectionPlatform => 'Platform';
+
+  @override
+  String get adminNavSectionTenant => 'Academy';
+
+  @override
+  String get bookingAllowGroupOverlap =>
+      'The group really has two sessions at once — book anyway';
+
+  @override
+  String bookingAlternatives(String times) {
+    return 'Free times the same day: $times';
+  }
+
+  @override
+  String get bookingCancel => 'Cancel booking';
+
+  @override
+  String get bookingCancelFuture => 'Cancel this and all later';
+
+  @override
+  String get bookingCancelOccurrence => 'Cancel only this one';
+
+  @override
+  String get bookingCancelled => 'Booking cancelled';
+
+  @override
+  String get bookingCoach => 'Coach';
+
+  @override
+  String get bookingConflictsFound => 'Check before saving';
+
+  @override
+  String get bookingEdit => 'Edit booking';
+
+  @override
+  String bookingFreeRooms(String rooms) {
+    return 'Free rooms at this time: $rooms';
+  }
+
+  @override
+  String get bookingGroup => 'Group';
+
+  @override
+  String get bookingKind => 'Type';
+
+  @override
+  String get bookingKindEvent => 'Special event';
+
+  @override
+  String get bookingKindMaintenance => 'Maintenance';
+
+  @override
+  String get bookingKindMatch => 'Match';
+
+  @override
+  String get bookingKindTraining => 'Training';
+
+  @override
+  String get bookingMoved => 'Booking moved';
+
+  @override
+  String get bookingNew => 'New booking';
+
+  @override
+  String get bookingRecurring => 'Repeat weekly';
+
+  @override
+  String get bookingRejected => 'The room cannot be booked';
+
+  @override
+  String get bookingSaveFuture => 'Save this and later';
+
+  @override
+  String get bookingSaveOccurrence => 'Save only this one';
+
+  @override
+  String get bookingSaved => 'Booking saved';
+
+  @override
+  String bookingSeriesNote(int weeks) {
+    return 'Every occurrence (up to $weeks weeks ahead) is checked before anything is saved.';
+  }
+
+  @override
+  String get bookingTitle => 'Title';
+
+  @override
+  String get bookingTryInstead => 'Try one of these instead:';
+
+  @override
+  String bookingUntil(String date) {
+    return 'Until $date';
+  }
+
+  @override
+  String get conflictCoachOverlap => 'The coach is already booked at this time';
+
+  @override
+  String get conflictGroupOverlap =>
+      'The group already has a session at this time';
+
+  @override
+  String get conflictInvalidRange => 'The end must be after the start';
+
+  @override
+  String get conflictMaintenance => 'The room is blocked for maintenance';
+
+  @override
+  String get conflictOutsideHours => 'Outside the room\'s opening hours';
+
+  @override
+  String get conflictOverCapacity => 'More people than the room holds';
+
+  @override
+  String get conflictRoomNotBookable => 'The room is unavailable or archived';
+
+  @override
+  String get conflictRoomOverlap => 'The room is already booked at this time';
+
+  @override
+  String get conflictTooLong => 'A booking can last at most 12 hours';
+
+  @override
+  String get conflictWrongTenant => 'The room belongs to another organization';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get moduleAttendance => 'Attendance';
+
+  @override
+  String get moduleBrainAcademy => 'Brain Academy';
+
+  @override
+  String get moduleCommunication => 'Parent communication';
+
+  @override
+  String get moduleDisabledRooms =>
+      'Room scheduling is not enabled for this organization. The platform administrator can allow it, then you can switch it on in the academy settings.';
+
+  @override
+  String get moduleDisabledTitle => 'Module switched off';
+
+  @override
+  String get moduleLeaderboards => 'Leaderboards';
+
+  @override
+  String get moduleMatches => 'Matches';
+
+  @override
+  String get moduleMedia => 'Media gallery';
+
+  @override
+  String get moduleMedical => 'Medical certificates';
+
+  @override
+  String get moduleNotifications => 'Notifications';
+
+  @override
+  String get modulePayments => 'Payments';
+
+  @override
+  String get moduleRoomScheduling => 'Room scheduling';
+
+  @override
+  String get moduleStudentAccounts => 'Student accounts';
+
+  @override
+  String get moduleTrainingPlans => 'Training plans';
+
+  @override
+  String get moduleTrainings => 'Trainings';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get orgAddCoach => 'Add coach';
+
+  @override
+  String get orgAdminAssigned => 'Administrator assigned';
+
+  @override
+  String get orgAdminHelp =>
+      'The person can then sign in to the Admin Web and manage only this organization.';
+
+  @override
+  String get orgAdmins => 'Admins';
+
+  @override
+  String get orgAllowedModules => 'Modules allowed by the platform';
+
+  @override
+  String get orgAssignAdmin => 'Assign administrator';
+
+  @override
+  String get orgBookingBuffer => 'Gap between bookings';
+
+  @override
+  String get orgBookingsWeek => 'Room bookings in the next 7 days';
+
+  @override
+  String get orgBrainPlays => 'Brain Academy games (7 days)';
+
+  @override
+  String get orgBrandColor => 'Brand colour';
+
+  @override
+  String get orgBranding => 'Branding and contacts';
+
+  @override
+  String get orgCoaches => 'Coaches';
+
+  @override
+  String get orgContactEmail => 'Contact email';
+
+  @override
+  String get orgContactPhone => 'Contact phone';
+
+  @override
+  String get orgCreated => 'Organization created';
+
+  @override
+  String get orgDefaultLanguage => 'Default language';
+
+  @override
+  String get orgDescription => 'Description';
+
+  @override
+  String get orgHealth => 'Tenant health';
+
+  @override
+  String orgInactiveBanner(String status) {
+    return 'This organization is $status. Settings are read-only and nothing new can be created.';
+  }
+
+  @override
+  String get orgLabel => 'Organization';
+
+  @override
+  String get orgLeaderboardByAge => 'Rank only within the same age group';
+
+  @override
+  String get orgLeaderboardEnable => 'Enable the Brain Academy leaderboard';
+
+  @override
+  String get orgLeaderboardMin => 'Minimum opted-in students per board';
+
+  @override
+  String get orgLeaderboardNotAllowed =>
+      'Leaderboards are not allowed for this organization by the platform.';
+
+  @override
+  String get orgLeaderboardPrivacy =>
+      'Only students whose guardian consented appear, with a nickname or first name + initial.';
+
+  @override
+  String get orgLeaderboardSettings => 'Leaderboard';
+
+  @override
+  String get orgLimitCoaches => 'Coaches';
+
+  @override
+  String get orgLimitGroups => 'Groups';
+
+  @override
+  String get orgLimitRooms => 'Rooms';
+
+  @override
+  String get orgLimitStudents => 'Students';
+
+  @override
+  String get orgLimits => 'Limits';
+
+  @override
+  String get orgLogoUrl => 'Logo URL';
+
+  @override
+  String get orgManage => 'Plan, status and modules';
+
+  @override
+  String get orgModules => 'Enabled modules';
+
+  @override
+  String get orgModulesHelp =>
+      'Locked modules must first be allowed by the platform administrator.';
+
+  @override
+  String get orgModulesOn => 'Modules on';
+
+  @override
+  String get orgNameEn => 'Name (English)';
+
+  @override
+  String get orgNameKa => 'Name (Georgian)';
+
+  @override
+  String get orgNameRu => 'Name (Russian)';
+
+  @override
+  String get orgNew => 'New organization';
+
+  @override
+  String get orgNoneSelected => 'No organization to manage';
+
+  @override
+  String get orgOverLimit => 'One or more plan limits are exceeded.';
+
+  @override
+  String get orgPickUser => 'Choose a user';
+
+  @override
+  String get orgPlan => 'Plan';
+
+  @override
+  String get orgPlatformSubtitle =>
+      'Every sports school runs as its own tenant with private data.';
+
+  @override
+  String get orgRemoveAdmin => 'Remove administrator';
+
+  @override
+  String get orgRemoveCoach => 'Remove';
+
+  @override
+  String get orgSaved => 'Saved';
+
+  @override
+  String get orgStatusActive => 'Active';
+
+  @override
+  String get orgStatusDeactivated => 'Deactivated';
+
+  @override
+  String get orgStatusHelp =>
+      'Suspended or deactivated: data is kept and readable, but every module is off and nothing new can be created.';
+
+  @override
+  String get orgStatusSuspended => 'Suspended';
+
+  @override
+  String get orgTimezone => 'Time zone';
+
+  @override
+  String get orgUpcomingEvents => 'Upcoming trainings and matches';
+
+  @override
+  String get orgUserId => '…or user ID';
+
+  @override
+  String get planFree => 'Free';
+
+  @override
+  String get planPremium => 'Premium';
+
+  @override
+  String get planStandard => 'Standard';
+
+  @override
+  String get programAges => 'Ages';
+
+  @override
+  String get programCapacity => 'Capacity';
+
+  @override
+  String get programNew => 'New program';
+
+  @override
+  String get programPaused => 'Paused';
+
+  @override
+  String get programScheduleNote => 'Schedule note';
+
+  @override
+  String get reportAllGroups => 'All groups';
+
+  @override
+  String get reportAttendance => 'Attendance';
+
+  @override
+  String get reportBrain => 'Brain Academy';
+
+  @override
+  String reportDays(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get reportLastPlayed => 'Last played';
+
+  @override
+  String get reportRsvp => 'Parent responses';
+
+  @override
+  String get reportWhen => 'When';
+
+  @override
+  String get roomAnySport => 'Any sport';
+
+  @override
+  String get roomCapacity => 'Capacity';
+
+  @override
+  String get roomHours => 'Opening hours';
+
+  @override
+  String get roomLabel => 'Room';
+
+  @override
+  String get roomMaintenance => 'Add maintenance block';
+
+  @override
+  String get roomNew => 'New room';
+
+  @override
+  String get roomNone => 'Add a room first';
+
+  @override
+  String get roomNote => 'Note';
+
+  @override
+  String get roomSports => 'Supported sports (empty = any)';
+
+  @override
+  String get roomStatusActive => 'Available';
+
+  @override
+  String get roomStatusUnavailable => 'Temporarily unavailable';
+
+  @override
+  String get scheduleAllCoaches => 'All coaches';
+
+  @override
+  String get scheduleAllRooms => 'All rooms';
+
+  @override
+  String get scheduleAllSports => 'All sports';
+
+  @override
+  String scheduleBusy(int hours, int minutes) {
+    return '$hours h $minutes min booked';
+  }
+
+  @override
+  String get scheduleDay => 'Day';
+
+  @override
+  String get scheduleFree => 'Free';
+
+  @override
+  String scheduleSubtitle(String tz) {
+    return 'Times shown in $tz. Tap a free slot to book, drag a booking to move it.';
+  }
+
+  @override
+  String get scheduleWeek => 'Week';
 }

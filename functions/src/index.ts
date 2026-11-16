@@ -36,3 +36,10 @@ export {
   getContactPhone, getGroupContacts, getMediaDownload, onChatMessageDeleted, onMessageAckCreated, onMessageReadCreated,
 } from './triggers/v14';
 export { onChildThreadMessageCreated, recordMatchResult } from './triggers/v15';
+// v1.7 multi-tenant SaaS
+export {
+  cancelBooking, createBooking, createOrganization, createRecurringBookings, getLeaderboard, onBrainResultCreated,
+  onGroupOrgMembers, onMatchScheduleChanged, onTrainingScheduleChanged, orgReport, requestCoachContact, setLeaderboardConsent,
+  setOrgAdmin, setOrgCoach, setRoomStatus, tenantHealth, updateBooking, updateBookingSeries, updateOrgPlatform,
+  updateOrgSettings, upsertProgram, upsertRoom,
+} from './triggers/v17';

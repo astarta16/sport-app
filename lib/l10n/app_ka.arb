@@ -2676,5 +2676,223 @@
   "leaderboardConsentOffHint": "ლიდერბორდზე არ ჩანს",
   "leaderboardModePseudonym": "ფსევდონიმი",
   "leaderboardModeInitial": "სახელი + ინიციალი",
-  "orgSwitchTitle": "აირჩიეთ აკადემია"
+  "orgSwitchTitle": "აირჩიეთ აკადემია",
+  "adminColSport": "სპორტი",
+  "adminNavOrganizations": "ორგანიზაციები",
+  "adminNavOrgSettings": "აკადემიის პარამეტრები",
+  "adminNavPrograms": "პროგრამები",
+  "adminNavReports": "ანგარიშები",
+  "adminNavRooms": "დარბაზები",
+  "adminNavSchedule": "დარბაზების განრიგი",
+  "adminNavSectionPlatform": "პლატფორმა",
+  "adminNavSectionTenant": "აკადემია",
+  "bookingAllowGroupOverlap": "ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა",
+  "bookingAlternatives": "იმავე დღეს თავისუფალი დრო: {times}",
+  "@bookingAlternatives": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingCancel": "ჯავშნის გაუქმება",
+  "bookingCancelFuture": "ამის და ყველა მომდევნოს გაუქმება",
+  "bookingCancelOccurrence": "მხოლოდ ამის გაუქმება",
+  "bookingCancelled": "ჯავშანი გაუქმდა",
+  "bookingCoach": "მწვრთნელი",
+  "bookingConflictsFound": "შეამოწმეთ შენახვამდე",
+  "bookingEdit": "ჯავშნის რედაქტირება",
+  "bookingFreeRooms": "ამ დროს თავისუფალი დარბაზები: {rooms}",
+  "@bookingFreeRooms": {
+    "placeholders": {
+      "rooms": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingGroup": "ჯგუფი",
+  "bookingKind": "ტიპი",
+  "bookingKindEvent": "სპეციალური ღონისძიება",
+  "bookingKindMaintenance": "ტექ. მომსახურება",
+  "bookingKindMatch": "თამაში",
+  "bookingKindTraining": "ვარჯიში",
+  "bookingMoved": "ჯავშანი გადატანილია",
+  "bookingNew": "ახალი ჯავშანი",
+  "bookingRecurring": "ყოველკვირეული გამეორება",
+  "bookingRejected": "დარბაზის დაჯავშნა შეუძლებელია",
+  "bookingSaveFuture": "ამის და მომდევნოების შენახვა",
+  "bookingSaveOccurrence": "მხოლოდ ამის შენახვა",
+  "bookingSaved": "ჯავშანი შენახულია",
+  "bookingSeriesNote": "შენახვამდე მოწმდება ყველა გამეორება ({weeks} კვირამდე წინ).",
+  "@bookingSeriesNote": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingTitle": "სათაური",
+  "bookingTryInstead": "სცადეთ ერთ-ერთი:",
+  "bookingUntil": "{date}-მდე",
+  "@bookingUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "conflictCoachOverlap": "მწვრთნელი ამ დროს უკვე დაკავებულია",
+  "conflictGroupOverlap": "ჯგუფს ამ დროს უკვე აქვს სესია",
+  "conflictInvalidRange": "დასასრული დაწყების შემდეგ უნდა იყოს",
+  "conflictMaintenance": "დარბაზი დაბლოკილია ტექ. მომსახურებისთვის",
+  "conflictOutsideHours": "დარბაზის სამუშაო საათების გარეთ",
+  "conflictOverCapacity": "დარბაზის ტევადობაზე მეტი ადამიანი",
+  "conflictRoomNotBookable": "დარბაზი მიუწვდომელია ან დაარქივებულია",
+  "conflictRoomOverlap": "დარბაზი ამ დროს უკვე დაჯავშნილია",
+  "conflictTooLong": "ჯავშანი მაქსიმუმ 12 საათს გრძელდება",
+  "conflictWrongTenant": "დარბაზი სხვა ორგანიზაციას ეკუთვნის",
+  "minutesShort": "{minutes} წთ",
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "moduleAttendance": "დასწრება",
+  "moduleBrainAcademy": "Brain Academy",
+  "moduleCommunication": "მშობლებთან კომუნიკაცია",
+  "moduleDisabledRooms": "დარბაზების განრიგი ამ ორგანიზაციისთვის ჩართული არ არის. პლატფორმის ადმინისტრატორს შეუძლია ნებართვა, შემდეგ აკადემიის პარამეტრებში ჩართავთ.",
+  "moduleDisabledTitle": "მოდული გამორთულია",
+  "moduleLeaderboards": "ლიდერბორდები",
+  "moduleMatches": "თამაშები",
+  "moduleMedia": "მედია გალერეა",
+  "moduleMedical": "სამედიცინო ცნობები",
+  "moduleNotifications": "შეტყობინებები",
+  "modulePayments": "გადახდები",
+  "moduleRoomScheduling": "დარბაზების განრიგი",
+  "moduleStudentAccounts": "მოსწავლის ანგარიშები",
+  "moduleTrainingPlans": "სავარჯიშო გეგმები",
+  "moduleTrainings": "ვარჯიშები",
+  "none": "არცერთი",
+  "orgAddCoach": "მწვრთნელის დამატება",
+  "orgAdminAssigned": "ადმინისტრატორი დაინიშნა",
+  "orgAdminHelp": "პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.",
+  "orgAdmins": "ადმინები",
+  "orgAllowedModules": "პლატფორმის მიერ დაშვებული მოდულები",
+  "orgAssignAdmin": "ადმინისტრატორის დანიშვნა",
+  "orgBookingBuffer": "შუალედი ჯავშნებს შორის",
+  "orgBookingsWeek": "დარბაზის ჯავშნები მომდევნო 7 დღეში",
+  "orgBrainPlays": "Brain Academy თამაშები (7 დღე)",
+  "orgBrandColor": "ბრენდის ფერი",
+  "orgBranding": "ბრენდი და კონტაქტები",
+  "orgCoaches": "მწვრთნელები",
+  "orgContactEmail": "საკონტაქტო ელფოსტა",
+  "orgContactPhone": "საკონტაქტო ტელეფონი",
+  "orgCreated": "ორგანიზაცია შეიქმნა",
+  "orgDefaultLanguage": "ნაგულისხმევი ენა",
+  "orgDescription": "აღწერა",
+  "orgHealth": "ორგანიზაციის მდგომარეობა",
+  "orgInactiveBanner": "ორგანიზაციის სტატუსი: {status}. პარამეტრები მხოლოდ სანახავია და ახლის შექმნა შეუძლებელია.",
+  "@orgInactiveBanner": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "orgLabel": "ორგანიზაცია",
+  "orgLeaderboardByAge": "რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით",
+  "orgLeaderboardEnable": "Brain Academy-ის ლიდერბორდის ჩართვა",
+  "orgLeaderboardMin": "მინიმალური მონაწილე ერთ ცხრილში",
+  "orgLeaderboardNotAllowed": "პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.",
+  "orgLeaderboardPrivacy": "ჩანან მხოლოდ ის მოსწავლეები, რომელთა მეურვემაც თანხმობა მისცა — ფსევდონიმით ან სახელით და ინიციალით.",
+  "orgLeaderboardSettings": "ლიდერბორდი",
+  "orgLimitCoaches": "მწვრთნელები",
+  "orgLimitGroups": "ჯგუფები",
+  "orgLimitRooms": "დარბაზები",
+  "orgLimitStudents": "მოსწავლეები",
+  "orgLimits": "ლიმიტები",
+  "orgLogoUrl": "ლოგოს ბმული",
+  "orgManage": "გეგმა, სტატუსი და მოდულები",
+  "orgModules": "ჩართული მოდულები",
+  "orgModulesHelp": "დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.",
+  "orgModulesOn": "ჩართული მოდულები",
+  "orgNameEn": "სახელი (ინგლისური)",
+  "orgNameKa": "სახელი (ქართული)",
+  "orgNameRu": "სახელი (რუსული)",
+  "orgNew": "ახალი ორგანიზაცია",
+  "orgNoneSelected": "სამართავი ორგანიზაცია არ არის",
+  "orgOverLimit": "გეგმის ერთი ან მეტი ლიმიტი გადაჭარბებულია.",
+  "orgPickUser": "აირჩიეთ მომხმარებელი",
+  "orgPlan": "გეგმა",
+  "orgPlatformSubtitle": "თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.",
+  "orgRemoveAdmin": "ადმინისტრატორის მოხსნა",
+  "orgRemoveCoach": "მოხსნა",
+  "orgSaved": "შენახულია",
+  "orgStatusActive": "აქტიური",
+  "orgStatusDeactivated": "გამორთული",
+  "orgStatusHelp": "შეჩერებული ან გამორთული: მონაცემები ინახება და იკითხება, მაგრამ ყველა მოდული გამორთულია და ახლის შექმნა შეუძლებელია.",
+  "orgStatusSuspended": "შეჩერებული",
+  "orgTimezone": "დროის სარტყელი",
+  "orgUpcomingEvents": "მომავალი ვარჯიშები და თამაშები",
+  "orgUserId": "…ან მომხმარებლის ID",
+  "planFree": "უფასო",
+  "planPremium": "პრემიუმი",
+  "planStandard": "სტანდარტული",
+  "programAges": "ასაკი",
+  "programCapacity": "ადგილები",
+  "programNew": "ახალი პროგრამა",
+  "programPaused": "შეჩერებული",
+  "programScheduleNote": "განრიგის შენიშვნა",
+  "reportAllGroups": "ყველა ჯგუფი",
+  "reportAttendance": "დასწრება",
+  "reportBrain": "Brain Academy",
+  "reportDays": "{days} დღე",
+  "@reportDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportLastPlayed": "ბოლოს ითამაშა",
+  "reportRsvp": "მშობლების პასუხები",
+  "reportWhen": "როდის",
+  "roomAnySport": "ნებისმიერი სპორტი",
+  "roomCapacity": "ტევადობა",
+  "roomHours": "სამუშაო საათები",
+  "roomLabel": "დარბაზი",
+  "roomMaintenance": "ტექ. მომსახურების დამატება",
+  "roomNew": "ახალი დარბაზი",
+  "roomNone": "ჯერ დაამატეთ დარბაზი",
+  "roomNote": "შენიშვნა",
+  "roomSports": "სპორტის სახეობები (ცარიელი = ნებისმიერი)",
+  "roomStatusActive": "ხელმისაწვდომი",
+  "roomStatusUnavailable": "დროებით მიუწვდომელი",
+  "scheduleAllCoaches": "ყველა მწვრთნელი",
+  "scheduleAllRooms": "ყველა დარბაზი",
+  "scheduleAllSports": "ყველა სპორტი",
+  "scheduleBusy": "დაკავებული {hours} სთ {minutes} წთ",
+  "@scheduleBusy": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleDay": "დღე",
+  "scheduleFree": "თავისუფალი",
+  "scheduleSubtitle": "დრო ნაჩვენებია {tz}-ის მიხედვით. დააჭირეთ თავისუფალ უჯრას დასაჯავშნად, გადაათრიეთ ჯავშანი გადასატანად.",
+  "@scheduleSubtitle": {
+    "placeholders": {
+      "tz": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleWeek": "კვირა"
 }

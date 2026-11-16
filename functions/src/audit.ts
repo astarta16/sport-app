@@ -12,7 +12,12 @@ export type AuditAction =
   | 'payment.proofSubmitted' | 'payment.proofResubmitted' | 'payment.proofApproved' | 'payment.proofRejected'
   | 'plan.publish' | 'plan.archive' | 'group.paymentManagers'
   | 'chat.acknowledge' | 'media.download' | 'group.mediaPolicy'
-  | 'receipt.download' | 'match.result' | 'match.resultCorrected';
+  | 'receipt.download' | 'match.result' | 'match.resultCorrected'
+  // v1.7 multi-tenant administration
+  | 'org.create' | 'org.platform' | 'org.settings' | 'org.admin.assign' | 'org.admin.remove' | 'org.coach.add'
+  | 'org.coach.remove' | 'program.upsert' | 'room.create' | 'room.update' | 'room.status' | 'booking.create'
+  | 'booking.series' | 'booking.update' | 'booking.series.update' | 'booking.cancel'
+  | 'leaderboard.consent' | 'leaderboard.revoke';
 
 export interface AuditEntry {
   action: AuditAction;

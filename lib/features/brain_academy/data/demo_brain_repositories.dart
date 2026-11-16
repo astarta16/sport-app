@@ -209,7 +209,7 @@ class DemoStudentRepository implements StudentRepository {
           ...db.trainings.values.where((t) => ids.contains(t.groupId)).map((t) => t.venueId),
           ...db.matches.values.where((m) => ids.contains(m.groupId)).map((m) => m.venueId),
         })
-          if (db.venues[id] case final v?) id: v,
+          id: ?db.venues[id],
       },
     );
   });

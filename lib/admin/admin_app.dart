@@ -20,6 +20,7 @@ import 'pages/admins_page.dart';
 import 'pages/sports_page.dart';
 import 'pages/v13_pages.dart';
 import 'pages/v14_pages.dart';
+import 'pages/v17_pages.dart';
 
 class AdminRoutes {
   AdminRoutes._();
@@ -41,8 +42,16 @@ class AdminRoutes {
   static const settings = '/settings';
   static const mediaDownloads = '/media-downloads';
 
+  // v1.7 multi-tenant administration.
+  static const organizations = '/organizations';
+  static const orgSettings = '/org-settings';
+  static const programs = '/programs';
+  static const rooms = '/rooms';
+  static const schedule = '/schedule';
+  static const reports = '/reports';
+
   /// Pages a club admin may not open (platform scope only).
-  static const platformOnly = {admins};
+  static const platformOnly = {admins, organizations};
 }
 
 /// Pure guard, unit-tested in test/admin/admin_redirect_test.dart. Hiding
@@ -87,6 +96,12 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.payments, pageBuilder: (_, _) => page(const PaymentQueuePage())),
           GoRoute(path: AdminRoutes.mediaDownloads, pageBuilder: (_, _) => page(const MediaDownloadsPage())),
           GoRoute(path: AdminRoutes.settings, pageBuilder: (_, _) => page(const AdminSettingsPage())),
+          GoRoute(path: AdminRoutes.organizations, pageBuilder: (_, _) => page(const OrganizationsPage())),
+          GoRoute(path: AdminRoutes.orgSettings, pageBuilder: (_, _) => page(const OrgSettingsPage())),
+          GoRoute(path: AdminRoutes.programs, pageBuilder: (_, _) => page(const ProgramsPage())),
+          GoRoute(path: AdminRoutes.rooms, pageBuilder: (_, _) => page(const RoomsPage())),
+          GoRoute(path: AdminRoutes.schedule, pageBuilder: (_, _) => page(const SchedulePage())),
+          GoRoute(path: AdminRoutes.reports, pageBuilder: (_, _) => page(const OrgReportsPage())),
         ],
       ),
     ],

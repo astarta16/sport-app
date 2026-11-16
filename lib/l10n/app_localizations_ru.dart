@@ -4630,4 +4630,486 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get orgSwitchTitle => 'Выберите академию';
+
+  @override
+  String get adminColSport => 'Спорт';
+
+  @override
+  String get adminNavOrganizations => 'Организации';
+
+  @override
+  String get adminNavOrgSettings => 'Настройки академии';
+
+  @override
+  String get adminNavPrograms => 'Программы';
+
+  @override
+  String get adminNavReports => 'Отчёты';
+
+  @override
+  String get adminNavRooms => 'Залы';
+
+  @override
+  String get adminNavSchedule => 'Расписание залов';
+
+  @override
+  String get adminNavSectionPlatform => 'Платформа';
+
+  @override
+  String get adminNavSectionTenant => 'Академия';
+
+  @override
+  String get bookingAllowGroupOverlap =>
+      'У группы действительно два занятия одновременно — всё равно забронировать';
+
+  @override
+  String bookingAlternatives(String times) {
+    return 'Свободное время в этот день: $times';
+  }
+
+  @override
+  String get bookingCancel => 'Отменить бронь';
+
+  @override
+  String get bookingCancelFuture => 'Отменить это и все последующие';
+
+  @override
+  String get bookingCancelOccurrence => 'Отменить только это';
+
+  @override
+  String get bookingCancelled => 'Бронь отменена';
+
+  @override
+  String get bookingCoach => 'Тренер';
+
+  @override
+  String get bookingConflictsFound => 'Проверьте перед сохранением';
+
+  @override
+  String get bookingEdit => 'Изменить бронь';
+
+  @override
+  String bookingFreeRooms(String rooms) {
+    return 'Свободные залы в это время: $rooms';
+  }
+
+  @override
+  String get bookingGroup => 'Группа';
+
+  @override
+  String get bookingKind => 'Тип';
+
+  @override
+  String get bookingKindEvent => 'Мероприятие';
+
+  @override
+  String get bookingKindMaintenance => 'Обслуживание';
+
+  @override
+  String get bookingKindMatch => 'Матч';
+
+  @override
+  String get bookingKindTraining => 'Тренировка';
+
+  @override
+  String get bookingMoved => 'Бронь перенесена';
+
+  @override
+  String get bookingNew => 'Новая бронь';
+
+  @override
+  String get bookingRecurring => 'Повторять еженедельно';
+
+  @override
+  String get bookingRejected => 'Зал нельзя забронировать';
+
+  @override
+  String get bookingSaveFuture => 'Сохранить это и последующие';
+
+  @override
+  String get bookingSaveOccurrence => 'Сохранить только это';
+
+  @override
+  String get bookingSaved => 'Бронь сохранена';
+
+  @override
+  String bookingSeriesNote(int weeks) {
+    return 'Перед сохранением проверяется каждое повторение (до $weeks недель вперёд).';
+  }
+
+  @override
+  String get bookingTitle => 'Название';
+
+  @override
+  String get bookingTryInstead => 'Попробуйте вместо этого:';
+
+  @override
+  String bookingUntil(String date) {
+    return 'До $date';
+  }
+
+  @override
+  String get conflictCoachOverlap => 'Тренер в это время уже занят';
+
+  @override
+  String get conflictGroupOverlap => 'У группы в это время уже есть занятие';
+
+  @override
+  String get conflictInvalidRange => 'Окончание должно быть позже начала';
+
+  @override
+  String get conflictMaintenance => 'Зал закрыт на обслуживание';
+
+  @override
+  String get conflictOutsideHours => 'Вне часов работы зала';
+
+  @override
+  String get conflictOverCapacity => 'Людей больше, чем вмещает зал';
+
+  @override
+  String get conflictRoomNotBookable => 'Зал недоступен или в архиве';
+
+  @override
+  String get conflictRoomOverlap => 'Зал в это время уже забронирован';
+
+  @override
+  String get conflictTooLong => 'Бронь может длиться не более 12 часов';
+
+  @override
+  String get conflictWrongTenant => 'Зал принадлежит другой организации';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String get moduleAttendance => 'Посещаемость';
+
+  @override
+  String get moduleBrainAcademy => 'Brain Academy';
+
+  @override
+  String get moduleCommunication => 'Общение с родителями';
+
+  @override
+  String get moduleDisabledRooms =>
+      'Расписание залов не включено для этой организации. Администратор платформы может разрешить его, затем включите его в настройках академии.';
+
+  @override
+  String get moduleDisabledTitle => 'Модуль выключен';
+
+  @override
+  String get moduleLeaderboards => 'Рейтинги';
+
+  @override
+  String get moduleMatches => 'Матчи';
+
+  @override
+  String get moduleMedia => 'Медиагалерея';
+
+  @override
+  String get moduleMedical => 'Медицинские справки';
+
+  @override
+  String get moduleNotifications => 'Уведомления';
+
+  @override
+  String get modulePayments => 'Платежи';
+
+  @override
+  String get moduleRoomScheduling => 'Расписание залов';
+
+  @override
+  String get moduleStudentAccounts => 'Аккаунты учеников';
+
+  @override
+  String get moduleTrainingPlans => 'Планы тренировок';
+
+  @override
+  String get moduleTrainings => 'Тренировки';
+
+  @override
+  String get none => 'Нет';
+
+  @override
+  String get orgAddCoach => 'Добавить тренера';
+
+  @override
+  String get orgAdminAssigned => 'Администратор назначен';
+
+  @override
+  String get orgAdminHelp =>
+      'Этот человек сможет войти в админ-панель и управлять только этой организацией.';
+
+  @override
+  String get orgAdmins => 'Админы';
+
+  @override
+  String get orgAllowedModules => 'Модули, разрешённые платформой';
+
+  @override
+  String get orgAssignAdmin => 'Назначить администратора';
+
+  @override
+  String get orgBookingBuffer => 'Перерыв между бронями';
+
+  @override
+  String get orgBookingsWeek => 'Брони залов на 7 дней';
+
+  @override
+  String get orgBrainPlays => 'Игры Brain Academy (7 дней)';
+
+  @override
+  String get orgBrandColor => 'Цвет бренда';
+
+  @override
+  String get orgBranding => 'Бренд и контакты';
+
+  @override
+  String get orgCoaches => 'Тренеры';
+
+  @override
+  String get orgContactEmail => 'Контактный email';
+
+  @override
+  String get orgContactPhone => 'Контактный телефон';
+
+  @override
+  String get orgCreated => 'Организация создана';
+
+  @override
+  String get orgDefaultLanguage => 'Язык по умолчанию';
+
+  @override
+  String get orgDescription => 'Описание';
+
+  @override
+  String get orgHealth => 'Состояние организации';
+
+  @override
+  String orgInactiveBanner(String status) {
+    return 'Статус организации: $status. Настройки только для чтения, создавать новое нельзя.';
+  }
+
+  @override
+  String get orgLabel => 'Организация';
+
+  @override
+  String get orgLeaderboardByAge => 'Рейтинг только внутри возрастной группы';
+
+  @override
+  String get orgLeaderboardEnable => 'Включить рейтинг Brain Academy';
+
+  @override
+  String get orgLeaderboardMin => 'Минимум участников в рейтинге';
+
+  @override
+  String get orgLeaderboardNotAllowed =>
+      'Платформа не разрешает рейтинги для этой организации.';
+
+  @override
+  String get orgLeaderboardPrivacy =>
+      'Показываются только ученики с согласием опекуна — под псевдонимом или с именем и инициалом.';
+
+  @override
+  String get orgLeaderboardSettings => 'Рейтинг';
+
+  @override
+  String get orgLimitCoaches => 'Тренеры';
+
+  @override
+  String get orgLimitGroups => 'Группы';
+
+  @override
+  String get orgLimitRooms => 'Залы';
+
+  @override
+  String get orgLimitStudents => 'Ученики';
+
+  @override
+  String get orgLimits => 'Лимиты';
+
+  @override
+  String get orgLogoUrl => 'Ссылка на логотип';
+
+  @override
+  String get orgManage => 'Тариф, статус и модули';
+
+  @override
+  String get orgModules => 'Включённые модули';
+
+  @override
+  String get orgModulesHelp =>
+      'Заблокированные модули сначала должен разрешить администратор платформы.';
+
+  @override
+  String get orgModulesOn => 'Модулей вкл.';
+
+  @override
+  String get orgNameEn => 'Название (англ.)';
+
+  @override
+  String get orgNameKa => 'Название (груз.)';
+
+  @override
+  String get orgNameRu => 'Название (рус.)';
+
+  @override
+  String get orgNew => 'Новая организация';
+
+  @override
+  String get orgNoneSelected => 'Нет организации для управления';
+
+  @override
+  String get orgOverLimit => 'Превышен один или несколько лимитов тарифа.';
+
+  @override
+  String get orgPickUser => 'Выберите пользователя';
+
+  @override
+  String get orgPlan => 'Тариф';
+
+  @override
+  String get orgPlatformSubtitle =>
+      'Каждая спортшкола работает отдельно, со своими закрытыми данными.';
+
+  @override
+  String get orgRemoveAdmin => 'Снять администратора';
+
+  @override
+  String get orgRemoveCoach => 'Убрать';
+
+  @override
+  String get orgSaved => 'Сохранено';
+
+  @override
+  String get orgStatusActive => 'Активна';
+
+  @override
+  String get orgStatusDeactivated => 'Отключена';
+
+  @override
+  String get orgStatusHelp =>
+      'Приостановлена или отключена: данные сохраняются и доступны для чтения, но все модули выключены и создавать новое нельзя.';
+
+  @override
+  String get orgStatusSuspended => 'Приостановлена';
+
+  @override
+  String get orgTimezone => 'Часовой пояс';
+
+  @override
+  String get orgUpcomingEvents => 'Предстоящие тренировки и матчи';
+
+  @override
+  String get orgUserId => '…или ID пользователя';
+
+  @override
+  String get planFree => 'Бесплатный';
+
+  @override
+  String get planPremium => 'Премиум';
+
+  @override
+  String get planStandard => 'Стандарт';
+
+  @override
+  String get programAges => 'Возраст';
+
+  @override
+  String get programCapacity => 'Мест';
+
+  @override
+  String get programNew => 'Новая программа';
+
+  @override
+  String get programPaused => 'Приостановлена';
+
+  @override
+  String get programScheduleNote => 'Заметка о расписании';
+
+  @override
+  String get reportAllGroups => 'Все группы';
+
+  @override
+  String get reportAttendance => 'Посещаемость';
+
+  @override
+  String get reportBrain => 'Brain Academy';
+
+  @override
+  String reportDays(int days) {
+    return '$days дн.';
+  }
+
+  @override
+  String get reportLastPlayed => 'Последняя игра';
+
+  @override
+  String get reportRsvp => 'Ответы родителей';
+
+  @override
+  String get reportWhen => 'Когда';
+
+  @override
+  String get roomAnySport => 'Любой спорт';
+
+  @override
+  String get roomCapacity => 'Вместимость';
+
+  @override
+  String get roomHours => 'Часы работы';
+
+  @override
+  String get roomLabel => 'Зал';
+
+  @override
+  String get roomMaintenance => 'Добавить обслуживание';
+
+  @override
+  String get roomNew => 'Новый зал';
+
+  @override
+  String get roomNone => 'Сначала добавьте зал';
+
+  @override
+  String get roomNote => 'Заметка';
+
+  @override
+  String get roomSports => 'Виды спорта (пусто = любой)';
+
+  @override
+  String get roomStatusActive => 'Доступен';
+
+  @override
+  String get roomStatusUnavailable => 'Временно недоступен';
+
+  @override
+  String get scheduleAllCoaches => 'Все тренеры';
+
+  @override
+  String get scheduleAllRooms => 'Все залы';
+
+  @override
+  String get scheduleAllSports => 'Все виды спорта';
+
+  @override
+  String scheduleBusy(int hours, int minutes) {
+    return 'Занято $hours ч $minutes мин';
+  }
+
+  @override
+  String get scheduleDay => 'День';
+
+  @override
+  String get scheduleFree => 'Свободно';
+
+  @override
+  String scheduleSubtitle(String tz) {
+    return 'Время в поясе $tz. Нажмите на свободный слот, чтобы забронировать; перетащите бронь, чтобы перенести.';
+  }
+
+  @override
+  String get scheduleWeek => 'Неделя';
 }

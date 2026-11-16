@@ -1,4 +1,5 @@
 import '../../admin/domain/admin_models.dart';
+import '../../attendance/domain/attendance.dart';
 import '../../brain_academy/domain/brain_models.dart';
 import '../../brain_academy/domain/scoring.dart';
 import '../../clubs/domain/club.dart';
@@ -61,6 +62,83 @@ abstract interface class OrganizationsRepository {
   Future<SportsProgram> upsertProgram(SportsProgram p);
 
   Future<TenantHealth> health(String orgId);
+
+  /// Organization-admin reports (tenant-scoped on the server).
+  Future<List<EventRsvpRow>> rsvpReport(String orgId, {required DateTime from, required DateTime to});
+  Future<List<EventAttendanceRow>> attendanceReport(
+    String orgId, {
+    required DateTime from,
+    required DateTime to,
+    String? groupId,
+  });
+
+  /// Per-student Brain Academy totals. No birth dates, contacts or health
+  /// data; names are shortened to first name + initial.
+  Future<List<BrainSummaryRow>> brainSummary(String orgId);
+}
+
+class EventRsvpRow {
+  const EventRsvpRow({
+    required this.eventId,
+    required this.type,
+    required this.groupId,
+    required this.groupName,
+    required this.startAt,
+    required this.version,
+    required this.counts,
+  });
+
+  final String eventId;
+  final EventType type;
+  final String groupId;
+  final String groupName;
+  final DateTime startAt;
+  final int version;
+  final Map<RsvpState, int> counts;
+
+  int get total => counts.values.fold(0, (a, b) => a + b);
+}
+
+class EventAttendanceRow {
+  const EventAttendanceRow({
+    required this.eventId,
+    required this.type,
+    required this.groupId,
+    required this.groupName,
+    required this.startAt,
+    required this.present,
+    required this.absent,
+    required this.excused,
+    required this.unmarked,
+  });
+
+  final String eventId;
+  final EventType type;
+  final String groupId;
+  final String groupName;
+  final DateTime startAt;
+  final int present;
+  final int absent;
+  final int excused;
+  final int unmarked;
+}
+
+class BrainSummaryRow {
+  const BrainSummaryRow({
+    required this.childId,
+    required this.displayName,
+    required this.groupNames,
+    required this.points,
+    required this.gamesCompleted,
+    this.lastPlayed,
+  });
+
+  final String childId;
+  final String displayName;
+  final List<String> groupNames;
+  final int points;
+  final int gamesCompleted;
+  final DateTime? lastPlayed;
 }
 
 abstract interface class SchedulingRepository {
@@ -86,13 +164,13 @@ abstract interface class SchedulingRepository {
 
   /// Changes the time of this and all later occurrences of a series.
   Future<List<Booking>> updateSeriesFrom(
-    String bookingId, {
+    Booking anchor, {
     required int startMinute,
     required int durationMin,
     String? roomId,
   });
 
-  Future<void> cancelBooking(String bookingId, {SeriesEditScope scope = SeriesEditScope.thisOccurrence});
+  Future<void> cancelBooking(Booking booking, {SeriesEditScope scope = SeriesEditScope.thisOccurrence});
 }
 
 abstract interface class LeaderboardRepository {

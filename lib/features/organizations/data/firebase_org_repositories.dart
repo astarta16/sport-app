@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/errors/app_exception.dart';
 import '../../../core/firebase/firebase_utils.dart';
 import '../../admin/domain/admin_models.dart';
+import '../../attendance/domain/attendance.dart';
 import '../../brain_academy/domain/brain_models.dart';
 import '../../brain_academy/domain/scoring.dart';
 import '../../clubs/domain/club.dart';
@@ -118,7 +119,7 @@ class FirebaseOrganizationsRepository implements OrganizationsRepository {
 
   @override
   Stream<List<OrgMembership>> watchMyMemberships() => db
-      .collectionGroup('members')
+      .collectionGroup('orgMembers')
       .where('userId', isEqualTo: requireUid(auth))
       .snapshots()
       .map((s) => [for (final d in s.docs) OrgMembership.fromMap(d.data())])
@@ -128,7 +129,7 @@ class FirebaseOrganizationsRepository implements OrganizationsRepository {
   Stream<List<OrgMembership>> watchMembers(String orgId) => db
       .collection('clubs')
       .doc(orgId)
-      .collection('members')
+      .collection('orgMembers')
       .snapshots()
       .map((s) => [for (final d in s.docs) OrgMembership.fromMap(d.data())])
       .mapFirebaseErrors();
@@ -146,6 +147,75 @@ class FirebaseOrganizationsRepository implements OrganizationsRepository {
   Future<SportsProgram> upsertProgram(SportsProgram p) async {
     final r = await callFunction(functions, 'upsertProgram', {'id': p.id, ...p.toMap()});
     return SportsProgram.fromMap(r['id'] as String, p.toMap());
+  }
+
+  @override
+  Future<List<EventRsvpRow>> rsvpReport(String orgId, {required DateTime from, required DateTime to}) async {
+    final r = await callFunction(functions, 'orgReport', {
+      'orgId': orgId,
+      'kind': 'rsvp',
+      'from': from.toUtc().toIso8601String(),
+      'to': to.toUtc().toIso8601String(),
+    });
+    return [
+      for (final e in (r['rows'] as List?) ?? const [])
+        EventRsvpRow(
+          eventId: (e as Map)['eventId'] as String,
+          type: EventType.fromName(e['type'] as String?),
+          groupId: e['groupId'] as String? ?? '',
+          groupName: e['groupName'] as String? ?? '',
+          startAt: DateTime.parse(e['startAt'] as String),
+          version: (e['version'] as num?)?.toInt() ?? 1,
+          counts: {for (final st in RsvpState.values) st: ((e['counts'] as Map?)?[st.name] as num?)?.toInt() ?? 0},
+        ),
+    ];
+  }
+
+  @override
+  Future<List<EventAttendanceRow>> attendanceReport(
+    String orgId, {
+    required DateTime from,
+    required DateTime to,
+    String? groupId,
+  }) async {
+    final r = await callFunction(functions, 'orgReport', {
+      'orgId': orgId,
+      'kind': 'attendance',
+      'from': from.toUtc().toIso8601String(),
+      'to': to.toUtc().toIso8601String(),
+      'groupId': ?groupId,
+    });
+    int n(Map e, String k) => (e[k] as num?)?.toInt() ?? 0;
+    return [
+      for (final e in (r['rows'] as List?) ?? const [])
+        EventAttendanceRow(
+          eventId: (e as Map)['eventId'] as String,
+          type: EventType.fromName(e['type'] as String?),
+          groupId: e['groupId'] as String? ?? '',
+          groupName: e['groupName'] as String? ?? '',
+          startAt: DateTime.parse(e['startAt'] as String),
+          present: n(e, 'present'),
+          absent: n(e, 'absent'),
+          excused: n(e, 'excused'),
+          unmarked: n(e, 'unmarked'),
+        ),
+    ];
+  }
+
+  @override
+  Future<List<BrainSummaryRow>> brainSummary(String orgId) async {
+    final r = await callFunction(functions, 'orgReport', {'orgId': orgId, 'kind': 'brain'});
+    return [
+      for (final e in (r['rows'] as List?) ?? const [])
+        BrainSummaryRow(
+          childId: (e as Map)['childId'] as String,
+          displayName: e['displayName'] as String? ?? '',
+          groupNames: ((e['groupNames'] as List?) ?? const []).cast<String>(),
+          points: (e['points'] as num?)?.toInt() ?? 0,
+          gamesCompleted: (e['gamesCompleted'] as num?)?.toInt() ?? 0,
+          lastPlayed: e['lastPlayed'] == null ? null : DateTime.parse(e['lastPlayed'] as String),
+        ),
+    ];
   }
 
   @override
@@ -291,13 +361,14 @@ class FirebaseSchedulingRepository implements SchedulingRepository {
 
   @override
   Future<List<Booking>> updateSeriesFrom(
-    String bookingId, {
+    Booking anchor, {
     required int startMinute,
     required int durationMin,
     String? roomId,
   }) async {
     await _call('updateBookingSeries', {
-      'bookingId': bookingId,
+      'orgId': anchor.orgId,
+      'bookingId': anchor.id,
       'startMinute': startMinute,
       'durationMin': durationMin,
       'roomId': roomId,
@@ -306,8 +377,8 @@ class FirebaseSchedulingRepository implements SchedulingRepository {
   }
 
   @override
-  Future<void> cancelBooking(String bookingId, {SeriesEditScope scope = SeriesEditScope.thisOccurrence}) =>
-      _call('cancelBooking', {'bookingId': bookingId, 'scope': scope.name});
+  Future<void> cancelBooking(Booking booking, {SeriesEditScope scope = SeriesEditScope.thisOccurrence}) =>
+      _call('cancelBooking', {'orgId': booking.orgId, 'bookingId': booking.id, 'scope': scope.name});
 }
 
 class FirebaseLeaderboardRepository implements LeaderboardRepository {

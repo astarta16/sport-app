@@ -30,6 +30,7 @@ export const RATE_LIMITS = {
   createGroup: { limit: 20, windowMs: DAY_MS },
   paymentProofs: { limit: 10, windowMs: DAY_MS },
   mediaDownloads: { limit: 100, windowMs: DAY_MS },
+  coachContact: { limit: 5, windowMs: DAY_MS },
 } as const;
 export type RateBucket = keyof typeof RATE_LIMITS;
 

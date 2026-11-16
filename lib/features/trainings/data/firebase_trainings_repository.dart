@@ -86,8 +86,13 @@ class FirebaseTrainingsRepository implements TrainingsRepository {
     final errors = TrainingValidator.validate(d, now: clock(), isEdit: true);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
+    // v1.7: a material change (date, time, place) bumps the schedule version;
+    // the rules require it and onEventScheduleChanged asks parents to reconfirm.
+    final material = moved || d.venueId != old.venueId || d.durationMin != old.durationMin;
     final photos = await _upload(old.groupId, id, d.newPhotos);
     await _col.doc(id).update({
+      if (material) 'scheduleVersion': old.scheduleVersion + 1,
+      if (d.venueId != old.venueId) 'previousVenueId': old.venueId,
       'venueId': d.venueId,
       'startAt': d.startAt,
       'durationMin': d.durationMin,
@@ -127,6 +132,7 @@ class FirebaseTrainingsRepository implements TrainingsRepository {
     final old = snap.data() ?? (throw const NotFoundException());
     await _col.doc(id).update({
       if (old['seriesId'] != null) 'detached': true,
+      'scheduleVersion': ((old['scheduleVersion'] as num?)?.toInt() ?? 1) + 1,
       'status': TrainingStatus.moved.name,
       'previousStartAt': old['startAt'],
       'startAt': newStart,

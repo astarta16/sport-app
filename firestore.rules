@@ -178,6 +178,60 @@ service cloud.firestore {
       return v is list;
     }
 
+    // ------------------------------------------------ v1.7 tenant helpers
+    // A club document IS the tenant (organizationId == clubId).
+    function orgCfgPath(clubId) {
+      return /databases/$(database)/documents/orgConfigs/$(clubId);
+    }
+
+    // Clubs created before v1.7 have no config document: the pre-v1.7
+    // feature set stays on, the new restricted modules stay off.
+    function legacyModuleOn(m) {
+      return m in ['trainings', 'matches', 'attendance', 'communication', 'notifications', 'studentAccounts',
+                   'brainAcademy', 'trainingPlans', 'payments', 'medicalCertificates', 'media'];
+    }
+
+    // The single feature-flag check: organization active AND module allowed
+    // by the platform AND enabled by the organization. Never grants access
+    // on its own — it is always combined with a role check.
+    function moduleOn(clubId, m) {
+      return clubId is string && clubId != ''
+        && (!exists(orgCfgPath(clubId))
+            ? legacyModuleOn(m)
+            : (get(orgCfgPath(clubId)).data.get('status', 'active') == 'active'
+               && m in get(orgCfgPath(clubId)).data.get('allowedModules', [])
+               && m in get(orgCfgPath(clubId)).data.get('enabledModules', [])));
+    }
+
+    function groupModuleOn(groupId, m) {
+      return moduleOn(groupDoc(groupId).get('clubId', ''), m);
+    }
+
+    // Server-maintained membership (clubs/{clubId}/orgMembers/{uid}).
+    function isOrgMember(clubId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/clubs/$(clubId)/orgMembers/$(uid()))
+        && get(/databases/$(database)/documents/clubs/$(clubId)/orgMembers/$(uid())).data.get('active', true) == true;
+    }
+
+    // Training or match by id (v1.7 RSVP / attendance cover both).
+    function eventPath(kind, eventId) {
+      return /databases/$(database)/documents/$(kind == 'match' ? 'matches' : 'trainings')/$(eventId);
+    }
+
+    function eventDoc(kind, eventId) {
+      return get(eventPath(kind, eventId)).data;
+    }
+
+    // A material schedule change (date, time or place) must bump the
+    // version by exactly one; anything else must keep it.
+    function validScheduleVersion(before, after) {
+      return (after.startAt != before.startAt || after.venueId != before.venueId
+              || after.get('durationMin', 0) != before.get('durationMin', 0))
+        ? after.get('scheduleVersion', 1) == before.get('scheduleVersion', 1) + 1
+        : after.get('scheduleVersion', 1) == before.get('scheduleVersion', 1);
+    }
+
     // ------------------------------------------------------- public catalogue
     // Guest mode: readable without authentication. Writes: admin only.
     match /sports/{sportId} {
@@ -419,8 +473,12 @@ service cloud.firestore {
                  'description', 'photoUrls', 'status', 'createdBy',
                  'updatedAt', 'previousStartAt', 'reminderSentAt',
                  'cancelReasonCode', 'cancelReason', 'cancelledAt', 'cancelledBy',
-                 'seriesId', 'occurrenceDate', 'detached'])
+                 'seriesId', 'occurrenceDate', 'detached',
+                 'scheduleVersion', 'previousVenueId', 'roomId'])
           && d.groupId is string
+          && (!('scheduleVersion' in d) || (d.scheduleVersion is int && d.scheduleVersion >= 1))
+          && optString(d, 'previousVenueId', 200)
+          && optString(d, 'roomId', 200)
           && d.venueId is string
           && d.startAt is timestamp
           && d.durationMin is int
@@ -449,15 +507,22 @@ service cloud.firestore {
         && request.resource.data.createdBy == uid()
         && request.resource.data.status == 'scheduled'
         && !('reminderSentAt' in request.resource.data)
-        && request.resource.data.get('seriesId', null) == null;
+        && request.resource.data.get('seriesId', null) == null
+        && request.resource.data.get('scheduleVersion', 1) == 1
+        && request.resource.data.get('roomId', null) == null
+        && groupModuleOn(request.resource.data.groupId, 'trainings');
 
       // Any approved coach of the (unchanged) group may edit; createdBy,
       // groupId, series linkage and the reminder bookkeeping are immutable
       // from clients. Cancelling requires a reason (validCancelTransition).
+      // v1.7: room-linked trainings change time/place only through the
+      // transactional booking callables (room conflict check).
       allow update: if isGroupCoach(resource.data.groupId)
         && validTraining(request.resource.data)
-        && !changed(['groupId', 'createdBy', 'reminderSentAt', 'seriesId', 'occurrenceDate'])
-        && validCancelTransition(resource.data, request.resource.data);
+        && !changed(['groupId', 'createdBy', 'reminderSentAt', 'seriesId', 'occurrenceDate', 'roomId'])
+        && validCancelTransition(resource.data, request.resource.data)
+        && validScheduleVersion(resource.data, request.resource.data)
+        && (resource.data.get('roomId', null) == null || !changed(['startAt', 'durationMin', 'venueId']));
 
       // Trainings are cancelled (status), not deleted.
       allow delete: if isAdmin();
@@ -583,6 +648,74 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ------------------------------------------------ v1.7 multi-tenant SaaS
+    // Tenant configuration. No personal data in it (branding + flags), so
+    // any signed-in user may read it; ONLY callables write it
+    // (createOrganization / updateOrgPlatform / updateOrgSettings), which
+    // keeps platform-only fields (status, plan, allowedModules, limits)
+    // out of an organization admin's reach.
+    match /orgConfigs/{clubId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /clubs/{clubId}/orgMembers/{memberId} {
+      allow read: if (signedIn() && uid() == memberId) || isAdminOfClub(clubId);
+      allow write: if false;
+    }
+
+    // "My organizations" (collection-group query on userId).
+    match /{path=**}/orgMembers/{memberId} {
+      allow read: if signedIn() && resource.data.userId == uid();
+    }
+
+    match /clubs/{clubId}/programs/{programId} {
+      allow read: if isAdminOfClub(clubId) || isOrgMember(clubId);
+      allow write: if false;
+    }
+
+    match /clubs/{clubId}/rooms/{roomId} {
+      allow read: if isAdminOfClub(clubId) || isOrgMember(clubId);
+      allow write: if false;
+    }
+
+    // Written ONLY by the transactional booking callables (conflict check
+    // + per-room-day lock documents). Parents and students never read the
+    // room plan; they see their own events.
+    match /clubs/{clubId}/bookings/{bookingId} {
+      allow read: if isAdminOfClub(clubId) || (isApprovedCoach() && isOrgMember(clubId));
+      allow write: if false;
+    }
+
+    match /clubs/{clubId}/roomLocks/{lockId} {
+      allow read, write: if false;
+    }
+
+    // Guardian consent: written by setLeaderboardConsent (parent only).
+    match /clubs/{clubId}/leaderboardConsents/{childId} {
+      allow read: if isParentOfChild(childId) || isStudentOf(childId);
+      allow write: if false;
+    }
+
+    // Server-computed rankings (pseudonyms only, no child ids).
+    match /clubs/{clubId}/leaderboards/{boardId} {
+      allow read, write: if false;
+    }
+
+    // Student → guardian "please contact my coach". Created by the
+    // requestCoachContact callable (rate-limited); a guardian may only mark
+    // it handled. No phone numbers, no student ↔ coach messaging.
+    match /coachContactRequests/{requestId} {
+      allow read: if signedIn()
+        && (uid() in resource.data.get('parentIds', []) || resource.data.get('studentUid', '') == uid());
+      allow create, delete: if false;
+      allow update: if signedIn()
+        && uid() in resource.data.get('parentIds', [])
+        && changedOnly(['status', 'handledBy'])
+        && request.resource.data.status == 'handled'
+        && request.resource.data.handledBy == uid();
+    }
+
     // ------------------------------------------------- v1.6 Brain Academy
     // Results: created only by the linked student (server time), immutable;
     // readable by the student, the child's parents and the child's coaches.
@@ -594,7 +727,8 @@ service cloud.firestore {
       allow create: if isStudentOf(request.resource.data.childId)
         && request.resource.data.keys().hasOnly([
              'childId', 'game', 'difficulty', 'level', 'score', 'accuracy', 'attempts',
-             'durationMs', 'completed', 'playedAt', 'detail'])
+             'durationMs', 'completed', 'playedAt', 'detail', 'clientPlayedAt'])
+        && optString(request.resource.data, 'clientPlayedAt', 40)
         && request.resource.data.game in ['memoryMatch', 'logicQuest', 'smartPlay', 'quickMind', 'sequenceMaster', 'pathFinder']
         && request.resource.data.difficulty in ['easy', 'medium', 'hard']
         && request.resource.data.level is int && request.resource.data.level >= 1 && request.resource.data.level <= 10
@@ -838,8 +972,11 @@ service cloud.firestore {
                  'groupId', 'clubId', 'venueId', 'startAt', 'durationMin', 'opponentName',
                  'matchType', 'homeAway', 'description', 'status', 'cancelReasonCode',
                  'cancelReason', 'cancelledAt', 'cancelledBy', 'previousStartAt',
-                 'createdBy', 'updatedAt', 'reminder1dSentAt', 'reminder2hSentAt', 'result'])
+                 'createdBy', 'updatedAt', 'reminder1dSentAt', 'reminder2hSentAt', 'result',
+                 'scheduleVersion', 'previousVenueId'])
           && d.groupId is string
+          && (!('scheduleVersion' in d) || (d.scheduleVersion is int && d.scheduleVersion >= 1))
+          && optString(d, 'previousVenueId', 200)
           && d.clubId is string
           && d.venueId is string
           && d.startAt is timestamp
@@ -874,7 +1011,9 @@ service cloud.firestore {
         && request.resource.data.status == 'scheduled'
         && !('reminder1dSentAt' in request.resource.data)
         && !('reminder2hSentAt' in request.resource.data)
-        && !('result' in request.resource.data);
+        && !('result' in request.resource.data)
+        && request.resource.data.get('scheduleVersion', 1) == 1
+        && moduleOn(request.resource.data.clubId, 'matches');
 
       // v1.5: `result` is written only by the recordMatchResult callable
       // (score validation, trusted time, audit, correction history).
@@ -882,7 +1021,8 @@ service cloud.firestore {
         && validMatch(request.resource.data)
         && !changed(['groupId', 'clubId', 'createdBy', 'result'])
         && remindersUntouched()
-        && validCancelTransition(resource.data, request.resource.data);
+        && validCancelTransition(resource.data, request.resource.data)
+        && validScheduleVersion(resource.data, request.resource.data);
 
       allow delete: if isAdmin();
 
@@ -985,42 +1125,82 @@ service cloud.firestore {
     // Parent intent; id = {trainingId}_{childId}. Writable by a parent of a
     // child who is a member of the training's group, until the training starts.
     match /rsvps/{rsvpId} {
+      // v1.7: training OR match; per-guardian answers; schedule version.
+      function kindOf(d) {
+        return d.get('eventType', 'training');
+      }
+
       function validRsvp(d) {
-        return d.keys().hasOnly(['trainingId', 'groupId', 'childId', 'parentId', 'response', 'reason', 'updatedAt'])
+        return d.keys().hasOnly(['trainingId', 'eventId', 'eventType', 'groupId', 'childId', 'parentId',
+                                 'response', 'reason', 'updatedAt', 'scheduleVersion', 'guardianResponses'])
           && d.trainingId is string && d.childId is string && d.groupId is string
+          && d.get('eventId', d.trainingId) == d.trainingId
+          && kindOf(d) in ['training', 'match']
           && rsvpId == d.trainingId + '_' + d.childId
           && d.parentId == uid()
           && d.response in ['yes', 'no', 'maybe']
           && optString(d, 'reason', 200)
-          && d.updatedAt is timestamp;
+          && d.updatedAt is timestamp
+          && d.get('guardianResponses', {}) is map;
+      }
+
+      // Only the caller's own guardian answer may be added or changed.
+      function ownAnswerOnly(d) {
+        return d.get('guardianResponses', {})
+          .diff(resource == null ? {} : resource.data.get('guardianResponses', {}))
+          .affectedKeys().hasOnly([uid()]);
       }
 
       function canRsvp(d) {
         return isParentOfChild(d.childId)
-          && exists(/databases/$(database)/documents/trainings/$(d.trainingId))
-          && trainingDoc(d.trainingId).groupId == d.groupId
-          && trainingDoc(d.trainingId).status != 'cancelled'
-          && request.time < trainingDoc(d.trainingId).startAt
-          && d.childId in groupDoc(d.groupId).get('memberChildIds', []);
+          && exists(eventPath(kindOf(d), d.trainingId))
+          && eventDoc(kindOf(d), d.trainingId).groupId == d.groupId
+          && eventDoc(kindOf(d), d.trainingId).status != 'cancelled'
+          && request.time < eventDoc(kindOf(d), d.trainingId).startAt
+          && d.get('scheduleVersion', 1) == eventDoc(kindOf(d), d.trainingId).get('scheduleVersion', 1)
+          && d.childId in groupDoc(d.groupId).get('memberChildIds', [])
+          && groupModuleOn(d.groupId, 'attendance');
       }
 
       allow read: if isAdmin()
         || isParentOfChild(resource.data.childId)
         || isGroupCoach(resource.data.groupId)
-        || isGroupCoach(trainingDoc(resource.data.trainingId).groupId);
+        || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
 
-      allow create, update: if validRsvp(request.resource.data) && canRsvp(request.resource.data);
+      allow create, update: if validRsvp(request.resource.data)
+        && ownAnswerOnly(request.resource.data)
+        && canRsvp(request.resource.data);
 
-      allow delete: if isParentOfChild(resource.data.childId)
-        && request.time < trainingDoc(resource.data.trainingId).startAt;
+      allow delete: if false;
+
+      // Append-only audit of every answer (previous answers are kept).
+      match /history/{entryId} {
+        allow read: if isParentOfChild(get(/databases/$(database)/documents/rsvps/$(rsvpId)).data.childId)
+          || isGroupCoach(get(/databases/$(database)/documents/rsvps/$(rsvpId)).data.groupId);
+        allow create: if request.resource.data.keys().hasOnly(['guardianId', 'response', 'version', 'reason', 'at'])
+          && request.resource.data.guardianId == uid()
+          && request.resource.data.response in ['yes', 'no', 'maybe']
+          && request.resource.data.version is int
+          && optString(request.resource.data, 'reason', 200)
+          && request.resource.data.at == request.time
+          && isParentOfChild(getAfter(/databases/$(database)/documents/rsvps/$(rsvpId)).data.childId);
+        allow update, delete: if false;
+      }
     }
 
     // -------------------------------------------------------------- attendance
     // Coach-recorded; id = {trainingId}_{childId}; "not marked" = no doc.
     match /attendance/{attendanceId} {
+      function kindOf(d) {
+        return d.get('eventType', 'training');
+      }
+
       function validAttendance(d) {
-        return d.keys().hasOnly(['trainingId', 'groupId', 'childId', 'status', 'markedBy', 'markedAt', 'note'])
+        return d.keys().hasOnly(['trainingId', 'eventId', 'eventType', 'groupId', 'childId', 'status',
+                                 'markedBy', 'markedAt', 'note'])
           && d.trainingId is string && d.childId is string && d.groupId is string
+          && d.get('eventId', d.trainingId) == d.trainingId
+          && kindOf(d) in ['training', 'match']
           && attendanceId == d.trainingId + '_' + d.childId
           && d.status in ['present', 'absent', 'excused']
           && d.markedBy == uid()
@@ -1029,17 +1209,20 @@ service cloud.firestore {
       }
 
       function canMark(d) {
-        return exists(/databases/$(database)/documents/trainings/$(d.trainingId))
-          && trainingDoc(d.trainingId).groupId == d.groupId
+        return exists(eventPath(kindOf(d), d.trainingId))
+          && eventDoc(kindOf(d), d.trainingId).groupId == d.groupId
+          && eventDoc(kindOf(d), d.trainingId).status != 'cancelled'
           && isGroupCoach(d.groupId)
-          && d.childId in groupDoc(d.groupId).get('memberChildIds', []);
+          && d.childId in groupDoc(d.groupId).get('memberChildIds', [])
+          && groupModuleOn(d.groupId, 'attendance');
       }
 
+      // Students see only their own records; never other children's.
       allow read: if isAdmin()
         || isParentOfChild(resource.data.childId)
         || isStudentOf(resource.data.childId)
         || isGroupCoach(resource.data.groupId)
-        || isGroupCoach(trainingDoc(resource.data.trainingId).groupId);
+        || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
 
       allow create, update: if validAttendance(request.resource.data) && canMark(request.resource.data);
       allow delete: if isGroupCoach(resource.data.groupId);

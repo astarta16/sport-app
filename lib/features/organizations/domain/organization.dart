@@ -428,7 +428,7 @@ enum OrgRole {
   };
 }
 
-/// `clubs/{clubId}/members/{uid}` — a user may belong to several
+/// `clubs/{clubId}/orgMembers/{uid}` — a user may belong to several
 /// organizations; nothing assumes one permanent organization per user.
 class OrgMembership {
   const OrgMembership({required this.orgId, required this.userId, required this.roles, this.active = true});
