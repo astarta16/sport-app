@@ -79,11 +79,18 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.5.0 --build-number=17
+  --build-name=1.6.0 --build-number=18
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.6
+
+- **Student demo account:** on the demo sign-in screen tap **Continue as Student** (Luka Beridze, football, coach Giorgi, parent Nino). Student sign-in exists only in demo mode.
+- **Student dashboard:** sports, coach, next training, matches and results, plans and homework, attendance, achievements — no payments, medical documents, chat, phone numbers or admin functions.
+- **Brain Academy:** six playable games (Memory Match, Logic Quest, Smart Play, Quick Mind, Sequence Master, Path Finder) with difficulties, levels, pause/resume, scores, badges and progress charts. Points are for practice — not an IQ test.
+- **Parents** see their child's Brain Academy progress in the student profile; **coaches** assign games as challenges (with optional due dates) from the group roster and review completion.
 
 ## What's new in v1.5
 
@@ -167,9 +174,9 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 260 tests (responsive, security, workflows, admin, l10n, v1.3–v1.5 flows)
+flutter test                                   # 298 tests (responsive, security, workflows, admin, l10n, v1.3–v1.6 flows, games)
 cd functions && npm install && npm run build && npm test      # 215 tests
-cd rules-tests && npm install && npm run test:emulator        # 158 rules tests (Java 17+)
+cd rules-tests && npm install && npm run test:emulator        # 167 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps
 ```
 

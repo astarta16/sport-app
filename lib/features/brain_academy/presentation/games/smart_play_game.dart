@@ -93,13 +93,16 @@ class _SmartPlayGameState extends State<SmartPlayGame> {
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: FilledButton.tonal(
                   key: Key('smart-option-$i'),
+                  // After answering the buttons are disabled; the disabled
+                  // colours carry the right/wrong highlight.
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(52),
-                    backgroundColor: choice == null
+                    disabledForegroundColor: Theme.of(context).colorScheme.onSurface,
+                    disabledBackgroundColor: choice == null
                         ? null
                         : (s.options[i].correct
-                              ? AppColors.success.withValues(alpha: .3)
-                              : (choice == i ? AppColors.danger.withValues(alpha: .25) : null)),
+                              ? AppColors.success.withValues(alpha: .35)
+                              : (choice == i ? AppColors.danger.withValues(alpha: .3) : null)),
                   ),
                   onPressed: choice == null ? () => _choose(i) : null,
                   child: Text(playOptionLabel(context, s.options[i])),

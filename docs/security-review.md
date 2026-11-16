@@ -89,6 +89,12 @@ Server rate limits per user per day: invites 30, reports 20, join-by-code 20, ve
 - **Receipt download** is a separate audited purpose (`receipt.download`) with a short-lived attachment URL for the parent or an authorized reviewer only.
 - **Student profile** shows coaches only data of their own active groups; medical documents remain behind `getCertificateUrl`.
 
+## v1.6 additions
+
+- **Student accounts** (role `child`, linked both ways: `children.userId` and the account's `lastContext.childId`) are enabled only in demo mode. In rules a student reads only: own child doc, trainings/matches of own groups, own attendance, published plans of own groups, own Brain Academy data and challenges of own groups. **Not**: full group docs (they hold other families' ids — the public projection is used), other children, chat, payments, medical certificates, users/phones, inbox (rules tests).
+- **Brain Academy results** are create-only by the linked student, server-timed and bounded; readable by the student, the child's parents and coaches — not by admins or other parents. **Challenges** are written only by coaches of the group.
+- No public leaderboards, no ads, no IQ claims; scores are labelled as practice points.
+
 ## Open items before production
 
 1. App Check enforcement (Firestore, Storage, Functions).

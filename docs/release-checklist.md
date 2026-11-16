@@ -1,3 +1,17 @@
+# Release checklist: beta v1.6
+
+## v1.6 local verification (done 2026-11-16)
+- [x] `dart format`, `flutter analyze`: no issues
+- [x] `flutter test`: 298 passed
+- [x] Functions `npm test`: 215 passed; rules emulator tests: 167 passed; smoke: 43 steps passed
+- [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.6.apk`, 79,634,337 bytes (79.6 MB), versionName 1.6.0, versionCode 18
+- [x] First 1.6.0 build installed on the Pixel 6 API 33 emulator (package manager: 1.6.0 / 18): Continue as Student → student dashboard (welcome, Brain Academy, coach challenge, sports, coaches) → Smart Play challenge played (pitch, answer, explanation). That check showed answered options turning grey; the fix was rebuilt into the final APK, which could not be reinstalled because the emulator shut itself down again
+- iOS simulator: see the v1.6 progress doc / final report
+
+## v1.6 production notes
+1. Student accounts stay disabled in Firebase builds (router). Enabling them needs age verification, verified parental consent and a privacy review first.
+2. Deploy rules + index (`brainResults` childId + playedAt) and the functions update (`publicGroups.groupId`) together.
+
 # Release checklist: beta v1.5
 
 ## v1.5 local verification (done 2026-11-16)
