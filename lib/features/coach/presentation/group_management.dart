@@ -9,7 +9,9 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/entity_options.dart';
 import '../../../core/widgets/form_fields.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../clubs/presentation/clubs_providers.dart';
@@ -38,6 +40,9 @@ class GroupManagementHeader extends ConsumerWidget {
     final active = series.where((s) => s.status == SeriesStatus.active).toList();
     final invites = ref.watch(groupInvitesProvider(groupId)).value ?? const <GroupInvite>[];
     final t = Theme.of(context).textTheme;
+    // v1.9.1 (M17): same feature checks as the coach home quick actions —
+    // a switched-off feature shows no button (it used to bounce to Home).
+    bool on(OrgModule m) => ref.watch(moduleOnForGroupProvider((groupId, m)));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -87,23 +92,28 @@ class GroupManagementHeader extends ConsumerWidget {
                     icon: const Icon(Icons.event_repeat_rounded),
                     label: Text(l.addSeries),
                   ),
-                  OutlinedButton.icon(
-                    onPressed: () => context.push(Routes.newMatch(groupId)),
-                    icon: const Icon(Icons.emoji_events_rounded),
-                    label: Text(l.addMatch),
-                  ),
-                  OutlinedButton.icon(
-                    key: const Key('group-students'),
-                    onPressed: () => context.push(Routes.students(groupId)),
-                    icon: const Icon(Icons.badge_rounded),
-                    label: Text(l.rosterTitle),
-                  ),
-                  OutlinedButton.icon(
-                    onPressed: () => context.push(Routes.newPlan(groupId)),
-                    icon: const Icon(Icons.assignment_rounded),
-                    label: Text(l.planNew),
-                  ),
-                  if (ref.watch(moduleOnForGroupProvider((groupId, OrgModule.payments))))
+                  if (on(OrgModule.matches))
+                    OutlinedButton.icon(
+                      key: const Key('group-add-match'),
+                      onPressed: () => context.push(Routes.newMatch(groupId)),
+                      icon: const Icon(Icons.emoji_events_rounded),
+                      label: Text(l.addMatch),
+                    ),
+                  if (on(OrgModule.dataExports))
+                    OutlinedButton.icon(
+                      key: const Key('group-students'),
+                      onPressed: () => context.push(Routes.students(groupId)),
+                      icon: const Icon(Icons.badge_rounded),
+                      label: Text(l.rosterTitle),
+                    ),
+                  if (on(OrgModule.trainingPlans))
+                    OutlinedButton.icon(
+                      key: const Key('group-new-plan'),
+                      onPressed: () => context.push(Routes.newPlan(groupId)),
+                      icon: const Icon(Icons.assignment_rounded),
+                      label: Text(l.planNew),
+                    ),
+                  if (on(OrgModule.payments))
                     OutlinedButton.icon(
                       onPressed: () => context.push(Routes.groupPayments(groupId)),
                       icon: const Icon(Icons.payments_rounded),
@@ -221,6 +231,10 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
   final _query = TextEditingController();
   List<ChildSearchResult> _results = const [];
   bool _searching = false;
+
+  /// The query of the last search that finished; "No results" refers to it
+  /// only (never before a search ran, never to text typed since).
+  String? _searched;
   final _first = TextEditingController();
   final _last = TextEditingController();
   final _phone = TextEditingController();
@@ -239,8 +253,14 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
   Future<void> _search() async {
     setState(() => _searching = true);
     try {
-      final r = await ref.read(groupsRepositoryProvider).searchChildren(_query.text, groupId: widget.groupId);
-      if (mounted) setState(() => _results = r);
+      final q = _query.text;
+      final r = await ref.read(groupsRepositoryProvider).searchChildren(q, groupId: widget.groupId);
+      if (mounted) {
+        setState(() {
+          _results = r;
+          _searched = q;
+        });
+      }
     } catch (e) {
       if (mounted) showAppSnack(context, errorText(context, e), error: true);
     }
@@ -308,6 +328,7 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
                     controller: _query,
                     textInputAction: TextInputAction.search,
                     onSubmitted: (_) => _search(),
+                    onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
                       hintText: l.addChildSearchHint,
                       suffixIcon: IconButton(onPressed: _search, icon: const Icon(Icons.search_rounded)),
@@ -315,7 +336,8 @@ class _InviteChildScreenState extends ConsumerState<InviteChildScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   if (_searching) const LinearProgressIndicator(),
-                  if (!_searching && _results.isEmpty && _query.text.length >= 2) Text(l.noSearchResults),
+                  if (!_searching && _results.isEmpty && _searched != null && _searched == _query.text)
+                    Text(l.noSearchResults, key: const Key('child-search-empty')),
                   for (final r in _results)
                     ListTile(
                       key: Key('search-${r.childId}'),
@@ -461,6 +483,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     final club = clubs.where((c) => c.id == _clubId).firstOrNull ?? (clubs.length == 1 ? clubs.first : null);
     _clubId ??= club?.id;
     final clubSports = sports.where((s) => club == null || club.sportIds.contains(s.id)).toList();
+    final sportsById = {for (final s in sports) s.id: s};
     return Scaffold(
       appBar: AppBar(title: Text(l.newGroup)),
       body: ConstrainedContent(
@@ -468,26 +491,50 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
-            SectionHeader(l.groupClub),
-            DropdownButtonFormField<String>(
-              initialValue: _clubId,
-              isExpanded: true,
-              items: [for (final c in clubs) DropdownMenuItem(value: c.id, child: Text(c.name))],
+            // v1.9.1 (M40): labelled, searchable pickers; the sport list
+            // follows the chosen club.
+            AppPickerField<String>(
+              key: const Key('group-club'),
+              label: l.groupClub,
+              icon: Icons.apartment_rounded,
+              required: true,
+              helperText: l.s191GroupClubHelper,
+              value: _clubId,
+              recentsId: 'coach-clubs',
+              options: [
+                for (final c in clubs)
+                  AppPickerOption(
+                    value: c.id,
+                    label: c.name,
+                    subtitle: [for (final id in c.sportIds) ?sportsById[id]?.label(context)].join(', '),
+                  ),
+              ],
               onChanged: (v) => setState(() {
+                if (v != _clubId) _sportId = null;
                 _clubId = v;
-                _sportId = null;
               }),
             ),
-            SectionHeader(l.groupSport),
-            DropdownButtonFormField<String>(
+            const SizedBox(height: AppSpacing.sm),
+            SportsPickerField(
               key: const Key('group-sport'),
-              initialValue: clubSports.any((s) => s.id == _sportId) ? _sportId : null,
-              isExpanded: true,
-              items: [for (final s in clubSports) DropdownMenuItem(value: s.id, child: Text(s.label(context)))],
+              label: l.groupSport,
+              required: true,
+              sports: sports,
+              allowedIds: club?.sportIds.toSet(),
+              value: clubSports.any((s) => s.id == _sportId) ? _sportId! : '',
               onChanged: (v) => setState(() => _sportId = v),
             ),
-            SectionHeader(l.groupName),
-            TextField(key: const Key('group-name'), controller: _name, maxLength: 60),
+            Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.md, top: 4),
+              child: Text(l.s191GroupSportHelper, style: Theme.of(context).textTheme.bodySmall),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            TextField(
+              key: const Key('group-name'),
+              controller: _name,
+              maxLength: 60,
+              decoration: InputDecoration(labelText: '${l.groupName} *', hintText: l.s191GroupNameHint),
+            ),
             SectionHeader('${l.groupAgeFrom} ${_ages.start.round()} · ${l.groupAgeTo} ${_ages.end.round()}'),
             RangeSlider(
               values: _ages,

@@ -32,14 +32,38 @@ import 'student_v17_widgets.dart';
 /// Academy and Progress. No payments, certificates, chat, phone numbers,
 /// admin functions or other children's records.
 class StudentHomeScreen extends ConsumerStatefulWidget {
-  const StudentHomeScreen({super.key});
+  const StudentHomeScreen({super.key, this.initialTab});
+
+  /// `?tab=` value from the URL (`schedule`, `brain`, `progress`, `profile`);
+  /// anything else opens Home.
+  final String? initialTab;
+
+  /// URL names of the tabs, in navigation-bar order (v1.9.1, M3).
+  static const tabNames = ['home', 'schedule', 'brain', 'progress', 'profile'];
+
+  static int tabIndex(String? name) => max(0, tabNames.indexOf(name ?? 'home'));
 
   @override
   ConsumerState<StudentHomeScreen> createState() => _StudentHomeScreenState();
 }
 
 class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
-  int _tab = 0;
+  late int _tab = StudentHomeScreen.tabIndex(widget.initialTab);
+
+  @override
+  void didUpdateWidget(StudentHomeScreen old) {
+    super.didUpdateWidget(old);
+    // Back / forward or a link changed `?tab=`.
+    if (old.initialTab != widget.initialTab) _tab = StudentHomeScreen.tabIndex(widget.initialTab);
+  }
+
+  /// Switches tab and keeps the URL linkable (`/kid/home?tab=brain`).
+  void _select(int i) {
+    setState(() => _tab = i);
+    if (GoRouter.maybeOf(context) == null) return;
+    final name = StudentHomeScreen.tabNames[i];
+    context.go(i == 0 ? Routes.studentHome : '${Routes.studentHome}?tab=$name');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +76,7 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
       appBar: AppBar(title: Text(titles[_tab])),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
-        onDestinationSelected: (i) => setState(() => _tab = i),
+        onDestinationSelected: _select,
         destinations: [
           NavigationDestination(
             key: const Key('student-nav-home'),
@@ -87,7 +111,7 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
         data: (v) => IndexedStack(
           index: _tab,
           children: [
-            _HomeTab(view: v, openBrain: () => setState(() => _tab = 2)),
+            _HomeTab(view: v, openBrain: () => _select(2)),
             _ScheduleTab(view: v),
             BrainHub(childId: v.child.id),
             _page(const Key('student-progress'), [

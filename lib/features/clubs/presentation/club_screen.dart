@@ -6,6 +6,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
@@ -119,6 +120,7 @@ class ClubScreen extends ConsumerWidget {
                           title: Text(v.name),
                           subtitle: Text('${venueTypeLabel(context, v.type)} · ${v.address}'),
                           trailing: IconButton(
+                            tooltip: l.directions,
                             icon: const Icon(Icons.directions_rounded),
                             onPressed: () => openDirections(context, v.location, v.name),
                           ),
@@ -191,11 +193,15 @@ class _GroupRow extends ConsumerWidget {
           else if (user == null)
             Tooltip(message: l.signInToJoin, child: const Icon(Icons.lock_outline_rounded))
           else if (user.isParent)
-            FilledButton.tonal(
-              key: Key('join-${group.id}'),
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
-              onPressed: () => _request(context, ref),
-              child: Text(l.requestMembership, style: const TextStyle(fontSize: 12)),
+            // Long Georgian / Russian labels wrap instead of overflowing.
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140),
+              child: FilledButton.tonal(
+                key: Key('join-${group.id}'),
+                style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+                onPressed: () => _request(context, ref),
+                child: Text(l.requestMembership, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
+              ),
             ),
         ],
       ),
@@ -210,30 +216,34 @@ class _GroupRow extends ConsumerWidget {
       return;
     }
     final now = ref.read(clockProvider)();
-    final child = await showAdaptiveSheet<Child>(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-              child: Text(l.selectChild, style: Theme.of(context).textTheme.titleMedium),
-            ),
-            for (final c in children)
-              ListTile(
-                key: Key('pick-child-${c.id}'),
-                leading: InitialsAvatar(name: c.fullName, size: 40),
-                title: Text(c.fullName),
-                subtitle: Text(l.yearsOld(c.ageOn(now))),
-                onTap: () => Navigator.pop(context, c),
-              ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-        ),
-      ),
+    final requests = ref.read(myMembershipRequestsProvider).value ?? const <MembershipRequest>[];
+    // v1.9.1 (M34): children who cannot join are shown disabled, with the
+    // reason, instead of a request the server would refuse.
+    String? reason(Child c) {
+      final age = c.ageOn(now);
+      if (group.hasChild(c.id) || c.groupIds.contains(group.id)) return l.s191JoinAlreadyMember;
+      if (requests.any((r) => r.childId == c.id && r.groupId == group.id && r.status == RequestStatus.pending)) {
+        return l.requestPending;
+      }
+      if (age < group.ageMin || age > group.ageMax) return l.s191JoinAgeOutside(age, group.ageMin, group.ageMax);
+      return null;
+    }
+
+    final childId = await showAppPicker<String>(
+      context,
+      title: l.selectChild,
+      options: [
+        for (final c in children)
+          AppPickerOption(
+            value: c.id,
+            label: c.fullName,
+            subtitle: l.yearsOld(c.ageOn(now)),
+            leading: InitialsAvatar(name: c.fullName, size: 40),
+            disabledReason: reason(c),
+          ),
+      ],
     );
+    final child = children.where((c) => c.id == childId).firstOrNull;
     if (child == null || !context.mounted) return;
     await runGuarded(
       context,

@@ -7,6 +7,7 @@ import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../attendance/domain/attendance.dart';
@@ -290,14 +291,20 @@ class _ExportFormState extends ConsumerState<_ExportForm> {
               ),
             ),
             if (_kind == ExportKind.trainingSheet)
-              DropdownButtonFormField<String>(
+              // v1.9.1 (M43): searchable, grouped by month, time as subtitle.
+              AppPickerField<String>(
                 key: const Key('export-training'),
-                initialValue: _trainingId,
-                isExpanded: true,
-                decoration: InputDecoration(labelText: l.exportChooseTraining),
-                items: [
+                label: l.exportChooseTraining,
+                icon: Icons.event_rounded,
+                value: _trainingId,
+                options: [
                   for (final t in trainings.take(30))
-                    DropdownMenuItem(value: t.id, child: Text('${f.weekdayDayMonth(t.startAt)} ${f.time(t.startAt)}')),
+                    AppPickerOption(
+                      value: t.id,
+                      label: '${f.weekdayDayMonth(t.startAt)} · ${f.time(t.startAt)}',
+                      subtitle: '${f.time(t.startAt)} – ${f.time(t.endAt)}',
+                      group: f.monthYear(t.startAt),
+                    ),
                 ],
                 onChanged: (v) => setState(() => _trainingId = v),
               ),

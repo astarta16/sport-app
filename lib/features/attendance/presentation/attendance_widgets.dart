@@ -53,6 +53,12 @@ class RsvpSection extends ConsumerWidget {
       children: [
         SectionHeader(open ? (event.type == EventType.match ? l.rsvpTitleMatch : l.rsvpTitle) : l.attendanceRecorded),
         if (ack != null) ...[_ScheduleChangeAck(event: event, ack: ack), const SizedBox(height: AppSpacing.xs)],
+        // v1.9.1 (M11): siblings in the same group — one tap for all.
+        if (open && kids.length > 1)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: _RsvpAllRow(event: event, kids: kids, rsvps: rsvps, loading: loading),
+          ),
         for (final c in kids)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -67,6 +73,83 @@ class RsvpSection extends ConsumerWidget {
           ),
         if (open) Text(l.rsvpNotice, style: Theme.of(context).textTheme.bodySmall),
       ],
+    );
+  }
+}
+
+/// "Same answer for all children": answers for every own child in the
+/// group with the same repository call as the per-child cards, which stay
+/// below for individual answers and reasons.
+class _RsvpAllRow extends ConsumerStatefulWidget {
+  const _RsvpAllRow({required this.event, required this.kids, required this.rsvps, required this.loading});
+
+  final ScheduledEvent event;
+  final List<Child> kids;
+  final List<Rsvp> rsvps;
+  final bool loading;
+
+  @override
+  ConsumerState<_RsvpAllRow> createState() => _RsvpAllRowState();
+}
+
+class _RsvpAllRowState extends ConsumerState<_RsvpAllRow> {
+  bool _saving = false;
+
+  Future<void> _answerAll(RsvpResponse r) async {
+    final l = context.l10n;
+    setState(() => _saving = true);
+    final repo = ref.read(attendanceRepositoryProvider);
+    await runGuarded(context, () async {
+      for (final c in widget.kids) {
+        final previous = widget.rsvps.where((x) => x.childId == c.id).firstOrNull;
+        await repo.respond(trainingId: widget.event.id, childId: c.id, response: r, reason: previous?.reason);
+      }
+    }, success: l.s191RsvpAllSaved);
+    if (mounted) setState(() => _saving = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    // Selected only when every child already has this (current) answer.
+    final answers = {
+      for (final c in widget.kids)
+        widget.rsvps
+            .where((x) => x.childId == c.id && !x.needsReconfirmation(widget.event.version))
+            .firstOrNull
+            ?.response,
+    };
+    final common = answers.length == 1 ? answers.first : null;
+    return AppCard(
+      key: const Key('rsvp-all'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.groups_rounded, size: 20),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(child: Text(l.s191RsvpAllTitle, style: Theme.of(context).textTheme.titleSmall)),
+              if (_saving) const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          SegmentedButton<RsvpResponse>(
+            key: const Key('rsvp-all-buttons'),
+            emptySelectionAllowed: true,
+            showSelectedIcon: false,
+            segments: [
+              for (final r in RsvpResponse.values)
+                ButtonSegment(
+                  value: r,
+                  label: Text(rsvpLabel(context, r), key: Key('rsvp-all-${r.name}')),
+                ),
+            ],
+            selected: {?common},
+            onSelectionChanged: widget.loading || _saving ? null : (s) => s.isEmpty ? null : _answerAll(s.first),
+          ),
+        ],
+      ),
     );
   }
 }

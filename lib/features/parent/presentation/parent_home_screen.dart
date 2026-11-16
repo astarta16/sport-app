@@ -149,11 +149,24 @@ class ParentHomeScreen extends ConsumerWidget {
         child: _Bounded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              key: const Key('open-student-profile'),
-              onPressed: () => context.push('/student/${child.id}'),
-              icon: const Icon(Icons.badge_rounded),
-              label: Text('${context.l10n.studentProfileOpen} · ${child.firstName}'),
+            // v1.9.1 (M29): the child's details no longer need a hidden
+            // long-press on the avatar.
+            child: Wrap(
+              spacing: AppSpacing.xs,
+              children: [
+                TextButton.icon(
+                  key: const Key('open-student-profile'),
+                  onPressed: () => context.push('/student/${child.id}'),
+                  icon: const Icon(Icons.badge_rounded),
+                  label: Text('${context.l10n.studentProfileOpen} · ${child.firstName}'),
+                ),
+                TextButton.icon(
+                  key: const Key('open-child-details'),
+                  onPressed: () => context.push(Routes.child(child.id)),
+                  icon: const Icon(Icons.edit_note_rounded),
+                  label: Text(context.l10n.s191ChildDetails(child.firstName)),
+                ),
+              ],
             ),
           ),
         ),
@@ -344,6 +357,8 @@ class _ChildSelector extends ConsumerWidget {
                 button: true,
                 selected: c.id == selection.child?.id,
                 label: c.fullName,
+                hint: l.s191ChildChipHint,
+                onLongPressHint: l.s191ChildDetails(c.firstName),
                 child: GestureDetector(
                   key: Key('child-chip-${c.id}'),
                   onTap: () => ref.read(selectionContextProvider.notifier).selectChild(c.id),
@@ -363,22 +378,30 @@ class _ChildSelector extends ConsumerWidget {
                 ),
               ),
             ),
-          GestureDetector(
-            onTap: () => context.push(Routes.newChild),
-            child: Column(
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1.5),
+          // v1.9.1 (M30): a real button for screen readers and keyboards.
+          Semantics(
+            button: true,
+            label: l.addChild,
+            excludeSemantics: true,
+            child: InkWell(
+              key: const Key('home-add-child'),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              onTap: () => context.push(Routes.newChild),
+              child: Column(
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1.5),
+                    ),
+                    child: Icon(Icons.add_rounded, color: Theme.of(context).colorScheme.primary),
                   ),
-                  child: Icon(Icons.add_rounded, color: Theme.of(context).colorScheme.primary),
-                ),
-                const SizedBox(height: 6),
-                Text(l.addChild, style: Theme.of(context).textTheme.labelSmall),
-              ],
+                  const SizedBox(height: 6),
+                  Text(l.addChild, style: Theme.of(context).textTheme.labelSmall),
+                ],
+              ),
             ),
           ),
         ],

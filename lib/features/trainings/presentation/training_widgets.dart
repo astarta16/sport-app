@@ -70,14 +70,17 @@ class TrainingTile extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Group names can be long (Georgian / Russian): two lines
+                // before anything is cut.
                 Text(
                   '${f.time(training.startAt)} – ${f.time(training.endAt)} · ${group?.name ?? ''}',
-                  maxLines: 1,
+                  key: Key('training-tile-title-${training.id}'),
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: t.titleSmall?.copyWith(decoration: cancelled ? TextDecoration.lineThrough : null),
                 ),
                 const SizedBox(height: 2),
-                Text(venue?.name ?? '—', maxLines: 1, overflow: TextOverflow.ellipsis, style: t.bodySmall),
+                Text(venue?.name ?? '—', maxLines: 2, overflow: TextOverflow.ellipsis, style: t.bodySmall),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 6,
@@ -143,29 +146,33 @@ class NextTrainingCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                // v1.9.1: a Wrap, not a Row — on narrow phones the countdown
+                // moves to its own line instead of cutting the label short
+                // ("შემდეგი ვარჯ…"). The label itself may wrap, never clip.
+                Wrap(
+                  key: const Key('next-training-header'),
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: AppSpacing.xs,
+                  runSpacing: AppSpacing.xs,
                   children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.18),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          l.nextTraining.toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: t.labelSmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.8,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        l.nextTraining.toUpperCase(),
+                        key: const Key('next-training-label'),
+                        softWrap: true,
+                        style: t.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
-                    const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
@@ -174,6 +181,8 @@ class NextTrainingCard extends ConsumerWidget {
                       ),
                       child: Text(
                         cancelled ? l.statusCancelled : (moved ? l.statusMoved : countdown),
+                        key: const Key('next-training-countdown'),
+                        softWrap: true,
                         style: t.labelSmall?.copyWith(
                           color: cancelled || moved ? Colors.white : AppColors.navy,
                           fontWeight: FontWeight.w900,

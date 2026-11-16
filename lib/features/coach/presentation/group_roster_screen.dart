@@ -22,13 +22,43 @@ import '../../contacts/presentation/contacts_screens.dart';
 
 /// Group roster with certificate status, parents (phone visible to the
 /// group's coach only) and member management.
-class GroupRosterScreen extends ConsumerWidget {
+class GroupRosterScreen extends ConsumerStatefulWidget {
   const GroupRosterScreen({super.key, required this.groupId});
 
   final String groupId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GroupRosterScreen> createState() => _GroupRosterScreenState();
+}
+
+class _GroupRosterScreenState extends ConsumerState<GroupRosterScreen> {
+  final _search = TextEditingController();
+  String _query = '';
+
+  String get groupId => widget.groupId;
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  Future<void> _remove(Child c) async {
+    final l = context.l10n;
+    final ok = await confirmDialog(
+      context,
+      title: l.removeFromGroup,
+      message: l.removeFromGroupConfirm(c.fullName),
+      confirmLabel: l.removeFromGroup,
+      destructive: true,
+    );
+    if (ok && mounted) {
+      await runGuarded(context, () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
     final group = ref.watch(groupsByIdProvider)[groupId];
     final members = ref.watch(groupMembersProvider(groupId));
@@ -51,17 +81,57 @@ class GroupRosterScreen extends ConsumerWidget {
       body: AsyncView<List<Child>>(
         value: members,
         onRetry: () => ref.invalidate(groupMembersProvider(groupId)),
-        data: (list) {
+        data: (all) {
           final header = GroupManagementHeader(groupId: groupId);
-          if (list.isEmpty) {
+          if (all.isEmpty) {
             return ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
                 header,
-                EmptyState(icon: Icons.group_off_rounded, title: l.roster, body: l.noGroupsInClub),
+                EmptyState(
+                  key: const Key('roster-empty'),
+                  icon: Icons.group_off_rounded,
+                  title: l.s191RosterEmptyTitle,
+                  body: l.s191RosterEmptyBody,
+                  actionLabel: l.addChildToGroup,
+                  onAction: () => context.push(Routes.inviteChild(groupId)),
+                ),
               ],
             );
           }
+          // v1.9.1 (M19): filter by name (any word, any order).
+          final words = _query.toLowerCase().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
+          final list = all.where((c) => words.every(c.fullName.toLowerCase().contains)).toList();
+          final search = TextField(
+            key: const Key('roster-search'),
+            controller: _search,
+            textInputAction: TextInputAction.search,
+            onChanged: (v) => setState(() => _query = v.trim()),
+            decoration: InputDecoration(
+              hintText: l.s191RosterSearchHint,
+              prefixIcon: const Icon(Icons.search_rounded),
+              suffixIcon: _query.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: l.pickerClearSearch,
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: () => setState(() {
+                        _search.clear();
+                        _query = '';
+                      }),
+                    ),
+            ),
+          );
+          final noMatches = list.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  child: Text(
+                    l.s191RosterNoMatches(_query),
+                    key: const Key('roster-no-matches'),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : null;
           Widget card(int i) {
             final c = list[i];
             final mine = certs.where((x) => x.childId == c.id).toList();
@@ -82,9 +152,34 @@ class GroupRosterScreen extends ConsumerWidget {
                       if (!c.photoConsent) const Icon(Icons.no_photography_rounded, size: 16, color: AppColors.warning),
                     ],
                   ),
-                  trailing: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 120),
-                    child: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 110),
+                        child: StatusPill.of(StatusVisual.certificate(context, status), dense: true),
+                      ),
+                      // Destructive action out of the expanded tile, behind
+                      // a menu and a confirmation (M19).
+                      PopupMenuButton<String>(
+                        key: Key('roster-menu-${c.id}'),
+                        tooltip: l.s191RosterMoreActions(c.firstName),
+                        onSelected: (v) {
+                          if (v == 'remove') _remove(c);
+                        },
+                        itemBuilder: (_) => [
+                          PopupMenuItem(
+                            key: Key('roster-remove-${c.id}'),
+                            value: 'remove',
+                            child: ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: const Icon(Icons.person_remove_rounded, color: AppColors.danger),
+                              title: Text(l.removeFromGroup, style: const TextStyle(color: AppColors.danger)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   childrenPadding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
                   children: [
@@ -122,27 +217,6 @@ class GroupRosterScreen extends ConsumerWidget {
                           icon: const Icon(Icons.insights_rounded),
                           label: Text(l.progressShort),
                         ),
-                        TextButton.icon(
-                          key: Key('roster-remove-${c.id}'),
-                          style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-                          onPressed: () async {
-                            final ok = await confirmDialog(
-                              context,
-                              title: l.removeFromGroup,
-                              message: l.removeFromGroupConfirm(c.fullName),
-                              confirmLabel: l.removeFromGroup,
-                              destructive: true,
-                            );
-                            if (ok && context.mounted) {
-                              await runGuarded(
-                                context,
-                                () => ref.read(groupsRepositoryProvider).removeMember(groupId, c.id),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.person_remove_rounded),
-                          label: Text(l.removeFromGroup),
-                        ),
                       ],
                     ),
                   ],
@@ -157,9 +231,13 @@ class GroupRosterScreen extends ConsumerWidget {
               if (c.maxWidth < Breakpoints.medium) {
                 return ListView.separated(
                   padding: const EdgeInsets.all(AppSpacing.lg),
-                  itemCount: list.length + 1,
+                  itemCount: list.length + 2 + (noMatches == null ? 0 : 1),
                   separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
-                  itemBuilder: (context, i) => i == 0 ? header : card(i - 1),
+                  itemBuilder: (context, i) => switch (i) {
+                    0 => header,
+                    1 => search,
+                    _ => noMatches ?? card(i - 2),
+                  },
                 );
               }
               return SingleChildScrollView(
@@ -172,6 +250,9 @@ class GroupRosterScreen extends ConsumerWidget {
                     children: [
                       header,
                       const SizedBox(height: AppSpacing.sm),
+                      ConstrainedContent(maxWidth: Breakpoints.readable, child: search),
+                      const SizedBox(height: AppSpacing.sm),
+                      ?noMatches,
                       ResponsiveGrid(
                         minItemWidth: 340,
                         maxColumns: 3,

@@ -169,7 +169,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.register, builder: (_, _) => const RegistrationScreen()),
       GoRoute(path: Routes.coachPending, builder: (_, _) => const CoachPendingScreen()),
       GoRoute(path: Routes.childUnsupported, builder: (_, _) => const ChildUnsupportedScreen()),
-      GoRoute(path: Routes.studentHome, builder: (_, _) => const StudentHomeScreen()),
+      GoRoute(
+        path: Routes.studentHome,
+        builder: (_, s) => StudentHomeScreen(initialTab: s.uri.queryParameters['tab']),
+      ),
       GoRoute(
         path: '/kid/brain/:game',
         builder: (_, s) {

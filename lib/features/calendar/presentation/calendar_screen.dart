@@ -6,6 +6,7 @@ import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
@@ -30,6 +31,14 @@ class CalendarScreen extends ConsumerStatefulWidget {
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
+const _allKey = 'all';
+
+String _dayKey(DateTime d) => '${d.year}-${d.month}-${d.day}';
+
+Color _trainingColor(Training e, Map<String, Group> groups) => e.status == TrainingStatus.cancelled
+    ? AppColors.danger
+    : (e.status == TrainingStatus.moved ? AppColors.warning : SportVisuals.color(groups[e.groupId]?.sportId ?? ''));
+
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   late DateTime _focused = ref.read(clockProvider)();
   DateTime? _selected;
@@ -51,12 +60,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // Parents see the selected child's groups (or all children); coaches see
     // all assigned groups.
     Set<String>? groupFilter;
+    ParentSelection? sel;
     if (user?.isParent ?? false) {
-      final sel = ref.watch(parentSelectionProvider).value;
+      sel = ref.watch(parentSelectionProvider).value;
       if (!_allChildren && sel?.child != null) {
         groupFilter = groups.values.where((g) => g.hasChild(sel!.child!.id)).map((g) => g.id).toSet();
       }
     }
+    // v1.9.1 (M27): matches load separately; an error is shown with a retry
+    // instead of looking like "no matches".
+    final matchesAsync = ref.watch(myMatchesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,15 +94,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               shareIcs(context, ref, events, kind: 'schedule', slug: user?.id ?? 'me');
             },
           ),
-          if (user?.isParent ?? false)
-            Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
-              child: FilterChip(
-                label: Text(l.allChildren),
-                selected: _allChildren,
-                onSelected: (v) => setState(() => _allChildren = v),
-              ),
-            ),
         ],
       ),
       body: AsyncView<List<Training>>(
@@ -103,14 +107,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final upcoming = CalendarLogic.upcoming(visible, now, limit: 8);
           // v1.5: matches of the same groups on the selected day, with final scores.
           final visibleGroups = groupFilter ?? groups.keys.toSet();
-          final allMatches = ref.watch(myMatchesProvider).value ?? const <SportMatch>[];
-          final dayMatches =
-              allMatches.where((m) => visibleGroups.contains(m.groupId) && isSameDay(m.startAt, selected)).toList()
-                ..sort((a, b) => a.startAt.compareTo(b.startAt));
+          final allMatches = matchesAsync.value ?? const <SportMatch>[];
+          final visibleMatches = allMatches.where((m) => visibleGroups.contains(m.groupId)).toList();
+          // Keyed by local y-m-d (table_calendar hands out UTC days).
+          final matchesByDay = <String, List<SportMatch>>{};
+          for (final m in visibleMatches) {
+            (matchesByDay[_dayKey(m.startAt)] ??= []).add(m);
+          }
+          final dayMatches = [...?matchesByDay[_dayKey(selected)]]..sort((a, b) => a.startAt.compareTo(b.startAt));
           final recentResults = resultsFor(allMatches, visibleGroups).take(3).toList();
-          final calendarCard = AppCard(
+          final table = AppCard(
             padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
-            child: TableCalendar<Training>(
+            child: TableCalendar<Object>(
               locale: context.localeName,
               firstDay: now.subtract(const Duration(days: 365)),
               lastDay: now.add(const Duration(days: 365)),
@@ -129,7 +137,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 _focused = f;
               }),
               onPageChanged: (f) => _focused = f,
-              eventLoader: (d) => CalendarLogic.onDay(byDay, d),
+              eventLoader: (d) => [...CalendarLogic.onDay(byDay, d), ...?matchesByDay[_dayKey(d)]],
               headerStyle: HeaderStyle(
                 titleCentered: true,
                 formatButtonVisible: false,
@@ -145,25 +153,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               calendarBuilders: CalendarBuilders(
                 markerBuilder: (context, day, events) {
                   if (events.isEmpty) return null;
+                  final dayTrainings = events.whereType<Training>().take(3);
+                  final hasMatch = events.any((e) => e is SportMatch);
                   return Positioned(
-                    bottom: 4,
+                    bottom: 2,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (final e in events.take(3))
-                          Container(
-                            width: 6,
-                            height: 6,
-                            margin: const EdgeInsets.symmetric(horizontal: 1),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: e.status == TrainingStatus.cancelled
-                                  ? AppColors.danger
-                                  : (e.status == TrainingStatus.moved
-                                        ? AppColors.warning
-                                        : SportVisuals.color(groups[e.groupId]?.sportId ?? '')),
-                            ),
-                          ),
+                        for (final e in dayTrainings) _TrainingDot(color: _trainingColor(e, groups)),
+                        // Matches: a trophy (different shape and colour from
+                        // the training dots), explained by the legend below.
+                        if (hasMatch) _MatchMarker(key: Key('calendar-match-marker-${_dayKey(day)}')),
                       ],
                     ),
                   );
@@ -171,14 +171,63 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               ),
             ),
           );
+          final calendarCard = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (sel != null && sel.children.length > 1)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: AppChoiceGroup<String>(
+                    key: const Key('calendar-child-selector'),
+                    keyPrefix: 'calendar-child',
+                    label: l.s191CalendarWhose,
+                    value: _allChildren || sel.child == null ? _allKey : sel.child!.id,
+                    choices: [
+                      (_allKey, l.allChildren, Icons.groups_rounded),
+                      for (final c in sel.children) (c.id, c.firstName, null),
+                    ],
+                    onChanged: (v) {
+                      setState(() => _allChildren = v == _allKey);
+                      // Same selection as the child chips on Home.
+                      if (v != _allKey) ref.read(selectionContextProvider.notifier).selectChild(v);
+                    },
+                  ),
+                ),
+              table,
+              const SizedBox(height: AppSpacing.xs),
+              const _CalendarLegend(),
+            ],
+          );
           List<Widget> lists({bool selectable = false}) => [
             SectionHeader(Fmt.of(context).weekdayDayMonth(selected)),
-            if (dayList.isEmpty)
+            if (dayList.isEmpty && dayMatches.isEmpty)
               AppCard(
                 child: EmptyState(compact: true, icon: Icons.event_available_rounded, title: l.noTrainingsDay),
               )
             else
               ..._tiles(dayList, groups, showDate: false, selectable: selectable),
+            if (matchesAsync is AsyncError)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                child: AppCard(
+                  key: const Key('calendar-matches-error'),
+                  child: Column(
+                    children: [
+                      Text(l.s191CalendarMatchesError, style: Theme.of(context).textTheme.titleSmall),
+                      ErrorView(
+                        error: matchesAsync.error!,
+                        compact: true,
+                        onRetry: () => ref.invalidate(myMatchesProvider),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (matchesAsync.isLoading && !matchesAsync.hasValue)
+              const Padding(
+                padding: EdgeInsets.only(top: AppSpacing.xs),
+                child: Skeleton(key: Key('calendar-matches-loading'), height: 64, radius: AppSpacing.radius),
+              ),
             for (final m in dayMatches)
               Padding(
                 key: Key('calendar-match-${m.id}'),
@@ -265,4 +314,73 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
       ),
   ];
+}
+
+class _TrainingDot extends StatelessWidget {
+  const _TrainingDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 6,
+    height: 6,
+    margin: const EdgeInsets.symmetric(horizontal: 1),
+    decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+  );
+}
+
+/// Match day marker: a trophy, so it differs from training dots by shape
+/// as well as colour.
+class _MatchMarker extends StatelessWidget {
+  const _MatchMarker({super.key});
+
+  static const color = AppColors.coral;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: context.l10n.s191CalendarLegendMatch,
+    child: const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 1),
+      child: Icon(Icons.emoji_events_rounded, size: 10, color: color),
+    ),
+  );
+}
+
+/// Explains the markers: dot = training, trophy = match.
+class _CalendarLegend extends StatelessWidget {
+  const _CalendarLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final style = Theme.of(context).textTheme.bodySmall;
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      key: const Key('calendar-legend'),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+      child: Wrap(
+        spacing: AppSpacing.md,
+        runSpacing: 4,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _TrainingDot(color: scheme.primary),
+              const SizedBox(width: 6),
+              Text(l.s191CalendarLegendTraining, style: style),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.emoji_events_rounded, size: 14, color: _MatchMarker.color),
+              const SizedBox(width: 4),
+              Text(l.s191CalendarLegendMatch, style: style),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
