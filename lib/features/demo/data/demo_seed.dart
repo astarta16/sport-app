@@ -19,6 +19,7 @@ import 'demo_seed_v14.dart';
 import 'demo_seed_v15.dart';
 import 'demo_seed_v16.dart';
 import 'demo_seed_v17.dart';
+import 'demo_seed_v18.dart';
 
 /// Demo identities. All names, numbers and places are fictional.
 class DemoIds {
@@ -760,5 +761,6 @@ class DemoSeed {
     DemoSeedV15.seed(db);
     DemoSeedV16.seed(db);
     DemoSeedV17.seed(db);
+    DemoSeedV18.seed(db);
   }
 }
