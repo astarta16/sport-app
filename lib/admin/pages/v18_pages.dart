@@ -61,6 +61,35 @@ final orgUsageProvider = FutureProvider.autoDispose.family<OrgUsage, String>((re
 
 String featureLabel(BuildContext context, OrgModule m) => moduleLabel(context, m);
 
+/// v1.9.1: what each feature does, in plain words (no technical ids).
+String featureDescription(BuildContext context, OrgModule m) {
+  final l = context.l10n;
+  return switch (m) {
+    OrgModule.trainings => l.featDesc_trainings,
+    OrgModule.matches => l.featDesc_matches,
+    OrgModule.attendance => l.featDesc_attendance,
+    OrgModule.communication => l.featDesc_communication,
+    OrgModule.studentAccounts => l.featDesc_studentAccounts,
+    OrgModule.brainAcademy => l.featDesc_brainAcademy,
+    OrgModule.trainingPlans => l.featDesc_trainingPlans,
+    OrgModule.payments => l.featDesc_payments,
+    OrgModule.medicalCertificates => l.featDesc_medicalCertificates,
+    OrgModule.media => l.featDesc_media,
+    OrgModule.leaderboards => l.featDesc_leaderboards,
+    OrgModule.roomScheduling => l.featDesc_roomScheduling,
+    OrgModule.notifications => l.featDesc_notifications,
+    OrgModule.parentRsvp => l.featDesc_parentRsvp,
+    OrgModule.messageAcks => l.featDesc_messageAcks,
+    OrgModule.coachChallenges => l.featDesc_coachChallenges,
+    OrgModule.paymentReceipts => l.featDesc_paymentReceipts,
+    OrgModule.paymentVerification => l.featDesc_paymentVerification,
+    OrgModule.paymentReminders => l.featDesc_paymentReminders,
+    OrgModule.facilities => l.featDesc_facilities,
+    OrgModule.reports => l.featDesc_reports,
+    OrgModule.dataExports => l.featDesc_dataExports,
+  };
+}
+
 String categoryLabel(BuildContext context, FeatureCategory c) {
   final l = context.l10n;
   return switch (c) {
@@ -1541,10 +1570,8 @@ class _FeatureRow extends StatelessWidget {
                       const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.lock_rounded, size: 14)),
                   ],
                 ),
-                Text(
-                  '${categoryLabel(context, def.category)} · ${def.id}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text(featureDescription(context, def.module), style: Theme.of(context).textTheme.bodySmall),
+                Text(categoryLabel(context, def.category), style: Theme.of(context).textTheme.labelSmall),
                 if (deps.isNotEmpty) Text('${l.requiresLabel}: $deps', style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
@@ -2007,6 +2034,10 @@ Future<void> showTemplateDialog(BuildContext context, WidgetRef ref, OrgTemplate
   var packageId = existing?.packageId ?? SubscriptionPackage.professionalId;
   final modules = {...?existing?.modules};
   final pkgs = ref.read(packagesProvider).value ?? const <SubscriptionPackage>[];
+  final otherTemplates = (ref.read(templatesProvider).value ?? const <OrgTemplate>[]).where(
+    (t) => t.id != existing?.id,
+  );
+  String? err;
   await showDialog<void>(
     context: context,
     builder: (context) => StatefulBuilder(
@@ -2091,10 +2122,29 @@ Future<void> showTemplateDialog(BuildContext context, WidgetRef ref, OrgTemplate
           ),
         ),
         actions: [
+          if (err != null)
+            Text(
+              err!,
+              key: const Key('tpl-error'),
+              style: const TextStyle(color: AppColors.danger),
+            ),
           TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
+          AsyncFilledButton(
             key: const Key('tpl-save'),
+            label: existing == null ? l.templateNew : l.saveChanges,
             onPressed: () async {
+              final names = [ka.text.trim(), en.text.trim(), ru.text.trim()].where((x) => x.isNotEmpty).toList();
+              final problem = names.isEmpty
+                  ? l.a191ErrNameRequired
+                  : !FeatureCatalog.isValid(modules)
+                  ? l.errFeatureDependencies
+                  : otherTemplates.any(
+                      (o) => o.names.values.any((v) => names.any((n) => n.toLowerCase() == v.toLowerCase())),
+                    )
+                  ? l.a191ErrDuplicateName
+                  : null;
+              set(() => err = problem);
+              if (problem != null) return;
               final t = OrgTemplate(
                 id: existing?.builtIn ?? false ? '' : existing?.id ?? '',
                 names: {
@@ -2114,7 +2164,6 @@ Future<void> showTemplateDialog(BuildContext context, WidgetRef ref, OrgTemplate
               );
               if (ok && context.mounted) Navigator.pop(context);
             },
-            child: Text(l.save),
           ),
         ],
       ),
@@ -2145,7 +2194,7 @@ class FeatureCatalogPage extends ConsumerWidget {
             (d) => Text(featureLabel(context, d.module), key: Key('catalog-${d.id}')),
             flex: 3,
           ),
-          AdminColumn('ID', (d) => SelectableText(d.id), flex: 2),
+          AdminColumn(l.a191FeatureWhat, (d) => Text(featureDescription(context, d.module)), flex: 4),
           AdminColumn(l.featCategory, (d) => Text(categoryLabel(context, d.category)), flex: 2),
           AdminColumn(
             l.requiresLabel,
@@ -2234,6 +2283,10 @@ Future<void> showPackageDialog(BuildContext context, WidgetRef ref, Subscription
   final duration = TextEditingController(text: '${existing?.durationDays ?? 365}');
   final modules = {...?existing?.modules};
   var custom = existing?.custom ?? false;
+  final otherPackages = (ref.read(packagesProvider).value ?? const <SubscriptionPackage>[]).where(
+    (p) => p.id != existing?.id,
+  );
+  String? err;
   await showDialog<void>(
     context: context,
     builder: (context) => StatefulBuilder(
@@ -2313,10 +2366,33 @@ Future<void> showPackageDialog(BuildContext context, WidgetRef ref, Subscription
           ),
         ),
         actions: [
+          if (err != null)
+            Text(
+              err!,
+              key: const Key('pkg-error'),
+              style: const TextStyle(color: AppColors.danger),
+            ),
           TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
+          AsyncFilledButton(
             key: const Key('pkg-save'),
+            label: existing == null ? l.packageNew : l.saveChanges,
             onPressed: () async {
+              // v1.9.1: numbers are validated instead of silently replaced.
+              final bad = ctl.entries.where(
+                (e) => int.tryParse(e.value.text.trim()) == null || int.parse(e.value.text.trim()) < 0,
+              );
+              final names = [en.text.trim(), ka.text.trim(), ru.text.trim()].where((x) => x.isNotEmpty).toList();
+              final problem = names.isEmpty
+                  ? l.a191ErrNameRequired
+                  : bad.isNotEmpty || double.tryParse(price.text.trim()) == null
+                  ? l.a191ErrNumbers
+                  : otherPackages.any(
+                      (o) => o.names.values.any((v) => names.any((x) => x.toLowerCase() == v.toLowerCase())),
+                    )
+                  ? l.a191ErrDuplicateName
+                  : null;
+              set(() => err = problem);
+              if (problem != null) return;
               int n(String k, int d) => int.tryParse(ctl[k]!.text) ?? d;
               final p = SubscriptionPackage(
                 id: existing?.id ?? '',
@@ -2347,7 +2423,6 @@ Future<void> showPackageDialog(BuildContext context, WidgetRef ref, Subscription
               );
               if (ok && context.mounted) Navigator.pop(context);
             },
-            child: Text(l.save),
           ),
         ],
       ),

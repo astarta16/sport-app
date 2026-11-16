@@ -6434,4 +6434,108 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get a191SetupOpen => 'Открыть';
+
+  @override
+  String get a191ErrNameRequired => 'Введите название (не менее 2 символов).';
+
+  @override
+  String get a191ErrSportId =>
+      'Введите короткий идентификатор латиницей, напр. volleyball.';
+
+  @override
+  String get a191ErrNumbers => 'Лимиты и цена должны быть числами.';
+
+  @override
+  String get a191CreateProgram => 'Создать программу';
+
+  @override
+  String get a191ProgramCreated => 'Программа создана';
+
+  @override
+  String get a191CreateSport => 'Добавить вид спорта';
+
+  @override
+  String get featDesc_trainings =>
+      'Тренировки: расписание, изменения и отмены для групп.';
+
+  @override
+  String get featDesc_matches => 'Матчи и соревнования с результатами.';
+
+  @override
+  String get featDesc_attendance =>
+      'Тренер отмечает присутствие, отсутствие и уважительные причины.';
+
+  @override
+  String get featDesc_communication => 'Групповой чат тренеров и семей.';
+
+  @override
+  String get featDesc_studentAccounts =>
+      'У детей свой ограниченный вход ученика.';
+
+  @override
+  String get featDesc_brainAcademy =>
+      'Brain Academy — игры на мышление для детей.';
+
+  @override
+  String get featDesc_trainingPlans =>
+      'Недельные планы и домашние задания от тренеров.';
+
+  @override
+  String get featDesc_payments =>
+      'Оплата занятий родителями школе (не подписка платформы).';
+
+  @override
+  String get featDesc_medicalCertificates =>
+      'Родители загружают медсправки; тренер видит только срок действия.';
+
+  @override
+  String get featDesc_media =>
+      'Тренер делится фото и видео с семьями, давшими согласие.';
+
+  @override
+  String get featDesc_leaderboards =>
+      'Добровольный рейтинг с никами, только с согласия родителя.';
+
+  @override
+  String get featDesc_roomScheduling => 'Бронирование залов без накладок.';
+
+  @override
+  String get featDesc_notifications => 'Уведомления на телефон и в приложении.';
+
+  @override
+  String get featDesc_parentRsvp => 'Родители отвечают, придёт ли ребёнок.';
+
+  @override
+  String get featDesc_messageAcks =>
+      'Тренер может попросить подтвердить прочтение.';
+
+  @override
+  String get featDesc_coachChallenges => 'Тренер даёт задания Brain Academy.';
+
+  @override
+  String get featDesc_paymentReceipts =>
+      'Родители загружают банковскую квитанцию.';
+
+  @override
+  String get featDesc_paymentVerification =>
+      'Сотрудники проверяют квитанции и подтверждают оплату.';
+
+  @override
+  String get featDesc_paymentReminders =>
+      'Автонапоминания перед сроком оплаты (SMS — только если включено).';
+
+  @override
+  String get featDesc_facilities =>
+      'Помещения и залы организации с вместимостью и часами.';
+
+  @override
+  String get featDesc_reports =>
+      'Отчёты о посещаемости и активности для администраторов.';
+
+  @override
+  String get featDesc_dataExports =>
+      'Тренеры и администраторы выгружают списки и посещаемость.';
+
+  @override
+  String get a191FeatureWhat => 'Что делает';
 }

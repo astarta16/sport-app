@@ -6355,4 +6355,110 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get a191SetupOpen => 'გახსნა';
+
+  @override
+  String get a191ErrNameRequired => 'შეიყვანეთ სახელი (მინიმუმ 2 სიმბოლო).';
+
+  @override
+  String get a191ErrSportId =>
+      'შეიყვანეთ მოკლე იდენტიფიკატორი ლათინური ასოებით, მაგ. volleyball.';
+
+  @override
+  String get a191ErrNumbers => 'ლიმიტები და ფასი უნდა იყოს რიცხვები.';
+
+  @override
+  String get a191CreateProgram => 'პროგრამის შექმნა';
+
+  @override
+  String get a191ProgramCreated => 'პროგრამა შეიქმნა';
+
+  @override
+  String get a191CreateSport => 'სპორტის დამატება';
+
+  @override
+  String get featDesc_trainings =>
+      'ვარჯიშები: ჯგუფების განრიგი, ცვლილებები და გაუქმება.';
+
+  @override
+  String get featDesc_matches => 'მატჩები და შეჯიბრებები შედეგებით.';
+
+  @override
+  String get featDesc_attendance =>
+      'მწვრთნელი აღნიშნავს, ვინ იყო, ვინ არა და ვინ — საპატიოდ.';
+
+  @override
+  String get featDesc_communication =>
+      'ჯგუფური მიმოწერა მწვრთნელებსა და ოჯახებს შორის.';
+
+  @override
+  String get featDesc_studentAccounts =>
+      'ბავშვებს აქვთ საკუთარი შეზღუდული მოსწავლის შესვლა.';
+
+  @override
+  String get featDesc_brainAcademy =>
+      'Brain Academy — სააზროვნო თამაშები ბავშვებისთვის.';
+
+  @override
+  String get featDesc_trainingPlans =>
+      'მწვრთნელის ყოველკვირეული გეგმები და საშინაო დავალებები.';
+
+  @override
+  String get featDesc_payments =>
+      'სწავლის საფასური, რომელსაც მშობლები სკოლას უხდიან (არა პლატფორმის გამოწერა).';
+
+  @override
+  String get featDesc_medicalCertificates =>
+      'მშობლები ტვირთავენ სამედიცინო ცნობებს; მწვრთნელი ხედავს მხოლოდ ვადას.';
+
+  @override
+  String get featDesc_media =>
+      'მწვრთნელი უზიარებს ვარჯიშის ფოტო-ვიდეოს თანხმობის მქონე ოჯახებს.';
+
+  @override
+  String get featDesc_leaderboards =>
+      'ნებაყოფლობითი რეიტინგი ფსევდონიმებით, მხოლოდ მშობლის თანხმობით.';
+
+  @override
+  String get featDesc_roomScheduling =>
+      'დარბაზებისა და ოთახების დაჯავშნა გადაფარვის გარეშე.';
+
+  @override
+  String get featDesc_notifications => 'შეტყობინებები ტელეფონზე და აპში.';
+
+  @override
+  String get featDesc_parentRsvp => 'მშობელი პასუხობს, მოვა თუ არა ბავშვი.';
+
+  @override
+  String get featDesc_messageAcks =>
+      'მწვრთნელს შეუძლია სთხოვოს ოჯახებს წაკითხვის დადასტურება.';
+
+  @override
+  String get featDesc_coachChallenges =>
+      'მწვრთნელი აძლევს Brain Academy-ის გამოწვევებს.';
+
+  @override
+  String get featDesc_paymentReceipts => 'მშობელი ტვირთავს გადახდის ქვითარს.';
+
+  @override
+  String get featDesc_paymentVerification =>
+      'თანამშრომლები ამოწმებენ ქვითრებს და ადასტურებენ გადახდას.';
+
+  @override
+  String get featDesc_paymentReminders =>
+      'ავტომატური შეხსენება გადახდის ვადამდე (SMS — მხოლოდ ჩართვისას).';
+
+  @override
+  String get featDesc_facilities =>
+      'ორგანიზაციის ოთახები და დარბაზები ტევადობითა და საათებით.';
+
+  @override
+  String get featDesc_reports =>
+      'დასწრებისა და აქტივობის ანგარიშები ადმინისტრატორებისთვის.';
+
+  @override
+  String get featDesc_dataExports =>
+      'მწვრთნელები და ადმინისტრატორები ჩამოტვირთავენ სიებსა და დასწრებას.';
+
+  @override
+  String get a191FeatureWhat => 'რას აკეთებს';
 }

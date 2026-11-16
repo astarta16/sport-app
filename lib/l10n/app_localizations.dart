@@ -11469,6 +11469,180 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'გახსნა'**
   String get a191SetupOpen;
+
+  /// No description provided for @a191ErrNameRequired.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიყვანეთ სახელი (მინიმუმ 2 სიმბოლო).'**
+  String get a191ErrNameRequired;
+
+  /// No description provided for @a191ErrSportId.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიყვანეთ მოკლე იდენტიფიკატორი ლათინური ასოებით, მაგ. volleyball.'**
+  String get a191ErrSportId;
+
+  /// No description provided for @a191ErrNumbers.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიმიტები და ფასი უნდა იყოს რიცხვები.'**
+  String get a191ErrNumbers;
+
+  /// No description provided for @a191CreateProgram.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრამის შექმნა'**
+  String get a191CreateProgram;
+
+  /// No description provided for @a191ProgramCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'პროგრამა შეიქმნა'**
+  String get a191ProgramCreated;
+
+  /// No description provided for @a191CreateSport.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტის დამატება'**
+  String get a191CreateSport;
+
+  /// No description provided for @featDesc_trainings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშები: ჯგუფების განრიგი, ცვლილებები და გაუქმება.'**
+  String get featDesc_trainings;
+
+  /// No description provided for @featDesc_matches.
+  ///
+  /// In ka, this message translates to:
+  /// **'მატჩები და შეჯიბრებები შედეგებით.'**
+  String get featDesc_matches;
+
+  /// No description provided for @featDesc_attendance.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი აღნიშნავს, ვინ იყო, ვინ არა და ვინ — საპატიოდ.'**
+  String get featDesc_attendance;
+
+  /// No description provided for @featDesc_communication.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯგუფური მიმოწერა მწვრთნელებსა და ოჯახებს შორის.'**
+  String get featDesc_communication;
+
+  /// No description provided for @featDesc_studentAccounts.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვებს აქვთ საკუთარი შეზღუდული მოსწავლის შესვლა.'**
+  String get featDesc_studentAccounts;
+
+  /// No description provided for @featDesc_brainAcademy.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy — სააზროვნო თამაშები ბავშვებისთვის.'**
+  String get featDesc_brainAcademy;
+
+  /// No description provided for @featDesc_trainingPlans.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელის ყოველკვირეული გეგმები და საშინაო დავალებები.'**
+  String get featDesc_trainingPlans;
+
+  /// No description provided for @featDesc_payments.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწავლის საფასური, რომელსაც მშობლები სკოლას უხდიან (არა პლატფორმის გამოწერა).'**
+  String get featDesc_payments;
+
+  /// No description provided for @featDesc_medicalCertificates.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლები ტვირთავენ სამედიცინო ცნობებს; მწვრთნელი ხედავს მხოლოდ ვადას.'**
+  String get featDesc_medicalCertificates;
+
+  /// No description provided for @featDesc_media.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი უზიარებს ვარჯიშის ფოტო-ვიდეოს თანხმობის მქონე ოჯახებს.'**
+  String get featDesc_media;
+
+  /// No description provided for @featDesc_leaderboards.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნებაყოფლობითი რეიტინგი ფსევდონიმებით, მხოლოდ მშობლის თანხმობით.'**
+  String get featDesc_leaderboards;
+
+  /// No description provided for @featDesc_roomScheduling.
+  ///
+  /// In ka, this message translates to:
+  /// **'დარბაზებისა და ოთახების დაჯავშნა გადაფარვის გარეშე.'**
+  String get featDesc_roomScheduling;
+
+  /// No description provided for @featDesc_notifications.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინებები ტელეფონზე და აპში.'**
+  String get featDesc_notifications;
+
+  /// No description provided for @featDesc_parentRsvp.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობელი პასუხობს, მოვა თუ არა ბავშვი.'**
+  String get featDesc_parentRsvp;
+
+  /// No description provided for @featDesc_messageAcks.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელს შეუძლია სთხოვოს ოჯახებს წაკითხვის დადასტურება.'**
+  String get featDesc_messageAcks;
+
+  /// No description provided for @featDesc_coachChallenges.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი აძლევს Brain Academy-ის გამოწვევებს.'**
+  String get featDesc_coachChallenges;
+
+  /// No description provided for @featDesc_paymentReceipts.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობელი ტვირთავს გადახდის ქვითარს.'**
+  String get featDesc_paymentReceipts;
+
+  /// No description provided for @featDesc_paymentVerification.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანამშრომლები ამოწმებენ ქვითრებს და ადასტურებენ გადახდას.'**
+  String get featDesc_paymentVerification;
+
+  /// No description provided for @featDesc_paymentReminders.
+  ///
+  /// In ka, this message translates to:
+  /// **'ავტომატური შეხსენება გადახდის ვადამდე (SMS — მხოლოდ ჩართვისას).'**
+  String get featDesc_paymentReminders;
+
+  /// No description provided for @featDesc_facilities.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის ოთახები და დარბაზები ტევადობითა და საათებით.'**
+  String get featDesc_facilities;
+
+  /// No description provided for @featDesc_reports.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასწრებისა და აქტივობის ანგარიშები ადმინისტრატორებისთვის.'**
+  String get featDesc_reports;
+
+  /// No description provided for @featDesc_dataExports.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელები და ადმინისტრატორები ჩამოტვირთავენ სიებსა და დასწრებას.'**
+  String get featDesc_dataExports;
+
+  /// No description provided for @a191FeatureWhat.
+  ///
+  /// In ka, this message translates to:
+  /// **'რას აკეთებს'**
+  String get a191FeatureWhat;
 }
 
 class _AppLocalizationsDelegate

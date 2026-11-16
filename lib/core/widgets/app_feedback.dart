@@ -164,3 +164,41 @@ class AppFormSection extends StatelessWidget {
     ),
   );
 }
+
+/// Primary action that runs [onPressed] once at a time: disabled with a
+/// spinner while it runs, so a double click can never submit twice.
+/// Returns to normal when the action finishes (success or failure).
+class AsyncFilledButton extends StatefulWidget {
+  const AsyncFilledButton({super.key, required this.label, required this.onPressed, this.icon});
+
+  final String label;
+  final Future<void> Function()? onPressed;
+  final IconData? icon;
+
+  @override
+  State<AsyncFilledButton> createState() => _AsyncFilledButtonState();
+}
+
+class _AsyncFilledButtonState extends State<AsyncFilledButton> {
+  bool _busy = false;
+
+  Future<void> _run() async {
+    setState(() => _busy = true);
+    try {
+      await widget.onPressed!();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final child = _busy
+        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+        : Text(widget.label);
+    final onPressed = _busy || widget.onPressed == null ? null : _run;
+    return widget.icon == null
+        ? FilledButton(onPressed: onPressed, child: child)
+        : FilledButton.icon(onPressed: onPressed, icon: Icon(widget.icon), label: child);
+  }
+}

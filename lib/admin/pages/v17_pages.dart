@@ -179,230 +179,8 @@ Color orgStatusColor(OrgStatus s) => switch (s) {
 
 // ───────────────────────────────────────────────────── platform: tenants
 
-/// Platform Super Admin: every organization, its plan, status, modules,
-/// limits, administrators and operational health.
-class OrganizationsPage extends ConsumerWidget {
-  const OrganizationsPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final configs = ref.watch(orgConfigsProvider);
-    final clubs = ref.watch(clubsByIdProvider);
-    return AdminSection(
-      title: l.adminNavOrganizations,
-      subtitle: l.orgPlatformSubtitle,
-      actions: [
-        FilledButton.icon(
-          key: const Key('org-new'),
-          onPressed: () => showCreateOrgDialog(context, ref),
-          icon: const Icon(Icons.add_business_rounded),
-          label: Text(l.orgNew),
-        ),
-      ],
-      child: AsyncView<List<OrgConfig>>(
-        value: configs,
-        data: (list) => AdminTable<OrgConfig>(
-          rows: list,
-          searchText: (c) => orgName(context, ref, c.orgId),
-          filters: [
-            (l.adminFilterAll, (_) => true),
-            (l.orgStatusActive, (c) => c.status == OrgStatus.active),
-            (l.orgStatusSuspended, (c) => c.status != OrgStatus.active),
-          ],
-          columns: [
-            AdminColumn(
-              l.adminColName,
-              (c) => Text(
-                orgName(context, ref, c.orgId),
-                key: Key('org-row-${c.orgId}'),
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              flex: 3,
-              sortKey: (c) => orgName(context, ref, c.orgId),
-            ),
-            AdminColumn(l.orgPlan, (c) => Text(planLabel(context, c.plan))),
-            AdminColumn(
-              l.adminColStatus,
-              (c) => Align(
-                alignment: Alignment.centerLeft,
-                child: StatusPill(
-                  label: orgStatusLabel(context, c.status),
-                  color: orgStatusColor(c.status),
-                  dense: true,
-                ),
-              ),
-            ),
-            AdminColumn(
-              l.orgModulesOn,
-              (c) => Text('${OrgModule.values.where(c.isEnabled).length}/${OrgModule.values.length}'),
-            ),
-            AdminColumn(l.orgAdmins, (c) => Text('${clubs[c.orgId]?.adminIds.length ?? 0}')),
-            AdminColumn(
-              '',
-              (c) => Wrap(
-                spacing: 4,
-                children: [
-                  IconButton(
-                    key: Key('org-manage-${c.orgId}'),
-                    tooltip: l.orgManage,
-                    icon: const Icon(Icons.tune_rounded),
-                    onPressed: () => showOrgPlatformDialog(context, ref, c),
-                  ),
-                  IconButton(
-                    key: Key('org-admins-${c.orgId}'),
-                    tooltip: l.orgAssignAdmin,
-                    icon: const Icon(Icons.admin_panel_settings_rounded),
-                    onPressed: () => showOrgAdminDialog(context, ref, c.orgId),
-                  ),
-                  IconButton(
-                    key: Key('org-health-${c.orgId}'),
-                    tooltip: l.orgHealth,
-                    icon: const Icon(Icons.monitor_heart_rounded),
-                    onPressed: () => showOrgHealthDialog(context, ref, c),
-                  ),
-                ],
-              ),
-              flex: 2,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-Future<void> showCreateOrgDialog(BuildContext context, WidgetRef ref) async {
-  final l = context.l10n;
-  final ka = TextEditingController();
-  final en = TextEditingController();
-  final ru = TextEditingController();
-  final address = TextEditingController();
-  final lat = TextEditingController(text: '42.1089');
-  final lng = TextEditingController(text: '44.9690');
-  var plan = OrgPlan.standard;
-  var color = 0xFF0F766E;
-  final sports = <String>{};
-  final allSports = ref.read(sportsProvider).value ?? const [];
-  await showDialog<void>(
-    context: context,
-    builder: (context) => StatefulBuilder(
-      builder: (context, set) => AlertDialog(
-        title: Text(l.orgNew),
-        content: SizedBox(
-          width: 520,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  key: const Key('org-name-ka'),
-                  controller: ka,
-                  decoration: InputDecoration(labelText: l.orgNameKa),
-                ),
-                TextField(
-                  key: const Key('org-name-en'),
-                  controller: en,
-                  decoration: InputDecoration(labelText: l.orgNameEn),
-                ),
-                TextField(
-                  controller: ru,
-                  decoration: InputDecoration(labelText: l.orgNameRu),
-                ),
-                TextField(
-                  key: const Key('org-address'),
-                  controller: address,
-                  decoration: InputDecoration(labelText: l.adminColAddress),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: lat,
-                        decoration: const InputDecoration(labelText: 'Lat'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: lng,
-                        decoration: const InputDecoration(labelText: 'Lng'),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                DropdownButtonFormField<OrgPlan>(
-                  isExpanded: true,
-                  key: const Key('org-plan'),
-                  initialValue: plan,
-                  decoration: InputDecoration(labelText: l.orgPlan),
-                  items: [
-                    for (final p in OrgPlan.values) DropdownMenuItem(value: p, child: Text(planLabel(context, p))),
-                  ],
-                  onChanged: (p) => set(() => plan = p ?? plan),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _ColorRow(value: color, onChanged: (c) => set(() => color = c)),
-                const SizedBox(height: AppSpacing.sm),
-                Consumer(
-                  builder: (context, ref, _) => Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: [
-                      for (final s in ref.watch(sportsProvider).value ?? allSports)
-                        FilterChip(
-                          key: Key('org-sport-${s.id}'),
-                          label: Text(s.label(context)),
-                          selected: sports.contains(s.id),
-                          onSelected: (v) => set(() => v ? sports.add(s.id) : sports.remove(s.id)),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
-            key: const Key('org-create'),
-            onPressed: () async {
-              final ok = await runGuarded(
-                context,
-                () => ref
-                    .read(organizationsRepositoryProvider)
-                    .createOrganization(
-                      club: ClubDraft(
-                        name: ka.text.trim(),
-                        address: address.text.trim(),
-                        lat: double.tryParse(lat.text) ?? 42.1089,
-                        lng: double.tryParse(lng.text) ?? 44.9690,
-                        sportIds: sports.toList(),
-                      ),
-                      plan: plan,
-                      branding: OrgBranding(
-                        names: {
-                          'ka': ka.text.trim(),
-                          if (en.text.trim().isNotEmpty) 'en': en.text.trim(),
-                          if (ru.text.trim().isNotEmpty) 'ru': ru.text.trim(),
-                        },
-                        primaryColor: color,
-                        address: address.text.trim(),
-                      ),
-                    ),
-                success: l.orgCreated,
-              );
-              if (ok && context.mounted) Navigator.pop(context);
-            },
-            child: Text(l.save),
-          ),
-        ],
-      ),
-    ),
-  );
-}
+// v1.9.1: the v1.7 OrganizationsPage / showCreateOrgDialog were removed —
+// organizations are created only through the provisioning wizard.
 
 class _ColorRow extends StatelessWidget {
   const _ColorRow({required this.value, required this.onChanged});
@@ -1113,6 +891,10 @@ Future<void> showProgramDialog(BuildContext context, WidgetRef ref, String orgId
       .where((c) => c.clubIds.contains(orgId))
       .toList();
   final rooms = ref.read(roomsProvider(orgId)).value ?? const <Room>[];
+  final others = (ref.read(programsProvider(orgId)).value ?? const <SportsProgram>[]).where(
+    (p) => p.id != existing?.id,
+  );
+  String? err;
   final name = TextEditingController(text: existing?.name ?? '');
   final desc = TextEditingController(text: existing?.description ?? '');
   final note = TextEditingController(text: existing?.scheduleNote ?? '');
@@ -1230,10 +1012,28 @@ Future<void> showProgramDialog(BuildContext context, WidgetRef ref, String orgId
           ),
         ),
         actions: [
+          if (err != null)
+            Text(
+              err!,
+              key: const Key('program-error'),
+              style: const TextStyle(color: AppColors.danger),
+            ),
           TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
+          AsyncFilledButton(
             key: const Key('program-save'),
+            label: existing == null ? l.a191CreateProgram : l.saveChanges,
             onPressed: () async {
+              // v1.9.1: inline validation and duplicate detection; one submit at a time.
+              final n = name.text.trim();
+              final problem = n.length < 2
+                  ? l.a191ErrNameRequired
+                  : sport.isEmpty
+                  ? l.a191ChooseSport
+                  : others.any((o) => o.name.trim().toLowerCase() == n.toLowerCase())
+                  ? l.a191ErrDuplicateName
+                  : null;
+              set(() => err = problem);
+              if (problem != null) return;
               final p = SportsProgram(
                 id: existing?.id ?? '',
                 orgId: orgId,
@@ -1252,11 +1052,10 @@ Future<void> showProgramDialog(BuildContext context, WidgetRef ref, String orgId
               final ok = await runGuarded(
                 context,
                 () => ref.read(organizationsRepositoryProvider).upsertProgram(p),
-                success: l.orgSaved,
+                success: existing == null ? l.a191ProgramCreated : l.orgSaved,
               );
               if (ok && context.mounted) Navigator.pop(context);
             },
-            child: Text(l.save),
           ),
         ],
       ),

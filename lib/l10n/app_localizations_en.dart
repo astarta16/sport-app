@@ -6402,4 +6402,112 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a191SetupOpen => 'Open';
+
+  @override
+  String get a191ErrNameRequired => 'Enter a name (at least 2 characters).';
+
+  @override
+  String get a191ErrSportId =>
+      'Enter a short identifier in Latin letters, e.g. volleyball.';
+
+  @override
+  String get a191ErrNumbers => 'Limits and price must be numbers.';
+
+  @override
+  String get a191CreateProgram => 'Create program';
+
+  @override
+  String get a191ProgramCreated => 'Program created';
+
+  @override
+  String get a191CreateSport => 'Add sport';
+
+  @override
+  String get featDesc_trainings =>
+      'Training sessions: schedule, changes and cancellations for groups.';
+
+  @override
+  String get featDesc_matches => 'Matches and competitions with results.';
+
+  @override
+  String get featDesc_attendance =>
+      'Coaches record who was present, absent or excused.';
+
+  @override
+  String get featDesc_communication =>
+      'Group chat between coaches and families.';
+
+  @override
+  String get featDesc_studentAccounts =>
+      'Children get their own limited student login.';
+
+  @override
+  String get featDesc_brainAcademy =>
+      'Brain Academy thinking games for children.';
+
+  @override
+  String get featDesc_trainingPlans =>
+      'Weekly plans and homework from coaches.';
+
+  @override
+  String get featDesc_payments =>
+      'Tuition fees parents pay to the school (not the platform subscription).';
+
+  @override
+  String get featDesc_medicalCertificates =>
+      'Parents upload health certificates; coaches see validity only.';
+
+  @override
+  String get featDesc_media =>
+      'Coaches share training photos and videos with consenting families.';
+
+  @override
+  String get featDesc_leaderboards =>
+      'Opt-in rankings with nicknames, only with guardian consent.';
+
+  @override
+  String get featDesc_roomScheduling =>
+      'Book halls and rooms without double bookings.';
+
+  @override
+  String get featDesc_notifications => 'Push and in-app notifications.';
+
+  @override
+  String get featDesc_parentRsvp =>
+      'Parents answer whether their child will attend.';
+
+  @override
+  String get featDesc_messageAcks =>
+      'Coaches can ask families to confirm they read a message.';
+
+  @override
+  String get featDesc_coachChallenges =>
+      'Coaches assign Brain Academy challenges.';
+
+  @override
+  String get featDesc_paymentReceipts =>
+      'Parents upload a bank receipt for a payment.';
+
+  @override
+  String get featDesc_paymentVerification =>
+      'Staff check uploaded receipts and confirm payments.';
+
+  @override
+  String get featDesc_paymentReminders =>
+      'Automatic reminders before payments are due (SMS only if enabled).';
+
+  @override
+  String get featDesc_facilities =>
+      'Rooms and halls of the organization with capacity and hours.';
+
+  @override
+  String get featDesc_reports =>
+      'Attendance and activity reports for administrators.';
+
+  @override
+  String get featDesc_dataExports =>
+      'Coaches and admins export rosters and attendance.';
+
+  @override
+  String get a191FeatureWhat => 'What it does';
 }

@@ -12,6 +12,7 @@ import '../../features/clubs/presentation/clubs_providers.dart';
 import '../../features/sports/domain/sport.dart';
 import '../widgets.dart';
 import 'admin_providers.dart';
+import 'v18_pages.dart';
 
 /// Clubs: platform admins create/archive; club admins edit their own clubs.
 class ClubsPage extends ConsumerWidget {
@@ -28,7 +29,9 @@ class ClubsPage extends ConsumerWidget {
         if (me?.isPlatformAdmin ?? false)
           FilledButton.icon(
             key: const Key('admin-new-club'),
-            onPressed: () => showClubDialog(context, ref),
+            // v1.9.1: one way to create an organization — the provisioning
+            // wizard (configuration, package and administrator included).
+            onPressed: () => showProvisionDialog(context, ref),
             icon: const Icon(Icons.add_rounded),
             label: Text(l.adminNewClub),
           ),

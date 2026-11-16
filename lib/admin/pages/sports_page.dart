@@ -5,6 +5,7 @@ import '../../app/di.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../core/widgets/app_feedback.dart';
 import '../../core/widgets/visuals.dart';
 import '../../features/authentication/presentation/session_providers.dart';
 import '../../features/sports/domain/sport.dart';
@@ -105,6 +106,8 @@ Future<void> showSportDialog(BuildContext context, WidgetRef ref, {Sport? sport}
   var category = sport?.category ?? SportCategory.team;
   var cert = sport?.requiresMedicalCert ?? false;
   var active = sport?.active ?? true;
+  final existingSports = ref.read(sportsProvider).value ?? const <Sport>[];
+  String? err;
   await showDialog<void>(
     context: context,
     builder: (context) => StatefulBuilder(
@@ -167,12 +170,34 @@ Future<void> showSportDialog(BuildContext context, WidgetRef ref, {Sport? sport}
           ),
         ),
         actions: [
+          if (err != null)
+            Text(
+              err!,
+              key: const Key('sport-error'),
+              style: const TextStyle(color: AppColors.danger),
+            ),
           TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
+          AsyncFilledButton(
             key: const Key('sport-save'),
+            label: sport == null ? l.a191CreateSport : l.saveChanges,
             onPressed: () async {
               final sid = (sport?.id ?? id.text.trim().toLowerCase()).replaceAll(RegExp(r'[^a-z0-9_-]'), '');
-              if (sid.isEmpty) return;
+              final n = name.text.trim().toLowerCase();
+              // v1.9.1: never a silent return; one sport per stable id and
+              // no second sport with the same name in any language.
+              final problem = sid.isEmpty
+                  ? l.a191ErrSportId
+                  : n.isEmpty
+                  ? l.a191ErrNameRequired
+                  : existingSports.any(
+                      (x) =>
+                          x.id != sport?.id &&
+                          (x.id == sid || x.name.toLowerCase() == n || x.names.values.any((v) => v.toLowerCase() == n)),
+                    )
+                  ? l.a191ErrDuplicateName
+                  : null;
+              setState(() => err = problem);
+              if (problem != null) return;
               final s = Sport(
                 id: sid,
                 name: name.text.trim(),
@@ -191,7 +216,6 @@ Future<void> showSportDialog(BuildContext context, WidgetRef ref, {Sport? sport}
               if (ok) ref.invalidate(sportsProvider);
               if (ok && context.mounted) Navigator.pop(context);
             },
-            child: Text(l.save),
           ),
         ],
       ),
