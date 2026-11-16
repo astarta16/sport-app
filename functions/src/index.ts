@@ -35,3 +35,4 @@ export { onAttendanceWritten, onFeedbackWritten } from './triggers/progress';
 export {
   getContactPhone, getGroupContacts, getMediaDownload, onChatMessageDeleted, onMessageAckCreated, onMessageReadCreated,
 } from './triggers/v14';
+export { onChildThreadMessageCreated, recordMatchResult } from './triggers/v15';

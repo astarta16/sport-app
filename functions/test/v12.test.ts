@@ -37,7 +37,7 @@ describe('notifications: dedupe id and categories', () => {
     expect(categoryFor('newPhotos')).toBe('announcements');
     expect(categoryFor('newMedia')).toBe('announcements');
     expect(() => categoryFor('bogus')).toThrow();
-    expect(Object.values(CATEGORY_TYPES).flat().length).toBe(23); // 18 (v1.2) + 4 v1.3 types + ackRequested (v1.4)
+    expect(Object.values(CATEGORY_TYPES).flat().length).toBe(25); // 18 (v1.2) + 4 v1.3 + ackRequested (v1.4) + matchResult, childMessage (v1.5)
   });
   it('push prefs: type key, default on, invitations always', () => {
     expect(pushAllowed(undefined, 'newMatch')).toBe(true);

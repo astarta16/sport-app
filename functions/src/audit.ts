@@ -11,7 +11,8 @@ export type AuditAction =
   | 'certificate.view' | 'certificate.download' | 'receipt.view'
   | 'payment.proofSubmitted' | 'payment.proofResubmitted' | 'payment.proofApproved' | 'payment.proofRejected'
   | 'plan.publish' | 'plan.archive' | 'group.paymentManagers'
-  | 'chat.acknowledge' | 'media.download' | 'group.mediaPolicy';
+  | 'chat.acknowledge' | 'media.download' | 'group.mediaPolicy'
+  | 'receipt.download' | 'match.result' | 'match.resultCorrected';
 
 export interface AuditEntry {
   action: AuditAction;

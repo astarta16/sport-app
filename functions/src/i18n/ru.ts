@@ -37,6 +37,8 @@ export const MESSAGES_RU: Catalog = {
     paymentProofApproved: { title: 'Оплата подтверждена', body: '{child}: {amount} ₾ — оплата подтверждена.' },
     paymentProofRejected: { title: 'Оплата не подтверждена', body: '{child}: {amount} ₾. Причина: {reason}' },
     trainingPlanPublished: { title: 'Новый план тренировок', body: '{group}: {title}' },
+    matchResult: { title: 'Результат матча · {group}', body: '{opponent}: {our}:{their} ({date})' },
+    childMessage: { title: '{child} · {sender}', body: '{text}' },
     ackRequested: { title: 'Подтвердите ознакомление · {group}', body: '{text}' },
     attendanceRecorded: { title: 'Посещаемость отмечена', body: '{child}: {status} ({date})' },
     feedbackAdded: { title: 'Отзыв тренера', body: '{child}: новый отзыв — {coach}' },

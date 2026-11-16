@@ -816,4 +816,74 @@ await step('v1.4: media download is authorized live, logged, and refused to outs
   assert.equal((await callable('getMediaDownload', { postId: 'postDl' }, parentTok)).status, 403, 'hidden by moderation');
 });
 
+// ─── v1.5 ─────────────────────────────────────────────────────────────────
+await step('v1.5: coach records a match result → parents notified once; correction audited; others refused', async () => {
+  await db.doc('matches/mResS').set({
+    groupId: E2E.groupId, clubId: 'clubS', venueId: 'v1', startAt: ts(new Date(Date.now() - 3 * 3600000)), durationMin: 90,
+    opponentName: 'Dinamo Smoke', matchType: 'friendly', homeAway: 'home', status: 'scheduled', createdBy: 'coachS', updatedAt: ts(new Date()),
+  });
+  const coachTok = await idToken('coachS');
+  assert.equal((await callable('recordMatchResult', { matchId: 'mResS', ourScore: 3, opponentScore: 1 }, await idToken('parentS'))).status, 403);
+  assert.equal((await callable('recordMatchResult', { matchId: 'mResS', ourScore: -1, opponentScore: 1 }, coachTok)).status, 400);
+  const r = await callable('recordMatchResult', { matchId: 'mResS', ourScore: 3, opponentScore: 1, summary: 'Great teamwork' }, coachTok);
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const m = (await db.doc('matches/mResS').get()).data();
+  assert.equal(m.status, 'played');
+  assert.equal(m.result.outcome, 'win');
+  assert.equal(m.result.version, 1);
+  const n = await waitFor(async () => (await db.doc(`notifications/${sha1('parentS2|match:mResS:result')}`).get()).data(), 'result notification');
+  assert.equal(n.type, 'matchResult');
+  assert.equal(n.category, 'matches');
+  // Correction: new version + history + audit, no second notification.
+  const c = await callable('recordMatchResult', { matchId: 'mResS', ourScore: 2, opponentScore: 2 }, coachTok);
+  assert.equal(c.status, 200, JSON.stringify(c.body));
+  const m2 = (await db.doc('matches/mResS').get()).data();
+  assert.equal(m2.result.outcome, 'draw');
+  assert.equal(m2.result.version, 2);
+  assert.equal((await db.collection('matches/mResS/resultHistory').get()).size, 2);
+  const audit = await db.collection('auditLog').where('action', '==', 'match.resultCorrected').where('targetId', '==', 'mResS').get();
+  assert.equal(audit.size, 1);
+  assert.equal(audit.docs[0].get('details.from'), '3-1');
+  const same = await callable('recordMatchResult', { matchId: 'mResS', ourScore: 2, opponentScore: 2 }, coachTok);
+  assert.equal(same.body.result.changed, false, 'no-op when nothing changed');
+  const all = await db.collection('notifications').where('type', '==', 'matchResult').where('userId', '==', 'parentS').get();
+  assert.equal(all.size, 1, 'parents are notified once per match');
+  await db.doc('matches/mFut').set({
+    groupId: E2E.groupId, clubId: 'clubS', venueId: 'v1', startAt: ts(new Date(Date.now() + 86400000)), durationMin: 90,
+    opponentName: 'Future', matchType: 'friendly', homeAway: 'home', status: 'scheduled', createdBy: 'coachS', updatedAt: ts(new Date()),
+  });
+  assert.equal((await callable('recordMatchResult', { matchId: 'mFut', ourScore: 1, opponentScore: 0 }, coachTok)).status, 400, 'not started');
+});
+
+await step('v1.5: child-context message notifies the coach / the child guardians only', async () => {
+  await db.doc('users/parentOther').set(user('parent', { firstName: 'Other' }));
+  const tid = 'childS_coachS';
+  await db.doc(`childThreads/${tid}`).set({ childId: 'childS', coachId: 'coachS', createdBy: 'parentS', createdAt: ts(new Date()) });
+  await db.doc(`childThreads/${tid}/messages/q1`).set({ senderId: 'parentS', senderName: 'Parent S', senderRole: 'parent', text: 'Is Giorgi ok after the game?', createdAt: ts(new Date()) });
+  const coachN = await waitFor(async () => (await db.doc(`notifications/${sha1(`coachS|thread:${tid}:q1`)}`).get()).data(), 'coach notified');
+  assert.equal(coachN.type, 'childMessage');
+  assert.equal(coachN.route, '/student/childS/coach/coachS');
+  assert.ok((await db.doc(`notifications/${sha1(`parentS2|thread:${tid}:q1`)}`).get()).exists, 'other guardian of the SAME child');
+  assert.ok(!(await db.doc(`notifications/${sha1(`parentS|thread:${tid}:q1`)}`).get()).exists, 'sender not notified');
+  assert.ok(!(await db.doc(`notifications/${sha1(`parentOther|thread:${tid}:q1`)}`).get()).exists);
+  await waitFor(async () => (await db.doc(`childThreads/${tid}`).get()).get('lastMessageAt'), 'lastMessageAt');
+});
+
+await step('v1.5: receipt download is a separate, audited purpose; parent decision link opens the proof screen', async () => {
+  const proof = (await db.collection('paymentProofs').limit(1).get()).docs[0];
+  assert.ok(proof, 'a proof exists from the v1.3 steps');
+  const reviewer = await idToken('clubAdminS', { clubAdmin: ['clubS'] });
+  const d = await callable('getReceiptUrl', { proofId: proof.id, purpose: 'download' }, reviewer);
+  assert.equal(d.status, 200, JSON.stringify(d.body));
+  assert.match(d.body.result.fileName, /^receipt_/);
+  assert.equal(d.body.result.purpose, 'download');
+  assert.equal((await db.collection('auditLog').where('action', '==', 'receipt.download').where('targetId', '==', proof.id).get()).size, 1);
+  assert.equal((await callable('getReceiptUrl', { proofId: proof.id, purpose: 'print' }, reviewer)).status, 400);
+  const decided = await db.collection('notifications').where('type', 'in', ['paymentProofApproved', 'paymentProofRejected']).get();
+  assert.ok(decided.size > 0);
+  for (const doc of decided.docs) assert.match(doc.get('route'), /^\/payments\/[^/]+\/proof$/);
+  const submitted = await db.collection('notifications').where('type', '==', 'paymentProofSubmitted').get();
+  for (const doc of submitted.docs) assert.match(doc.get('route'), /^\/payments\/proofs\/[^/]+$/);
+});
+
 console.log(`${passed} smoke steps passed${process.exitCode ? ' (with failures)' : ''}`);

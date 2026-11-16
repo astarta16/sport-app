@@ -50,6 +50,8 @@ export const PUSH_TEMPLATES_KA = {
   paymentProofApproved: { title: 'გადახდა დადასტურდა', body: '{child}: {amount} ₾ — გადახდა დადასტურებულია.' },
   paymentProofRejected: { title: 'გადახდა ვერ დადასტურდა', body: '{child}: {amount} ₾. მიზეზი: {reason}' },
   trainingPlanPublished: { title: 'ახალი სავარჯიშო გეგმა', body: '{group}: {title}' },
+  matchResult: { title: 'მატჩის შედეგი · {group}', body: '{opponent}: {our}:{their} ({date})' },
+  childMessage: { title: '{child} · {sender}', body: '{text}' },
   ackRequested: { title: 'გთხოვთ, დაადასტუროთ გაცნობა · {group}', body: '{text}' },
   attendanceRecorded: { title: 'დასწრება აღირიცხა', body: '{child}: {status} ({date})' },
   feedbackAdded: { title: 'მწვრთნელის შეფასება', body: '{child}: ახალი შეფასება — {coach}' },

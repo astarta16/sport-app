@@ -4,7 +4,7 @@
 import { logger } from 'firebase-functions';
 import { CallableRequest, HttpsError, onCall } from 'firebase-functions/v2/https';
 import { FieldValue } from 'firebase-admin/firestore';
-import { bucket, db } from '../admin';
+import { bucket, db, isEmulator } from '../admin';
 import { actorRoleOf, writeAudit } from '../audit';
 import { loadUser, loadUsers } from '../convert';
 import { pushText } from '../i18n';
@@ -16,6 +16,7 @@ import {
   planReview, planStartReview, planSubmit, receiptMetadataMatches, validateProofInput,
 } from '../lib/paymentProofs';
 import { UserLite } from '../lib/types';
+import { receiptFileName } from '../lib/paymentProofs';
 import { notify } from '../notify';
 import { consumeRateLimit } from '../rateLimiter';
 import { signedOrEmulatorUrl } from './media';
@@ -257,7 +258,7 @@ export const reviewPaymentProof = onCall(async (request) => {
     const type = out.plan.markPaid ? 'paymentProofApproved' : 'paymentProofRejected';
     await notify([parent], {
       type, ...pushText(type, vars),
-      route: `/payments/${out.paymentId}`,
+      route: `/payments/${out.paymentId}/proof`,
       args: { proofId, paymentId: out.paymentId, ...(out.plan.markPaid ? {} : { reason: out.plan.reason ?? '' }) },
       childId: out.childId || null, groupId: group?.id ?? null,
       dedupeKey: `proof:${proofId}:${out.plan.markPaid ? 'approved' : 'rejected'}`,
@@ -269,19 +270,26 @@ export const reviewPaymentProof = onCall(async (request) => {
 
 /** getReceiptUrl {proofId} → {url, mimeType, expiresAt} (5 min). Owning parent or a reviewer; logged as receipt.view. */
 export const getReceiptUrl = onCall(async (request) => {
+  // v1.5: purpose 'download' returns an attachment URL and is audited separately.
+  const purpose = request.data?.purpose ?? 'view';
+  if (purpose !== 'view' && purpose !== 'download') throw new HttpsError('invalid-argument', "purpose must be 'view' or 'download'");
   const { who, proofId, proofSnap, group } = await loadProofForReviewer(request);
   const proof = proofSnap.data()!;
   if (!canViewReceipt(who, { parentId: String(proof.parentId ?? '') }, group)) throw new HttpsError('permission-denied', 'no access to this receipt');
   const path = String(proof.receiptPath ?? '');
   if (!path.startsWith(`receipts/${proof.parentId}/${proofId}/`)) throw new HttpsError('failed-precondition', 'invalid receipt path');
   await db.collection('paymentVerificationEvents').add(eventDoc({
-    paymentId: String(proof.paymentId ?? ''), proofId, action: 'viewed', actorId: who.uid, actorRole: who.actorRole,
+    paymentId: String(proof.paymentId ?? ''), proofId, action: purpose === 'download' ? 'downloaded' : 'viewed', actorId: who.uid, actorRole: who.actorRole,
     groupId: String(proof.groupId ?? ''), clubId: proof.clubId ?? null, parentId: String(proof.parentId ?? ''),
   }));
   await writeAudit({
-    action: 'receipt.view', actorId: who.uid, actorRole: who.actorRole, targetType: 'paymentProof', targetId: proofId,
+    action: purpose === 'download' ? 'receipt.download' : 'receipt.view', actorId: who.uid, actorRole: who.actorRole, targetType: 'paymentProof', targetId: proofId,
     clubId: proof.clubId ?? null, details: { paymentId: proof.paymentId ?? null },
   });
   const expiresAt = Date.now() + RECEIPT_URL_TTL_MS;
-  return { url: await signedOrEmulatorUrl(path, expiresAt), mimeType: String(proof.receiptMime ?? ''), expiresAt: new Date(expiresAt).toISOString() };
+  const fileName = receiptFileName(proofId, path);
+  const url = purpose === 'download' && !isEmulator
+    ? (await bucket().file(path).getSignedUrl({ version: 'v4', action: 'read', expires: expiresAt, responseDisposition: `attachment; filename="${fileName}"` }))[0]
+    : await signedOrEmulatorUrl(path, expiresAt);
+  return { url, mimeType: String(proof.receiptMime ?? ''), fileName, sizeBytes: Number(proof.receiptSize ?? 0), purpose, expiresAt: new Date(expiresAt).toISOString() };
 });

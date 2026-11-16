@@ -36,6 +36,8 @@ export const MESSAGES_EN: Catalog = {
     paymentProofApproved: { title: 'Payment confirmed', body: '{child}: {amount} GEL — your payment has been confirmed.' },
     paymentProofRejected: { title: 'Payment not confirmed', body: '{child}: {amount} GEL. Reason: {reason}' },
     trainingPlanPublished: { title: 'New training plan', body: '{group}: {title}' },
+    matchResult: { title: 'Match result · {group}', body: '{opponent}: {our}–{their} ({date})' },
+    childMessage: { title: '{child} · {sender}', body: '{text}' },
     ackRequested: { title: 'Please confirm you have read this · {group}', body: '{text}' },
     attendanceRecorded: { title: 'Attendance recorded', body: '{child}: {status} ({date})' },
     feedbackAdded: { title: 'Coach feedback', body: '{child}: new feedback from {coach}' },

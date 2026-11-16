@@ -784,7 +784,7 @@ service cloud.firestore {
                  'groupId', 'clubId', 'venueId', 'startAt', 'durationMin', 'opponentName',
                  'matchType', 'homeAway', 'description', 'status', 'cancelReasonCode',
                  'cancelReason', 'cancelledAt', 'cancelledBy', 'previousStartAt',
-                 'createdBy', 'updatedAt', 'reminder1dSentAt', 'reminder2hSentAt'])
+                 'createdBy', 'updatedAt', 'reminder1dSentAt', 'reminder2hSentAt', 'result'])
           && d.groupId is string
           && d.clubId is string
           && d.venueId is string
@@ -819,15 +819,64 @@ service cloud.firestore {
         && request.resource.data.createdBy == uid()
         && request.resource.data.status == 'scheduled'
         && !('reminder1dSentAt' in request.resource.data)
-        && !('reminder2hSentAt' in request.resource.data);
+        && !('reminder2hSentAt' in request.resource.data)
+        && !('result' in request.resource.data);
 
+      // v1.5: `result` is written only by the recordMatchResult callable
+      // (score validation, trusted time, audit, correction history).
       allow update: if isGroupCoach(resource.data.groupId)
         && validMatch(request.resource.data)
-        && !changed(['groupId', 'clubId', 'createdBy'])
+        && !changed(['groupId', 'clubId', 'createdBy', 'result'])
         && remindersUntouched()
         && validCancelTransition(resource.data, request.resource.data);
 
       allow delete: if isAdmin();
+
+      // v1.5 result corrections (server-written, immutable).
+      match /resultHistory/{version} {
+        allow read: if isAdmin() || isGroupCoach(get(/databases/$(database)/documents/matches/$(matchId)).data.groupId);
+        allow write: if false;
+      }
+    }
+
+    // ------------------------------------------------- v1.5 child conversations
+    // One thread per (child, coach): id = childId + '_' + coachId. Visible
+    // only to the child's CURRENT guardians and to that coach while they
+    // coach a group containing the child (children.coachIds is server-
+    // maintained). Other parents never see it; children have no access.
+    match /childThreads/{threadId} {
+      function threadDoc() {
+        return get(/databases/$(database)/documents/childThreads/$(threadId)).data;
+      }
+      function isThreadMember(childId, coachId) {
+        return isParentOfChild(childId) || (uid() == coachId && isCoachOfChild(childId));
+      }
+
+      allow read: if signedIn() && isThreadMember(resource.data.childId, resource.data.coachId);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['childId', 'coachId', 'createdBy', 'createdAt'])
+        && request.resource.data.childId is string && request.resource.data.coachId is string
+        && threadId == request.resource.data.childId + '_' + request.resource.data.coachId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.createdAt == request.time
+        // The coach must currently coach the child (a parent cannot pick any coach).
+        && request.resource.data.coachId in childDoc(request.resource.data.childId).get('coachIds', [])
+        && isThreadMember(request.resource.data.childId, request.resource.data.coachId);
+      allow update, delete: if false; // lastMessageAt is server-maintained
+
+      match /messages/{messageId} {
+        allow read: if signedIn() && isThreadMember(threadDoc().childId, threadDoc().coachId);
+        allow create: if signedIn()
+          && isThreadMember(threadDoc().childId, threadDoc().coachId)
+          && request.resource.data.keys().hasOnly(['senderId', 'senderName', 'senderRole', 'text', 'createdAt'])
+          && request.resource.data.senderId == uid()
+          && request.resource.data.senderRole == me().role
+          && request.resource.data.senderName is string && request.resource.data.senderName.size() <= 200
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 2000
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
     }
 
     // ---------------------------------------------------------- training series

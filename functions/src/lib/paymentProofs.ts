@@ -15,7 +15,7 @@ export const MAX_REJECTION_REASON = 300;
 export type ProofStatus = 'submitted' | 'under_review' | 'approved' | 'rejected' | 'superseded';
 export type VerificationState = 'none' | 'proof_submitted' | 'under_review' | 'rejected';
 export type ProofDecision = 'approve' | 'reject';
-export type VerificationAction = 'submitted' | 'resubmitted' | 'review_started' | 'approved' | 'rejected' | 'viewed';
+export type VerificationAction = 'submitted' | 'resubmitted' | 'review_started' | 'approved' | 'rejected' | 'viewed' | 'downloaded';
 
 export const OPEN_PROOF_STATUSES: readonly ProofStatus[] = ['submitted', 'under_review'];
 
@@ -237,4 +237,10 @@ export function normalizeManagerIds(v: unknown): string[] | null {
   if (!Array.isArray(v) || v.length > 20) return null;
   if (!v.every((x) => typeof x === 'string' && x.length > 0 && x.length <= 128 && !x.includes('/'))) return null;
   return [...new Set(v as string[])].sort();
+}
+
+/** receipt_{proofId}.{ext} — ASCII, safe for Content-Disposition. */
+export function receiptFileName(proofId: string, path: string): string {
+  const ext = /\.([A-Za-z0-9]{2,5})$/.exec(path)?.[1]?.toLowerCase() ?? 'bin';
+  return `receipt_${proofId.replace(/[^A-Za-z0-9_-]/g, '')}.${ext}`;
 }
