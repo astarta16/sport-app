@@ -170,25 +170,40 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                 children: [
                   FilledButton.tonalIcon(
                     key: const Key('attendance-mark-all'),
+                    // v1.9: children whose parent answered "won't attend" are
+                    // left for the coach to mark (no silent "present").
                     onPressed: unmarked == 0
                         ? null
-                        : () => setState(() {
-                            for (final c in kids) {
-                              if (_effective(c.id, recs) == null) _draft[c.id] = AttendanceStatus.present;
-                            }
-                          }),
+                        : () {
+                            var skipped = 0;
+                            setState(() {
+                              for (final c in kids) {
+                                if (_effective(c.id, recs) != null) continue;
+                                final said = rsvps.where((r) => r.childId == c.id).firstOrNull?.response;
+                                if (said == RsvpResponse.no) {
+                                  skipped++;
+                                  continue;
+                                }
+                                _draft[c.id] = AttendanceStatus.present;
+                              }
+                            });
+                            if (skipped > 0) showAppSnack(context, l.attendanceSkippedDeclined(skipped));
+                          },
                     icon: const Icon(Icons.done_all_rounded),
                     label: Text(l.attendanceMarkAllPresent),
                   ),
                   for (final s in [AttendanceStatus.absent, AttendanceStatus.excused])
                     OutlinedButton(
                       key: Key('attendance-all-${s.name}'),
-                      onPressed: () => setState(() {
-                        for (final c in kids) {
-                          _set(c.id, s, recs);
-                        }
-                      }),
-                      child: Text('${l.attendanceMarkAll}: ${attendanceLabel(context, s)}'),
+                      // v1.9: only rows not marked yet — never overwrites marks.
+                      onPressed: unmarked == 0
+                          ? null
+                          : () => setState(() {
+                              for (final c in kids) {
+                                if (_effective(c.id, recs) == null) _draft[c.id] = s;
+                              }
+                            }),
+                      child: Text(l.attendanceRemainingAs(attendanceLabel(context, s))),
                     ),
                 ],
               ),
@@ -201,6 +216,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                     rsvp: rsvps.where((r) => r.childId == c.id).firstOrNull,
                     status: _effective(c.id, recs),
                     changed: _draft.containsKey(c.id),
+                    unmarked: _effective(c.id, recs) == null,
                     rate: stats?.byChild[c.id]?.rate,
                     onChanged: (s) => _set(c.id, s, recs),
                   ),
@@ -234,7 +250,10 @@ class _RosterRow extends StatelessWidget {
     required this.changed,
     required this.onChanged,
     this.rate,
+    this.unmarked = false,
   });
+
+  final bool unmarked;
 
   final Child child;
   final Rsvp? rsvp;
@@ -248,7 +267,9 @@ class _RosterRow extends StatelessWidget {
     final l = context.l10n;
     return AppCard(
       key: Key('att-row-${child.id}'),
+      // Changed (unsaved) rows are tinted; rows still to mark are outlined.
       color: changed ? AppColors.volt.withValues(alpha: 0.15) : null,
+      borderColor: unmarked && !changed ? AppColors.warning : null,
       padding: const EdgeInsets.all(AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -3229,5 +3229,35 @@
   "hubNextSession": "შემდეგი ვარჯიში",
   "hubTakeAttendance": "დასწრების აღნიშვნა",
   "signOutConfirmTitle": "გამოხვიდეთ?",
-  "signOutConfirmBody": "ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ."
+  "signOutConfirmBody": "ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.",
+  "rsvpSavedInline": "შენახულია: {answer}. მწვრთნელი ხედავს.",
+  "@rsvpSavedInline": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "rsvpReasonSaved": "მიზეზი შენახულია",
+  "rsvpSaveReason": "მიზეზის შენახვა",
+  "rsvpReasonLabel": "მიზეზი (არასავალდებულო)",
+  "attendanceSkippedDeclined": "{count, plural, =1{1 ბავშვი, რომლის მშობელმაც თქვა „არ მოვა“, თქვენ უნდა აღნიშნოთ.} other{{count} ბავშვი, რომელთა მშობლებმაც თქვეს „არ მოვა“, თქვენ უნდა აღნიშნოთ.}}",
+  "@attendanceSkippedDeclined": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attendanceRemainingAs": "დანარჩენი: {status}",
+  "@attendanceRemainingAs": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingPickTime": "ახლომდებარე თავისუფალი დრო — შეეხეთ, რომ იქ გადაიტანოთ",
+  "bookingPickRoom": "ამ დროს თავისუფალი ოთახები — შეეხეთ ასარჩევად",
+  "bookingKeepAsIs": "დატოვება როგორც იყო"
 }

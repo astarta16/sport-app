@@ -5782,4 +5782,43 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get signOutConfirmBody => 'Для повторного входа понадобится новый SMS-код.';
+
+  @override
+  String rsvpSavedInline(String answer) {
+    return 'Сохранено: $answer. Тренер видит ответ.';
+  }
+
+  @override
+  String get rsvpReasonSaved => 'Причина сохранена';
+
+  @override
+  String get rsvpSaveReason => 'Сохранить причину';
+
+  @override
+  String get rsvpReasonLabel => 'Причина (необязательно)';
+
+  @override
+  String attendanceSkippedDeclined(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count детей, чьи родители ответили «не придёт», отметьте сами.',
+      one: '1 ребёнка, чей родитель ответил «не придёт», отметьте сами.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String attendanceRemainingAs(String status) {
+    return 'Остальные: $status';
+  }
+
+  @override
+  String get bookingPickTime => 'Свободное время рядом — нажмите, чтобы перенести';
+
+  @override
+  String get bookingPickRoom => 'Свободные в это время помещения — нажмите, чтобы выбрать';
+
+  @override
+  String get bookingKeepAsIs => 'Оставить как было';
 }

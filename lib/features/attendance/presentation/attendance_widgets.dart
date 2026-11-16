@@ -37,7 +37,11 @@ class RsvpSection extends ConsumerWidget {
     if (!ref.watch(moduleOnForGroupProvider((group.id, OrgModule.attendance)))) return const SizedBox.shrink();
     final kids = (ref.watch(myChildrenProvider).value ?? const <Child>[]).where((c) => group.hasChild(c.id)).toList();
     if (kids.isEmpty) return const SizedBox.shrink();
-    final rsvps = ref.watch(rsvpsForTrainingProvider(event.id)).value ?? const <Rsvp>[];
+    final rsvpsAsync = ref.watch(rsvpsForTrainingProvider(event.id));
+    final rsvps = rsvpsAsync.value ?? const <Rsvp>[];
+    // Until answers are loaded, nothing looks unanswered and nothing can be
+    // answered twice by accident.
+    final loading = !rsvpsAsync.hasValue;
     final records = ref.watch(attendanceForTrainingProvider(event.id)).value ?? const <AttendanceRecord>[];
     final now = ref.watch(clockProvider)();
     final open = event.active && now.isBefore(event.startAt);
@@ -58,6 +62,7 @@ class RsvpSection extends ConsumerWidget {
               rsvp: rsvps.where((r) => r.childId == c.id).firstOrNull,
               record: records.where((r) => r.childId == c.id).firstOrNull,
               open: open,
+              loading: loading,
             ),
           ),
         if (open) Text(l.rsvpNotice, style: Theme.of(context).textTheme.bodySmall),
@@ -80,7 +85,8 @@ class _ScheduleChangeAck extends ConsumerWidget {
     final f = Fmt.of(context);
     return AppCard(
       key: const Key('schedule-change-ack'),
-      color: const Color(0xFFFFF7ED),
+      // v1.9: theme-aware (the fixed light colour was unreadable in dark mode).
+      color: AppColors.warning.withValues(alpha: .14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -121,6 +127,7 @@ class _ChildRsvpCard extends ConsumerStatefulWidget {
     required this.rsvp,
     required this.record,
     required this.open,
+    this.loading = false,
   });
 
   final ScheduledEvent event;
@@ -128,6 +135,7 @@ class _ChildRsvpCard extends ConsumerStatefulWidget {
   final Rsvp? rsvp;
   final AttendanceRecord? record;
   final bool open;
+  final bool loading;
 
   @override
   ConsumerState<_ChildRsvpCard> createState() => _ChildRsvpCardState();
@@ -135,30 +143,49 @@ class _ChildRsvpCard extends ConsumerStatefulWidget {
 
 class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
   final _reason = TextEditingController();
+  final _reasonFocus = FocusNode();
   RsvpResponse? _pending;
+  bool _justSaved = false;
 
   @override
   void initState() {
     super.initState();
     _reason.text = widget.rsvp?.reason ?? '';
+    // v1.9: the optional reason is saved when the field is left — it is no
+    // longer lost when the parent doesn't find the small send button.
+    _reasonFocus.addListener(() {
+      final r = widget.rsvp;
+      if (!_reasonFocus.hasFocus && r != null && _reason.text.trim() != (r.reason ?? '')) {
+        _respond(r.response, reasonOnly: true);
+      }
+    });
   }
 
   @override
   void dispose() {
     _reason.dispose();
+    _reasonFocus.dispose();
     super.dispose();
   }
 
-  Future<void> _respond(RsvpResponse r) async {
-    setState(() => _pending = r);
-    await runGuarded(
+  Future<void> _respond(RsvpResponse r, {bool reasonOnly = false}) async {
+    setState(() {
+      _pending = r;
+      _justSaved = false;
+    });
+    final ok = await runGuarded(
       context,
       () => ref
           .read(attendanceRepositoryProvider)
           .respond(trainingId: widget.event.id, childId: widget.child.id, response: r, reason: _reason.text),
-      success: context.l10n.rsvpSaved,
+      success: reasonOnly ? context.l10n.rsvpReasonSaved : context.l10n.rsvpSaved,
     );
-    if (mounted) setState(() => _pending = null);
+    if (mounted) {
+      setState(() {
+        _pending = null;
+        _justSaved = ok;
+      });
+    }
   }
 
   @override
@@ -234,19 +261,43 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
                   ),
               ],
               selected: {?current},
-              onSelectionChanged: (s) => s.isEmpty ? null : _respond(s.first),
+              onSelectionChanged: widget.loading ? null : (s) => s.isEmpty ? null : _respond(s.first),
             ),
+            if (_justSaved && current != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  key: Key('rsvp-saved-${widget.child.id}'),
+                  children: [
+                    const Icon(Icons.check_circle_rounded, size: 16, color: AppColors.success),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        l.rsvpSavedInline(rsvpLabel(context, current)),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (current == RsvpResponse.no || current == RsvpResponse.maybe) ...[
               const SizedBox(height: AppSpacing.xs),
               TextField(
                 key: Key('rsvp-reason-${widget.child.id}'),
                 controller: _reason,
+                focusNode: _reasonFocus,
                 maxLength: Rsvp.maxReason,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
+                  labelText: l.rsvpReasonLabel,
                   hintText: l.rsvpReasonHint,
-                  suffixIcon: IconButton(icon: const Icon(Icons.send_rounded), onPressed: () => _respond(current!)),
+                  suffixIcon: IconButton(
+                    tooltip: l.rsvpSaveReason,
+                    icon: const Icon(Icons.send_rounded),
+                    onPressed: () => _respond(current!, reasonOnly: true),
+                  ),
                 ),
-                onSubmitted: (_) => _respond(current!),
+                onSubmitted: (_) => _respond(current!, reasonOnly: true),
               ),
             ],
           ] else if (rec == null && widget.event.active)

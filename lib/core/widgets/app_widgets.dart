@@ -18,6 +18,7 @@ class AppCard extends StatelessWidget {
     this.gradient,
     this.color,
     this.radius = AppSpacing.radius,
+    this.borderColor,
   });
 
   final Widget child;
@@ -25,6 +26,9 @@ class AppCard extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final Gradient? gradient;
   final Color? color;
+
+  /// Emphasized outline (e.g. "still to do"); defaults to the theme outline.
+  final Color? borderColor;
   final double radius;
 
   @override
@@ -36,7 +40,9 @@ class AppCard extends StatelessWidget {
         color: gradient == null ? (color ?? scheme.surface) : null,
         gradient: gradient,
         borderRadius: border,
-        border: gradient == null ? Border.all(color: scheme.outline) : null,
+        border: gradient == null
+            ? Border.all(color: borderColor ?? scheme.outline, width: borderColor == null ? 1 : 1.5)
+            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.25 : 0.04),

@@ -18,6 +18,8 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/services/launcher.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../attendance/domain/scheduled_event.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/top_bar_actions.dart';
 import '../../../core/widgets/visuals.dart';
@@ -445,10 +447,11 @@ class _NextTrainingSection extends ConsumerWidget {
           );
         }
         final venue = ref.watch(venuesByIdProvider)[next.venueId];
-        return TweenAnimationBuilder<double>(
+        final card = TweenAnimationBuilder<double>(
           key: ValueKey(next.id),
           tween: Tween(begin: 0, end: 1),
-          duration: const Duration(milliseconds: 400),
+          // v1.9: no entrance animation when reduced motion is requested.
+          duration: AppMotion.of(context, const Duration(milliseconds: 400)),
           curve: Curves.easeOutCubic,
           builder: (_, v, child) => Opacity(
             opacity: v,
@@ -461,6 +464,19 @@ class _NextTrainingSection extends ConsumerWidget {
             coachName: coach?.fullName,
             onDirections: venue == null ? null : () => openDirections(context, venue.location, venue.name),
           ),
+        );
+        // v1.9: answer "Will … attend?" right here — no need to open the
+        // training first (the reschedule acknowledgment is shown too).
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            card,
+            Padding(
+              key: const Key('home-rsvp'),
+              padding: const EdgeInsets.only(top: AppSpacing.xs),
+              child: RsvpSection(event: ScheduledEvent.training(next), group: group),
+            ),
+          ],
         );
       },
     );

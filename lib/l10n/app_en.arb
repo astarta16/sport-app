@@ -1749,5 +1749,14 @@
   "hubNextSession": "Next session",
   "hubTakeAttendance": "Take attendance",
   "signOutConfirmTitle": "Sign out?",
-  "signOutConfirmBody": "You will need a new SMS code to sign in again."
+  "signOutConfirmBody": "You will need a new SMS code to sign in again.",
+  "rsvpSavedInline": "Saved: {answer}. The coach sees it.",
+  "rsvpReasonSaved": "Reason saved",
+  "rsvpSaveReason": "Save reason",
+  "rsvpReasonLabel": "Reason (optional)",
+  "attendanceSkippedDeclined": "{count, plural, =1{1 child whose parent said “won't attend” was left for you to mark.} other{{count} children whose parents said “won't attend” were left for you to mark.}}",
+  "attendanceRemainingAs": "Remaining: {status}",
+  "bookingPickTime": "Free times nearby — tap one to move there",
+  "bookingPickRoom": "Rooms free at this time — tap one to use it",
+  "bookingKeepAsIs": "Keep as it was"
 }

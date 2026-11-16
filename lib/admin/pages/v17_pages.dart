@@ -1591,8 +1591,19 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     if (org == null) {
       return AdminSection(title: l.adminNavSchedule, actions: const [AdminOrgPicker()], child: _needsOrg(context));
     }
-    final cfg = ref.watch(orgConfigProvider(org)).value;
-    if (cfg == null) return const Center(child: CircularProgressIndicator());
+    // v1.9: explicit loading and error states (no bare spinner, no
+    // misleading empty "all free" grid while data loads or fails).
+    final cfgAsync = ref.watch(orgConfigProvider(org));
+    final cfg = cfgAsync.value;
+    if (cfg == null) {
+      return AdminSection(
+        title: l.adminNavSchedule,
+        actions: const [AdminOrgPicker()],
+        child: cfgAsync.hasError
+            ? ErrorView(error: cfgAsync.error!, onRetry: () => ref.invalidate(orgConfigProvider(org)))
+            : const SkeletonList(count: 4),
+      );
+    }
     if (!cfg.isEnabled(OrgModule.roomScheduling)) {
       return AdminSection(
         title: l.adminNavSchedule,
@@ -1606,10 +1617,36 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     final days = _week ? 7 : 1;
     final from = OrgTimeZones.instant(tz, start.year, start.month, start.day);
     final to = from.add(Duration(days: days));
-    final rooms = (ref.watch(roomsProvider(org)).value ?? const <Room>[])
-        .where((r) => r.status != RoomStatus.archived)
-        .toList();
-    final all = ref.watch(bookingsProvider((org, from, to))).value ?? const <Booking>[];
+    final roomsAsync = ref.watch(roomsProvider(org));
+    final bookingsAsync = ref.watch(bookingsProvider((org, from, to)));
+    final failed = roomsAsync.hasError ? roomsAsync : (bookingsAsync.hasError ? bookingsAsync : null);
+    if (failed != null && !(roomsAsync.hasValue && bookingsAsync.hasValue)) {
+      return AdminSection(
+        title: l.adminNavSchedule,
+        actions: const [AdminOrgPicker()],
+        child: ErrorView(
+          error: failed.error!,
+          onRetry: () => ref
+            ..invalidate(roomsProvider(org))
+            ..invalidate(bookingsProvider((org, from, to))),
+        ),
+      );
+    }
+    if (!roomsAsync.hasValue || !bookingsAsync.hasValue) {
+      return AdminSection(
+        title: l.adminNavSchedule,
+        actions: const [AdminOrgPicker()],
+        child: const SkeletonList(count: 4),
+      );
+    }
+    final rooms = roomsAsync.value!.where((r) => r.status != RoomStatus.archived).toList();
+    final all = bookingsAsync.value!;
+    for (final b in all) {
+      _bookingIndex[b.id] = b;
+    }
+    for (final r in rooms) {
+      _roomIndex[r.id] = r;
+    }
     final bookings = all
         .where(
           (b) =>
@@ -1779,6 +1816,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     final inDay = bookings.where((b) => b.startAt.isBefore(dayEnd) && b.endAt.isAfter(dayStart)).toList();
     final busyMin = inDay.fold<int>(0, (a, b) => a + b.duration.inMinutes);
     double y(DateTime t) => t.difference(top).inMinutes / 60 * _hourHeight;
+    final now = ref.watch(clockProvider)();
     return Column(
       key: key,
       children: [
@@ -1834,6 +1872,17 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                     ),
                   ),
                 ),
+              // v1.9: current-time line ("now"), beneath bookings.
+              if (!now.isBefore(top) && now.isBefore(top.add(const Duration(hours: _lastHour - _firstHour))))
+                Positioned(
+                  top: y(now),
+                  left: 0,
+                  right: 0,
+                  height: 2,
+                  child: IgnorePointer(
+                    child: Container(key: const Key('schedule-now-line'), color: AppColors.danger),
+                  ),
+                ),
               for (final b in inDay)
                 Positioned(
                   top: y(b.startAt).clamp(0, (_lastHour - _firstHour) * _hourHeight),
@@ -1875,12 +1924,13 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
       if (mounted) showAppSnack(context, context.l10n.bookingMoved);
     } on BookingRejected catch (e) {
       if (mounted) {
-        await showConflictDialog(
+        final choice = await showConflictDialog(
           context,
           ref,
           e,
           ref.read(orgConfigProvider(b.orgId)).value?.timezone ?? OrgTimeZones.tbilisi,
         );
+        if (choice != null && mounted) await _move(b, choice.start ?? start, choice.roomId ?? roomId);
       }
     } catch (e) {
       if (mounted) await runGuarded(context, () => Future<void>.error(e));
@@ -2011,31 +2061,89 @@ String conflictText(BuildContext context, ConflictCode c) {
   };
 }
 
-Future<void> showConflictDialog(BuildContext context, WidgetRef ref, BookingRejected e, String tz) {
+/// Bookings and rooms the calendar has shown in this session, so conflicts
+/// can name the session that is in the way (ids come from the server).
+final _bookingIndex = <String, Booking>{};
+final _roomIndex = <String, Room>{};
+
+/// One conflict in plain words: what, which session, where and when.
+String conflictLine(BuildContext context, BookingConflict c, String tz) {
+  final f = Fmt.of(context);
+  final other = c.otherId == null ? null : _bookingIndex[c.otherId];
+  final room = other == null ? null : _roomIndex[other.roomId];
+  return [
+    conflictText(context, c.code),
+    if (other != null) '«${other.title}»${room == null ? '' : ' · ${room.name}'}',
+    if (c.start != null) '${f.wd(c.start!, tz)} ${f.wt(c.start!, tz)}–${f.wt(c.end!, tz)}',
+  ].join(' — ');
+}
+
+/// A choice offered by [showConflictDialog].
+typedef ConflictChoice = ({DateTime? start, String? roomId});
+
+/// v1.9: explains a rejected move (which session, which room, when) and
+/// lets the admin pick a suggested free time or room directly. Returns the
+/// choice, or null when closed. The server still re-checks every choice.
+Future<ConflictChoice?> showConflictDialog(BuildContext context, WidgetRef ref, BookingRejected e, String tz) {
   final l = context.l10n;
   final f = Fmt.of(context);
-  return showDialog<void>(
+  return showDialog<ConflictChoice>(
     context: context,
     builder: (context) => AlertDialog(
       key: const Key('booking-conflict-dialog'),
+      icon: const Icon(Icons.event_busy_rounded, color: AppColors.danger),
       title: Text(l.bookingRejected),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final c in e.conflicts)
-            Text(
-              '• ${conflictText(context, c.code)}'
-              '${c.start == null ? '' : ' (${f.wt(c.start!, tz)}–${f.wt(c.end!, tz)})'}',
-            ),
-          if (e.alternatives.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(l.bookingAlternatives(e.alternatives.map((a) => f.wt(a, tz)).join(', '))),
+      content: SizedBox(
+        width: 480,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final c in e.conflicts)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text('• ${conflictLine(context, c, tz)}', key: Key('conflict-line-${c.code.name}')),
+              ),
+            if (e.alternatives.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(l.bookingPickTime, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final a in e.alternatives)
+                    ActionChip(
+                      key: Key('conflict-alt-${a.millisecondsSinceEpoch}'),
+                      avatar: const Icon(Icons.schedule_rounded, size: 16),
+                      label: Text('${f.wd(a, tz)} ${f.wt(a, tz)}'),
+                      onPressed: () => Navigator.pop<ConflictChoice>(context, (start: a, roomId: null)),
+                    ),
+                ],
+              ),
+            ],
+            if (e.freeRooms.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(l.bookingPickRoom, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final r in e.freeRooms)
+                    ActionChip(
+                      key: Key('conflict-room-${r.id}'),
+                      avatar: const Icon(Icons.meeting_room_rounded, size: 16),
+                      label: Text('${r.name} · ${l.roomCapacity} ${r.capacity}'),
+                      onPressed: () => Navigator.pop<ConflictChoice>(context, (start: null, roomId: r.id)),
+                    ),
+                ],
+              ),
+            ],
           ],
-          if (e.freeRooms.isNotEmpty) Text(l.bookingFreeRooms(e.freeRooms.map((r) => r.name).join(', '))),
-        ],
+        ),
       ),
-      actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(l.close))],
+      actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(l.bookingKeepAsIs))],
     ),
   );
 }
@@ -2361,7 +2469,7 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                   contentPadding: EdgeInsets.zero,
                   value: _recurring,
                   title: Text(l.bookingRecurring),
-                  onChanged: (v) => setState(() => _recurring = v),
+                  onChanged: (v) => _changed(() => _recurring = v),
                 ),
                 if (_recurring) ...[
                   Wrap(
@@ -2372,7 +2480,7 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                           key: Key('booking-weekday-$d'),
                           label: Text(f.weekdayShort(DateTime.utc(2024, 1, d))),
                           selected: _weekdays.contains(d),
-                          onSelected: (v) => setState(() => v ? _weekdays.add(d) : _weekdays.remove(d)),
+                          onSelected: (v) => _changed(() => v ? _weekdays.add(d) : _weekdays.remove(d)),
                         ),
                     ],
                   ),
@@ -2391,7 +2499,7 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                           _date.day,
                         ).add(const Duration(days: WeeklyRule.maxWeeks * 7)),
                       );
-                      if (d != null) setState(() => _until = DateTime.utc(d.year, d.month, d.day));
+                      if (d != null) _changed(() => _until = DateTime.utc(d.year, d.month, d.day));
                     },
                   ),
                   Text(l.bookingSeriesNote(WeeklyRule.maxWeeks), style: Theme.of(context).textTheme.bodySmall),
@@ -2410,11 +2518,7 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       for (final c in shown)
-                        Text(
-                          '• ${conflictText(context, c.code)}'
-                          '${c.start == null ? '' : ' (${f.wt(c.start!, _tz)}–${f.wt(c.end!, _tz)})'}',
-                          key: Key('conflict-${c.code.name}'),
-                        ),
+                        Text('• ${conflictLine(context, c, _tz)}', key: Key('conflict-${c.code.name}')),
                       if (_rejected?.alternatives.isNotEmpty ?? false) ...[
                         const SizedBox(height: 6),
                         Text(l.bookingTryInstead),
@@ -2424,7 +2528,8 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                             for (final a in _rejected!.alternatives)
                               ActionChip(
                                 key: Key('booking-alt-${a.millisecondsSinceEpoch}'),
-                                label: Text(f.wt(a, _tz)),
+                                // The date is shown: a suggestion may be on another day.
+                                label: Text('${f.wd(a, _tz)} ${f.wt(a, _tz)}'),
                                 onPressed: () => _changed(() {
                                   final w = OrgTimeZones.wall(a, _tz);
                                   _date = DateTime.utc(w.year, w.month, w.day);

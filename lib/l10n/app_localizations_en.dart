@@ -5731,4 +5731,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signOutConfirmBody => 'You will need a new SMS code to sign in again.';
+
+  @override
+  String rsvpSavedInline(String answer) {
+    return 'Saved: $answer. The coach sees it.';
+  }
+
+  @override
+  String get rsvpReasonSaved => 'Reason saved';
+
+  @override
+  String get rsvpSaveReason => 'Save reason';
+
+  @override
+  String get rsvpReasonLabel => 'Reason (optional)';
+
+  @override
+  String attendanceSkippedDeclined(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count children whose parents said “won\'t attend” were left for you to mark.',
+      one: '1 child whose parent said “won\'t attend” was left for you to mark.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String attendanceRemainingAs(String status) {
+    return 'Remaining: $status';
+  }
+
+  @override
+  String get bookingPickTime => 'Free times nearby — tap one to move there';
+
+  @override
+  String get bookingPickRoom => 'Rooms free at this time — tap one to use it';
+
+  @override
+  String get bookingKeepAsIs => 'Keep as it was';
 }

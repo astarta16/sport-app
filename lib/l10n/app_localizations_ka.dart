@@ -5698,4 +5698,43 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get signOutConfirmBody => 'ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.';
+
+  @override
+  String rsvpSavedInline(String answer) {
+    return 'შენახულია: $answer. მწვრთნელი ხედავს.';
+  }
+
+  @override
+  String get rsvpReasonSaved => 'მიზეზი შენახულია';
+
+  @override
+  String get rsvpSaveReason => 'მიზეზის შენახვა';
+
+  @override
+  String get rsvpReasonLabel => 'მიზეზი (არასავალდებულო)';
+
+  @override
+  String attendanceSkippedDeclined(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ბავშვი, რომელთა მშობლებმაც თქვეს „არ მოვა“, თქვენ უნდა აღნიშნოთ.',
+      one: '1 ბავშვი, რომლის მშობელმაც თქვა „არ მოვა“, თქვენ უნდა აღნიშნოთ.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String attendanceRemainingAs(String status) {
+    return 'დანარჩენი: $status';
+  }
+
+  @override
+  String get bookingPickTime => 'ახლომდებარე თავისუფალი დრო — შეეხეთ, რომ იქ გადაიტანოთ';
+
+  @override
+  String get bookingPickRoom => 'ამ დროს თავისუფალი ოთახები — შეეხეთ ასარჩევად';
+
+  @override
+  String get bookingKeepAsIs => 'დატოვება როგორც იყო';
 }

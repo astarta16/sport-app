@@ -10592,6 +10592,60 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.'**
   String get signOutConfirmBody;
+
+  /// No description provided for @rsvpSavedInline.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენახულია: {answer}. მწვრთნელი ხედავს.'**
+  String rsvpSavedInline(String answer);
+
+  /// No description provided for @rsvpReasonSaved.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზეზი შენახულია'**
+  String get rsvpReasonSaved;
+
+  /// No description provided for @rsvpSaveReason.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზეზის შენახვა'**
+  String get rsvpSaveReason;
+
+  /// No description provided for @rsvpReasonLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიზეზი (არასავალდებულო)'**
+  String get rsvpReasonLabel;
+
+  /// No description provided for @attendanceSkippedDeclined.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count, plural, =1{1 ბავშვი, რომლის მშობელმაც თქვა „არ მოვა“, თქვენ უნდა აღნიშნოთ.} other{{count} ბავშვი, რომელთა მშობლებმაც თქვეს „არ მოვა“, თქვენ უნდა აღნიშნოთ.}}'**
+  String attendanceSkippedDeclined(int count);
+
+  /// No description provided for @attendanceRemainingAs.
+  ///
+  /// In ka, this message translates to:
+  /// **'დანარჩენი: {status}'**
+  String attendanceRemainingAs(String status);
+
+  /// No description provided for @bookingPickTime.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახლომდებარე თავისუფალი დრო — შეეხეთ, რომ იქ გადაიტანოთ'**
+  String get bookingPickTime;
+
+  /// No description provided for @bookingPickRoom.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ დროს თავისუფალი ოთახები — შეეხეთ ასარჩევად'**
+  String get bookingPickRoom;
+
+  /// No description provided for @bookingKeepAsIs.
+  ///
+  /// In ka, this message translates to:
+  /// **'დატოვება როგორც იყო'**
+  String get bookingKeepAsIs;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

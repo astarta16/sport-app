@@ -325,5 +325,59 @@
   "en": "You will need a new SMS code to sign in again.",
   "ka": "ხელახლა შესასვლელად ახალი SMS კოდი დაგჭირდებათ.",
   "ru": "Для повторного входа понадобится новый SMS-код."
+ },
+ "rsvpSavedInline": {
+  "en": "Saved: {answer}. The coach sees it.",
+  "ka": "შენახულია: {answer}. მწვრთნელი ხედავს.",
+  "ru": "Сохранено: {answer}. Тренер видит ответ.",
+  "ph": {
+   "answer": "String"
+  }
+ },
+ "rsvpReasonSaved": {
+  "en": "Reason saved",
+  "ka": "მიზეზი შენახულია",
+  "ru": "Причина сохранена"
+ },
+ "rsvpSaveReason": {
+  "en": "Save reason",
+  "ka": "მიზეზის შენახვა",
+  "ru": "Сохранить причину"
+ },
+ "rsvpReasonLabel": {
+  "en": "Reason (optional)",
+  "ka": "მიზეზი (არასავალდებულო)",
+  "ru": "Причина (необязательно)"
+ },
+ "attendanceSkippedDeclined": {
+  "en": "{count, plural, =1{1 child whose parent said “won't attend” was left for you to mark.} other{{count} children whose parents said “won't attend” were left for you to mark.}}",
+  "ka": "{count, plural, =1{1 ბავშვი, რომლის მშობელმაც თქვა „არ მოვა“, თქვენ უნდა აღნიშნოთ.} other{{count} ბავშვი, რომელთა მშობლებმაც თქვეს „არ მოვა“, თქვენ უნდა აღნიშნოთ.}}",
+  "ru": "{count, plural, =1{1 ребёнка, чей родитель ответил «не придёт», отметьте сами.} other{{count} детей, чьи родители ответили «не придёт», отметьте сами.}}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "attendanceRemainingAs": {
+  "en": "Remaining: {status}",
+  "ka": "დანარჩენი: {status}",
+  "ru": "Остальные: {status}",
+  "ph": {
+   "status": "String"
+  }
+ },
+ "bookingPickTime": {
+  "en": "Free times nearby — tap one to move there",
+  "ka": "ახლომდებარე თავისუფალი დრო — შეეხეთ, რომ იქ გადაიტანოთ",
+  "ru": "Свободное время рядом — нажмите, чтобы перенести"
+ },
+ "bookingPickRoom": {
+  "en": "Rooms free at this time — tap one to use it",
+  "ka": "ამ დროს თავისუფალი ოთახები — შეეხეთ ასარჩევად",
+  "ru": "Свободные в это время помещения — нажмите, чтобы выбрать"
+ },
+ "bookingKeepAsIs": {
+  "en": "Keep as it was",
+  "ka": "დატოვება როგორც იყო",
+  "ru": "Оставить как было"
  }
 }
