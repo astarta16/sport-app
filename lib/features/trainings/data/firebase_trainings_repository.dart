@@ -88,7 +88,7 @@ class FirebaseTrainingsRepository implements TrainingsRepository {
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
     // v1.7: a material change (date, time, place) bumps the schedule version;
     // the rules require it and onEventScheduleChanged asks parents to reconfirm.
-    final material = moved || d.venueId != old.venueId || d.durationMin != old.durationMin;
+    final material = moved || d.venueId != old.venueId;
     final photos = await _upload(old.groupId, id, d.newPhotos);
     await _col.doc(id).update({
       if (material) 'scheduleVersion': old.scheduleVersion + 1,

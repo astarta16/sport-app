@@ -223,11 +223,19 @@ service cloud.firestore {
       return get(eventPath(kind, eventId)).data;
     }
 
+    // Coach of the event's group, for queries constrained by trainingId
+    // (works for trainings and matches without knowing the type).
+    function isCoachOfEvent(eventId) {
+      return (exists(/databases/$(database)/documents/trainings/$(eventId))
+              && isGroupCoach(trainingDoc(eventId).groupId))
+        || (exists(/databases/$(database)/documents/matches/$(eventId))
+              && isGroupCoach(get(/databases/$(database)/documents/matches/$(eventId)).data.groupId));
+    }
+
     // A material schedule change (date, time or place) must bump the
     // version by exactly one; anything else must keep it.
     function validScheduleVersion(before, after) {
-      return (after.startAt != before.startAt || after.venueId != before.venueId
-              || after.get('durationMin', 0) != before.get('durationMin', 0))
+      return (after.startAt != before.startAt || after.venueId != before.venueId)
         ? after.get('scheduleVersion', 1) == before.get('scheduleVersion', 1) + 1
         : after.get('scheduleVersion', 1) == before.get('scheduleVersion', 1);
     }
@@ -1165,6 +1173,7 @@ service cloud.firestore {
       allow read: if isAdmin()
         || isParentOfChild(resource.data.childId)
         || isGroupCoach(resource.data.groupId)
+        || isCoachOfEvent(resource.data.trainingId)
         || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
 
       allow create, update: if validRsvp(request.resource.data)
@@ -1222,6 +1231,7 @@ service cloud.firestore {
         || isParentOfChild(resource.data.childId)
         || isStudentOf(resource.data.childId)
         || isGroupCoach(resource.data.groupId)
+        || isCoachOfEvent(resource.data.trainingId)
         || isClubAdmin(groupDoc(resource.data.groupId).get('clubId', ''));
 
       allow create, update: if validAttendance(request.resource.data) && canMark(request.resource.data);

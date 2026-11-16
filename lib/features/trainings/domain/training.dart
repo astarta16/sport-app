@@ -169,8 +169,7 @@ class Training {
   );
 
   /// Whether going from this to [next] is a material schedule change.
-  bool materiallyDiffers(Training next) =>
-      next.startAt != startAt || next.venueId != venueId || next.durationMin != durationMin;
+  bool materiallyDiffers(Training next) => next.startAt != startAt || next.venueId != venueId;
 
   Map<String, dynamic> toMap() => {
     'scheduleVersion': scheduleVersion,

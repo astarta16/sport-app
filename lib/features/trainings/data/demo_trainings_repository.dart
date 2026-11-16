@@ -83,7 +83,7 @@ class DemoTrainingsRepository implements TrainingsRepository {
     final errors = TrainingValidator.validate(d, now: db.clock(), isEdit: true);
     if (errors.isNotEmpty) throw ValidationException(errors.first);
     final moved = !d.startAt.isAtSameMomentAs(old.startAt);
-    final material = moved || d.venueId != old.venueId || d.durationMin != old.durationMin;
+    final material = moved || d.venueId != old.venueId;
     final t = old.copyWith(
       scheduleVersion: material ? old.scheduleVersion + 1 : null,
       previousVenueId: d.venueId != old.venueId ? old.venueId : null,
@@ -99,7 +99,7 @@ class DemoTrainingsRepository implements TrainingsRepository {
       // Editing one occurrence of a series detaches it ("only this one").
       detached: old.isRecurring ? true : null,
     );
-    if (material) db.moveLinkedBooking(id, t.startAt, t.durationMin);
+    if (material || d.durationMin != old.durationMin) db.moveLinkedBooking(id, t.startAt, t.durationMin);
     db.trainings[id] = t;
     if (material) {
       db.dispatch(
