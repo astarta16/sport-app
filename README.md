@@ -83,11 +83,38 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.8.0 --build-number=21
+  --build-name=1.9.0 --build-number=22
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.9: UX/UI redesign for all five roles
+
+- **Navigation per role:**
+  - Parent: Home · Calendar · Messages · Children · More
+  - Coach: Home · Schedule · Groups · Messages · More
+  - Student: Home · My schedule · Brain Academy · Progress · Profile
+  - Admin web: task-based sections, a clear Platform vs Organization context, and a searchable organization switcher. Switched-off features never show as dead entries.
+- **Searchable selectors** for sports (stable ids, every language), coaches, groups, rooms (busy rooms named), programs, venues, clubs and organizations; segmented choices for 2–4 options.
+- **Faster everyday tasks:**
+  - parents answer "Will … attend?" on Home
+  - coaches take attendance from the Groups tab; bulk marking never overwrites marks or marks declined children present
+  - room conflicts name the clashing session and offer one-tap free times and rooms
+- **Safer admin forms:**
+  - provisioning wizard with progress, per-step validation and a review step
+  - room hours kept per weekday
+  - confirmations with specific results for destructive actions
+  - no endless spinners or blank pages
+- **Accessibility:** contrast-safe status badges, labelled controls, keyboard selection in pickers, reduced-motion support.
+- Docs:
+  - [audit](docs/ux-v1.9-audit.md)
+  - [design system](docs/ux-v1.9-design-system.md)
+  - [navigation](docs/ux-v1.9-navigation.md)
+  - [workflow comparison](docs/ux-v1.9-workflow-comparison.md)
+  - [accessibility](docs/ux-v1.9-accessibility.md)
+  - [progress and remaining items](docs/ux-v1.9-progress.md)
+- Screenshots: `docs/screenshots/v1.8` vs `docs/screenshots/v1.9` (regenerate with `CAPTURE=1 flutter test test/screenshots/capture_test.dart --update-goldens`).
 
 ## What's new in v1.8: Platform Super Admin, feature management, subscriptions
 
@@ -262,7 +289,7 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 422 tests (… v1.3–v1.8 flows, games, scheduling, tenants, platform)
+flutter test                                   # 444 tests (… v1.3–v1.9 flows, games, scheduling, tenants, platform, UX)
 cd functions && npm install && npm run build && npm test      # 235 tests
 cd rules-tests && npm install && npm run test:emulator        # 201 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps

@@ -24,7 +24,7 @@ class AppConfig {
   static const _allowDemoInRelease = bool.fromEnvironment('ALLOW_DEMO_IN_RELEASE');
   static const useEmulator = bool.fromEnvironment('USE_FIREBASE_EMULATOR');
   static const emulatorHost = String.fromEnvironment('EMULATOR_HOST', defaultValue: 'localhost');
-  static const version = '1.8.0-beta';
+  static const version = '1.9.0-beta';
   static const buildNumber = String.fromEnvironment('BUILD_NUMBER', defaultValue: '12');
 
   static AppMode get mode {
