@@ -1758,5 +1758,17 @@
   "attendanceRemainingAs": "Remaining: {status}",
   "bookingPickTime": "Free times nearby — tap one to move there",
   "bookingPickRoom": "Rooms free at this time — tap one to use it",
-  "bookingKeepAsIs": "Keep as it was"
+  "bookingKeepAsIs": "Keep as it was",
+  "roomBusyWith": "Busy: «{title}» {time}",
+  "confirmRemoveCoachBody": "{name} will no longer be a coach of this organization. Their groups and history stay.",
+  "coachRemovedSnack": "Coach removed from the organization",
+  "coachAddedSnack": "Coach added to the organization",
+  "wizBasics": "Basics",
+  "wizPackage": "Package",
+  "wizFeatures": "Features",
+  "wizAdmin": "Administrator",
+  "wizReview": "Review",
+  "wizFixErrors": "Please fix the highlighted fields to continue.",
+  "venueGroupClub": "Your club's venues",
+  "venueGroupOther": "Other venues for this sport"
 }

@@ -379,5 +379,72 @@
   "en": "Keep as it was",
   "ka": "დატოვება როგორც იყო",
   "ru": "Оставить как было"
+ },
+ "roomBusyWith": {
+  "en": "Busy: «{title}» {time}",
+  "ka": "დაკავებულია: «{title}» {time}",
+  "ru": "Занято: «{title}» {time}",
+  "ph": {
+   "title": "String",
+   "time": "String"
+  }
+ },
+ "confirmRemoveCoachBody": {
+  "en": "{name} will no longer be a coach of this organization. Their groups and history stay.",
+  "ka": "{name} აღარ იქნება ამ ორგანიზაციის მწვრთნელი. ჯგუფები და ისტორია შენარჩუნდება.",
+  "ru": "{name} больше не будет тренером этой организации. Группы и история сохранятся.",
+  "ph": {
+   "name": "String"
+  }
+ },
+ "coachRemovedSnack": {
+  "en": "Coach removed from the organization",
+  "ka": "მწვრთნელი ორგანიზაციიდან მოიხსნა",
+  "ru": "Тренер удалён из организации"
+ },
+ "coachAddedSnack": {
+  "en": "Coach added to the organization",
+  "ka": "მწვრთნელი დაემატა ორგანიზაციას",
+  "ru": "Тренер добавлен в организацию"
+ },
+ "wizBasics": {
+  "en": "Basics",
+  "ka": "ძირითადი",
+  "ru": "Основное"
+ },
+ "wizPackage": {
+  "en": "Package",
+  "ka": "პაკეტი",
+  "ru": "Пакет"
+ },
+ "wizFeatures": {
+  "en": "Features",
+  "ka": "ფუნქციები",
+  "ru": "Функции"
+ },
+ "wizAdmin": {
+  "en": "Administrator",
+  "ka": "ადმინისტრატორი",
+  "ru": "Администратор"
+ },
+ "wizReview": {
+  "en": "Review",
+  "ka": "გადახედვა",
+  "ru": "Проверка"
+ },
+ "wizFixErrors": {
+  "en": "Please fix the highlighted fields to continue.",
+  "ka": "გასაგრძელებლად შეასწორეთ მონიშნული ველები.",
+  "ru": "Исправьте отмеченные поля, чтобы продолжить."
+ },
+ "venueGroupClub": {
+  "en": "Your club's venues",
+  "ka": "თქვენი კლუბის ადგილები",
+  "ru": "Площадки вашего клуба"
+ },
+ "venueGroupOther": {
+  "en": "Other venues for this sport",
+  "ka": "ამ სპორტის სხვა ადგილები",
+  "ru": "Другие площадки для этого спорта"
  }
 }

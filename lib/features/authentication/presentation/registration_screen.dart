@@ -6,6 +6,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../clubs/presentation/clubs_providers.dart';
@@ -275,17 +276,21 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
               value: clubs,
               compact: true,
               loading: const Skeleton(height: 120),
-              data: (list) => Column(
-                children: [
+              // v1.9: searchable multi-select (the club list grows with the city).
+              data: (list) => AppPickerField<String>.multi(
+                key: const Key('register-clubs'),
+                label: l.clubsLabel,
+                icon: Icons.apartment_rounded,
+                values: _clubs,
+                options: [
                   for (final c in list.where((c) => _sports.isEmpty || c.sportIds.any(_sports.contains)))
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _clubs.contains(c.id),
-                      title: Text(c.name),
-                      subtitle: Text(c.address),
-                      onChanged: (v) => setState(() => v == true ? _clubs.add(c.id) : _clubs.remove(c.id)),
-                    ),
+                    AppPickerOption(value: c.id, label: c.name, subtitle: c.address),
                 ],
+                onChangedMulti: (v) => setState(() {
+                  _clubs
+                    ..clear()
+                    ..addAll(v);
+                }),
               ),
             ),
           ],

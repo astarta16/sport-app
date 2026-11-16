@@ -8,6 +8,9 @@ import '../../core/errors/app_exception.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../features/sports/domain/sport.dart';
+import '../../core/widgets/entity_options.dart';
+import '../../core/widgets/app_feedback.dart';
 import '../../core/widgets/language_selector.dart';
 import '../../features/admin/domain/admin_models.dart';
 import '../../features/authentication/presentation/session_providers.dart';
@@ -504,6 +507,23 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
   var _color = 0xFF1D4ED8;
   final _sports = <String>{};
   String? _error;
+  // v1.9: steps whose "Next" was pressed show their field errors inline.
+  final _tried = <int>{};
+
+  static const _stepCodes = <int, Set<String>>{
+    0: {'orgName', 'orgAddress', 'orgCity', 'orgEmail', 'orgPhone', 'orgSports', 'brandContrast'},
+    2: {'featureDependencies'},
+    3: {'orgAdminMissing'},
+  };
+
+  List<String> _codes(int step) => [
+    for (final c in ProvisionRequest.validate(_request))
+      if (_stepCodes[step]?.contains(c) ?? false) c,
+  ];
+
+  String? _err(int step, String code) => _tried.contains(step) && _codes(step).contains(code)
+      ? platformErrorText(context, ValidationException(code))
+      : null;
   bool _busy = false;
 
   void _applyTemplate(OrgTemplate? t, List<SubscriptionPackage> pkgs) {
@@ -553,7 +573,12 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
     final l = context.l10n;
     final errors = ProvisionRequest.validate(_request);
     if (errors.isNotEmpty) {
-      setState(() => _error = platformErrorText(context, ValidationException(errors.first)));
+      final step = [0, 2, 3].firstWhere((s) => _codes(s).isNotEmpty, orElse: () => _step);
+      setState(() {
+        _tried.add(step);
+        _step = step;
+        _error = platformErrorText(context, ValidationException(errors.first));
+      });
       return;
     }
     setState(() {
@@ -572,6 +597,48 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
     }
   }
 
+  Widget _review(BuildContext context, SubscriptionPackage? pkg, List<OrgTemplate> tpls, List<Sport> sports) {
+    final l = context.l10n;
+    final locale = Localizations.localeOf(context).languageCode;
+    final r = _request;
+    Widget row(String label, String value, int step) => ListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      title: Text(label, style: Theme.of(context).textTheme.labelLarge),
+      subtitle: Text(value.isEmpty ? '—' : value),
+      trailing: TextButton(onPressed: () => setState(() => _step = step), child: Text(l.edit)),
+    );
+    return Column(
+      key: const Key('provision-review'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        row(l.adminColName, r.names.values.join(' / '), 0),
+        row(l.orgLegalName, r.legalName, 0),
+        row(l.orgTypeLabel, '${orgTypeLabel(context, r.type)} · ${fundingLabel(context, r.funding)}', 0),
+        row(l.orgCity, '${r.city} · ${r.address}', 0),
+        row(
+          l.sportsLabel,
+          [
+            for (final s in sports)
+              if (_sports.contains(s.id)) s.label(context),
+          ].join(', '),
+          0,
+        ),
+        row(
+          l.packageLabel,
+          [
+            pkg?.nameFor(locale) ?? _packageId,
+            if (_templateId != null) tpls.where((t) => t.id == _templateId).firstOrNull?.nameFor(locale) ?? '',
+            subscriptionLabel(context, _subStatus),
+          ].where((x) => x.isNotEmpty).join(' · '),
+          1,
+        ),
+        row(l.initialFeatures, _modules.map((m) => featureLabel(context, m)).join(', '), 2),
+        row(l.inviteAdmin, [?r.adminPhone, ?r.adminEmail].join(' · '), 3),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -581,12 +648,13 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
     final sports = ref.watch(sportsProvider).value ?? const [];
     final pkg = pkgs.where((p) => p.id == _packageId).firstOrNull;
     final missing = FeatureCatalog.missing(_modules);
-    Widget field(String key, TextEditingController c, String label, {double width = 260}) => SizedBox(
+    Widget field(String key, TextEditingController c, String label, {double width = 260, String? error}) => SizedBox(
       width: width,
       child: TextField(
         key: Key(key),
         controller: c,
-        decoration: InputDecoration(labelText: label),
+        onChanged: (_) => _tried.isEmpty ? null : setState(() {}),
+        decoration: InputDecoration(labelText: label, errorText: error),
       ),
     );
     final steps = <Widget>[
@@ -595,10 +663,10 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
         spacing: 12,
         runSpacing: 4,
         children: [
-          field('prov-name-ka', _ka, l.orgNameKa),
+          field('prov-name-ka', _ka, '${l.orgNameKa} *', error: _err(0, 'orgName')),
           field('prov-name-en', _en, l.orgNameEn),
           field('prov-name-ru', _ru, l.orgNameRu),
-          field('prov-legal', _legal, l.orgLegalName),
+          field('prov-legal', _legal, '${l.orgLegalName} *', error: _err(0, 'orgName')),
           field('prov-reg', _reg, l.orgRegistrationId),
           SizedBox(
             width: 260,
@@ -625,10 +693,10 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
               onChanged: (v) => setState(() => _funding = v ?? _funding),
             ),
           ),
-          field('prov-address', _address, l.adminColAddress),
-          field('prov-city', _city, l.orgCity),
-          field('prov-email', _email, l.orgContactEmail),
-          field('prov-phone', _phone, l.orgContactPhone),
+          field('prov-address', _address, '${l.adminColAddress} *', error: _err(0, 'orgAddress')),
+          field('prov-city', _city, '${l.orgCity} *', error: _err(0, 'orgCity')),
+          field('prov-email', _email, '${l.orgContactEmail} *', error: _err(0, 'orgEmail')),
+          field('prov-phone', _phone, '${l.orgContactPhone} *', error: _err(0, 'orgPhone')),
           field('prov-logo', _logo, l.orgLogoUrl, width: 532),
           field('prov-desc', _desc, l.orgDescription, width: 532),
           SizedBox(
@@ -653,18 +721,19 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
               onChanged: (v) => setState(() => _lang = v ?? _lang),
             ),
           ),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final s in sports)
-                FilterChip(
-                  key: Key('prov-sport-${s.id}'),
-                  label: Text(s.label(context)),
-                  selected: _sports.contains(s.id),
-                  onSelected: (v) => setState(() => v ? _sports.add(s.id) : _sports.remove(s.id)),
-                ),
-            ],
+          SizedBox(
+            width: 532,
+            child: SportsPickerField.multi(
+              sports: sports,
+              values: _sports,
+              required: true,
+              errorText: _err(0, 'orgSports'),
+              onChangedMulti: (v) => setState(() {
+                _sports
+                  ..clear()
+                  ..addAll(v);
+              }),
+            ),
           ),
           _ColorPick(value: _color, onChanged: (c) => setState(() => _color = c)),
         ],
@@ -754,15 +823,18 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
       Wrap(
         spacing: 12,
         children: [
-          field('prov-admin-phone', _adminPhone, l.adminPhoneLabel),
+          field('prov-admin-phone', _adminPhone, l.adminPhoneLabel, error: _err(3, 'orgAdminMissing')),
           field('prov-admin-email', _adminEmail, l.adminEmailLabel),
           Text(l.invitationNote, style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
+      // 5. review (v1.9): everything at a glance before anything is created.
+      _review(context, pkg, tpls, sports),
     ];
+    final stepNames = [l.wizBasics, l.wizPackage, l.wizFeatures, l.wizAdmin, l.wizReview];
     return AlertDialog(
       key: const Key('provision-dialog'),
-      title: Text('${l.orgNew} · ${_step + 1}/4'),
+      title: Text(l.orgNew),
       content: SizedBox(
         width: 600,
         child: SingleChildScrollView(
@@ -770,6 +842,8 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              AppStepHeader(steps: stepNames, current: _step, onStep: (i) => setState(() => _step = i)),
+              const SizedBox(height: AppSpacing.md),
               steps[_step],
               if (_error != null)
                 Padding(
@@ -787,14 +861,25 @@ class _ProvisionDialogState extends ConsumerState<_ProvisionDialog> {
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
         if (_step > 0) TextButton(onPressed: () => setState(() => _step--), child: Text(l.back)),
-        if (_step < 3)
+        if (_step < 4)
           FilledButton(
             key: const Key('provision-next'),
             onPressed: () {
               if (_step == 1 && _modules.isEmpty) {
                 _applyTemplate(tpls.where((t) => t.id == _templateId).firstOrNull, pkgs);
               }
-              setState(() => _step++);
+              // v1.9: validate this step before moving on.
+              if (_codes(_step).isNotEmpty) {
+                setState(() {
+                  _tried.add(_step);
+                  _error = l.wizFixErrors;
+                });
+                return;
+              }
+              setState(() {
+                _error = null;
+                _step++;
+              });
             },
             child: Text(l.next),
           )

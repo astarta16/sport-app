@@ -5737,4 +5737,44 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get bookingKeepAsIs => 'დატოვება როგორც იყო';
+
+  @override
+  String roomBusyWith(String title, String time) {
+    return 'დაკავებულია: «$title» $time';
+  }
+
+  @override
+  String confirmRemoveCoachBody(String name) {
+    return '$name აღარ იქნება ამ ორგანიზაციის მწვრთნელი. ჯგუფები და ისტორია შენარჩუნდება.';
+  }
+
+  @override
+  String get coachRemovedSnack => 'მწვრთნელი ორგანიზაციიდან მოიხსნა';
+
+  @override
+  String get coachAddedSnack => 'მწვრთნელი დაემატა ორგანიზაციას';
+
+  @override
+  String get wizBasics => 'ძირითადი';
+
+  @override
+  String get wizPackage => 'პაკეტი';
+
+  @override
+  String get wizFeatures => 'ფუნქციები';
+
+  @override
+  String get wizAdmin => 'ადმინისტრატორი';
+
+  @override
+  String get wizReview => 'გადახედვა';
+
+  @override
+  String get wizFixErrors => 'გასაგრძელებლად შეასწორეთ მონიშნული ველები.';
+
+  @override
+  String get venueGroupClub => 'თქვენი კლუბის ადგილები';
+
+  @override
+  String get venueGroupOther => 'ამ სპორტის სხვა ადგილები';
 }

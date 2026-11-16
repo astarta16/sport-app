@@ -267,11 +267,19 @@ void main() {
       await tester.enterText(find.byKey(const Key('prov-city')), 'გორი');
       await tester.enterText(find.byKey(const Key('prov-email')), 'info@gori.example');
       await tester.enterText(find.byKey(const Key('prov-phone')), '+995555300700');
-      await tapKey(tester, 'prov-sport-volleyball');
+      // v1.9: sports come from the searchable sports picker.
+      await tapKey(tester, 'sports-picker');
+      await tester.enterText(find.byKey(const Key('app-picker-search')), 'volley');
+      await pumpFrames(tester);
+      await tapKey(tester, 'app-picker-option-volleyball');
+      await tapKey(tester, 'app-picker-done');
       await tapKey(tester, 'provision-next');
       await tapKey(tester, 'provision-next');
       await tapKey(tester, 'provision-next');
       await tester.enterText(find.byKey(const Key('prov-admin-phone')), '+995555300701');
+      await tapKey(tester, 'provision-next');
+      // Review step before anything is created.
+      expect(find.byKey(const Key('provision-review')), findsOneWidget);
       await tapKey(tester, 'provision-create');
       expect(find.byKey(const Key('provision-error')), findsNothing);
       expect(db.clubs.values.any((c) => c.name == 'გორის სპორტსკოლა'), isTrue);

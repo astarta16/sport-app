@@ -10646,6 +10646,78 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'დატოვება როგორც იყო'**
   String get bookingKeepAsIs;
+
+  /// No description provided for @roomBusyWith.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაკავებულია: «{title}» {time}'**
+  String roomBusyWith(String title, String time);
+
+  /// No description provided for @confirmRemoveCoachBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'{name} აღარ იქნება ამ ორგანიზაციის მწვრთნელი. ჯგუფები და ისტორია შენარჩუნდება.'**
+  String confirmRemoveCoachBody(String name);
+
+  /// No description provided for @coachRemovedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი ორგანიზაციიდან მოიხსნა'**
+  String get coachRemovedSnack;
+
+  /// No description provided for @coachAddedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელი დაემატა ორგანიზაციას'**
+  String get coachAddedSnack;
+
+  /// No description provided for @wizBasics.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძირითადი'**
+  String get wizBasics;
+
+  /// No description provided for @wizPackage.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტი'**
+  String get wizPackage;
+
+  /// No description provided for @wizFeatures.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფუნქციები'**
+  String get wizFeatures;
+
+  /// No description provided for @wizAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორი'**
+  String get wizAdmin;
+
+  /// No description provided for @wizReview.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახედვა'**
+  String get wizReview;
+
+  /// No description provided for @wizFixErrors.
+  ///
+  /// In ka, this message translates to:
+  /// **'გასაგრძელებლად შეასწორეთ მონიშნული ველები.'**
+  String get wizFixErrors;
+
+  /// No description provided for @venueGroupClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'თქვენი კლუბის ადგილები'**
+  String get venueGroupClub;
+
+  /// No description provided for @venueGroupOther.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ სპორტის სხვა ადგილები'**
+  String get venueGroupOther;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

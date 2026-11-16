@@ -173,3 +173,71 @@ List<AppPickerOption<String?>> organizationOptions(
       ),
   ];
 }
+
+/// Reusable sports selector (single or multiple) on stable sport ids:
+/// icons, localized names, search in every language, optional restriction
+/// to the organization's sports.
+class SportsPickerField extends StatelessWidget {
+  const SportsPickerField({
+    super.key,
+    required this.sports,
+    required String this.value,
+    required ValueChanged<String> this.onChanged,
+    this.allowedIds,
+    this.label,
+    this.required = false,
+    this.errorText,
+  }) : values = null,
+       onChangedMulti = null;
+
+  const SportsPickerField.multi({
+    super.key,
+    required this.sports,
+    required Set<String> this.values,
+    required ValueChanged<Set<String>> this.onChangedMulti,
+    this.allowedIds,
+    this.label,
+    this.required = false,
+    this.errorText,
+  }) : value = null,
+       onChanged = null;
+
+  final Iterable<Sport> sports;
+  final Set<String>? allowedIds;
+  final String? value;
+  final Set<String>? values;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<Set<String>>? onChangedMulti;
+  final String? label;
+  final bool required;
+  final String? errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    final options = sportOptions(context, sports, allowedIds: allowedIds);
+    final text = label ?? context.l10n.sportsLabel;
+    if (values != null) {
+      return AppPickerField<String>.multi(
+        key: const Key('sports-picker'),
+        label: text,
+        icon: Icons.sports_rounded,
+        options: options,
+        values: values!,
+        onChangedMulti: onChangedMulti!,
+        required: required,
+        errorText: errorText,
+      );
+    }
+    return AppPickerField<String>(
+      key: const Key('sports-picker'),
+      label: text,
+      icon: Icons.sports_rounded,
+      options: options,
+      value: (value ?? '').isEmpty ? null : value,
+      onChanged: onChanged!,
+      required: required,
+      errorText: errorText,
+      recentsId: 'sports',
+    );
+  }
+}

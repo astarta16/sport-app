@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_picker.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../groups/domain/group.dart';
@@ -36,23 +37,25 @@ class VenuePicker extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DropdownButtonFormField<String>(
+        // v1.9: searchable; the club's own venues first, then other venues
+        // of the same sport (that list grows with the city).
+        AppPickerField<String>(
           key: fieldKey,
-          initialValue: list.any((v) => v.id == value) ? value : null,
-          isExpanded: true,
-          hint: Text(l.selectVenue),
-          items: [
+          label: l.selectVenue,
+          icon: Icons.place_rounded,
+          value: list.any((v) => v.id == value) ? value : null,
+          recentsId: 'venue',
+          options: [
             for (final v in list)
-              DropdownMenuItem(
+              AppPickerOption(
                 value: v.id,
-                child: Row(
-                  children: [
-                    Icon(venueTypeIcon(v.type), size: 18, color: scheme.onSurfaceVariant),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(v.name, overflow: TextOverflow.ellipsis)),
-                    if (!v.verified) StatusPill(label: l.venueUnverified, color: AppColors.warning, dense: true),
-                  ],
-                ),
+                label: v.name,
+                subtitle: v.address,
+                leading: Icon(venueTypeIcon(v.type), color: scheme.onSurfaceVariant),
+                trailing: v.verified
+                    ? null
+                    : StatusPill(label: l.venueUnverified, color: AppColors.warning, dense: true),
+                group: v.clubId == g?.clubId ? l.venueGroupClub : l.venueGroupOther,
               ),
           ],
           onChanged: onChanged,

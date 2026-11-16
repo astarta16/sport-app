@@ -5,6 +5,7 @@ import '../../app/di.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_picker.dart';
+import '../../core/widgets/entity_options.dart';
 import '../../core/widgets/app_widgets.dart';
 import '../../core/widgets/visuals.dart';
 import '../../core/widgets/app_feedback.dart';
@@ -977,32 +978,48 @@ class _OrgCoaches extends ConsumerWidget {
             leading: InitialsAvatar(name: '${c.firstName} ${c.lastName}', size: 32),
             title: Text('${c.firstName} ${c.lastName}'),
             trailing: TextButton(
-              onPressed: () => runGuarded(
-                context,
-                () => ref.read(organizationsRepositoryProvider).setOrgCoach(orgId, c.id, member: false),
-              ),
+              // v1.9: confirmed, with a result message.
+              onPressed: () async {
+                final ok = await confirmDialog(
+                  context,
+                  title: l.orgRemoveCoach,
+                  message: l.confirmRemoveCoachBody(c.fullName),
+                  confirmLabel: l.orgRemoveCoach,
+                  destructive: true,
+                );
+                if (!ok || !context.mounted) return;
+                await runGuarded(
+                  context,
+                  () => ref.read(organizationsRepositoryProvider).setOrgCoach(orgId, c.id, member: false),
+                  success: l.coachRemovedSnack,
+                );
+              },
               child: Text(l.orgRemoveCoach),
             ),
           ),
         if (others.isNotEmpty)
           Align(
             alignment: Alignment.centerLeft,
-            child: PopupMenuButton<String>(
+            // v1.9: searchable — name, sports and group count tell
+            // namesakes apart; only approved coaches are offered.
+            child: OutlinedButton.icon(
               key: const Key('org-add-coach'),
-              itemBuilder: (_) => [
-                for (final c in others)
-                  PopupMenuItem(
-                    value: c.id,
-                    key: Key('org-add-coach-${c.id}'),
-                    child: Text('${c.firstName} ${c.lastName}'),
-                  ),
-              ],
-              onSelected: (id) => runGuarded(
-                context,
-                () => ref.read(organizationsRepositoryProvider).setOrgCoach(orgId, id, member: true),
-                success: l.orgSaved,
-              ),
-              child: Chip(avatar: const Icon(Icons.person_add_rounded), label: Text(l.orgAddCoach)),
+              icon: const Icon(Icons.person_add_rounded),
+              label: Text(l.orgAddCoach),
+              onPressed: () async {
+                final sports = ref.read(sportsByIdProvider);
+                final id = await showAppPicker<String>(
+                  context,
+                  title: l.orgAddCoach,
+                  options: coachOptions(context, others, sportName: (s) => sports[s]?.label(context) ?? s),
+                );
+                if (id == null || !context.mounted) return;
+                await runGuarded(
+                  context,
+                  () => ref.read(organizationsRepositoryProvider).setOrgCoach(orgId, id, member: true),
+                  success: l.coachAddedSnack,
+                );
+              },
             ),
           ),
       ],
@@ -2317,6 +2334,21 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
         .where((c) => c.clubIds.contains(widget.orgId))
         .toList();
     final programs = ref.watch(programsProvider(widget.orgId)).value ?? const <SportsProgram>[];
+    final sportsById = ref.watch(sportsByIdProvider);
+    String sportName(String id) => sportsById[id]?.label(context) ?? id;
+    // v1.9: rooms already taken at the chosen time are shown (not hidden)
+    // with the session that occupies them; the server still decides.
+    final startAt = _startAt;
+    final endAt = startAt.add(Duration(minutes: _duration));
+    final busy = <String, String>{
+      for (final b in _bookingIndex.values)
+        if (b.orgId == widget.orgId &&
+            b.isActive &&
+            b.id != widget.existing?.id &&
+            b.startAt.isBefore(endAt) &&
+            b.endAt.isAfter(startAt))
+          b.roomId: l.roomBusyWith(b.title, '${f.wt(b.startAt, _tz)}–${f.wt(b.endAt, _tz)}'),
+    };
     final shown = _rejected?.conflicts ?? _conflicts;
     final blocked = ConflictChecker.isBlocked(shown);
     final groupWarning = shown.any((c) => c.code == ConflictCode.groupOverlap);
@@ -2351,12 +2383,13 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                   ),
                   SizedBox(
                     width: 250,
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
+                    child: AppPickerField<String>(
                       key: const Key('booking-room'),
-                      initialValue: _room,
-                      decoration: InputDecoration(labelText: l.roomLabel),
-                      items: [for (final r in rooms) DropdownMenuItem(value: r.id, child: Text(r.name))],
+                      label: l.roomLabel,
+                      icon: Icons.meeting_room_rounded,
+                      required: true,
+                      value: _room,
+                      options: roomOptions(context, rooms, sportName: sportName, busy: busy),
                       onChanged: (v) => _changed(() => _room = v),
                     ),
                   ),
@@ -2371,17 +2404,23 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                   if (_kind != BookingKind.maintenance) ...[
                     SizedBox(
                       width: 250,
-                      child: DropdownButtonFormField<String?>(
+                      child: AppPickerField<String>(
                         key: const Key('booking-group'),
-                        initialValue: _group,
-                        isExpanded: true,
-                        decoration: InputDecoration(labelText: l.bookingGroup),
-                        items: [
-                          DropdownMenuItem(value: null, child: Text(l.none)),
-                          for (final g in groups) DropdownMenuItem(value: g.group.id, child: Text(g.group.name)),
+                        label: l.bookingGroup,
+                        icon: Icons.groups_rounded,
+                        value: _group ?? '',
+                        options: [
+                          AppPickerOption(value: '', label: l.none),
+                          ...groupOptions(
+                            context,
+                            groups.map((g) => g.group),
+                            sportName: sportName,
+                            coachName: (id) => coaches.where((c) => c.id == id).firstOrNull?.fullName ?? '',
+                            sportIconOf: (id) => sportsById[id]?.icon,
+                          ),
                         ],
                         onChanged: (v) => _changed(() {
-                          _group = v;
+                          _group = v.isEmpty ? null : v;
                           final g = groups.where((x) => x.group.id == v).firstOrNull;
                           if (g != null && _coach == null && g.group.coachIds.isNotEmpty) {
                             _coach = g.group.coachIds.first;
@@ -2391,30 +2430,31 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                     ),
                     SizedBox(
                       width: 250,
-                      child: DropdownButtonFormField<String?>(
+                      child: AppPickerField<String>(
                         key: const Key('booking-coach'),
-                        initialValue: _coach,
-                        isExpanded: true,
-                        decoration: InputDecoration(labelText: l.bookingCoach),
-                        items: [
-                          DropdownMenuItem(value: null, child: Text(l.none)),
-                          for (final c in coaches)
-                            DropdownMenuItem(value: c.id, child: Text('${c.firstName} ${c.lastName}')),
+                        label: l.bookingCoach,
+                        icon: Icons.sports_rounded,
+                        value: _coach ?? '',
+                        options: [
+                          AppPickerOption(value: '', label: l.none),
+                          ...coachOptions(context, coaches, sportName: sportName),
                         ],
-                        onChanged: (v) => _changed(() => _coach = v),
+                        onChanged: (v) => _changed(() => _coach = v.isEmpty ? null : v),
                       ),
                     ),
                     SizedBox(
                       width: 250,
-                      child: DropdownButtonFormField<String?>(
-                        initialValue: _program,
-                        isExpanded: true,
-                        decoration: InputDecoration(labelText: l.adminNavPrograms),
-                        items: [
-                          DropdownMenuItem(value: null, child: Text(l.none)),
-                          for (final p in programs) DropdownMenuItem(value: p.id, child: Text(p.name)),
+                      child: AppPickerField<String>(
+                        key: const Key('booking-program'),
+                        label: l.adminNavPrograms,
+                        icon: Icons.sports_handball_rounded,
+                        value: _program ?? '',
+                        options: [
+                          AppPickerOption(value: '', label: l.none),
+                          for (final p in programs)
+                            AppPickerOption(value: p.id, label: p.name, subtitle: sportName(p.sportId)),
                         ],
-                        onChanged: (v) => _changed(() => _program = v),
+                        onChanged: (v) => _changed(() => _program = v.isEmpty ? null : v),
                       ),
                     ),
                   ],

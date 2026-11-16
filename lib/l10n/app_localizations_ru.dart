@@ -5821,4 +5821,44 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get bookingKeepAsIs => 'Оставить как было';
+
+  @override
+  String roomBusyWith(String title, String time) {
+    return 'Занято: «$title» $time';
+  }
+
+  @override
+  String confirmRemoveCoachBody(String name) {
+    return '$name больше не будет тренером этой организации. Группы и история сохранятся.';
+  }
+
+  @override
+  String get coachRemovedSnack => 'Тренер удалён из организации';
+
+  @override
+  String get coachAddedSnack => 'Тренер добавлен в организацию';
+
+  @override
+  String get wizBasics => 'Основное';
+
+  @override
+  String get wizPackage => 'Пакет';
+
+  @override
+  String get wizFeatures => 'Функции';
+
+  @override
+  String get wizAdmin => 'Администратор';
+
+  @override
+  String get wizReview => 'Проверка';
+
+  @override
+  String get wizFixErrors => 'Исправьте отмеченные поля, чтобы продолжить.';
+
+  @override
+  String get venueGroupClub => 'Площадки вашего клуба';
+
+  @override
+  String get venueGroupOther => 'Другие площадки для этого спорта';
 }

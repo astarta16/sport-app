@@ -1758,5 +1758,17 @@
   "attendanceRemainingAs": "Остальные: {status}",
   "bookingPickTime": "Свободное время рядом — нажмите, чтобы перенести",
   "bookingPickRoom": "Свободные в это время помещения — нажмите, чтобы выбрать",
-  "bookingKeepAsIs": "Оставить как было"
+  "bookingKeepAsIs": "Оставить как было",
+  "roomBusyWith": "Занято: «{title}» {time}",
+  "confirmRemoveCoachBody": "{name} больше не будет тренером этой организации. Группы и история сохранятся.",
+  "coachRemovedSnack": "Тренер удалён из организации",
+  "coachAddedSnack": "Тренер добавлен в организацию",
+  "wizBasics": "Основное",
+  "wizPackage": "Пакет",
+  "wizFeatures": "Функции",
+  "wizAdmin": "Администратор",
+  "wizReview": "Проверка",
+  "wizFixErrors": "Исправьте отмеченные поля, чтобы продолжить.",
+  "venueGroupClub": "Площадки вашего клуба",
+  "venueGroupOther": "Другие площадки для этого спорта"
 }

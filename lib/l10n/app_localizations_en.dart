@@ -5770,4 +5770,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookingKeepAsIs => 'Keep as it was';
+
+  @override
+  String roomBusyWith(String title, String time) {
+    return 'Busy: «$title» $time';
+  }
+
+  @override
+  String confirmRemoveCoachBody(String name) {
+    return '$name will no longer be a coach of this organization. Their groups and history stay.';
+  }
+
+  @override
+  String get coachRemovedSnack => 'Coach removed from the organization';
+
+  @override
+  String get coachAddedSnack => 'Coach added to the organization';
+
+  @override
+  String get wizBasics => 'Basics';
+
+  @override
+  String get wizPackage => 'Package';
+
+  @override
+  String get wizFeatures => 'Features';
+
+  @override
+  String get wizAdmin => 'Administrator';
+
+  @override
+  String get wizReview => 'Review';
+
+  @override
+  String get wizFixErrors => 'Please fix the highlighted fields to continue.';
+
+  @override
+  String get venueGroupClub => 'Your club\'s venues';
+
+  @override
+  String get venueGroupOther => 'Other venues for this sport';
 }

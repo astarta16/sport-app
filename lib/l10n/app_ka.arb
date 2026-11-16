@@ -3259,5 +3259,34 @@
   },
   "bookingPickTime": "ახლომდებარე თავისუფალი დრო — შეეხეთ, რომ იქ გადაიტანოთ",
   "bookingPickRoom": "ამ დროს თავისუფალი ოთახები — შეეხეთ ასარჩევად",
-  "bookingKeepAsIs": "დატოვება როგორც იყო"
+  "bookingKeepAsIs": "დატოვება როგორც იყო",
+  "roomBusyWith": "დაკავებულია: «{title}» {time}",
+  "@roomBusyWith": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmRemoveCoachBody": "{name} აღარ იქნება ამ ორგანიზაციის მწვრთნელი. ჯგუფები და ისტორია შენარჩუნდება.",
+  "@confirmRemoveCoachBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coachRemovedSnack": "მწვრთნელი ორგანიზაციიდან მოიხსნა",
+  "coachAddedSnack": "მწვრთნელი დაემატა ორგანიზაციას",
+  "wizBasics": "ძირითადი",
+  "wizPackage": "პაკეტი",
+  "wizFeatures": "ფუნქციები",
+  "wizAdmin": "ადმინისტრატორი",
+  "wizReview": "გადახედვა",
+  "wizFixErrors": "გასაგრძელებლად შეასწორეთ მონიშნული ველები.",
+  "venueGroupClub": "თქვენი კლუბის ადგილები",
+  "venueGroupOther": "ამ სპორტის სხვა ადგილები"
 }
