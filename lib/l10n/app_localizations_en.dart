@@ -5079,4 +5079,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleWeek => 'Week';
+
+  @override
+  String sysEventRescheduled(String when) {
+    return 'Schedule changed: $when. Please confirm attendance again.';
+  }
+
+  @override
+  String get sysEventRescheduledNoTime =>
+      'The schedule changed. Please confirm attendance again.';
 }

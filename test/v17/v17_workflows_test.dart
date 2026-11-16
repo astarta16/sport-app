@@ -389,7 +389,7 @@ void main() {
 
       // Parents get an acknowledgment request; acknowledging ≠ "will attend".
       final notice = db.messages[DemoSeedV17.volleyGroup]!.lastWhere(
-        (m) => m.systemKey == 'scheduleChanged' && m.systemArgs['eventId'] == t.id,
+        (m) => m.systemKey == 'eventRescheduled' && m.systemArgs['eventId'] == t.id,
       );
       expect(notice.requiresAck, isTrue);
       expect(notice.systemArgs['eventId'], t.id);

@@ -61,7 +61,7 @@ Layouts follow the **window width** (so Split View, Slide Over and Stage Manager
 | 840–1199 | expanded (iPad portrait, iPad mini landscape) | navigation rail | two-column dashboards, chat master-detail, calendar beside lists, two-column forms/profile, roster grid, map side panel |
 | ≥ 1200 | large (iPad Air/Pro landscape) | sidebar (extended rail) | + coach group list as master pane, calendar with training-detail pane |
 
-## Admin web dashboard (v1.3)
+## Admin web dashboard (v1.3, multi-tenant since v1.7)
 
 ```bash
 flutter run -d chrome -t lib/main_admin.dart          # demo: platform admin / club admin / "parent" (denied)
@@ -79,11 +79,47 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.6.1 --build-number=19
+  --build-name=1.7.0 --build-number=20
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.7: multi-academy SaaS
+
+- **Organizations (tenants):**
+  - each sports school runs with its own data, branding, modules and limits;
+  - the Platform Super Admin creates schools and assigns their admins;
+  - organization admins manage only their own school;
+  - modules are enforced on the server.
+  - Docs: [multi-tenant architecture](docs/multi-tenant-architecture.md),
+    [organization admin guide](docs/organization-admin-guide.md).
+- **Room scheduling:**
+  - halls with opening hours, capacity and maintenance;
+  - a day/week calendar with drag-to-move;
+  - conflict-free bookings checked atomically on the server;
+  - recurring sessions checked all-or-nothing;
+  - suggested free times and rooms.
+  - Docs: [room scheduling](docs/room-scheduling.md).
+- **RSVP for trainings and matches:**
+  - answers per guardian; reschedules ask for reconfirmation;
+  - a separate "გავეცანი" acknowledgment;
+  - coach counters (confirmed / declined / not sure / no response / reconfirm);
+  - attendance rosters for matches.
+- **Student dashboard:**
+  - upcoming trainings and matches with venue, map and directions;
+  - coach profiles;
+  - "Contact coach", mediated by the parent;
+  - real points and progress;
+  - opt-in academy leaderboards ([policy](docs/leaderboard-policy.md)).
+- **New sports:** volleyball and badminton, with localized names from the catalog.
+- **Demo:**
+  - Tianeti Sports School and Mtskheta Youth Academy;
+  - new quick sign-ins: **ეკა ხუციშვილი** (parent), **ნინო გელაშვილი** (coach);
+  - Admin Web: **თამარ ლომიძე** (Tianeti admin), **დავით კობახიძე** (Mtskheta admin).
+
+Details and verification: [docs/beta-v1.7-progress.md](docs/beta-v1.7-progress.md).
+Upgrade notes: [docs/firebase-migration-plan.md](docs/firebase-migration-plan.md).
 
 ## What's new in v1.6.1
 
@@ -184,7 +220,8 @@ lib/
 functions/        Cloud Functions (TypeScript) + unit tests
 rules-tests/      Firestore/Storage rules tests + functions smoke test (emulators)
 firestore.rules  storage.rules  firestore.indexes.json  firebase.json
-tool/strings*.py  single source for both ARB files (strings, strings_v12, strings_admin) → `python3 tool/gen_arb.py`
+lib/l10n/*.arb   source of truth for strings since v1.4; add new ones with `python3 tool/add_l10n.py tool/strings_v17.json`
+                 (tool/gen_arb.py is legacy and refuses to run: it would drop every string added after v1.3)
 docs/             assumptions, implementation progress, backend
 ```
 
@@ -193,10 +230,12 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 318 tests (responsive, security, workflows, admin, l10n, v1.3–v1.6.1 flows, games)
-cd functions && npm install && npm run build && npm test      # 215 tests
-cd rules-tests && npm install && npm run test:emulator        # 167 rules tests (Java 17+)
+flutter test                                   # 383 tests (… v1.3–v1.7 flows, games, scheduling, tenants)
+cd functions && npm install && npm run build && npm test      # 229 tests
+cd rules-tests && npm install && npm run test:emulator        # 185 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps
+# v1.7 callables (from rules-tests/): npx firebase emulators:exec --config ../firebase.json \
+#   --only functions,firestore,auth --project demo-sport-parent "node ../functions/test-integration/v17.integration.mjs"
 ```
 
 ## Security model (summary)

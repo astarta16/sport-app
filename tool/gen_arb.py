@@ -1,3 +1,10 @@
+"""LEGACY (v1.0–v1.3 only). Since v1.4 the ARB files in lib/l10n are the source
+of truth: running this script would DROP every string added after v1.3.
+Add new strings with `python3 tool/add_l10n.py <file.json>` (see tool/strings_v17.json).
+"""
+import sys
+if '--i-know-this-drops-strings' not in sys.argv:
+    raise SystemExit('gen_arb.py is legacy and would delete v1.4+ strings; use tool/add_l10n.py')
 """Generates lib/l10n/app_{ka,en,ru}.arb from tool/strings*.py (tuples: ka, en, ru)."""
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))

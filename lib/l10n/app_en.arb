@@ -1504,5 +1504,7 @@
   "scheduleDay": "Day",
   "scheduleFree": "Free",
   "scheduleSubtitle": "Times shown in {tz}. Tap a free slot to book, drag a booking to move it.",
-  "scheduleWeek": "Week"
+  "scheduleWeek": "Week",
+  "sysEventRescheduled": "Schedule changed: {when}. Please confirm attendance again.",
+  "sysEventRescheduledNoTime": "The schedule changed. Please confirm attendance again."
 }

@@ -5112,4 +5112,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get scheduleWeek => 'Неделя';
+
+  @override
+  String sysEventRescheduled(String when) {
+    return 'Расписание изменилось: $when. Пожалуйста, подтвердите участие ещё раз.';
+  }
+
+  @override
+  String get sysEventRescheduledNoTime =>
+      'Расписание изменилось. Пожалуйста, подтвердите участие ещё раз.';
 }

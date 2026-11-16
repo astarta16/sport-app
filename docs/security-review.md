@@ -95,6 +95,108 @@ Server rate limits per user per day: invites 30, reports 20, join-by-code 20, ve
 - **Brain Academy results** are create-only by the linked student, server-timed and bounded; readable by the student, the child's parents and coaches — not by admins or other parents. **Challenges** are written only by coaches of the group.
 - No public leaderboards, no ads, no IQ claims; scores are labelled as practice points.
 
+## v1.7 additions (multi-tenant SaaS)
+
+Verified on the local emulator (rules tests `rules-tests/test/v17.rules.test.js`,
+callable integration `functions/test-integration/v17.integration.mjs`) and in
+the demo backend (`test/v17/v17_workflows_test.dart`). All attacks below were
+rejected.
+
+**Cross-tenant reads and writes**
+
+- An organization admin reads or books another tenant's rooms, bookings,
+  programs, members, reports or health.
+- A Tianeti booking points at another tenant's room or group (`wrongTenant`).
+- Mtskheta's admin reads Tianeti's room plan.
+
+**Cross-tenant files**
+
+- One organization's admin uploads to another organization's
+  `orgs/{clubId}/branding`.
+- Any other `orgs/**` path is used.
+
+**Role escalation**
+
+- An organization admin writes `orgConfigs` directly.
+- An organization admin changes status, plan, allowed modules or limits, or
+  assigns admins (all platform-only).
+- An organization admin creates a new organization.
+- An organization admin self-enables leaderboards or another module the
+  platform did not allow.
+
+**Feature-flag bypass**
+
+- RSVP for an event in an organization where `attendance` is enabled but not
+  allowed.
+- Creating trainings or matches in a suspended organization, or with
+  `trainings` off.
+- Booking a room after the platform withdrew `roomScheduling`. Withdrawing a
+  module also switches it off.
+
+**Room bookings**
+
+- Direct client writes to `bookings`, `rooms` or `roomLocks`.
+- Overlapping, adjacent-within-buffer, maintenance, closed-room,
+  outside-hours, over-capacity and coach double-booking requests.
+- Three concurrent requests for one slot: exactly one succeeds.
+- A series with one conflicting occurrence writes nothing.
+
+**Child accounts**
+
+- A student answers RSVPs, reads another child's attendance, reads chats,
+  sets leaderboard consent, or contacts a coach outside their own group.
+- Students never see phone numbers.
+- Coach contact is mediated by the guardian: the coach is not notified and
+  there is no student ↔ coach messaging.
+
+**Guardian consent**
+
+- Only a guardian of the child can grant or revoke it (not the child, a coach
+  or the organization).
+- Revocation removes the child immediately.
+
+**Leaderboard privacy**
+
+- No global or cross-organization board.
+- A minimum number of participants is required.
+- Ranking happens within the age band.
+- Only pseudonyms or first name + initial are shown.
+- Totals are computed on the server only.
+
+**Attendance changes**
+
+- Only an approved coach of the event's group marks attendance (training or
+  match), and the event type must match.
+- Students read their own records only.
+- Admins of another club read nothing.
+
+**Score abuse**
+
+- Results are create-only, so a retry with the same id can't overwrite.
+- Client-side totals are rejected.
+- Repeat factors and a daily cap limit farming.
+
+**Schedule versions**
+
+- A reschedule without a version bump is rejected.
+- A bump without a material change is rejected.
+- An RSVP for a stale version is rejected.
+- Room-linked trainings change time only through the booking callables.
+
+**Organization deactivation**
+
+- Every module is off and nothing new can be created.
+- Data stays readable to its owners.
+
+**Medical data** is unchanged: organization admins get counts only, never
+certificates.
+
+**Honest limits**
+
+- Brain Academy results are produced on the device, so plausibility checks
+  and caps limit the effect of fabricated results but can't rule them out.
+- Production App Check for the new callables is still to do.
+
 ## Open items before production
 
 1. App Check enforcement (Firestore, Storage, Functions).
@@ -102,4 +204,5 @@ Server rate limits per user per day: invites 30, reports 20, join-by-code 20, ve
 3. A penetration test against a staging project, with real Phone Auth.
 4. Video transcoding worker, and server-side EXIF/geo stripping for photos.
 5. ~~Server attendance / feedback notifications~~ (done in v1.3.1).
-6. Deploy the v1.4 indexes (collection-group `msgReads` / `msgAcks`, `receipts`, `mediaDownloads`).
+6. v1.7: legal/privacy review of leaderboard consent and student accounts before enabling them for any real organization; DST-aware time zones; App Check on the new callables.
+7. Deploy the v1.4 indexes (collection-group `msgReads` / `msgAcks`, `receipts`, `mediaDownloads`).

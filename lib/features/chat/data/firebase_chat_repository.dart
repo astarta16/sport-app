@@ -343,6 +343,7 @@ class FirebaseChatRepository implements ChatRepository {
                           groupId: a['groupId'].toString(),
                           messageId: a['messageId'].toString(),
                           eventId: a['eventId']?.toString(),
+                          eventType: a['eventType']?.toString(),
                         ),
                   ];
                   emit();

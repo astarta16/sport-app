@@ -389,6 +389,7 @@ String systemMessageText(BuildContext context, ChatMessage m) {
     'matchCancelled' => l.sysMatchCancelled(a['opponent'] ?? '', reason),
     'scheduleCreated' => l.sysScheduleCreated,
     'scheduleChanged' => l.sysScheduleChanged(a['from'] ?? ''),
+    'eventRescheduled' => (a['when'] ?? '').isEmpty ? l.sysEventRescheduledNoTime : l.sysEventRescheduled(a['when']!),
     'planPublished' => l.sysPlanPublished(a['title'] ?? ''),
     _ => m.text,
   };

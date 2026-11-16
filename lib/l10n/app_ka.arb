@@ -2894,5 +2894,14 @@
       }
     }
   },
-  "scheduleWeek": "კვირა"
+  "scheduleWeek": "კვირა",
+  "sysEventRescheduled": "განრიგი შეიცვალა: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "@sysEventRescheduled": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sysEventRescheduledNoTime": "განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება."
 }

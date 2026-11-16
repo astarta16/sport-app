@@ -1,0 +1,1097 @@
+{
+ "rsvpTitleMatch": {
+  "en": "Coming to the match?",
+  "ka": "მოვა თამაშზე?",
+  "ru": "Придёт на матч?"
+ },
+ "scheduleChangedTitle": {
+  "en": "The schedule has changed",
+  "ka": "განრიგი შეიცვალა",
+  "ru": "Расписание изменилось"
+ },
+ "scheduleChangedBody": {
+  "en": "New time: {when}. Please confirm attendance again.",
+  "ka": "ახალი დრო: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "ru": "Новое время: {when}. Пожалуйста, подтвердите участие ещё раз."
+ },
+ "ackIsNotRsvp": {
+  "en": "\"Got it\" only confirms you have read the change — it does not answer whether your child will attend.",
+  "ka": "„გავეცანი“ მხოლოდ ადასტურებს, რომ ცვლილებას გაეცანით — ეს არ ნიშნავს, რომ ბავშვი მოვა.",
+  "ru": "«Ознакомлен(а)» лишь подтверждает, что вы прочитали изменение, — это не ответ об участии ребёнка."
+ },
+ "ackButton": {
+  "en": "Got it",
+  "ka": "გავეცანი",
+  "ru": "Ознакомлен(а)"
+ },
+ "ackDone": {
+  "en": "Marked as read",
+  "ka": "მონიშნულია, რომ გაეცანით",
+  "ru": "Отмечено как прочитанное"
+ },
+ "rsvpNeedsReconfirm": {
+  "en": "Needs reconfirmation",
+  "ka": "საჭიროა ხელახლა დადასტურება",
+  "ru": "Нужно подтвердить снова"
+ },
+ "rsvpPreviousAnswer": {
+  "en": "Your answer for the previous schedule: {answer}",
+  "ka": "თქვენი პასუხი წინა განრიგზე: {answer}",
+  "ru": "Ваш ответ на прежнее расписание: {answer}"
+ },
+ "rsvpGuardiansDisagree": {
+  "en": "Guardians gave different answers — the latest answer counts.",
+  "ka": "მეურვეებმა სხვადასხვა პასუხი გასცეს — მოქმედებს ბოლო პასუხი.",
+  "ru": "Опекуны ответили по-разному — учитывается последний ответ."
+ },
+ "guardianLabel": {
+  "en": "Guardian",
+  "ka": "მეურვე",
+  "ru": "Опекун"
+ },
+ "rsvpOldSchedule": {
+  "en": "old schedule",
+  "ka": "ძველი განრიგი",
+  "ru": "старое расписание"
+ },
+ "rsvpStateConfirmed": {
+  "en": "Confirmed",
+  "ka": "დადასტურებული",
+  "ru": "Подтвердили"
+ },
+ "rsvpStateDeclined": {
+  "en": "Declined",
+  "ka": "ვერ მოვა",
+  "ru": "Не придут"
+ },
+ "rsvpStateUncertain": {
+  "en": "Not sure",
+  "ka": "ჯერ უცნობია",
+  "ru": "Не уверены"
+ },
+ "rsvpStateNotResponded": {
+  "en": "No response",
+  "ka": "უპასუხოდ",
+  "ru": "Нет ответа"
+ },
+ "contactCoach": {
+  "en": "Contact coach",
+  "ka": "მწვრთნელთან კონტაქტი",
+  "ru": "Связаться с тренером"
+ },
+ "contactCoachTitle": {
+  "en": "Contact {coach}",
+  "ka": "კონტაქტი: {coach}",
+  "ru": "Связаться: {coach}"
+ },
+ "contactCoachExplain": {
+  "en": "Your parent will get your request and can write to or call the coach. You do not chat with the coach directly.",
+  "ka": "შენს მშობელს მიუვა მოთხოვნა და ის მისწერს ან დაურეკავს მწვრთნელს. მწვრთნელთან პირდაპირ არ წერ.",
+  "ru": "Твой родитель получит запрос и напишет или позвонит тренеру. Ты не переписываешься с тренером напрямую."
+ },
+ "contactCoachSent": {
+  "en": "Your parent has been asked to contact the coach",
+  "ka": "მშობელს ეცნობა, რომ დაუკავშირდეს მწვრთნელს",
+  "ru": "Родителю отправлена просьба связаться с тренером"
+ },
+ "contactCoachPending": {
+  "en": "Request sent to your parent",
+  "ka": "მოთხოვნა გაეგზავნა მშობელს",
+  "ru": "Запрос отправлен родителю"
+ },
+ "contactTopicQuestion": {
+  "en": "I have a question",
+  "ka": "მაქვს შეკითხვა",
+  "ru": "У меня вопрос"
+ },
+ "contactTopicAbsence": {
+  "en": "I can't come",
+  "ka": "ვერ მოვალ",
+  "ru": "Я не смогу прийти"
+ },
+ "contactTopicTraining": {
+  "en": "About training",
+  "ka": "ვარჯიშის შესახებ",
+  "ru": "О тренировке"
+ },
+ "contactTopicOther": {
+  "en": "Something else",
+  "ka": "სხვა",
+  "ru": "Другое"
+ },
+ "eventRescheduled": {
+  "en": "Rescheduled",
+  "ka": "გადატანილია",
+  "ru": "Перенесено"
+ },
+ "eventLocationChanged": {
+  "en": "Location changed",
+  "ka": "ადგილი შეიცვალა",
+  "ru": "Место изменилось"
+ },
+ "eventShowMap": {
+  "en": "Map",
+  "ka": "რუკა",
+  "ru": "Карта"
+ },
+ "studentUpcomingEvents": {
+  "en": "Upcoming trainings and matches",
+  "ka": "მომავალი ვარჯიშები და თამაშები",
+  "ru": "Ближайшие тренировки и матчи"
+ },
+ "leaderboardTitle": {
+  "en": "Leaderboard · {org}",
+  "ka": "ლიდერბორდი · {org}",
+  "ru": "Рейтинг · {org}"
+ },
+ "leaderboardAllGames": {
+  "en": "All games",
+  "ka": "ყველა თამაში",
+  "ru": "Все игры"
+ },
+ "leaderboardWeek": {
+  "en": "This week",
+  "ka": "ეს კვირა",
+  "ru": "Эта неделя"
+ },
+ "leaderboardMonth": {
+  "en": "This month",
+  "ka": "ეს თვე",
+  "ru": "Этот месяц"
+ },
+ "leaderboardAllTime": {
+  "en": "All time",
+  "ka": "სულ",
+  "ru": "За всё время"
+ },
+ "leaderboardAgeBand": {
+  "en": "Age group {band}",
+  "ka": "ასაკობრივი ჯგუფი {band}",
+  "ru": "Возрастная группа {band}"
+ },
+ "leaderboardYou": {
+  "en": "you",
+  "ka": "შენ",
+  "ru": "ты"
+ },
+ "leaderboardBadges": {
+  "en": "{count} badges",
+  "ka": "{count} ნიშანი",
+  "ru": "Значков: {count}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "leaderboardDisabled": {
+  "en": "The leaderboard is not available right now. Your own progress is shown above.",
+  "ka": "ლიდერბორდი ახლა მიუწვდომელია. შენი პროგრესი ზემოთ ჩანს.",
+  "ru": "Рейтинг сейчас недоступен. Твой прогресс показан выше."
+ },
+ "leaderboardNoConsent": {
+  "en": "You appear on the leaderboard only if your parent allows it. Your private progress is shown above.",
+  "ka": "ლიდერბორდზე მხოლოდ მშობლის ნებართვით გამოჩნდები. შენი პირადი პროგრესი ზემოთ ჩანს.",
+  "ru": "Ты появишься в рейтинге только с разрешения родителя. Твой личный прогресс показан выше."
+ },
+ "leaderboardTooFew": {
+  "en": "Not enough players in your age group yet. Your private progress is shown above.",
+  "ka": "შენს ასაკობრივ ჯგუფში ჯერ საკმარისი მოთამაშე არ არის. შენი პროგრესი ზემოთ ჩანს.",
+  "ru": "В твоей возрастной группе пока мало участников. Твой прогресс показан выше."
+ },
+ "leaderboardPrivacyNote": {
+  "en": "Only nicknames or first names with an initial are shown. Points are for fun and practice — they do not measure intelligence.",
+  "ka": "ჩანს მხოლოდ ფსევდონიმი ან სახელი და ინიციალი. ქულები გართობისა და ვარჯიშისთვისაა — ისინი ინტელექტს არ ზომავს.",
+  "ru": "Показываются только псевдонимы или имя с инициалом. Очки — для игры и тренировки, они не измеряют интеллект."
+ },
+ "pointsTotal": {
+  "en": "Points",
+  "ka": "ქულა",
+  "ru": "Очки"
+ },
+ "pointsGamesCompleted": {
+  "en": "Games completed",
+  "ka": "დასრულებული თამაში",
+  "ru": "Пройдено игр"
+ },
+ "pointsThisWeek": {
+  "en": "This week",
+  "ka": "ამ კვირაში",
+  "ru": "За неделю"
+ },
+ "pointsWeekly": {
+  "en": "Points in the last 7 days",
+  "ka": "ქულები ბოლო 7 დღეში",
+  "ru": "Очки за последние 7 дней"
+ },
+ "pointsByGame": {
+  "en": "Points by game",
+  "ka": "ქულები თამაშების მიხედვით",
+  "ru": "Очки по играм"
+ },
+ "pointsRecent": {
+  "en": "Recent games",
+  "ka": "ბოლო თამაშები",
+  "ru": "Последние игры"
+ },
+ "pointsValue": {
+  "en": "{points} pts",
+  "ka": "{points} ქ.",
+  "ru": "{points} оч.",
+  "ph": {
+   "points": "int"
+  }
+ },
+ "pointsAccuracy": {
+  "en": "Accuracy {percent}%",
+  "ka": "სიზუსტე {percent}%",
+  "ru": "Точность {percent}%",
+  "ph": {
+   "percent": "int"
+  }
+ },
+ "pointsBest": {
+  "en": "best {score}",
+  "ka": "საუკეთესო {score}",
+  "ru": "лучший {score}",
+  "ph": {
+   "score": "int"
+  }
+ },
+ "contactDone": {
+  "en": "Done",
+  "ka": "შესრულდა",
+  "ru": "Готово"
+ },
+ "contactOpenChat": {
+  "en": "Open chat with the coach",
+  "ka": "მწვრთნელთან ჩატი",
+  "ru": "Открыть чат с тренером"
+ },
+ "contactRequestFromChild": {
+  "en": "{child} asks you to contact coach {coach}",
+  "ka": "{child} გთხოვთ, დაუკავშირდეთ მწვრთნელს: {coach}",
+  "ru": "{child} просит связаться с тренером {coach}"
+ },
+ "leaderboardConsentTitle": {
+  "en": "Brain Academy leaderboard",
+  "ka": "Brain Academy-ის ლიდერბორდი",
+  "ru": "Рейтинг Brain Academy"
+ },
+ "leaderboardConsentExplain": {
+  "en": "Off by default. If you allow it, your child appears only on this academy's private leaderboard, with a nickname or first name and initial — never a full name, phone, birth date or health data. You can withdraw consent at any time.",
+  "ka": "ნაგულისხმევად გამორთულია. თუ დართავთ ნებას, ბავშვი გამოჩნდება მხოლოდ ამ აკადემიის დახურულ ლიდერბორდზე ფსევდონიმით ან სახელითა და ინიციალით — არასოდეს სრული სახელით, ტელეფონით, დაბადების თარიღით ან ჯანმრთელობის მონაცემებით. თანხმობის გაუქმება ნებისმიერ დროს შეგიძლიათ.",
+  "ru": "По умолчанию выключено. Если вы разрешите, ребёнок появится только в закрытом рейтинге этой академии — под псевдонимом или с именем и инициалом, без полного имени, телефона, даты рождения и данных о здоровье. Согласие можно отозвать в любой момент."
+ },
+ "leaderboardConsentOn": {
+  "en": "Leaderboard consent saved",
+  "ka": "თანხმობა შენახულია",
+  "ru": "Согласие сохранено"
+ },
+ "leaderboardConsentOff": {
+  "en": "Consent withdrawn — your child is no longer shown",
+  "ka": "თანხმობა გაუქმდა — ბავშვი აღარ ჩანს",
+  "ru": "Согласие отозвано — ребёнок больше не показывается"
+ },
+ "leaderboardConsentOffHint": {
+  "en": "Not shown on the leaderboard",
+  "ka": "ლიდერბორდზე არ ჩანს",
+  "ru": "Не показывается в рейтинге"
+ },
+ "leaderboardModePseudonym": {
+  "en": "Nickname",
+  "ka": "ფსევდონიმი",
+  "ru": "Псевдоним"
+ },
+ "leaderboardModeInitial": {
+  "en": "First name + initial",
+  "ka": "სახელი + ინიციალი",
+  "ru": "Имя + инициал"
+ },
+ "orgSwitchTitle": {
+  "en": "Choose academy",
+  "ka": "აირჩიეთ აკადემია",
+  "ru": "Выберите академию"
+ },
+ "adminColSport": {
+  "en": "Sport",
+  "ka": "სპორტი",
+  "ru": "Спорт"
+ },
+ "adminNavOrganizations": {
+  "en": "Organizations",
+  "ka": "ორგანიზაციები",
+  "ru": "Организации"
+ },
+ "adminNavOrgSettings": {
+  "en": "Academy settings",
+  "ka": "აკადემიის პარამეტრები",
+  "ru": "Настройки академии"
+ },
+ "adminNavPrograms": {
+  "en": "Programs",
+  "ka": "პროგრამები",
+  "ru": "Программы"
+ },
+ "adminNavReports": {
+  "en": "Reports",
+  "ka": "ანგარიშები",
+  "ru": "Отчёты"
+ },
+ "adminNavRooms": {
+  "en": "Rooms and halls",
+  "ka": "დარბაზები",
+  "ru": "Залы"
+ },
+ "adminNavSchedule": {
+  "en": "Room schedule",
+  "ka": "დარბაზების განრიგი",
+  "ru": "Расписание залов"
+ },
+ "adminNavSectionPlatform": {
+  "en": "Platform",
+  "ka": "პლატფორმა",
+  "ru": "Платформа"
+ },
+ "adminNavSectionTenant": {
+  "en": "Academy",
+  "ka": "აკადემია",
+  "ru": "Академия"
+ },
+ "bookingAllowGroupOverlap": {
+  "en": "The group really has two sessions at once — book anyway",
+  "ka": "ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა",
+  "ru": "У группы действительно два занятия одновременно — всё равно забронировать"
+ },
+ "bookingAlternatives": {
+  "en": "Free times the same day: {times}",
+  "ka": "იმავე დღეს თავისუფალი დრო: {times}",
+  "ru": "Свободное время в этот день: {times}"
+ },
+ "bookingCancel": {
+  "en": "Cancel booking",
+  "ka": "ჯავშნის გაუქმება",
+  "ru": "Отменить бронь"
+ },
+ "bookingCancelFuture": {
+  "en": "Cancel this and all later",
+  "ka": "ამის და ყველა მომდევნოს გაუქმება",
+  "ru": "Отменить это и все последующие"
+ },
+ "bookingCancelOccurrence": {
+  "en": "Cancel only this one",
+  "ka": "მხოლოდ ამის გაუქმება",
+  "ru": "Отменить только это"
+ },
+ "bookingCancelled": {
+  "en": "Booking cancelled",
+  "ka": "ჯავშანი გაუქმდა",
+  "ru": "Бронь отменена"
+ },
+ "bookingCoach": {
+  "en": "Coach",
+  "ka": "მწვრთნელი",
+  "ru": "Тренер"
+ },
+ "bookingConflictsFound": {
+  "en": "Check before saving",
+  "ka": "შეამოწმეთ შენახვამდე",
+  "ru": "Проверьте перед сохранением"
+ },
+ "bookingEdit": {
+  "en": "Edit booking",
+  "ka": "ჯავშნის რედაქტირება",
+  "ru": "Изменить бронь"
+ },
+ "bookingFreeRooms": {
+  "en": "Free rooms at this time: {rooms}",
+  "ka": "ამ დროს თავისუფალი დარბაზები: {rooms}",
+  "ru": "Свободные залы в это время: {rooms}"
+ },
+ "bookingGroup": {
+  "en": "Group",
+  "ka": "ჯგუფი",
+  "ru": "Группа"
+ },
+ "bookingKind": {
+  "en": "Type",
+  "ka": "ტიპი",
+  "ru": "Тип"
+ },
+ "bookingKindEvent": {
+  "en": "Special event",
+  "ka": "სპეციალური ღონისძიება",
+  "ru": "Мероприятие"
+ },
+ "bookingKindMaintenance": {
+  "en": "Maintenance",
+  "ka": "ტექ. მომსახურება",
+  "ru": "Обслуживание"
+ },
+ "bookingKindMatch": {
+  "en": "Match",
+  "ka": "თამაში",
+  "ru": "Матч"
+ },
+ "bookingKindTraining": {
+  "en": "Training",
+  "ka": "ვარჯიში",
+  "ru": "Тренировка"
+ },
+ "bookingMoved": {
+  "en": "Booking moved",
+  "ka": "ჯავშანი გადატანილია",
+  "ru": "Бронь перенесена"
+ },
+ "bookingNew": {
+  "en": "New booking",
+  "ka": "ახალი ჯავშანი",
+  "ru": "Новая бронь"
+ },
+ "bookingRecurring": {
+  "en": "Repeat weekly",
+  "ka": "ყოველკვირეული გამეორება",
+  "ru": "Повторять еженедельно"
+ },
+ "bookingRejected": {
+  "en": "The room cannot be booked",
+  "ka": "დარბაზის დაჯავშნა შეუძლებელია",
+  "ru": "Зал нельзя забронировать"
+ },
+ "bookingSaveFuture": {
+  "en": "Save this and later",
+  "ka": "ამის და მომდევნოების შენახვა",
+  "ru": "Сохранить это и последующие"
+ },
+ "bookingSaveOccurrence": {
+  "en": "Save only this one",
+  "ka": "მხოლოდ ამის შენახვა",
+  "ru": "Сохранить только это"
+ },
+ "bookingSaved": {
+  "en": "Booking saved",
+  "ka": "ჯავშანი შენახულია",
+  "ru": "Бронь сохранена"
+ },
+ "bookingSeriesNote": {
+  "en": "Every occurrence (up to {weeks} weeks ahead) is checked before anything is saved.",
+  "ka": "შენახვამდე მოწმდება ყველა გამეორება ({weeks} კვირამდე წინ).",
+  "ru": "Перед сохранением проверяется каждое повторение (до {weeks} недель вперёд).",
+  "ph": {
+   "weeks": "int"
+  }
+ },
+ "bookingTitle": {
+  "en": "Title",
+  "ka": "სათაური",
+  "ru": "Название"
+ },
+ "bookingTryInstead": {
+  "en": "Try one of these instead:",
+  "ka": "სცადეთ ერთ-ერთი:",
+  "ru": "Попробуйте вместо этого:"
+ },
+ "bookingUntil": {
+  "en": "Until {date}",
+  "ka": "{date}-მდე",
+  "ru": "До {date}"
+ },
+ "conflictCoachOverlap": {
+  "en": "The coach is already booked at this time",
+  "ka": "მწვრთნელი ამ დროს უკვე დაკავებულია",
+  "ru": "Тренер в это время уже занят"
+ },
+ "conflictGroupOverlap": {
+  "en": "The group already has a session at this time",
+  "ka": "ჯგუფს ამ დროს უკვე აქვს სესია",
+  "ru": "У группы в это время уже есть занятие"
+ },
+ "conflictInvalidRange": {
+  "en": "The end must be after the start",
+  "ka": "დასასრული დაწყების შემდეგ უნდა იყოს",
+  "ru": "Окончание должно быть позже начала"
+ },
+ "conflictMaintenance": {
+  "en": "The room is blocked for maintenance",
+  "ka": "დარბაზი დაბლოკილია ტექ. მომსახურებისთვის",
+  "ru": "Зал закрыт на обслуживание"
+ },
+ "conflictOutsideHours": {
+  "en": "Outside the room's opening hours",
+  "ka": "დარბაზის სამუშაო საათების გარეთ",
+  "ru": "Вне часов работы зала"
+ },
+ "conflictOverCapacity": {
+  "en": "More people than the room holds",
+  "ka": "დარბაზის ტევადობაზე მეტი ადამიანი",
+  "ru": "Людей больше, чем вмещает зал"
+ },
+ "conflictRoomNotBookable": {
+  "en": "The room is unavailable or archived",
+  "ka": "დარბაზი მიუწვდომელია ან დაარქივებულია",
+  "ru": "Зал недоступен или в архиве"
+ },
+ "conflictRoomOverlap": {
+  "en": "The room is already booked at this time",
+  "ka": "დარბაზი ამ დროს უკვე დაჯავშნილია",
+  "ru": "Зал в это время уже забронирован"
+ },
+ "conflictTooLong": {
+  "en": "A booking can last at most 12 hours",
+  "ka": "ჯავშანი მაქსიმუმ 12 საათს გრძელდება",
+  "ru": "Бронь может длиться не более 12 часов"
+ },
+ "conflictWrongTenant": {
+  "en": "The room belongs to another organization",
+  "ka": "დარბაზი სხვა ორგანიზაციას ეკუთვნის",
+  "ru": "Зал принадлежит другой организации"
+ },
+ "minutesShort": {
+  "en": "{minutes} min",
+  "ka": "{minutes} წთ",
+  "ru": "{minutes} мин",
+  "ph": {
+   "minutes": "int"
+  }
+ },
+ "moduleAttendance": {
+  "en": "Attendance",
+  "ka": "დასწრება",
+  "ru": "Посещаемость"
+ },
+ "moduleBrainAcademy": {
+  "en": "Brain Academy",
+  "ka": "Brain Academy",
+  "ru": "Brain Academy"
+ },
+ "moduleCommunication": {
+  "en": "Parent communication",
+  "ka": "მშობლებთან კომუნიკაცია",
+  "ru": "Общение с родителями"
+ },
+ "moduleDisabledRooms": {
+  "en": "Room scheduling is not enabled for this organization. The platform administrator can allow it, then you can switch it on in the academy settings.",
+  "ka": "დარბაზების განრიგი ამ ორგანიზაციისთვის ჩართული არ არის. პლატფორმის ადმინისტრატორს შეუძლია ნებართვა, შემდეგ აკადემიის პარამეტრებში ჩართავთ.",
+  "ru": "Расписание залов не включено для этой организации. Администратор платформы может разрешить его, затем включите его в настройках академии."
+ },
+ "moduleDisabledTitle": {
+  "en": "Module switched off",
+  "ka": "მოდული გამორთულია",
+  "ru": "Модуль выключен"
+ },
+ "moduleLeaderboards": {
+  "en": "Leaderboards",
+  "ka": "ლიდერბორდები",
+  "ru": "Рейтинги"
+ },
+ "moduleMatches": {
+  "en": "Matches",
+  "ka": "თამაშები",
+  "ru": "Матчи"
+ },
+ "moduleMedia": {
+  "en": "Media gallery",
+  "ka": "მედია გალერეა",
+  "ru": "Медиагалерея"
+ },
+ "moduleMedical": {
+  "en": "Medical certificates",
+  "ka": "სამედიცინო ცნობები",
+  "ru": "Медицинские справки"
+ },
+ "moduleNotifications": {
+  "en": "Notifications",
+  "ka": "შეტყობინებები",
+  "ru": "Уведомления"
+ },
+ "modulePayments": {
+  "en": "Payments",
+  "ka": "გადახდები",
+  "ru": "Платежи"
+ },
+ "moduleRoomScheduling": {
+  "en": "Room scheduling",
+  "ka": "დარბაზების განრიგი",
+  "ru": "Расписание залов"
+ },
+ "moduleStudentAccounts": {
+  "en": "Student accounts",
+  "ka": "მოსწავლის ანგარიშები",
+  "ru": "Аккаунты учеников"
+ },
+ "moduleTrainingPlans": {
+  "en": "Training plans",
+  "ka": "სავარჯიშო გეგმები",
+  "ru": "Планы тренировок"
+ },
+ "moduleTrainings": {
+  "en": "Trainings",
+  "ka": "ვარჯიშები",
+  "ru": "Тренировки"
+ },
+ "none": {
+  "en": "None",
+  "ka": "არცერთი",
+  "ru": "Нет"
+ },
+ "orgAddCoach": {
+  "en": "Add coach",
+  "ka": "მწვრთნელის დამატება",
+  "ru": "Добавить тренера"
+ },
+ "orgAdminAssigned": {
+  "en": "Administrator assigned",
+  "ka": "ადმინისტრატორი დაინიშნა",
+  "ru": "Администратор назначен"
+ },
+ "orgAdminHelp": {
+  "en": "The person can then sign in to the Admin Web and manage only this organization.",
+  "ka": "პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.",
+  "ru": "Этот человек сможет войти в админ-панель и управлять только этой организацией."
+ },
+ "orgAdmins": {
+  "en": "Admins",
+  "ka": "ადმინები",
+  "ru": "Админы"
+ },
+ "orgAllowedModules": {
+  "en": "Modules allowed by the platform",
+  "ka": "პლატფორმის მიერ დაშვებული მოდულები",
+  "ru": "Модули, разрешённые платформой"
+ },
+ "orgAssignAdmin": {
+  "en": "Assign administrator",
+  "ka": "ადმინისტრატორის დანიშვნა",
+  "ru": "Назначить администратора"
+ },
+ "orgBookingBuffer": {
+  "en": "Gap between bookings",
+  "ka": "შუალედი ჯავშნებს შორის",
+  "ru": "Перерыв между бронями"
+ },
+ "orgBookingsWeek": {
+  "en": "Room bookings in the next 7 days",
+  "ka": "დარბაზის ჯავშნები მომდევნო 7 დღეში",
+  "ru": "Брони залов на 7 дней"
+ },
+ "orgBrainPlays": {
+  "en": "Brain Academy games (7 days)",
+  "ka": "Brain Academy თამაშები (7 დღე)",
+  "ru": "Игры Brain Academy (7 дней)"
+ },
+ "orgBrandColor": {
+  "en": "Brand colour",
+  "ka": "ბრენდის ფერი",
+  "ru": "Цвет бренда"
+ },
+ "orgBranding": {
+  "en": "Branding and contacts",
+  "ka": "ბრენდი და კონტაქტები",
+  "ru": "Бренд и контакты"
+ },
+ "orgCoaches": {
+  "en": "Coaches",
+  "ka": "მწვრთნელები",
+  "ru": "Тренеры"
+ },
+ "orgContactEmail": {
+  "en": "Contact email",
+  "ka": "საკონტაქტო ელფოსტა",
+  "ru": "Контактный email"
+ },
+ "orgContactPhone": {
+  "en": "Contact phone",
+  "ka": "საკონტაქტო ტელეფონი",
+  "ru": "Контактный телефон"
+ },
+ "orgCreated": {
+  "en": "Organization created",
+  "ka": "ორგანიზაცია შეიქმნა",
+  "ru": "Организация создана"
+ },
+ "orgDefaultLanguage": {
+  "en": "Default language",
+  "ka": "ნაგულისხმევი ენა",
+  "ru": "Язык по умолчанию"
+ },
+ "orgDescription": {
+  "en": "Description",
+  "ka": "აღწერა",
+  "ru": "Описание"
+ },
+ "orgHealth": {
+  "en": "Tenant health",
+  "ka": "ორგანიზაციის მდგომარეობა",
+  "ru": "Состояние организации"
+ },
+ "orgInactiveBanner": {
+  "en": "This organization is {status}. Settings are read-only and nothing new can be created.",
+  "ka": "ორგანიზაციის სტატუსი: {status}. პარამეტრები მხოლოდ სანახავია და ახლის შექმნა შეუძლებელია.",
+  "ru": "Статус организации: {status}. Настройки только для чтения, создавать новое нельзя."
+ },
+ "orgLabel": {
+  "en": "Organization",
+  "ka": "ორგანიზაცია",
+  "ru": "Организация"
+ },
+ "orgLeaderboardByAge": {
+  "en": "Rank only within the same age group",
+  "ka": "რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით",
+  "ru": "Рейтинг только внутри возрастной группы"
+ },
+ "orgLeaderboardEnable": {
+  "en": "Enable the Brain Academy leaderboard",
+  "ka": "Brain Academy-ის ლიდერბორდის ჩართვა",
+  "ru": "Включить рейтинг Brain Academy"
+ },
+ "orgLeaderboardMin": {
+  "en": "Minimum opted-in students per board",
+  "ka": "მინიმალური მონაწილე ერთ ცხრილში",
+  "ru": "Минимум участников в рейтинге"
+ },
+ "orgLeaderboardNotAllowed": {
+  "en": "Leaderboards are not allowed for this organization by the platform.",
+  "ka": "პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.",
+  "ru": "Платформа не разрешает рейтинги для этой организации."
+ },
+ "orgLeaderboardPrivacy": {
+  "en": "Only students whose guardian consented appear, with a nickname or first name + initial.",
+  "ka": "ჩანან მხოლოდ ის მოსწავლეები, რომელთა მეურვემაც თანხმობა მისცა — ფსევდონიმით ან სახელით და ინიციალით.",
+  "ru": "Показываются только ученики с согласием опекуна — под псевдонимом или с именем и инициалом."
+ },
+ "orgLeaderboardSettings": {
+  "en": "Leaderboard",
+  "ka": "ლიდერბორდი",
+  "ru": "Рейтинг"
+ },
+ "orgLimitCoaches": {
+  "en": "Coaches",
+  "ka": "მწვრთნელები",
+  "ru": "Тренеры"
+ },
+ "orgLimitGroups": {
+  "en": "Groups",
+  "ka": "ჯგუფები",
+  "ru": "Группы"
+ },
+ "orgLimitRooms": {
+  "en": "Rooms",
+  "ka": "დარბაზები",
+  "ru": "Залы"
+ },
+ "orgLimitStudents": {
+  "en": "Students",
+  "ka": "მოსწავლეები",
+  "ru": "Ученики"
+ },
+ "orgLimits": {
+  "en": "Limits",
+  "ka": "ლიმიტები",
+  "ru": "Лимиты"
+ },
+ "orgLogoUrl": {
+  "en": "Logo URL",
+  "ka": "ლოგოს ბმული",
+  "ru": "Ссылка на логотип"
+ },
+ "orgManage": {
+  "en": "Plan, status and modules",
+  "ka": "გეგმა, სტატუსი და მოდულები",
+  "ru": "Тариф, статус и модули"
+ },
+ "orgModules": {
+  "en": "Enabled modules",
+  "ka": "ჩართული მოდულები",
+  "ru": "Включённые модули"
+ },
+ "orgModulesHelp": {
+  "en": "Locked modules must first be allowed by the platform administrator.",
+  "ka": "დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.",
+  "ru": "Заблокированные модули сначала должен разрешить администратор платформы."
+ },
+ "orgModulesOn": {
+  "en": "Modules on",
+  "ka": "ჩართული მოდულები",
+  "ru": "Модулей вкл."
+ },
+ "orgNameEn": {
+  "en": "Name (English)",
+  "ka": "სახელი (ინგლისური)",
+  "ru": "Название (англ.)"
+ },
+ "orgNameKa": {
+  "en": "Name (Georgian)",
+  "ka": "სახელი (ქართული)",
+  "ru": "Название (груз.)"
+ },
+ "orgNameRu": {
+  "en": "Name (Russian)",
+  "ka": "სახელი (რუსული)",
+  "ru": "Название (рус.)"
+ },
+ "orgNew": {
+  "en": "New organization",
+  "ka": "ახალი ორგანიზაცია",
+  "ru": "Новая организация"
+ },
+ "orgNoneSelected": {
+  "en": "No organization to manage",
+  "ka": "სამართავი ორგანიზაცია არ არის",
+  "ru": "Нет организации для управления"
+ },
+ "orgOverLimit": {
+  "en": "One or more plan limits are exceeded.",
+  "ka": "გეგმის ერთი ან მეტი ლიმიტი გადაჭარბებულია.",
+  "ru": "Превышен один или несколько лимитов тарифа."
+ },
+ "orgPickUser": {
+  "en": "Choose a user",
+  "ka": "აირჩიეთ მომხმარებელი",
+  "ru": "Выберите пользователя"
+ },
+ "orgPlan": {
+  "en": "Plan",
+  "ka": "გეგმა",
+  "ru": "Тариф"
+ },
+ "orgPlatformSubtitle": {
+  "en": "Every sports school runs as its own tenant with private data.",
+  "ka": "თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.",
+  "ru": "Каждая спортшкола работает отдельно, со своими закрытыми данными."
+ },
+ "orgRemoveAdmin": {
+  "en": "Remove administrator",
+  "ka": "ადმინისტრატორის მოხსნა",
+  "ru": "Снять администратора"
+ },
+ "orgRemoveCoach": {
+  "en": "Remove",
+  "ka": "მოხსნა",
+  "ru": "Убрать"
+ },
+ "orgSaved": {
+  "en": "Saved",
+  "ka": "შენახულია",
+  "ru": "Сохранено"
+ },
+ "orgStatusActive": {
+  "en": "Active",
+  "ka": "აქტიური",
+  "ru": "Активна"
+ },
+ "orgStatusDeactivated": {
+  "en": "Deactivated",
+  "ka": "გამორთული",
+  "ru": "Отключена"
+ },
+ "orgStatusHelp": {
+  "en": "Suspended or deactivated: data is kept and readable, but every module is off and nothing new can be created.",
+  "ka": "შეჩერებული ან გამორთული: მონაცემები ინახება და იკითხება, მაგრამ ყველა მოდული გამორთულია და ახლის შექმნა შეუძლებელია.",
+  "ru": "Приостановлена или отключена: данные сохраняются и доступны для чтения, но все модули выключены и создавать новое нельзя."
+ },
+ "orgStatusSuspended": {
+  "en": "Suspended",
+  "ka": "შეჩერებული",
+  "ru": "Приостановлена"
+ },
+ "orgTimezone": {
+  "en": "Time zone",
+  "ka": "დროის სარტყელი",
+  "ru": "Часовой пояс"
+ },
+ "orgUpcomingEvents": {
+  "en": "Upcoming trainings and matches",
+  "ka": "მომავალი ვარჯიშები და თამაშები",
+  "ru": "Предстоящие тренировки и матчи"
+ },
+ "orgUserId": {
+  "en": "…or user ID",
+  "ka": "…ან მომხმარებლის ID",
+  "ru": "…или ID пользователя"
+ },
+ "planFree": {
+  "en": "Free",
+  "ka": "უფასო",
+  "ru": "Бесплатный"
+ },
+ "planPremium": {
+  "en": "Premium",
+  "ka": "პრემიუმი",
+  "ru": "Премиум"
+ },
+ "planStandard": {
+  "en": "Standard",
+  "ka": "სტანდარტული",
+  "ru": "Стандарт"
+ },
+ "programAges": {
+  "en": "Ages",
+  "ka": "ასაკი",
+  "ru": "Возраст"
+ },
+ "programCapacity": {
+  "en": "Capacity",
+  "ka": "ადგილები",
+  "ru": "Мест"
+ },
+ "programNew": {
+  "en": "New program",
+  "ka": "ახალი პროგრამა",
+  "ru": "Новая программа"
+ },
+ "programPaused": {
+  "en": "Paused",
+  "ka": "შეჩერებული",
+  "ru": "Приостановлена"
+ },
+ "programScheduleNote": {
+  "en": "Schedule note",
+  "ka": "განრიგის შენიშვნა",
+  "ru": "Заметка о расписании"
+ },
+ "reportAllGroups": {
+  "en": "All groups",
+  "ka": "ყველა ჯგუფი",
+  "ru": "Все группы"
+ },
+ "reportAttendance": {
+  "en": "Attendance",
+  "ka": "დასწრება",
+  "ru": "Посещаемость"
+ },
+ "reportBrain": {
+  "en": "Brain Academy",
+  "ka": "Brain Academy",
+  "ru": "Brain Academy"
+ },
+ "reportDays": {
+  "en": "{days} days",
+  "ka": "{days} დღე",
+  "ru": "{days} дн.",
+  "ph": {
+   "days": "int"
+  }
+ },
+ "reportLastPlayed": {
+  "en": "Last played",
+  "ka": "ბოლოს ითამაშა",
+  "ru": "Последняя игра"
+ },
+ "reportRsvp": {
+  "en": "Parent responses",
+  "ka": "მშობლების პასუხები",
+  "ru": "Ответы родителей"
+ },
+ "reportWhen": {
+  "en": "When",
+  "ka": "როდის",
+  "ru": "Когда"
+ },
+ "roomAnySport": {
+  "en": "Any sport",
+  "ka": "ნებისმიერი სპორტი",
+  "ru": "Любой спорт"
+ },
+ "roomCapacity": {
+  "en": "Capacity",
+  "ka": "ტევადობა",
+  "ru": "Вместимость"
+ },
+ "roomHours": {
+  "en": "Opening hours",
+  "ka": "სამუშაო საათები",
+  "ru": "Часы работы"
+ },
+ "roomLabel": {
+  "en": "Room",
+  "ka": "დარბაზი",
+  "ru": "Зал"
+ },
+ "roomMaintenance": {
+  "en": "Add maintenance block",
+  "ka": "ტექ. მომსახურების დამატება",
+  "ru": "Добавить обслуживание"
+ },
+ "roomNew": {
+  "en": "New room",
+  "ka": "ახალი დარბაზი",
+  "ru": "Новый зал"
+ },
+ "roomNone": {
+  "en": "Add a room first",
+  "ka": "ჯერ დაამატეთ დარბაზი",
+  "ru": "Сначала добавьте зал"
+ },
+ "roomNote": {
+  "en": "Note",
+  "ka": "შენიშვნა",
+  "ru": "Заметка"
+ },
+ "roomSports": {
+  "en": "Supported sports (empty = any)",
+  "ka": "სპორტის სახეობები (ცარიელი = ნებისმიერი)",
+  "ru": "Виды спорта (пусто = любой)"
+ },
+ "roomStatusActive": {
+  "en": "Available",
+  "ka": "ხელმისაწვდომი",
+  "ru": "Доступен"
+ },
+ "roomStatusUnavailable": {
+  "en": "Temporarily unavailable",
+  "ka": "დროებით მიუწვდომელი",
+  "ru": "Временно недоступен"
+ },
+ "scheduleAllCoaches": {
+  "en": "All coaches",
+  "ka": "ყველა მწვრთნელი",
+  "ru": "Все тренеры"
+ },
+ "scheduleAllRooms": {
+  "en": "All rooms",
+  "ka": "ყველა დარბაზი",
+  "ru": "Все залы"
+ },
+ "scheduleAllSports": {
+  "en": "All sports",
+  "ka": "ყველა სპორტი",
+  "ru": "Все виды спорта"
+ },
+ "scheduleBusy": {
+  "en": "{hours} h {minutes} min booked",
+  "ka": "დაკავებული {hours} სთ {minutes} წთ",
+  "ru": "Занято {hours} ч {minutes} мин",
+  "ph": {
+   "hours": "int",
+   "minutes": "int"
+  }
+ },
+ "scheduleDay": {
+  "en": "Day",
+  "ka": "დღე",
+  "ru": "День"
+ },
+ "scheduleFree": {
+  "en": "Free",
+  "ka": "თავისუფალი",
+  "ru": "Свободно"
+ },
+ "scheduleSubtitle": {
+  "en": "Times shown in {tz}. Tap a free slot to book, drag a booking to move it.",
+  "ka": "დრო ნაჩვენებია {tz}-ის მიხედვით. დააჭირეთ თავისუფალ უჯრას დასაჯავშნად, გადაათრიეთ ჯავშანი გადასატანად.",
+  "ru": "Время в поясе {tz}. Нажмите на свободный слот, чтобы забронировать; перетащите бронь, чтобы перенести."
+ },
+ "scheduleWeek": {
+  "en": "Week",
+  "ka": "კვირა",
+  "ru": "Неделя"
+ },
+ "sysEventRescheduled": {
+  "en": "Schedule changed: {when}. Please confirm attendance again.",
+  "ka": "განრიგი შეიცვალა: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "ru": "Расписание изменилось: {when}. Пожалуйста, подтвердите участие ещё раз."
+ },
+ "sysEventRescheduledNoTime": {
+  "en": "The schedule changed. Please confirm attendance again.",
+  "ka": "განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "ru": "Расписание изменилось. Пожалуйста, подтвердите участие ещё раз."
+ }
+}

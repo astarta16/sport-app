@@ -632,7 +632,16 @@ class _PendingAcksBanner extends ConsumerWidget {
       child: AppCard(
         key: const Key('dashboard-acks'),
         color: AppColors.coral.withValues(alpha: 0.14),
-        onTap: () => context.push('/chat/${groupIds.first}'),
+        // v1.7: a schedule-change acknowledgment opens the event itself
+        // (current schedule, "got it" and the attendance answer together).
+        onTap: () {
+          final ev = pending.where((p) => p.eventId != null).firstOrNull;
+          context.push(
+            ev == null
+                ? '/chat/${groupIds.first}'
+                : (ev.eventType == 'match' ? '/match/${ev.eventId}' : '/training/${ev.eventId}'),
+          );
+        },
         child: Row(
           children: [
             const Icon(Icons.task_alt_rounded, color: AppColors.coral),

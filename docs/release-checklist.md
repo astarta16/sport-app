@@ -1,3 +1,38 @@
+# Release checklist: beta v1.7
+
+## v1.7 local verification (2026-11-16)
+
+- [x] `dart format -l 120`; `flutter analyze` → no issues.
+- [x] `flutter test` → 383 passed.
+- [x] Functions: `npm run build`, `npm test` → 229 passed.
+- [x] Rules on the emulator (Firestore + Storage) → 185 passed.
+- [x] Functions smoke → 43/43.
+- [x] v1.7 integration → 7/7.
+- [x] Migration script on the emulator: dry run, apply, idempotent rerun.
+- [x] Android APK `~/Desktop/SportParentApp-Beta-v1.7.apk`:
+  - 80,864,986 bytes (80.9 MB);
+  - versionName 1.7.0, versionCode 20;
+  - demo mode, debug-signed.
+- [x] Admin Web `build/admin_web`: built and checked in a browser at 1400 px and 420 px.
+- [x] iOS simulator (iPhone 16 Pro, debug, demo): built, launched, parent RSVP / reconfirmation / acknowledgment flow checked.
+- [ ] Android on a device or emulator (only the APK build and its contents were checked).
+- [ ] Native-speaker review of the new ka/ru strings.
+
+## v1.7 production steps (not done — need explicit approval)
+
+1. Back up (`gcloud firestore export`).
+2. Deploy indexes.
+3. Deploy functions.
+4. Run `functions/scripts/migrate-v17.mjs`: dry run first, then `--apply`.
+5. Deploy rules and storage rules.
+
+Full plan: [firebase-migration-plan.md](firebase-migration-plan.md).
+
+- Add volleyball and badminton (and localized names) to the production sports catalog.
+- Before enabling `leaderboards` or `studentAccounts` for a real organization:
+  legal/privacy review of the consent texts and of the child-account policy.
+- App Check for the new callables.
+
 # Release checklist: beta v1.6.1
 
 ## v1.6.1 local verification (2026-11-16)

@@ -364,7 +364,7 @@ class DemoBackend {
     systemMessage(
       g.id,
       text,
-      key: 'scheduleChanged',
+      key: 'eventRescheduled',
       args: {...args, 'eventId': eventId, 'eventType': eventType, 'version': '$version'},
       requiresAck: true,
     );

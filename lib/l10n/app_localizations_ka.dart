@@ -5034,4 +5034,13 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get scheduleWeek => 'კვირა';
+
+  @override
+  String sysEventRescheduled(String when) {
+    return 'განრიგი შეიცვალა: $when. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.';
+  }
+
+  @override
+  String get sysEventRescheduledNoTime =>
+      'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.';
 }

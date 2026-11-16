@@ -793,9 +793,12 @@ async function announceChange(kind: 'training' | 'match', eventId: string, befor
   const users = await loadUsers(group.parentIds);
   const recipientIds = receiptRecipients(group, users, 'system');
   const messageId = `sched_${eventId}_v${v1}`;
-  const when = (after.startAt as Timestamp).toDate().toISOString();
+  // Tbilisi wall clock "dd.MM HH:mm" (same as the other system lines).
+  const w = new Date((after.startAt as Timestamp).toMillis() + 4 * 3600_000);
+  const p2 = (n: number) => String(n).padStart(2, '0');
+  const when = `${p2(w.getUTCDate())}.${p2(w.getUTCMonth() + 1)} ${p2(w.getUTCHours())}:${p2(w.getUTCMinutes())}`;
   const created = await postSystemMessage(group.id, messageId, 'განრიგი შეიცვალა. გთხოვთ, დაადასტუროთ დასწრება.', {
-    key: 'scheduleChanged', args: { eventId, eventType: kind, version: String(v1), when },
+    key: 'eventRescheduled', args: { eventId, eventType: kind, version: String(v1), when },
   });
   if (!created) return; // retried trigger: already announced
   await db.doc(`chats/${group.id}/messages/${messageId}`).update({ requiresAck: true });
@@ -809,7 +812,7 @@ async function announceChange(kind: 'training' | 'match', eventId: string, befor
     type: 'ackRequested',
     ...pushText('ackRequested', { group: group.name ?? '', text: when }),
     route: kind === 'match' ? `/match/${eventId}` : `/training/${eventId}`,
-    args: { groupId: group.id, messageId, eventId }, groupId: group.id, dedupeKey: `sched:${eventId}:${v1}`,
+    args: { groupId: group.id, messageId, eventId, eventType: kind }, groupId: group.id, dedupeKey: `sched:${eventId}:${v1}`,
   });
 }
 

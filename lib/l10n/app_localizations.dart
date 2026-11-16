@@ -9129,6 +9129,18 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'კვირა'**
   String get scheduleWeek;
+
+  /// No description provided for @sysEventRescheduled.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი შეიცვალა: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.'**
+  String sysEventRescheduled(String when);
+
+  /// No description provided for @sysEventRescheduledNoTime.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.'**
+  String get sysEventRescheduledNoTime;
 }
 
 class _AppLocalizationsDelegate
