@@ -8,7 +8,8 @@
 - [x] Functions smoke test (emulators): 43 steps passed
 - [x] Android release APK: `~/Desktop/SportParentApp-Beta-v1.5.apk`, 78,844,661 bytes (78.8 MB), versionName 1.5.0, versionCode 17
 - [x] Installed on the Pixel 6 API 33 emulator (package manager: 1.5.0 / 17). Checked by hand as the demo parent: dashboard "Profile · Luka" → profile (groups, two coaches, upcoming trainings) → "message the coach" → coach picker → conversation about Luka (banner, privacy note, call button) → Matches tab shows the 3:1 win and upcoming matches. The coach's score entry and the receipt review were verified by widget tests, not by hand on the device
-- iOS simulator: see the v1.5 progress doc
+- [x] iOS simulator build (demo, debug) succeeded; installed and launched on the iPhone 16 Pro simulator (onboarding shown). The v1.5 flows were not tapped through on iOS (the simulator tool needs permission in its panel); they are covered by widget tests and were checked on Android
+- [x] The final APK was rebuilt from the last commit (web-only receipt download change) and copied to the Desktop at 12:41
 
 ## v1.5 production steps
 1. Deploy rules, indexes (`childThreads` coachId + lastMessageAt) and functions together; new callables `recordMatchResult` and the extended `getReceiptUrl {purpose}`; new trigger `onChildThreadMessageCreated`.
