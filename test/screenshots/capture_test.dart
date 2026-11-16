@@ -68,6 +68,9 @@ void main() {
     ('parent_home', DemoIds.parent, '/parent/home'),
     ('coach_home', DemoIds.coach, '/coach/home'),
     ('coach_new_group', DemoIds.coach, '/group/new'),
+    // v1.9.1
+    ('parent_calendar', DemoIds.parent, '/parent/calendar'),
+    ('certificate_upload', DemoIds.parent, '/certificates/child-1/upload'),
   ]) {
     testWidgets(name, skip: !_capture, (tester) async {
       final db = await boot(tester, phone, locale: 'en');
@@ -103,6 +106,19 @@ void main() {
       await _shot(tester, name);
     });
   }
+
+  testWidgets('group_wizard', skip: !_capture, (tester) async {
+    await _admin(tester, DemoSeedV17.tianetiAdmin);
+    _go(tester, '/groups');
+    await pumpFrames(tester);
+    await tester.tap(find.byKey(const Key('group-new')));
+    await _shot(tester, 'group_wizard');
+  });
+
+  testWidgets('org_setup_checklist', skip: !_capture, (tester) async {
+    await _admin(tester, DemoSeedV17.mtskhetaAdmin);
+    await _shot(tester, 'org_setup_checklist');
+  });
 
   testWidgets('organization_creation', skip: !_capture, (tester) async {
     await _admin(tester, DemoIds.platformAdmin);

@@ -460,7 +460,9 @@ class AppPickerField<T> extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: enabled ? () => _open(context) : null,
         child: InputDecorator(
-          isEmpty: empty,
+          // Label always floats: the "Choose…" placeholder sits below it
+          // (with isEmpty the two were drawn on top of each other).
+          isEmpty: false,
           decoration: InputDecoration(
             labelText: required ? '$label *' : label,
             prefixIcon: icon == null ? null : Icon(icon),

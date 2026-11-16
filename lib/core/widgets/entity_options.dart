@@ -220,7 +220,7 @@ class SportsPickerField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = sportOptions(context, sports, allowedIds: allowedIds);
-    final text = label ?? context.l10n.sportsLabel;
+    final text = label ?? (values != null ? context.l10n.sportsLabel : context.l10n.a191StepSport);
     if (values != null) {
       return AppPickerField<String>.multi(
         key: const Key('sports-picker'),
