@@ -48,4 +48,5 @@ export {
   acceptInvitation, applyTemplate, archiveTemplate, duplicateTemplate, inviteOrgAdmin, orgUsage, platformStats,
   previewTemplateChanges, provisionOrganization, refreshEntitlements, rejectInvitation, resendInvitation, revokeInvitation,
   updateEntitlements, updateSubscription, upsertPackage, upsertTemplate,
+  refreshEntitlementsNow,
 } from './triggers/v18';

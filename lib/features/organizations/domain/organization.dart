@@ -455,7 +455,7 @@ class OrgConfig {
       subscription: SubscriptionInfo.fromMap(m['subscription']),
       rollout: {
         for (final e in ((m['rollout'] as Map?) ?? const {}).entries)
-          if (OrgModule.fromName('${e.key}') case final mod?) mod: FeatureRollout.fromMap(e.value),
+          ?OrgModule.fromName('${e.key}'): FeatureRollout.fromMap(e.value),
       },
       profile: OrgProfile.fromMap(m['profile']),
       settings: OrgSettings.fromMap(m['settings']),

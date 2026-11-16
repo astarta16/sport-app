@@ -437,8 +437,9 @@ class DemoPlatformRepository implements PlatformRepository {
     _platform();
     final i = db.invitations[invitationId] ?? (throw const NotFoundException('invitation'));
     final st = i.statusAt(db.clock());
-    if (st != InvitationStatus.pending && st != InvitationStatus.expired)
+    if (st != InvitationStatus.pending && st != InvitationStatus.expired) {
       throw const ValidationException('invitationClosed');
+    }
     // A new token invalidates the old link.
     final token = InvitationTokens.generate();
     final next = i.copyWith(
@@ -529,6 +530,13 @@ class DemoPlatformRepository implements PlatformRepository {
 
   @override
   Future<List<String>> refreshEntitlements() async {
+    _platform();
+    return refreshAll();
+  }
+
+  /// The scheduler itself (no signed-in user): the demo equivalent of the
+  /// hourly `refreshEntitlements` Cloud Function.
+  List<String> refreshAll() {
     final now = db.clock();
     final changed = <String>[];
     for (final id in db.orgConfigs.keys.toList()) {

@@ -864,8 +864,9 @@ class TemplateDiff {
         ),
       );
     }
-    if (cfg.profile.funding != t.funding)
+    if (cfg.profile.funding != t.funding) {
       out.add(TemplateChange('funding', from: cfg.profile.funding.name, to: t.funding.name));
+    }
     if (cfg.profile.type != t.type) out.add(TemplateChange('type', from: cfg.profile.type.name, to: t.type.name));
     return out;
   }

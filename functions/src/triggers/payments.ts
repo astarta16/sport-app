@@ -46,8 +46,14 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
   const claimed: ClaimedReminder[] = [];
   // v1.8: only organizations with payment reminders on.
   const gate = jobGate();
+  // v1.8: smsLog carries the organization so per-tenant SMS usage counts.
+  const groupClub = new Map<string, string | null>();
+  const clubOfPayment = new Map<string, string | null>();
   for (const doc of snap.docs) {
     if (!(await gate(doc.get('groupId'), 'paymentReminders'))) continue;
+    const gid = doc.get('groupId') as string;
+    if (!groupClub.has(gid)) groupClub.set(gid, ((await db.doc(`groups/${gid}`).get()).get('clubId') as string) ?? null);
+    clubOfPayment.set(doc.id, (doc.get('clubId') as string | undefined) ?? groupClub.get(gid) ?? null);
     const kind = decidePaymentReminder(paymentFrom(doc.id, doc.data()), now);
     if (!kind) continue;
     const ok = await db.runTransaction(async (tx) => {
@@ -85,6 +91,8 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
     const channels = decideReminderChannels(parent);
     const paymentIds = batch.payments.map((p) => p.id);
     const seg = smsSegments(text);
+    const clubIds = [...new Set(batch.payments.map((p) => clubOfPayment.get(p.id)).filter((c): c is string => !!c))];
+    const tenant = { clubId: clubIds[0] ?? null, clubIds };
     const phone = normalizeGeorgianPhone(parent?.phone);
 
     if (channels.sms && phone) {
@@ -108,6 +116,7 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
         parentId: batch.parentId,
         segments: seg.segments,
         chars: seg.units,
+        ...tenant,
       });
     } else {
       await db.collection('smsLog').add({
@@ -119,6 +128,7 @@ export async function runPaymentReminders(now: Date): Promise<{ claimed: number;
         paymentIds,
         kind: batch.kind,
         parentId: batch.parentId,
+        ...tenant,
       });
     }
 

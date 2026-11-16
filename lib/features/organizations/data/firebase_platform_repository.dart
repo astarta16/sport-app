@@ -291,7 +291,9 @@ class FirebasePlatformRepository implements PlatformRepository {
   @override
   Future<void> rejectInvitation(String token) => _call('rejectInvitation', {'token': token});
 
-  /// Runs on the server schedule (`refreshEntitlements`); clients never do.
+  /// Runs hourly on the server schedule (`refreshEntitlements`); the
+  /// platform admin can also run it now (`refreshEntitlementsNow`).
   @override
-  Future<List<String>> refreshEntitlements() async => const [];
+  Future<List<String>> refreshEntitlements() async =>
+      ((await _call('refreshEntitlementsNow', {}))['changed'] as List? ?? const []).cast<String>();
 }

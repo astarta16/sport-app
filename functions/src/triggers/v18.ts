@@ -92,7 +92,15 @@ export async function writeConfig(
     if (expectedVersion != null && expectedVersion !== curVersion) {
       throw new HttpsError('aborted', 'configConflict', { currentVersion: curVersion });
     }
-    const patch = mutate(cur);
+    // A v1.7 document (featureSchema < 2) stores coarse modules; persist the
+    // expanded v1.8 lists with the first versioned write so no implied
+    // feature (receipts, acknowledgments, …) is silently dropped.
+    const legacy = (cur.featureSchema ?? 1) < 2;
+    const expanded = legacy ? effectiveConfig(cfgFromDoc(cur)) : null;
+    const upgrade = expanded
+      ? { allowedModules: expanded.allowedModules, enabledModules: expanded.enabledModules, featureSchema: 2 }
+      : {};
+    const patch = { ...upgrade, ...mutate(cur) };
     const next: Record<string, any> = { ...cur, ...patch, version: curVersion + 1 }; // eslint-disable-line @typescript-eslint/no-explicit-any
     const derived = derivedFields(cfgFromDoc(next)!);
     const changes: string[] = [];
@@ -531,6 +539,10 @@ export async function refreshAllEntitlements(nowMs = Date.now()): Promise<string
   const changed: string[] = [];
   for (const c of cfgs.docs) {
     const data = c.data();
+    // v1.7 documents are upgraded only by scripts/migrate-v18.mjs (reviewed,
+    // dry run first) — never silently by the scheduler. The rules keep
+    // using the legacy fallback for them meanwhile.
+    if ((data.featureSchema ?? 1) < 2) continue;
     const doc = cfgFromDoc(data)!;
     const derived = derivedFields(doc, nowMs);
     const subStatus = data.subscription?.status;
@@ -545,6 +557,12 @@ export async function refreshAllEntitlements(nowMs = Date.now()): Promise<string
 
 export const refreshEntitlements = onSchedule({ schedule: 'every 60 minutes', timeZone: TIMEZONE }, async () => {
   await refreshAllEntitlements();
+});
+
+/** System Health "run now" button: same job, platform admins only. */
+export const refreshEntitlementsNow = onCall(async (request) => {
+  platformOnly(request);
+  return { changed: await refreshAllEntitlements() };
 });
 
 /** Is a feature-specific job allowed for the organization of a group? (cached per run) */
