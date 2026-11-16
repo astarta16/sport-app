@@ -1,0 +1,853 @@
+{
+ "accessFull": {
+  "en": "Full access",
+  "ka": "სრული წვდომა",
+  "ru": "Полный доступ"
+ },
+ "accessGrace": {
+  "en": "Grace period",
+  "ka": "საშეღავათო პერიოდი",
+  "ru": "Льготный период"
+ },
+ "accessLabel": {
+  "en": "Access",
+  "ka": "წვდომა",
+  "ru": "Доступ"
+ },
+ "accessReadOnly": {
+  "en": "Read-only",
+  "ka": "მხოლოდ ნახვა",
+  "ru": "Только чтение"
+ },
+ "addDependencies": {
+  "en": "Enable required features",
+  "ka": "საჭირო ფუნქციების ჩართვა",
+  "ru": "Включить необходимые функции"
+ },
+ "addDependenciesConfirm": {
+  "en": "These features will also be enabled: {features}",
+  "ka": "ასევე ჩაირთვება: {features}",
+  "ru": "Также будут включены: {features}"
+ },
+ "adminEmailLabel": {
+  "en": "Administrator email",
+  "ka": "ადმინისტრატორის ელფოსტა",
+  "ru": "Email администратора"
+ },
+ "adminNavFeatureCatalog": {
+  "en": "Feature catalog",
+  "ka": "ფუნქციების კატალოგი",
+  "ru": "Каталог функций"
+ },
+ "adminNavHealth": {
+  "en": "System health",
+  "ka": "სისტემის მდგომარეობა",
+  "ru": "Состояние системы"
+ },
+ "adminNavInvitations": {
+  "en": "Invitations",
+  "ka": "მოწვევები",
+  "ru": "Приглашения"
+ },
+ "adminNavMembers": {
+  "en": "Members",
+  "ka": "წევრები",
+  "ru": "Участники"
+ },
+ "adminNavPackages": {
+  "en": "Packages",
+  "ka": "პაკეტები",
+  "ru": "Пакеты"
+ },
+ "adminNavTemplates": {
+  "en": "Organization templates",
+  "ka": "ორგანიზაციის შაბლონები",
+  "ru": "Шаблоны организаций"
+ },
+ "adminNavOverview": {
+  "en": "Overview",
+  "ka": "მიმოხილვა",
+  "ru": "Обзор"
+ },
+ "adminNavPlatformUsers": {
+  "en": "Platform users",
+  "ka": "პლატფორმის მომხმარებლები",
+  "ru": "Пользователи платформы"
+ },
+ "adminPhoneLabel": {
+  "en": "Administrator phone",
+  "ka": "ადმინისტრატორის ტელეფონი",
+  "ru": "Телефон администратора"
+ },
+ "alertInvitationExpiring": {
+  "en": "Invitation expiring",
+  "ka": "მოწვევის ვადა იწურება",
+  "ru": "Срок приглашения истекает"
+ },
+ "alertOverLimit": {
+  "en": "Over package limit",
+  "ka": "პაკეტის ლიმიტი გადაჭარბებულია",
+  "ru": "Превышен лимит пакета"
+ },
+ "alertPastDue": {
+  "en": "Payment past due",
+  "ka": "გადახდა ვადაგადაცილებულია",
+  "ru": "Оплата просрочена"
+ },
+ "alertProvisioning": {
+  "en": "Provisioning not finished",
+  "ka": "შექმნა არ დასრულებულა",
+  "ru": "Создание не завершено"
+ },
+ "alertReadOnly": {
+  "en": "Organization is read-only",
+  "ka": "ორგანიზაცია მხოლოდ ნახვის რეჟიმშია",
+  "ru": "Организация в режиме чтения"
+ },
+ "alertTrialEnding": {
+  "en": "Trial ending soon",
+  "ka": "საცდელი პერიოდი მალე მთავრდება",
+  "ru": "Пробный период скоро закончится"
+ },
+ "applyTemplate": {
+  "en": "Apply template",
+  "ka": "შაბლონის გამოყენება",
+  "ru": "Применить шаблон"
+ },
+ "applyTemplateNote": {
+  "en": "Applying a template to an existing organization shows a preview first. Historical data is never deleted.",
+  "ka": "არსებულ ორგანიზაციაზე შაბლონის გამოყენებამდე ნაჩვენებია ცვლილებები. ისტორიული მონაცემები არ იშლება.",
+  "ru": "Перед применением шаблона к существующей организации показывается предпросмотр. Исторические данные не удаляются."
+ },
+ "archive": {
+  "en": "Archive",
+  "ka": "დაარქივება",
+  "ru": "Архивировать"
+ },
+ "back": {
+  "en": "Back",
+  "ka": "უკან",
+  "ru": "Назад"
+ },
+ "brandingManagedByOrg": {
+  "en": "Branding is edited by the organization administrator in Organization settings.",
+  "ka": "ბრენდინგს არედაქტირებს ორგანიზაციის ადმინისტრატორი ორგანიზაციის პარამეტრებში.",
+  "ru": "Брендинг редактирует администратор организации в настройках организации."
+ },
+ "bulkPresets": {
+  "en": "Presets",
+  "ka": "შაბლონური ნაკრებები",
+  "ru": "Пресеты"
+ },
+ "changePreview": {
+  "en": "Changes",
+  "ka": "ცვლილებები",
+  "ru": "Изменения"
+ },
+ "changeReasonHint": {
+  "en": "Why is this changing? (required)",
+  "ka": "რატომ იცვლება? (სავალდებულო)",
+  "ru": "Причина изменения (обязательно)"
+ },
+ "changeReasonTitle": {
+  "en": "Reason for the change",
+  "ka": "ცვლილების მიზეზი",
+  "ru": "Причина изменения"
+ },
+ "configConflict": {
+  "en": "Someone else saved a newer version ({version}). Reload and apply your changes again.",
+  "ka": "სხვამ უკვე შეინახა ახალი ვერსია ({version}). განაახლეთ და ცვლილებები თავიდან შეიტანეთ.",
+  "ru": "Кто-то уже сохранил более новую версию ({version}). Обновите и внесите изменения снова.",
+  "ph": {
+   "version": "int"
+  }
+ },
+ "configConflictTitle": {
+  "en": "Configuration changed",
+  "ka": "კონფიგურაცია შეიცვალა",
+  "ru": "Конфигурация изменилась"
+ },
+ "configHistory": {
+  "en": "Configuration history",
+  "ka": "კონფიგურაციის ისტორია",
+  "ru": "История конфигурации"
+ },
+ "contrastRatio": {
+  "en": "Contrast with white text: {ratio}:1 (minimum 4.5:1)",
+  "ka": "კონტრასტი თეთრ ტექსტთან: {ratio}:1 (მინიმუმ 4.5:1)",
+  "ru": "Контраст с белым текстом: {ratio}:1 (минимум 4.5:1)"
+ },
+ "copyLink": {
+  "en": "Copy link",
+  "ka": "ბმულის კოპირება",
+  "ru": "Копировать ссылку"
+ },
+ "customLabel": {
+  "en": "Custom",
+  "ka": "ინდივიდუალური",
+  "ru": "Индивидуальный"
+ },
+ "customPackageNote": {
+  "en": "Every feature is available; entitlements are set per organization.",
+  "ka": "ყველა ფუნქცია ხელმისაწვდომია; უფლებები ორგანიზაციის მიხედვით დგინდება.",
+  "ru": "Доступны все функции; права задаются для каждой организации."
+ },
+ "duplicate": {
+  "en": "Duplicate",
+  "ka": "დუბლირება",
+  "ru": "Дублировать"
+ },
+ "durationDays": {
+  "en": "Duration (days)",
+  "ka": "ხანგრძლივობა (დღე)",
+  "ru": "Длительность (дней)"
+ },
+ "effDependencyMissing": {
+  "en": "Dependency off",
+  "ka": "დამოკიდებულება გამორთულია",
+  "ru": "Зависимость выключена"
+ },
+ "effDisabledByOrg": {
+  "en": "Off by organization",
+  "ka": "გამორთულია ორგანიზაციის მიერ",
+  "ru": "Выключено организацией"
+ },
+ "effNotEntitled": {
+  "en": "Not entitled",
+  "ka": "არ არის ნებადართული",
+  "ru": "Не разрешено"
+ },
+ "effNotInPackage": {
+  "en": "Not in package",
+  "ka": "პაკეტში არ შედის",
+  "ru": "Не входит в пакет"
+ },
+ "effOn": {
+  "en": "Active",
+  "ka": "აქტიური",
+  "ru": "Активно"
+ },
+ "effOrgInactive": {
+  "en": "Organization inactive",
+  "ka": "ორგანიზაცია არააქტიურია",
+  "ru": "Организация неактивна"
+ },
+ "effProvisioning": {
+  "en": "Provisioning",
+  "ka": "იქმნება",
+  "ru": "Создаётся"
+ },
+ "effReadOnly": {
+  "en": "Read-only subscription",
+  "ka": "მხოლოდ ნახვის გამოწერა",
+  "ru": "Подписка только для чтения"
+ },
+ "effRolloutOff": {
+  "en": "Rollout inactive",
+  "ka": "გაშვება არააქტიურია",
+  "ru": "Развёртывание неактивно"
+ },
+ "errBrandContrast": {
+  "en": "This color is not readable with white text. Choose a darker color.",
+  "ka": "ეს ფერი თეთრ ტექსტთან არ იკითხება. აირჩიეთ უფრო მუქი.",
+  "ru": "Этот цвет плохо читается с белым текстом. Выберите более тёмный."
+ },
+ "errChangeReason": {
+  "en": "Enter a reason for the change.",
+  "ka": "მიუთითეთ ცვლილების მიზეზი.",
+  "ru": "Укажите причину изменения."
+ },
+ "errFeatureDependencies": {
+  "en": "Some features need other features that are off.",
+  "ka": "ზოგი ფუნქცია საჭიროებს გამორთულ ფუნქციებს.",
+  "ru": "Некоторым функциям нужны выключенные функции."
+ },
+ "errInvitationClosed": {
+  "en": "This invitation is no longer valid.",
+  "ka": "ეს მოწვევა აღარ მოქმედებს.",
+  "ru": "Это приглашение больше не действует."
+ },
+ "errInvitationExpired": {
+  "en": "This invitation has expired. Ask for a new one.",
+  "ka": "მოწვევას ვადა გაუვიდა. მოითხოვეთ ახალი.",
+  "ru": "Срок приглашения истёк. Запросите новое."
+ },
+ "errLimitReached": {
+  "en": "The package limit has been reached.",
+  "ka": "პაკეტის ლიმიტი ამოწურულია.",
+  "ru": "Достигнут лимит пакета."
+ },
+ "errNotInPackage": {
+  "en": "A selected feature is not included in the package.",
+  "ka": "არჩეული ფუნქცია პაკეტში არ შედის.",
+  "ru": "Выбранная функция не входит в пакет."
+ },
+ "errOrgAddress": {
+  "en": "Enter the address and city.",
+  "ka": "მიუთითეთ მისამართი და ქალაქი.",
+  "ru": "Укажите адрес и город."
+ },
+ "errOrgAdmin": {
+  "en": "Enter the initial administrator phone or email.",
+  "ka": "მიუთითეთ პირველი ადმინისტრატორის ტელეფონი ან ელფოსტა.",
+  "ru": "Укажите телефон или email первого администратора."
+ },
+ "errOrgEmail": {
+  "en": "Enter a valid contact email.",
+  "ka": "მიუთითეთ სწორი ელფოსტა.",
+  "ru": "Укажите корректный email."
+ },
+ "errOrgName": {
+  "en": "Enter the organization name and legal name.",
+  "ka": "მიუთითეთ ორგანიზაციის სახელი და იურიდიული სახელი.",
+  "ru": "Укажите название и юридическое название."
+ },
+ "errOrgPhone": {
+  "en": "Enter a valid contact phone.",
+  "ka": "მიუთითეთ სწორი ტელეფონი.",
+  "ru": "Укажите корректный телефон."
+ },
+ "errOrgSports": {
+  "en": "Select at least one sport.",
+  "ka": "აირჩიეთ ერთი სპორტი მაინც.",
+  "ru": "Выберите хотя бы один вид спорта."
+ },
+ "errRolloutDate": {
+  "en": "Choose a date for the trial or scheduled rollout.",
+  "ka": "აირჩიეთ თარიღი საცდელი ან დაგეგმილი გაშვებისთვის.",
+  "ru": "Выберите дату для пробного или запланированного запуска."
+ },
+ "featCatAdministration": {
+  "en": "Administration",
+  "ka": "ადმინისტრირება",
+  "ru": "Администрирование"
+ },
+ "featCatCommunication": {
+  "en": "Communication",
+  "ka": "კომუნიკაცია",
+  "ru": "Коммуникация"
+ },
+ "featCatCore": {
+  "en": "Core",
+  "ka": "ძირითადი",
+  "ru": "Основное"
+ },
+ "featCatFacilities": {
+  "en": "Facilities",
+  "ka": "ობიექტები",
+  "ru": "Помещения"
+ },
+ "featCatFinance": {
+  "en": "Finance",
+  "ka": "ფინანსები",
+  "ru": "Финансы"
+ },
+ "featCatLearning": {
+  "en": "Learning",
+  "ka": "სწავლება",
+  "ru": "Обучение"
+ },
+ "featCategory": {
+  "en": "Category",
+  "ka": "კატეგორია",
+  "ru": "Категория"
+ },
+ "featureAdoption": {
+  "en": "Feature adoption",
+  "ka": "ფუნქციების გამოყენება",
+  "ru": "Использование функций"
+ },
+ "featureCatalogSubtitle": {
+  "en": "Every module with its stable id, dependencies and adoption.",
+  "ka": "ყველა მოდული მუდმივი იდენტიფიკატორით, დამოკიდებულებებითა და გამოყენებით.",
+  "ru": "Все модули с постоянным id, зависимостями и использованием."
+ },
+ "fundGovernment": {
+  "en": "Government",
+  "ka": "სახელმწიფო",
+  "ru": "Государственная"
+ },
+ "fundMixed": {
+  "en": "Mixed",
+  "ka": "შერეული",
+  "ru": "Смешанная"
+ },
+ "fundNonprofit": {
+  "en": "Nonprofit",
+  "ka": "არაკომერციული",
+  "ru": "Некоммерческая"
+ },
+ "fundOther": {
+  "en": "Other",
+  "ka": "სხვა",
+  "ru": "Другое"
+ },
+ "fundPrivate": {
+  "en": "Private",
+  "ka": "კერძო",
+  "ru": "Частная"
+ },
+ "fundingNote": {
+  "en": "Funding type does not switch payments on or off by itself; features are set explicitly.",
+  "ka": "დაფინანსების ტიპი თავისით არ რთავს გადახდებს; ფუნქციები ცალ-ცალკე ირთვება.",
+  "ru": "Тип финансирования сам по себе не включает платежи; функции задаются явно."
+ },
+ "graceDays": {
+  "en": "Grace period (days)",
+  "ka": "საშეღავათო პერიოდი (დღე)",
+  "ru": "Льготный период (дней)"
+ },
+ "haveInvitation": {
+  "en": "Have an administrator invitation?",
+  "ka": "გაქვთ ადმინისტრატორის მოწვევა?",
+  "ru": "Есть приглашение администратора?"
+ },
+ "healthDaily": {
+  "en": "daily",
+  "ka": "ყოველდღე",
+  "ru": "ежедневно"
+ },
+ "healthJobGated": {
+  "en": "skips organizations where the feature is off",
+  "ka": "გამოტოვებს ორგანიზაციებს, სადაც ფუნქცია გამორთულია",
+  "ru": "пропускает организации, где функция выключена"
+ },
+ "healthJobs": {
+  "en": "Scheduled jobs",
+  "ka": "დაგეგმილი ამოცანები",
+  "ru": "Плановые задачи"
+ },
+ "inPackage": {
+  "en": "In package",
+  "ka": "პაკეტშია",
+  "ru": "В пакете"
+ },
+ "initialFeatures": {
+  "en": "Initial features",
+  "ka": "საწყისი ფუნქციები",
+  "ru": "Начальные функции"
+ },
+ "invAccepted": {
+  "en": "Accepted",
+  "ka": "მიღებულია",
+  "ru": "Принято"
+ },
+ "invExpired": {
+  "en": "Expired",
+  "ka": "ვადაგასული",
+  "ru": "Истекло"
+ },
+ "invPending": {
+  "en": "Pending",
+  "ka": "მოლოდინში",
+  "ru": "Ожидает"
+ },
+ "invRejected": {
+  "en": "Rejected",
+  "ka": "უარყოფილია",
+  "ru": "Отклонено"
+ },
+ "invRevoked": {
+  "en": "Revoked",
+  "ka": "გაუქმებულია",
+  "ru": "Отозвано"
+ },
+ "invitationAcceptButton": {
+  "en": "Accept",
+  "ka": "მიღება",
+  "ru": "Принять"
+ },
+ "invitationAcceptedSnack": {
+  "en": "Invitation accepted. You are now an administrator.",
+  "ka": "მოწვევა მიღებულია. ახლა ადმინისტრატორი ხართ.",
+  "ru": "Приглашение принято. Теперь вы администратор."
+ },
+ "invitationCreated": {
+  "en": "Invitation created",
+  "ka": "მოწვევა შეიქმნა",
+  "ru": "Приглашение создано"
+ },
+ "invitationLinkNote": {
+  "en": "Send this link to the administrator. It is shown only once and is valid for 7 days.",
+  "ka": "გაუგზავნეთ ეს ბმული ადმინისტრატორს. ის მხოლოდ ერთხელ ჩანს და 7 დღე მოქმედებს.",
+  "ru": "Отправьте эту ссылку администратору. Она показывается один раз и действует 7 дней."
+ },
+ "invitationNote": {
+  "en": "The administrator receives an invitation that expires in 7 days. They sign in with this phone or email and accept it.",
+  "ka": "ადმინისტრატორი მიიღებს მოწვევას 7 დღის ვადით. ის შედის ამ ტელეფონით ან ელფოსტით და იღებს მოწვევას.",
+  "ru": "Администратор получит приглашение на 7 дней. Он входит с этим телефоном или email и принимает его."
+ },
+ "invitationRejectButton": {
+  "en": "Decline",
+  "ka": "უარი",
+  "ru": "Отклонить"
+ },
+ "invitationRejectedSnack": {
+  "en": "Invitation declined.",
+  "ka": "მოწვევაზე უარი თქვით.",
+  "ru": "Приглашение отклонено."
+ },
+ "invitationTokenLabel": {
+  "en": "Invitation code",
+  "ka": "მოწვევის კოდი",
+  "ru": "Код приглашения"
+ },
+ "inviteAdmin": {
+  "en": "Invite administrator",
+  "ka": "ადმინისტრატორის მოწვევა",
+  "ru": "Пригласить администратора"
+ },
+ "inviteExpires": {
+  "en": "Expires",
+  "ka": "ვადა",
+  "ru": "Истекает"
+ },
+ "inviteRecipient": {
+  "en": "Recipient",
+  "ka": "მიმღები",
+  "ru": "Получатель"
+ },
+ "inviteResend": {
+  "en": "Resend",
+  "ka": "ხელახლა გაგზავნა",
+  "ru": "Отправить снова"
+ },
+ "lastChange": {
+  "en": "Last change",
+  "ka": "ბოლო ცვლილება",
+  "ru": "Последнее изменение"
+ },
+ "limitNotifications": {
+  "en": "Notifications this month",
+  "ka": "შეტყობინებები ამ თვეში",
+  "ru": "Уведомления за месяц"
+ },
+ "limitSms": {
+  "en": "SMS this month",
+  "ka": "SMS ამ თვეში",
+  "ru": "SMS за месяц"
+ },
+ "limitStorage": {
+  "en": "Storage (MB)",
+  "ka": "საცავი (MB)",
+  "ru": "Хранилище (МБ)"
+ },
+ "membersPrivacyNote": {
+  "en": "Only counts and group names are shown here; personal details stay in the organization.",
+  "ka": "აქ ჩანს მხოლოდ რაოდენობები და ჯგუფების სახელები; პირადი მონაცემები ორგანიზაციაში რჩება.",
+  "ru": "Здесь показаны только количества и названия групп; личные данные остаются в организации."
+ },
+ "missingDependencies": {
+  "en": "Missing required features for: {features}",
+  "ka": "საჭირო ფუნქციები აკლია: {features}",
+  "ru": "Не хватает нужных функций для: {features}"
+ },
+ "noAlerts": {
+  "en": "No alerts",
+  "ka": "გაფრთხილებები არ არის",
+  "ru": "Нет предупреждений"
+ },
+ "noChanges": {
+  "en": "No changes",
+  "ka": "ცვლილებები არ არის",
+  "ru": "Изменений нет"
+ },
+ "operationalAlerts": {
+  "en": "Operational alerts",
+  "ka": "ოპერაციული გაფრთხილებები",
+  "ru": "Оперативные предупреждения"
+ },
+ "orgCity": {
+  "en": "City",
+  "ka": "ქალაქი",
+  "ru": "Город"
+ },
+ "orgCreateButton": {
+  "en": "Create organization",
+  "ka": "ორგანიზაციის შექმნა",
+  "ru": "Создать организацию"
+ },
+ "orgFunding": {
+  "en": "Funding",
+  "ka": "დაფინანსება",
+  "ru": "Финансирование"
+ },
+ "orgLegalName": {
+  "en": "Legal name",
+  "ka": "იურიდიული სახელი",
+  "ru": "Юридическое название"
+ },
+ "orgProvisioned": {
+  "en": "Organization created",
+  "ka": "ორგანიზაცია შეიქმნა",
+  "ru": "Организация создана"
+ },
+ "orgRegistrationId": {
+  "en": "Registration number",
+  "ka": "რეგისტრაციის ნომერი",
+  "ru": "Регистрационный номер"
+ },
+ "orgTypeAcademy": {
+  "en": "Children's academy",
+  "ka": "ბავშვთა აკადემია",
+  "ru": "Детская академия"
+ },
+ "orgTypeClub": {
+  "en": "Sports club",
+  "ka": "სპორტული კლუბი",
+  "ru": "Спортивный клуб"
+ },
+ "orgTypeIndependent": {
+  "en": "Independent coach",
+  "ka": "დამოუკიდებელი მწვრთნელი",
+  "ru": "Независимый тренер"
+ },
+ "orgTypeLabel": {
+  "en": "Organization type",
+  "ka": "ორგანიზაციის ტიპი",
+  "ru": "Тип организации"
+ },
+ "orgTypeOther": {
+  "en": "Other",
+  "ka": "სხვა",
+  "ru": "Другое"
+ },
+ "orgTypeSchool": {
+  "en": "Sports school",
+  "ka": "სპორტული სკოლა",
+  "ru": "Спортивная школа"
+ },
+ "packageLabel": {
+  "en": "Package",
+  "ka": "პაკეტი",
+  "ru": "Пакет"
+ },
+ "packageNew": {
+  "en": "New package",
+  "ka": "ახალი პაკეტი",
+  "ru": "Новый пакет"
+ },
+ "packagesSubtitle": {
+  "en": "Feature sets, limits and indicative pricing. No billing provider is connected.",
+  "ka": "ფუნქციები, ლიმიტები და საორიენტაციო ფასი. გადახდის სისტემა არ არის დაკავშირებული.",
+  "ru": "Наборы функций, лимиты и ориентировочные цены. Платёжная система не подключена."
+ },
+ "platformOverview": {
+  "en": "Platform overview",
+  "ka": "პლატფორმის მიმოხილვა",
+  "ru": "Обзор платформы"
+ },
+ "platformOverviewSubtitle": {
+  "en": "All organizations, subscriptions and feature adoption.",
+  "ka": "ყველა ორგანიზაცია, გამოწერა და ფუნქციების გამოყენება.",
+  "ru": "Все организации, подписки и использование функций."
+ },
+ "priceLabel": {
+  "en": "Price",
+  "ka": "ფასი",
+  "ru": "Цена"
+ },
+ "recentAdminActions": {
+  "en": "Recent administrator actions",
+  "ka": "ადმინისტრატორების ბოლო მოქმედებები",
+  "ru": "Последние действия администраторов"
+ },
+ "refreshDone": {
+  "en": "{count, plural, =0{No organization changed} =1{1 organization updated} other{{count} organizations updated}}",
+  "ka": "{count, plural, =0{არცერთი ორგანიზაცია არ შეცვლილა} other{განახლდა {count} ორგანიზაცია}}",
+  "ru": "{count, plural, =0{Ни одна организация не изменилась} one{Обновлена {count} организация} few{Обновлены {count} организации} other{Обновлено {count} организаций}}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "requiresLabel": {
+  "en": "Requires",
+  "ka": "საჭიროებს",
+  "ru": "Требует"
+ },
+ "restore": {
+  "en": "Restore",
+  "ka": "აღდგენა",
+  "ru": "Восстановить"
+ },
+ "restrictedLabel": {
+  "en": "Restricted",
+  "ka": "შეზღუდული",
+  "ru": "Ограничено"
+ },
+ "rolloutDisabled": {
+  "en": "Disabled",
+  "ka": "გამორთული",
+  "ru": "Выключено"
+ },
+ "rolloutEnabled": {
+  "en": "Enabled",
+  "ka": "ჩართული",
+  "ru": "Включено"
+ },
+ "rolloutFrom": {
+  "en": "from",
+  "ka": "დან",
+  "ru": "с"
+ },
+ "rolloutScheduled": {
+  "en": "Scheduled",
+  "ka": "დაგეგმილი",
+  "ru": "Запланировано"
+ },
+ "rolloutTrial": {
+  "en": "Trial",
+  "ka": "საცდელი",
+  "ru": "Пробно"
+ },
+ "rolloutUntil": {
+  "en": "until",
+  "ka": "მდე",
+  "ru": "до"
+ },
+ "runEntitlementRefresh": {
+  "en": "Run entitlement refresh",
+  "ka": "უფლებების განახლება",
+  "ru": "Обновить права"
+ },
+ "statOrganizations": {
+  "en": "Organizations",
+  "ka": "ორგანიზაციები",
+  "ru": "Организации"
+ },
+ "statParents": {
+  "en": "Parents",
+  "ka": "მშობლები",
+  "ru": "Родители"
+ },
+ "statStudents": {
+  "en": "Students",
+  "ka": "მოსწავლეები",
+  "ru": "Ученики"
+ },
+ "statUsers": {
+  "en": "Users",
+  "ka": "მომხმარებლები",
+  "ru": "Пользователи"
+ },
+ "subActive": {
+  "en": "Active",
+  "ka": "აქტიური",
+  "ru": "Активна"
+ },
+ "subCancelled": {
+  "en": "Cancelled",
+  "ka": "გაუქმებული",
+  "ru": "Отменена"
+ },
+ "subExpired": {
+  "en": "Expired",
+  "ka": "ვადაგასული",
+  "ru": "Истекла"
+ },
+ "subPastDue": {
+  "en": "Past due",
+  "ka": "ვადაგადაცილებული",
+  "ru": "Просрочена"
+ },
+ "subSuspended": {
+  "en": "Suspended",
+  "ka": "შეჩერებული",
+  "ru": "Приостановлена"
+ },
+ "subTrial": {
+  "en": "Trial",
+  "ka": "საცდელი",
+  "ru": "Пробная"
+ },
+ "subscriptionEnds": {
+  "en": "Ends",
+  "ka": "მთავრდება",
+  "ru": "Заканчивается"
+ },
+ "subscriptionLabel": {
+  "en": "Subscription",
+  "ka": "გამოწერა",
+  "ru": "Подписка"
+ },
+ "subscriptionPolicyNote": {
+  "en": "Read-only keeps every record; nothing is deleted. Managed manually — no charges are made.",
+  "ka": "მხოლოდ ნახვის რეჟიმში ყველა ჩანაწერი რჩება; არაფერი იშლება. იმართება ხელით — თანხა არ ჩამოიჭრება.",
+  "ru": "В режиме чтения все записи сохраняются; ничего не удаляется. Управляется вручную — списаний нет."
+ },
+ "subscriptionsSubtitle": {
+  "en": "Status, end date and access for every organization.",
+  "ka": "სტატუსი, დასრულების თარიღი და წვდომა ყველა ორგანიზაციისთვის.",
+  "ru": "Статус, дата окончания и доступ каждой организации."
+ },
+ "subscriptionsTitle": {
+  "en": "Subscriptions",
+  "ka": "გამოწერები",
+  "ru": "Подписки"
+ },
+ "syntheticData": {
+  "en": "Demo data",
+  "ka": "სადემონსტრაციო მონაცემები",
+  "ru": "Демо-данные"
+ },
+ "tabAdmins": {
+  "en": "Admins & members",
+  "ka": "ადმინები და წევრები",
+  "ru": "Админы и участники"
+ },
+ "tabAudit": {
+  "en": "Audit history",
+  "ka": "აუდიტის ისტორია",
+  "ru": "История аудита"
+ },
+ "tabBranding": {
+  "en": "Branding",
+  "ka": "ბრენდინგი",
+  "ru": "Брендинг"
+ },
+ "tabFeatures": {
+  "en": "Features",
+  "ka": "ფუნქციები",
+  "ru": "Функции"
+ },
+ "tabSettings": {
+  "en": "Settings",
+  "ka": "პარამეტრები",
+  "ru": "Настройки"
+ },
+ "tabSubscription": {
+  "en": "Subscription",
+  "ka": "გამოწერა",
+  "ru": "Подписка"
+ },
+ "tabUsage": {
+  "en": "Limits & usage",
+  "ka": "ლიმიტები და გამოყენება",
+  "ru": "Лимиты и использование"
+ },
+ "templateLabel": {
+  "en": "Template",
+  "ka": "შაბლონი",
+  "ru": "Шаблон"
+ },
+ "templateNew": {
+  "en": "New template",
+  "ka": "ახალი შაბლონი",
+  "ru": "Новый шаблон"
+ },
+ "unsavedChanges": {
+  "en": "You have unsaved changes",
+  "ka": "გაქვთ შეუნახავი ცვლილებები",
+  "ru": "Есть несохранённые изменения"
+ },
+ "usageSyntheticNote": {
+  "en": "Storage and message counts in Demo Mode are estimates.",
+  "ka": "საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.",
+  "ru": "Объём хранилища и число сообщений в демо-режиме приблизительны."
+ },
+ "adminNavActivity": {
+  "en": "Activity",
+  "ka": "აქტივობა",
+  "ru": "Активность"
+ }
+}

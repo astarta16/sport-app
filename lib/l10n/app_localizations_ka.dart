@@ -5079,4 +5079,546 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get orgRoleStudent => 'მოსწავლე';
+
+  @override
+  String get accessFull => 'სრული წვდომა';
+
+  @override
+  String get accessGrace => 'საშეღავათო პერიოდი';
+
+  @override
+  String get accessLabel => 'წვდომა';
+
+  @override
+  String get accessReadOnly => 'მხოლოდ ნახვა';
+
+  @override
+  String get addDependencies => 'საჭირო ფუნქციების ჩართვა';
+
+  @override
+  String addDependenciesConfirm(String features) {
+    return 'ასევე ჩაირთვება: $features';
+  }
+
+  @override
+  String get adminEmailLabel => 'ადმინისტრატორის ელფოსტა';
+
+  @override
+  String get adminNavFeatureCatalog => 'ფუნქციების კატალოგი';
+
+  @override
+  String get adminNavHealth => 'სისტემის მდგომარეობა';
+
+  @override
+  String get adminNavInvitations => 'მოწვევები';
+
+  @override
+  String get adminNavMembers => 'წევრები';
+
+  @override
+  String get adminNavPackages => 'პაკეტები';
+
+  @override
+  String get adminNavTemplates => 'ორგანიზაციის შაბლონები';
+
+  @override
+  String get adminNavOverview => 'მიმოხილვა';
+
+  @override
+  String get adminNavPlatformUsers => 'პლატფორმის მომხმარებლები';
+
+  @override
+  String get adminPhoneLabel => 'ადმინისტრატორის ტელეფონი';
+
+  @override
+  String get alertInvitationExpiring => 'მოწვევის ვადა იწურება';
+
+  @override
+  String get alertOverLimit => 'პაკეტის ლიმიტი გადაჭარბებულია';
+
+  @override
+  String get alertPastDue => 'გადახდა ვადაგადაცილებულია';
+
+  @override
+  String get alertProvisioning => 'შექმნა არ დასრულებულა';
+
+  @override
+  String get alertReadOnly => 'ორგანიზაცია მხოლოდ ნახვის რეჟიმშია';
+
+  @override
+  String get alertTrialEnding => 'საცდელი პერიოდი მალე მთავრდება';
+
+  @override
+  String get applyTemplate => 'შაბლონის გამოყენება';
+
+  @override
+  String get applyTemplateNote =>
+      'არსებულ ორგანიზაციაზე შაბლონის გამოყენებამდე ნაჩვენებია ცვლილებები. ისტორიული მონაცემები არ იშლება.';
+
+  @override
+  String get archive => 'დაარქივება';
+
+  @override
+  String get back => 'უკან';
+
+  @override
+  String get brandingManagedByOrg =>
+      'ბრენდინგს არედაქტირებს ორგანიზაციის ადმინისტრატორი ორგანიზაციის პარამეტრებში.';
+
+  @override
+  String get bulkPresets => 'შაბლონური ნაკრებები';
+
+  @override
+  String get changePreview => 'ცვლილებები';
+
+  @override
+  String get changeReasonHint => 'რატომ იცვლება? (სავალდებულო)';
+
+  @override
+  String get changeReasonTitle => 'ცვლილების მიზეზი';
+
+  @override
+  String configConflict(int version) {
+    return 'სხვამ უკვე შეინახა ახალი ვერსია ($version). განაახლეთ და ცვლილებები თავიდან შეიტანეთ.';
+  }
+
+  @override
+  String get configConflictTitle => 'კონფიგურაცია შეიცვალა';
+
+  @override
+  String get configHistory => 'კონფიგურაციის ისტორია';
+
+  @override
+  String contrastRatio(String ratio) {
+    return 'კონტრასტი თეთრ ტექსტთან: $ratio:1 (მინიმუმ 4.5:1)';
+  }
+
+  @override
+  String get copyLink => 'ბმულის კოპირება';
+
+  @override
+  String get customLabel => 'ინდივიდუალური';
+
+  @override
+  String get customPackageNote =>
+      'ყველა ფუნქცია ხელმისაწვდომია; უფლებები ორგანიზაციის მიხედვით დგინდება.';
+
+  @override
+  String get duplicate => 'დუბლირება';
+
+  @override
+  String get durationDays => 'ხანგრძლივობა (დღე)';
+
+  @override
+  String get effDependencyMissing => 'დამოკიდებულება გამორთულია';
+
+  @override
+  String get effDisabledByOrg => 'გამორთულია ორგანიზაციის მიერ';
+
+  @override
+  String get effNotEntitled => 'არ არის ნებადართული';
+
+  @override
+  String get effNotInPackage => 'პაკეტში არ შედის';
+
+  @override
+  String get effOn => 'აქტიური';
+
+  @override
+  String get effOrgInactive => 'ორგანიზაცია არააქტიურია';
+
+  @override
+  String get effProvisioning => 'იქმნება';
+
+  @override
+  String get effReadOnly => 'მხოლოდ ნახვის გამოწერა';
+
+  @override
+  String get effRolloutOff => 'გაშვება არააქტიურია';
+
+  @override
+  String get errBrandContrast =>
+      'ეს ფერი თეთრ ტექსტთან არ იკითხება. აირჩიეთ უფრო მუქი.';
+
+  @override
+  String get errChangeReason => 'მიუთითეთ ცვლილების მიზეზი.';
+
+  @override
+  String get errFeatureDependencies =>
+      'ზოგი ფუნქცია საჭიროებს გამორთულ ფუნქციებს.';
+
+  @override
+  String get errInvitationClosed => 'ეს მოწვევა აღარ მოქმედებს.';
+
+  @override
+  String get errInvitationExpired => 'მოწვევას ვადა გაუვიდა. მოითხოვეთ ახალი.';
+
+  @override
+  String get errLimitReached => 'პაკეტის ლიმიტი ამოწურულია.';
+
+  @override
+  String get errNotInPackage => 'არჩეული ფუნქცია პაკეტში არ შედის.';
+
+  @override
+  String get errOrgAddress => 'მიუთითეთ მისამართი და ქალაქი.';
+
+  @override
+  String get errOrgAdmin =>
+      'მიუთითეთ პირველი ადმინისტრატორის ტელეფონი ან ელფოსტა.';
+
+  @override
+  String get errOrgEmail => 'მიუთითეთ სწორი ელფოსტა.';
+
+  @override
+  String get errOrgName => 'მიუთითეთ ორგანიზაციის სახელი და იურიდიული სახელი.';
+
+  @override
+  String get errOrgPhone => 'მიუთითეთ სწორი ტელეფონი.';
+
+  @override
+  String get errOrgSports => 'აირჩიეთ ერთი სპორტი მაინც.';
+
+  @override
+  String get errRolloutDate =>
+      'აირჩიეთ თარიღი საცდელი ან დაგეგმილი გაშვებისთვის.';
+
+  @override
+  String get featCatAdministration => 'ადმინისტრირება';
+
+  @override
+  String get featCatCommunication => 'კომუნიკაცია';
+
+  @override
+  String get featCatCore => 'ძირითადი';
+
+  @override
+  String get featCatFacilities => 'ობიექტები';
+
+  @override
+  String get featCatFinance => 'ფინანსები';
+
+  @override
+  String get featCatLearning => 'სწავლება';
+
+  @override
+  String get featCategory => 'კატეგორია';
+
+  @override
+  String get featureAdoption => 'ფუნქციების გამოყენება';
+
+  @override
+  String get featureCatalogSubtitle =>
+      'ყველა მოდული მუდმივი იდენტიფიკატორით, დამოკიდებულებებითა და გამოყენებით.';
+
+  @override
+  String get fundGovernment => 'სახელმწიფო';
+
+  @override
+  String get fundMixed => 'შერეული';
+
+  @override
+  String get fundNonprofit => 'არაკომერციული';
+
+  @override
+  String get fundOther => 'სხვა';
+
+  @override
+  String get fundPrivate => 'კერძო';
+
+  @override
+  String get fundingNote =>
+      'დაფინანსების ტიპი თავისით არ რთავს გადახდებს; ფუნქციები ცალ-ცალკე ირთვება.';
+
+  @override
+  String get graceDays => 'საშეღავათო პერიოდი (დღე)';
+
+  @override
+  String get haveInvitation => 'გაქვთ ადმინისტრატორის მოწვევა?';
+
+  @override
+  String get healthDaily => 'ყოველდღე';
+
+  @override
+  String get healthJobGated =>
+      'გამოტოვებს ორგანიზაციებს, სადაც ფუნქცია გამორთულია';
+
+  @override
+  String get healthJobs => 'დაგეგმილი ამოცანები';
+
+  @override
+  String get inPackage => 'პაკეტშია';
+
+  @override
+  String get initialFeatures => 'საწყისი ფუნქციები';
+
+  @override
+  String get invAccepted => 'მიღებულია';
+
+  @override
+  String get invExpired => 'ვადაგასული';
+
+  @override
+  String get invPending => 'მოლოდინში';
+
+  @override
+  String get invRejected => 'უარყოფილია';
+
+  @override
+  String get invRevoked => 'გაუქმებულია';
+
+  @override
+  String get invitationAcceptButton => 'მიღება';
+
+  @override
+  String get invitationAcceptedSnack =>
+      'მოწვევა მიღებულია. ახლა ადმინისტრატორი ხართ.';
+
+  @override
+  String get invitationCreated => 'მოწვევა შეიქმნა';
+
+  @override
+  String get invitationLinkNote =>
+      'გაუგზავნეთ ეს ბმული ადმინისტრატორს. ის მხოლოდ ერთხელ ჩანს და 7 დღე მოქმედებს.';
+
+  @override
+  String get invitationNote =>
+      'ადმინისტრატორი მიიღებს მოწვევას 7 დღის ვადით. ის შედის ამ ტელეფონით ან ელფოსტით და იღებს მოწვევას.';
+
+  @override
+  String get invitationRejectButton => 'უარი';
+
+  @override
+  String get invitationRejectedSnack => 'მოწვევაზე უარი თქვით.';
+
+  @override
+  String get invitationTokenLabel => 'მოწვევის კოდი';
+
+  @override
+  String get inviteAdmin => 'ადმინისტრატორის მოწვევა';
+
+  @override
+  String get inviteExpires => 'ვადა';
+
+  @override
+  String get inviteRecipient => 'მიმღები';
+
+  @override
+  String get inviteResend => 'ხელახლა გაგზავნა';
+
+  @override
+  String get lastChange => 'ბოლო ცვლილება';
+
+  @override
+  String get limitNotifications => 'შეტყობინებები ამ თვეში';
+
+  @override
+  String get limitSms => 'SMS ამ თვეში';
+
+  @override
+  String get limitStorage => 'საცავი (MB)';
+
+  @override
+  String get membersPrivacyNote =>
+      'აქ ჩანს მხოლოდ რაოდენობები და ჯგუფების სახელები; პირადი მონაცემები ორგანიზაციაში რჩება.';
+
+  @override
+  String missingDependencies(String features) {
+    return 'საჭირო ფუნქციები აკლია: $features';
+  }
+
+  @override
+  String get noAlerts => 'გაფრთხილებები არ არის';
+
+  @override
+  String get noChanges => 'ცვლილებები არ არის';
+
+  @override
+  String get operationalAlerts => 'ოპერაციული გაფრთხილებები';
+
+  @override
+  String get orgCity => 'ქალაქი';
+
+  @override
+  String get orgCreateButton => 'ორგანიზაციის შექმნა';
+
+  @override
+  String get orgFunding => 'დაფინანსება';
+
+  @override
+  String get orgLegalName => 'იურიდიული სახელი';
+
+  @override
+  String get orgProvisioned => 'ორგანიზაცია შეიქმნა';
+
+  @override
+  String get orgRegistrationId => 'რეგისტრაციის ნომერი';
+
+  @override
+  String get orgTypeAcademy => 'ბავშვთა აკადემია';
+
+  @override
+  String get orgTypeClub => 'სპორტული კლუბი';
+
+  @override
+  String get orgTypeIndependent => 'დამოუკიდებელი მწვრთნელი';
+
+  @override
+  String get orgTypeLabel => 'ორგანიზაციის ტიპი';
+
+  @override
+  String get orgTypeOther => 'სხვა';
+
+  @override
+  String get orgTypeSchool => 'სპორტული სკოლა';
+
+  @override
+  String get packageLabel => 'პაკეტი';
+
+  @override
+  String get packageNew => 'ახალი პაკეტი';
+
+  @override
+  String get packagesSubtitle =>
+      'ფუნქციები, ლიმიტები და საორიენტაციო ფასი. გადახდის სისტემა არ არის დაკავშირებული.';
+
+  @override
+  String get platformOverview => 'პლატფორმის მიმოხილვა';
+
+  @override
+  String get platformOverviewSubtitle =>
+      'ყველა ორგანიზაცია, გამოწერა და ფუნქციების გამოყენება.';
+
+  @override
+  String get priceLabel => 'ფასი';
+
+  @override
+  String get recentAdminActions => 'ადმინისტრატორების ბოლო მოქმედებები';
+
+  @override
+  String refreshDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'განახლდა $count ორგანიზაცია',
+      zero: 'არცერთი ორგანიზაცია არ შეცვლილა',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get requiresLabel => 'საჭიროებს';
+
+  @override
+  String get restore => 'აღდგენა';
+
+  @override
+  String get restrictedLabel => 'შეზღუდული';
+
+  @override
+  String get rolloutDisabled => 'გამორთული';
+
+  @override
+  String get rolloutEnabled => 'ჩართული';
+
+  @override
+  String get rolloutFrom => 'დან';
+
+  @override
+  String get rolloutScheduled => 'დაგეგმილი';
+
+  @override
+  String get rolloutTrial => 'საცდელი';
+
+  @override
+  String get rolloutUntil => 'მდე';
+
+  @override
+  String get runEntitlementRefresh => 'უფლებების განახლება';
+
+  @override
+  String get statOrganizations => 'ორგანიზაციები';
+
+  @override
+  String get statParents => 'მშობლები';
+
+  @override
+  String get statStudents => 'მოსწავლეები';
+
+  @override
+  String get statUsers => 'მომხმარებლები';
+
+  @override
+  String get subActive => 'აქტიური';
+
+  @override
+  String get subCancelled => 'გაუქმებული';
+
+  @override
+  String get subExpired => 'ვადაგასული';
+
+  @override
+  String get subPastDue => 'ვადაგადაცილებული';
+
+  @override
+  String get subSuspended => 'შეჩერებული';
+
+  @override
+  String get subTrial => 'საცდელი';
+
+  @override
+  String get subscriptionEnds => 'მთავრდება';
+
+  @override
+  String get subscriptionLabel => 'გამოწერა';
+
+  @override
+  String get subscriptionPolicyNote =>
+      'მხოლოდ ნახვის რეჟიმში ყველა ჩანაწერი რჩება; არაფერი იშლება. იმართება ხელით — თანხა არ ჩამოიჭრება.';
+
+  @override
+  String get subscriptionsSubtitle =>
+      'სტატუსი, დასრულების თარიღი და წვდომა ყველა ორგანიზაციისთვის.';
+
+  @override
+  String get subscriptionsTitle => 'გამოწერები';
+
+  @override
+  String get syntheticData => 'სადემონსტრაციო მონაცემები';
+
+  @override
+  String get tabAdmins => 'ადმინები და წევრები';
+
+  @override
+  String get tabAudit => 'აუდიტის ისტორია';
+
+  @override
+  String get tabBranding => 'ბრენდინგი';
+
+  @override
+  String get tabFeatures => 'ფუნქციები';
+
+  @override
+  String get tabSettings => 'პარამეტრები';
+
+  @override
+  String get tabSubscription => 'გამოწერა';
+
+  @override
+  String get tabUsage => 'ლიმიტები და გამოყენება';
+
+  @override
+  String get templateLabel => 'შაბლონი';
+
+  @override
+  String get templateNew => 'ახალი შაბლონი';
+
+  @override
+  String get unsavedChanges => 'გაქვთ შეუნახავი ცვლილებები';
+
+  @override
+  String get usageSyntheticNote =>
+      'საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.';
+
+  @override
+  String get adminNavActivity => 'აქტივობა';
 }

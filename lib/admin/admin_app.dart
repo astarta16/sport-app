@@ -21,6 +21,7 @@ import 'pages/sports_page.dart';
 import 'pages/v13_pages.dart';
 import 'pages/v14_pages.dart';
 import 'pages/v17_pages.dart';
+import 'pages/v18_pages.dart';
 
 class AdminRoutes {
   AdminRoutes._();
@@ -50,8 +51,29 @@ class AdminRoutes {
   static const schedule = '/schedule';
   static const reports = '/reports';
 
+  // v1.8 — Platform Control Center (super admin) and org members.
+  static const platform = '/platform';
+  static const templates = '/templates';
+  static const features = '/features';
+  static const packages = '/packages';
+  static const subscriptions = '/subscriptions';
+  static const invitations = '/invitations';
+  static const health = '/health';
+  static const members = '/members';
+  static String orgDetail(String id) => '/organizations/$id';
+
   /// Pages a club admin may not open (platform scope only).
-  static const platformOnly = {admins, organizations};
+  static const platformOnly = {
+    admins,
+    organizations,
+    platform,
+    templates,
+    features,
+    packages,
+    subscriptions,
+    invitations,
+    health,
+  };
 }
 
 /// Pure guard, unit-tested in test/admin/admin_redirect_test.dart. Hiding
@@ -63,7 +85,9 @@ String? resolveAdminRedirect({required String location, required AsyncValue<Auth
   if (user == null) return location == AdminRoutes.login ? null : AdminRoutes.login;
   if (!user.isAdmin) return location == AdminRoutes.denied ? null : AdminRoutes.denied;
   if (location == AdminRoutes.login || location == AdminRoutes.denied) return AdminRoutes.dashboard;
-  if (AdminRoutes.platformOnly.contains(location) && !user.isPlatformAdmin) return AdminRoutes.dashboard;
+  final platformPage =
+      AdminRoutes.platformOnly.contains(location) || location.startsWith('${AdminRoutes.organizations}/');
+  if (platformPage && !user.isPlatformAdmin) return AdminRoutes.dashboard;
   return null;
 }
 
@@ -96,7 +120,19 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.payments, pageBuilder: (_, _) => page(const PaymentQueuePage())),
           GoRoute(path: AdminRoutes.mediaDownloads, pageBuilder: (_, _) => page(const MediaDownloadsPage())),
           GoRoute(path: AdminRoutes.settings, pageBuilder: (_, _) => page(const AdminSettingsPage())),
-          GoRoute(path: AdminRoutes.organizations, pageBuilder: (_, _) => page(const OrganizationsPage())),
+          GoRoute(path: AdminRoutes.organizations, pageBuilder: (_, _) => page(const OrgDirectoryPage())),
+          GoRoute(
+            path: '${AdminRoutes.organizations}/:id',
+            pageBuilder: (_, state) => page(OrgDetailPage(orgId: state.pathParameters['id']!)),
+          ),
+          GoRoute(path: AdminRoutes.platform, pageBuilder: (_, _) => page(const PlatformOverviewPage())),
+          GoRoute(path: AdminRoutes.templates, pageBuilder: (_, _) => page(const TemplatesPage())),
+          GoRoute(path: AdminRoutes.features, pageBuilder: (_, _) => page(const FeatureCatalogPage())),
+          GoRoute(path: AdminRoutes.packages, pageBuilder: (_, _) => page(const PackagesPage())),
+          GoRoute(path: AdminRoutes.subscriptions, pageBuilder: (_, _) => page(const SubscriptionsPage())),
+          GoRoute(path: AdminRoutes.invitations, pageBuilder: (_, _) => page(const InvitationsPage())),
+          GoRoute(path: AdminRoutes.health, pageBuilder: (_, _) => page(const SystemHealthPage())),
+          GoRoute(path: AdminRoutes.members, pageBuilder: (_, _) => page(const OrgMembersPage())),
           GoRoute(path: AdminRoutes.orgSettings, pageBuilder: (_, _) => page(const OrgSettingsPage())),
           GoRoute(path: AdminRoutes.programs, pageBuilder: (_, _) => page(const ProgramsPage())),
           GoRoute(path: AdminRoutes.rooms, pageBuilder: (_, _) => page(const RoomsPage())),

@@ -27,19 +27,28 @@ class AdminShell extends ConsumerWidget {
     // v1.7: separate navigation. Platform pages (all tenants) are listed
     // only for the Super Admin; tenant pages work on the selected
     // organization (an organization admin only ever sees their own).
+    // v1.8: Platform Control Center navigation (super admin only).
     final platform = <(String, IconData, String)>[
-      (AdminRoutes.dashboard, Icons.space_dashboard_rounded, l.adminNavDashboard),
+      (AdminRoutes.platform, Icons.insights_rounded, l.adminNavOverview),
       (AdminRoutes.organizations, Icons.domain_rounded, l.adminNavOrganizations),
+      (AdminRoutes.templates, Icons.copy_all_rounded, l.adminNavTemplates),
+      (AdminRoutes.features, Icons.toggle_on_rounded, l.adminNavFeatureCatalog),
+      (AdminRoutes.packages, Icons.inventory_2_rounded, l.adminNavPackages),
+      (AdminRoutes.subscriptions, Icons.card_membership_rounded, l.subscriptionsTitle),
+      (AdminRoutes.invitations, Icons.mail_rounded, l.adminNavInvitations),
+      (AdminRoutes.admins, Icons.admin_panel_settings_rounded, l.adminNavPlatformUsers),
+      (AdminRoutes.audit, Icons.history_edu_rounded, l.adminNavAudit),
+      (AdminRoutes.health, Icons.monitor_heart_rounded, l.adminNavHealth),
+      (AdminRoutes.dashboard, Icons.space_dashboard_rounded, l.adminNavActivity),
       (AdminRoutes.sports, Icons.category_rounded, l.adminNavSports),
       (AdminRoutes.coaches, Icons.sports_rounded, l.adminNavCoaches),
       (AdminRoutes.clubs, Icons.apartment_rounded, l.adminNavClubs),
-      (AdminRoutes.admins, Icons.admin_panel_settings_rounded, l.adminNavAdmins),
       (AdminRoutes.moderation, Icons.flag_rounded, l.adminNavModeration),
-      (AdminRoutes.audit, Icons.history_edu_rounded, l.adminNavAudit),
     ];
     final tenant = <(String, IconData, String)>[
       if (!user.isPlatformAdmin) (AdminRoutes.dashboard, Icons.space_dashboard_rounded, l.adminNavDashboard),
       (AdminRoutes.orgSettings, Icons.tune_rounded, l.adminNavOrgSettings),
+      (AdminRoutes.members, Icons.people_alt_rounded, l.adminNavMembers),
       (AdminRoutes.programs, Icons.sports_handball_rounded, l.adminNavPrograms),
       (AdminRoutes.groups, Icons.groups_rounded, l.adminNavGroups),
       if (!user.isPlatformAdmin) (AdminRoutes.coaches, Icons.sports_rounded, l.adminNavCoaches),
@@ -65,7 +74,13 @@ class AdminShell extends ConsumerWidget {
       if (user.isPlatformAdmin) 0: l.adminNavSectionPlatform,
       (user.isPlatformAdmin ? platform.length : 0): l.adminNavSectionTenant,
     };
-    final selected = items.indexWhere((i) => i.$1 == location).clamp(0, items.length - 1);
+    final selected = items
+        .indexWhere(
+          (i) =>
+              i.$1 == location ||
+              (i.$1 == AdminRoutes.organizations && location.startsWith('${AdminRoutes.organizations}/')),
+        )
+        .clamp(0, items.length - 1);
     final scope = user.isPlatformAdmin
         ? l.adminRolePlatform
         : '${l.adminRoleClub} · ${user.adminClubIds.map((c) => clubs[c]?.name ?? c).join(', ')}';

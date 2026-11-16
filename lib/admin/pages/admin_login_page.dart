@@ -8,6 +8,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
 import '../../features/authentication/presentation/splash_screen.dart';
 import '../../features/demo/data/demo_seed.dart';
+import 'v18_pages.dart';
 
 class AdminLoginPage extends ConsumerStatefulWidget {
   const AdminLoginPage({super.key});
@@ -124,7 +125,7 @@ class AdminDeniedPage extends ConsumerWidget {
     final l = context.l10n;
     return Scaffold(
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             key: const Key('admin-denied'),
@@ -136,6 +137,10 @@ class AdminDeniedPage extends ConsumerWidget {
               const SizedBox(height: AppSpacing.xs),
               Text(l.adminNotAdminBody, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.lg),
+              // v1.8: an invited administrator accepts here (the token
+              // arrives in the invitation link's `token` query parameter).
+              InvitationAcceptCard(initialToken: Uri.base.queryParameters['token']),
+              const SizedBox(height: AppSpacing.md),
               OutlinedButton.icon(
                 onPressed: () => ref.read(authRepositoryProvider).signOut(),
                 icon: const Icon(Icons.logout_rounded),

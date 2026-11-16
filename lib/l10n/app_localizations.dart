@@ -9213,6 +9213,1020 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'მოსწავლე'**
   String get orgRoleStudent;
+
+  /// No description provided for @accessFull.
+  ///
+  /// In ka, this message translates to:
+  /// **'სრული წვდომა'**
+  String get accessFull;
+
+  /// No description provided for @accessGrace.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშეღავათო პერიოდი'**
+  String get accessGrace;
+
+  /// No description provided for @accessLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'წვდომა'**
+  String get accessLabel;
+
+  /// No description provided for @accessReadOnly.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ნახვა'**
+  String get accessReadOnly;
+
+  /// No description provided for @addDependencies.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჭირო ფუნქციების ჩართვა'**
+  String get addDependencies;
+
+  /// No description provided for @addDependenciesConfirm.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასევე ჩაირთვება: {features}'**
+  String addDependenciesConfirm(String features);
+
+  /// No description provided for @adminEmailLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის ელფოსტა'**
+  String get adminEmailLabel;
+
+  /// No description provided for @adminNavFeatureCatalog.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფუნქციების კატალოგი'**
+  String get adminNavFeatureCatalog;
+
+  /// No description provided for @adminNavHealth.
+  ///
+  /// In ka, this message translates to:
+  /// **'სისტემის მდგომარეობა'**
+  String get adminNavHealth;
+
+  /// No description provided for @adminNavInvitations.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევები'**
+  String get adminNavInvitations;
+
+  /// No description provided for @adminNavMembers.
+  ///
+  /// In ka, this message translates to:
+  /// **'წევრები'**
+  String get adminNavMembers;
+
+  /// No description provided for @adminNavPackages.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტები'**
+  String get adminNavPackages;
+
+  /// No description provided for @adminNavTemplates.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის შაბლონები'**
+  String get adminNavTemplates;
+
+  /// No description provided for @adminNavOverview.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმოხილვა'**
+  String get adminNavOverview;
+
+  /// No description provided for @adminNavPlatformUsers.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმის მომხმარებლები'**
+  String get adminNavPlatformUsers;
+
+  /// No description provided for @adminPhoneLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის ტელეფონი'**
+  String get adminPhoneLabel;
+
+  /// No description provided for @alertInvitationExpiring.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევის ვადა იწურება'**
+  String get alertInvitationExpiring;
+
+  /// No description provided for @alertOverLimit.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტის ლიმიტი გადაჭარბებულია'**
+  String get alertOverLimit;
+
+  /// No description provided for @alertPastDue.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდა ვადაგადაცილებულია'**
+  String get alertPastDue;
+
+  /// No description provided for @alertProvisioning.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმნა არ დასრულებულა'**
+  String get alertProvisioning;
+
+  /// No description provided for @alertReadOnly.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია მხოლოდ ნახვის რეჟიმშია'**
+  String get alertReadOnly;
+
+  /// No description provided for @alertTrialEnding.
+  ///
+  /// In ka, this message translates to:
+  /// **'საცდელი პერიოდი მალე მთავრდება'**
+  String get alertTrialEnding;
+
+  /// No description provided for @applyTemplate.
+  ///
+  /// In ka, this message translates to:
+  /// **'შაბლონის გამოყენება'**
+  String get applyTemplate;
+
+  /// No description provided for @applyTemplateNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'არსებულ ორგანიზაციაზე შაბლონის გამოყენებამდე ნაჩვენებია ცვლილებები. ისტორიული მონაცემები არ იშლება.'**
+  String get applyTemplateNote;
+
+  /// No description provided for @archive.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაარქივება'**
+  String get archive;
+
+  /// No description provided for @back.
+  ///
+  /// In ka, this message translates to:
+  /// **'უკან'**
+  String get back;
+
+  /// No description provided for @brandingManagedByOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბრენდინგს არედაქტირებს ორგანიზაციის ადმინისტრატორი ორგანიზაციის პარამეტრებში.'**
+  String get brandingManagedByOrg;
+
+  /// No description provided for @bulkPresets.
+  ///
+  /// In ka, this message translates to:
+  /// **'შაბლონური ნაკრებები'**
+  String get bulkPresets;
+
+  /// No description provided for @changePreview.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცვლილებები'**
+  String get changePreview;
+
+  /// No description provided for @changeReasonHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'რატომ იცვლება? (სავალდებულო)'**
+  String get changeReasonHint;
+
+  /// No description provided for @changeReasonTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცვლილების მიზეზი'**
+  String get changeReasonTitle;
+
+  /// No description provided for @configConflict.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვამ უკვე შეინახა ახალი ვერსია ({version}). განაახლეთ და ცვლილებები თავიდან შეიტანეთ.'**
+  String configConflict(int version);
+
+  /// No description provided for @configConflictTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონფიგურაცია შეიცვალა'**
+  String get configConflictTitle;
+
+  /// No description provided for @configHistory.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონფიგურაციის ისტორია'**
+  String get configHistory;
+
+  /// No description provided for @contrastRatio.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონტრასტი თეთრ ტექსტთან: {ratio}:1 (მინიმუმ 4.5:1)'**
+  String contrastRatio(String ratio);
+
+  /// No description provided for @copyLink.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბმულის კოპირება'**
+  String get copyLink;
+
+  /// No description provided for @customLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ინდივიდუალური'**
+  String get customLabel;
+
+  /// No description provided for @customPackageNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა ფუნქცია ხელმისაწვდომია; უფლებები ორგანიზაციის მიხედვით დგინდება.'**
+  String get customPackageNote;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In ka, this message translates to:
+  /// **'დუბლირება'**
+  String get duplicate;
+
+  /// No description provided for @durationDays.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხანგრძლივობა (დღე)'**
+  String get durationDays;
+
+  /// No description provided for @effDependencyMissing.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამოკიდებულება გამორთულია'**
+  String get effDependencyMissing;
+
+  /// No description provided for @effDisabledByOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამორთულია ორგანიზაციის მიერ'**
+  String get effDisabledByOrg;
+
+  /// No description provided for @effNotEntitled.
+  ///
+  /// In ka, this message translates to:
+  /// **'არ არის ნებადართული'**
+  String get effNotEntitled;
+
+  /// No description provided for @effNotInPackage.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტში არ შედის'**
+  String get effNotInPackage;
+
+  /// No description provided for @effOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური'**
+  String get effOn;
+
+  /// No description provided for @effOrgInactive.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია არააქტიურია'**
+  String get effOrgInactive;
+
+  /// No description provided for @effProvisioning.
+  ///
+  /// In ka, this message translates to:
+  /// **'იქმნება'**
+  String get effProvisioning;
+
+  /// No description provided for @effReadOnly.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ნახვის გამოწერა'**
+  String get effReadOnly;
+
+  /// No description provided for @effRolloutOff.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაშვება არააქტიურია'**
+  String get effRolloutOff;
+
+  /// No description provided for @errBrandContrast.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს ფერი თეთრ ტექსტთან არ იკითხება. აირჩიეთ უფრო მუქი.'**
+  String get errBrandContrast;
+
+  /// No description provided for @errChangeReason.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ ცვლილების მიზეზი.'**
+  String get errChangeReason;
+
+  /// No description provided for @errFeatureDependencies.
+  ///
+  /// In ka, this message translates to:
+  /// **'ზოგი ფუნქცია საჭიროებს გამორთულ ფუნქციებს.'**
+  String get errFeatureDependencies;
+
+  /// No description provided for @errInvitationClosed.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს მოწვევა აღარ მოქმედებს.'**
+  String get errInvitationClosed;
+
+  /// No description provided for @errInvitationExpired.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევას ვადა გაუვიდა. მოითხოვეთ ახალი.'**
+  String get errInvitationExpired;
+
+  /// No description provided for @errLimitReached.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტის ლიმიტი ამოწურულია.'**
+  String get errLimitReached;
+
+  /// No description provided for @errNotInPackage.
+  ///
+  /// In ka, this message translates to:
+  /// **'არჩეული ფუნქცია პაკეტში არ შედის.'**
+  String get errNotInPackage;
+
+  /// No description provided for @errOrgAddress.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ მისამართი და ქალაქი.'**
+  String get errOrgAddress;
+
+  /// No description provided for @errOrgAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ პირველი ადმინისტრატორის ტელეფონი ან ელფოსტა.'**
+  String get errOrgAdmin;
+
+  /// No description provided for @errOrgEmail.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ სწორი ელფოსტა.'**
+  String get errOrgEmail;
+
+  /// No description provided for @errOrgName.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ ორგანიზაციის სახელი და იურიდიული სახელი.'**
+  String get errOrgName;
+
+  /// No description provided for @errOrgPhone.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიუთითეთ სწორი ტელეფონი.'**
+  String get errOrgPhone;
+
+  /// No description provided for @errOrgSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ ერთი სპორტი მაინც.'**
+  String get errOrgSports;
+
+  /// No description provided for @errRolloutDate.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ თარიღი საცდელი ან დაგეგმილი გაშვებისთვის.'**
+  String get errRolloutDate;
+
+  /// No description provided for @featCatAdministration.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრირება'**
+  String get featCatAdministration;
+
+  /// No description provided for @featCatCommunication.
+  ///
+  /// In ka, this message translates to:
+  /// **'კომუნიკაცია'**
+  String get featCatCommunication;
+
+  /// No description provided for @featCatCore.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძირითადი'**
+  String get featCatCore;
+
+  /// No description provided for @featCatFacilities.
+  ///
+  /// In ka, this message translates to:
+  /// **'ობიექტები'**
+  String get featCatFacilities;
+
+  /// No description provided for @featCatFinance.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფინანსები'**
+  String get featCatFinance;
+
+  /// No description provided for @featCatLearning.
+  ///
+  /// In ka, this message translates to:
+  /// **'სწავლება'**
+  String get featCatLearning;
+
+  /// No description provided for @featCategory.
+  ///
+  /// In ka, this message translates to:
+  /// **'კატეგორია'**
+  String get featCategory;
+
+  /// No description provided for @featureAdoption.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფუნქციების გამოყენება'**
+  String get featureAdoption;
+
+  /// No description provided for @featureCatalogSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა მოდული მუდმივი იდენტიფიკატორით, დამოკიდებულებებითა და გამოყენებით.'**
+  String get featureCatalogSubtitle;
+
+  /// No description provided for @fundGovernment.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელმწიფო'**
+  String get fundGovernment;
+
+  /// No description provided for @fundMixed.
+  ///
+  /// In ka, this message translates to:
+  /// **'შერეული'**
+  String get fundMixed;
+
+  /// No description provided for @fundNonprofit.
+  ///
+  /// In ka, this message translates to:
+  /// **'არაკომერციული'**
+  String get fundNonprofit;
+
+  /// No description provided for @fundOther.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა'**
+  String get fundOther;
+
+  /// No description provided for @fundPrivate.
+  ///
+  /// In ka, this message translates to:
+  /// **'კერძო'**
+  String get fundPrivate;
+
+  /// No description provided for @fundingNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაფინანსების ტიპი თავისით არ რთავს გადახდებს; ფუნქციები ცალ-ცალკე ირთვება.'**
+  String get fundingNote;
+
+  /// No description provided for @graceDays.
+  ///
+  /// In ka, this message translates to:
+  /// **'საშეღავათო პერიოდი (დღე)'**
+  String get graceDays;
+
+  /// No description provided for @haveInvitation.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაქვთ ადმინისტრატორის მოწვევა?'**
+  String get haveInvitation;
+
+  /// No description provided for @healthDaily.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოველდღე'**
+  String get healthDaily;
+
+  /// No description provided for @healthJobGated.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოტოვებს ორგანიზაციებს, სადაც ფუნქცია გამორთულია'**
+  String get healthJobGated;
+
+  /// No description provided for @healthJobs.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაგეგმილი ამოცანები'**
+  String get healthJobs;
+
+  /// No description provided for @inPackage.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტშია'**
+  String get inPackage;
+
+  /// No description provided for @initialFeatures.
+  ///
+  /// In ka, this message translates to:
+  /// **'საწყისი ფუნქციები'**
+  String get initialFeatures;
+
+  /// No description provided for @invAccepted.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიღებულია'**
+  String get invAccepted;
+
+  /// No description provided for @invExpired.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადაგასული'**
+  String get invExpired;
+
+  /// No description provided for @invPending.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოლოდინში'**
+  String get invPending;
+
+  /// No description provided for @invRejected.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარყოფილია'**
+  String get invRejected;
+
+  /// No description provided for @invRevoked.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმებულია'**
+  String get invRevoked;
+
+  /// No description provided for @invitationAcceptButton.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიღება'**
+  String get invitationAcceptButton;
+
+  /// No description provided for @invitationAcceptedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევა მიღებულია. ახლა ადმინისტრატორი ხართ.'**
+  String get invitationAcceptedSnack;
+
+  /// No description provided for @invitationCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევა შეიქმნა'**
+  String get invitationCreated;
+
+  /// No description provided for @invitationLinkNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუგზავნეთ ეს ბმული ადმინისტრატორს. ის მხოლოდ ერთხელ ჩანს და 7 დღე მოქმედებს.'**
+  String get invitationLinkNote;
+
+  /// No description provided for @invitationNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორი მიიღებს მოწვევას 7 დღის ვადით. ის შედის ამ ტელეფონით ან ელფოსტით და იღებს მოწვევას.'**
+  String get invitationNote;
+
+  /// No description provided for @invitationRejectButton.
+  ///
+  /// In ka, this message translates to:
+  /// **'უარი'**
+  String get invitationRejectButton;
+
+  /// No description provided for @invitationRejectedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევაზე უარი თქვით.'**
+  String get invitationRejectedSnack;
+
+  /// No description provided for @invitationTokenLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოწვევის კოდი'**
+  String get invitationTokenLabel;
+
+  /// No description provided for @inviteAdmin.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორის მოწვევა'**
+  String get inviteAdmin;
+
+  /// No description provided for @inviteExpires.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადა'**
+  String get inviteExpires;
+
+  /// No description provided for @inviteRecipient.
+  ///
+  /// In ka, this message translates to:
+  /// **'მიმღები'**
+  String get inviteRecipient;
+
+  /// No description provided for @inviteResend.
+  ///
+  /// In ka, this message translates to:
+  /// **'ხელახლა გაგზავნა'**
+  String get inviteResend;
+
+  /// No description provided for @lastChange.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბოლო ცვლილება'**
+  String get lastChange;
+
+  /// No description provided for @limitNotifications.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეტყობინებები ამ თვეში'**
+  String get limitNotifications;
+
+  /// No description provided for @limitSms.
+  ///
+  /// In ka, this message translates to:
+  /// **'SMS ამ თვეში'**
+  String get limitSms;
+
+  /// No description provided for @limitStorage.
+  ///
+  /// In ka, this message translates to:
+  /// **'საცავი (MB)'**
+  String get limitStorage;
+
+  /// No description provided for @membersPrivacyNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქ ჩანს მხოლოდ რაოდენობები და ჯგუფების სახელები; პირადი მონაცემები ორგანიზაციაში რჩება.'**
+  String get membersPrivacyNote;
+
+  /// No description provided for @missingDependencies.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჭირო ფუნქციები აკლია: {features}'**
+  String missingDependencies(String features);
+
+  /// No description provided for @noAlerts.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაფრთხილებები არ არის'**
+  String get noAlerts;
+
+  /// No description provided for @noChanges.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცვლილებები არ არის'**
+  String get noChanges;
+
+  /// No description provided for @operationalAlerts.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოპერაციული გაფრთხილებები'**
+  String get operationalAlerts;
+
+  /// No description provided for @orgCity.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქალაქი'**
+  String get orgCity;
+
+  /// No description provided for @orgCreateButton.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის შექმნა'**
+  String get orgCreateButton;
+
+  /// No description provided for @orgFunding.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაფინანსება'**
+  String get orgFunding;
+
+  /// No description provided for @orgLegalName.
+  ///
+  /// In ka, this message translates to:
+  /// **'იურიდიული სახელი'**
+  String get orgLegalName;
+
+  /// No description provided for @orgProvisioned.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია შეიქმნა'**
+  String get orgProvisioned;
+
+  /// No description provided for @orgRegistrationId.
+  ///
+  /// In ka, this message translates to:
+  /// **'რეგისტრაციის ნომერი'**
+  String get orgRegistrationId;
+
+  /// No description provided for @orgTypeAcademy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბავშვთა აკადემია'**
+  String get orgTypeAcademy;
+
+  /// No description provided for @orgTypeClub.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტული კლუბი'**
+  String get orgTypeClub;
+
+  /// No description provided for @orgTypeIndependent.
+  ///
+  /// In ka, this message translates to:
+  /// **'დამოუკიდებელი მწვრთნელი'**
+  String get orgTypeIndependent;
+
+  /// No description provided for @orgTypeLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის ტიპი'**
+  String get orgTypeLabel;
+
+  /// No description provided for @orgTypeOther.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა'**
+  String get orgTypeOther;
+
+  /// No description provided for @orgTypeSchool.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტული სკოლა'**
+  String get orgTypeSchool;
+
+  /// No description provided for @packageLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'პაკეტი'**
+  String get packageLabel;
+
+  /// No description provided for @packageNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი პაკეტი'**
+  String get packageNew;
+
+  /// No description provided for @packagesSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფუნქციები, ლიმიტები და საორიენტაციო ფასი. გადახდის სისტემა არ არის დაკავშირებული.'**
+  String get packagesSubtitle;
+
+  /// No description provided for @platformOverview.
+  ///
+  /// In ka, this message translates to:
+  /// **'პლატფორმის მიმოხილვა'**
+  String get platformOverview;
+
+  /// No description provided for @platformOverviewSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა ორგანიზაცია, გამოწერა და ფუნქციების გამოყენება.'**
+  String get platformOverviewSubtitle;
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფასი'**
+  String get priceLabel;
+
+  /// No description provided for @recentAdminActions.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორების ბოლო მოქმედებები'**
+  String get recentAdminActions;
+
+  /// No description provided for @refreshDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count, plural, =0{არცერთი ორგანიზაცია არ შეცვლილა} other{განახლდა {count} ორგანიზაცია}}'**
+  String refreshDone(int count);
+
+  /// No description provided for @requiresLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჭიროებს'**
+  String get requiresLabel;
+
+  /// No description provided for @restore.
+  ///
+  /// In ka, this message translates to:
+  /// **'აღდგენა'**
+  String get restore;
+
+  /// No description provided for @restrictedLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეზღუდული'**
+  String get restrictedLabel;
+
+  /// No description provided for @rolloutDisabled.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამორთული'**
+  String get rolloutDisabled;
+
+  /// No description provided for @rolloutEnabled.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩართული'**
+  String get rolloutEnabled;
+
+  /// No description provided for @rolloutFrom.
+  ///
+  /// In ka, this message translates to:
+  /// **'დან'**
+  String get rolloutFrom;
+
+  /// No description provided for @rolloutScheduled.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაგეგმილი'**
+  String get rolloutScheduled;
+
+  /// No description provided for @rolloutTrial.
+  ///
+  /// In ka, this message translates to:
+  /// **'საცდელი'**
+  String get rolloutTrial;
+
+  /// No description provided for @rolloutUntil.
+  ///
+  /// In ka, this message translates to:
+  /// **'მდე'**
+  String get rolloutUntil;
+
+  /// No description provided for @runEntitlementRefresh.
+  ///
+  /// In ka, this message translates to:
+  /// **'უფლებების განახლება'**
+  String get runEntitlementRefresh;
+
+  /// No description provided for @statOrganizations.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციები'**
+  String get statOrganizations;
+
+  /// No description provided for @statParents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობლები'**
+  String get statParents;
+
+  /// No description provided for @statStudents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოსწავლეები'**
+  String get statStudents;
+
+  /// No description provided for @statUsers.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომხმარებლები'**
+  String get statUsers;
+
+  /// No description provided for @subActive.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტიური'**
+  String get subActive;
+
+  /// No description provided for @subCancelled.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაუქმებული'**
+  String get subCancelled;
+
+  /// No description provided for @subExpired.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადაგასული'**
+  String get subExpired;
+
+  /// No description provided for @subPastDue.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვადაგადაცილებული'**
+  String get subPastDue;
+
+  /// No description provided for @subSuspended.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეჩერებული'**
+  String get subSuspended;
+
+  /// No description provided for @subTrial.
+  ///
+  /// In ka, this message translates to:
+  /// **'საცდელი'**
+  String get subTrial;
+
+  /// No description provided for @subscriptionEnds.
+  ///
+  /// In ka, this message translates to:
+  /// **'მთავრდება'**
+  String get subscriptionEnds;
+
+  /// No description provided for @subscriptionLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწერა'**
+  String get subscriptionLabel;
+
+  /// No description provided for @subscriptionPolicyNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'მხოლოდ ნახვის რეჟიმში ყველა ჩანაწერი რჩება; არაფერი იშლება. იმართება ხელით — თანხა არ ჩამოიჭრება.'**
+  String get subscriptionPolicyNote;
+
+  /// No description provided for @subscriptionsSubtitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'სტატუსი, დასრულების თარიღი და წვდომა ყველა ორგანიზაციისთვის.'**
+  String get subscriptionsSubtitle;
+
+  /// No description provided for @subscriptionsTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწერები'**
+  String get subscriptionsTitle;
+
+  /// No description provided for @syntheticData.
+  ///
+  /// In ka, this message translates to:
+  /// **'სადემონსტრაციო მონაცემები'**
+  String get syntheticData;
+
+  /// No description provided for @tabAdmins.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინები და წევრები'**
+  String get tabAdmins;
+
+  /// No description provided for @tabAudit.
+  ///
+  /// In ka, this message translates to:
+  /// **'აუდიტის ისტორია'**
+  String get tabAudit;
+
+  /// No description provided for @tabBranding.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბრენდინგი'**
+  String get tabBranding;
+
+  /// No description provided for @tabFeatures.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფუნქციები'**
+  String get tabFeatures;
+
+  /// No description provided for @tabSettings.
+  ///
+  /// In ka, this message translates to:
+  /// **'პარამეტრები'**
+  String get tabSettings;
+
+  /// No description provided for @tabSubscription.
+  ///
+  /// In ka, this message translates to:
+  /// **'გამოწერა'**
+  String get tabSubscription;
+
+  /// No description provided for @tabUsage.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიმიტები და გამოყენება'**
+  String get tabUsage;
+
+  /// No description provided for @templateLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'შაბლონი'**
+  String get templateLabel;
+
+  /// No description provided for @templateNew.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი შაბლონი'**
+  String get templateNew;
+
+  /// No description provided for @unsavedChanges.
+  ///
+  /// In ka, this message translates to:
+  /// **'გაქვთ შეუნახავი ცვლილებები'**
+  String get unsavedChanges;
+
+  /// No description provided for @usageSyntheticNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.'**
+  String get usageSyntheticNote;
+
+  /// No description provided for @adminNavActivity.
+  ///
+  /// In ka, this message translates to:
+  /// **'აქტივობა'**
+  String get adminNavActivity;
 }
 
 class _AppLocalizationsDelegate

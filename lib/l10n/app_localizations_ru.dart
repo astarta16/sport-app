@@ -5157,4 +5157,546 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get orgRoleStudent => 'Ученик';
+
+  @override
+  String get accessFull => 'Полный доступ';
+
+  @override
+  String get accessGrace => 'Льготный период';
+
+  @override
+  String get accessLabel => 'Доступ';
+
+  @override
+  String get accessReadOnly => 'Только чтение';
+
+  @override
+  String get addDependencies => 'Включить необходимые функции';
+
+  @override
+  String addDependenciesConfirm(String features) {
+    return 'Также будут включены: $features';
+  }
+
+  @override
+  String get adminEmailLabel => 'Email администратора';
+
+  @override
+  String get adminNavFeatureCatalog => 'Каталог функций';
+
+  @override
+  String get adminNavHealth => 'Состояние системы';
+
+  @override
+  String get adminNavInvitations => 'Приглашения';
+
+  @override
+  String get adminNavMembers => 'Участники';
+
+  @override
+  String get adminNavPackages => 'Пакеты';
+
+  @override
+  String get adminNavTemplates => 'Шаблоны организаций';
+
+  @override
+  String get adminNavOverview => 'Обзор';
+
+  @override
+  String get adminNavPlatformUsers => 'Пользователи платформы';
+
+  @override
+  String get adminPhoneLabel => 'Телефон администратора';
+
+  @override
+  String get alertInvitationExpiring => 'Срок приглашения истекает';
+
+  @override
+  String get alertOverLimit => 'Превышен лимит пакета';
+
+  @override
+  String get alertPastDue => 'Оплата просрочена';
+
+  @override
+  String get alertProvisioning => 'Создание не завершено';
+
+  @override
+  String get alertReadOnly => 'Организация в режиме чтения';
+
+  @override
+  String get alertTrialEnding => 'Пробный период скоро закончится';
+
+  @override
+  String get applyTemplate => 'Применить шаблон';
+
+  @override
+  String get applyTemplateNote =>
+      'Перед применением шаблона к существующей организации показывается предпросмотр. Исторические данные не удаляются.';
+
+  @override
+  String get archive => 'Архивировать';
+
+  @override
+  String get back => 'Назад';
+
+  @override
+  String get brandingManagedByOrg =>
+      'Брендинг редактирует администратор организации в настройках организации.';
+
+  @override
+  String get bulkPresets => 'Пресеты';
+
+  @override
+  String get changePreview => 'Изменения';
+
+  @override
+  String get changeReasonHint => 'Причина изменения (обязательно)';
+
+  @override
+  String get changeReasonTitle => 'Причина изменения';
+
+  @override
+  String configConflict(int version) {
+    return 'Кто-то уже сохранил более новую версию ($version). Обновите и внесите изменения снова.';
+  }
+
+  @override
+  String get configConflictTitle => 'Конфигурация изменилась';
+
+  @override
+  String get configHistory => 'История конфигурации';
+
+  @override
+  String contrastRatio(String ratio) {
+    return 'Контраст с белым текстом: $ratio:1 (минимум 4.5:1)';
+  }
+
+  @override
+  String get copyLink => 'Копировать ссылку';
+
+  @override
+  String get customLabel => 'Индивидуальный';
+
+  @override
+  String get customPackageNote =>
+      'Доступны все функции; права задаются для каждой организации.';
+
+  @override
+  String get duplicate => 'Дублировать';
+
+  @override
+  String get durationDays => 'Длительность (дней)';
+
+  @override
+  String get effDependencyMissing => 'Зависимость выключена';
+
+  @override
+  String get effDisabledByOrg => 'Выключено организацией';
+
+  @override
+  String get effNotEntitled => 'Не разрешено';
+
+  @override
+  String get effNotInPackage => 'Не входит в пакет';
+
+  @override
+  String get effOn => 'Активно';
+
+  @override
+  String get effOrgInactive => 'Организация неактивна';
+
+  @override
+  String get effProvisioning => 'Создаётся';
+
+  @override
+  String get effReadOnly => 'Подписка только для чтения';
+
+  @override
+  String get effRolloutOff => 'Развёртывание неактивно';
+
+  @override
+  String get errBrandContrast =>
+      'Этот цвет плохо читается с белым текстом. Выберите более тёмный.';
+
+  @override
+  String get errChangeReason => 'Укажите причину изменения.';
+
+  @override
+  String get errFeatureDependencies =>
+      'Некоторым функциям нужны выключенные функции.';
+
+  @override
+  String get errInvitationClosed => 'Это приглашение больше не действует.';
+
+  @override
+  String get errInvitationExpired => 'Срок приглашения истёк. Запросите новое.';
+
+  @override
+  String get errLimitReached => 'Достигнут лимит пакета.';
+
+  @override
+  String get errNotInPackage => 'Выбранная функция не входит в пакет.';
+
+  @override
+  String get errOrgAddress => 'Укажите адрес и город.';
+
+  @override
+  String get errOrgAdmin => 'Укажите телефон или email первого администратора.';
+
+  @override
+  String get errOrgEmail => 'Укажите корректный email.';
+
+  @override
+  String get errOrgName => 'Укажите название и юридическое название.';
+
+  @override
+  String get errOrgPhone => 'Укажите корректный телефон.';
+
+  @override
+  String get errOrgSports => 'Выберите хотя бы один вид спорта.';
+
+  @override
+  String get errRolloutDate =>
+      'Выберите дату для пробного или запланированного запуска.';
+
+  @override
+  String get featCatAdministration => 'Администрирование';
+
+  @override
+  String get featCatCommunication => 'Коммуникация';
+
+  @override
+  String get featCatCore => 'Основное';
+
+  @override
+  String get featCatFacilities => 'Помещения';
+
+  @override
+  String get featCatFinance => 'Финансы';
+
+  @override
+  String get featCatLearning => 'Обучение';
+
+  @override
+  String get featCategory => 'Категория';
+
+  @override
+  String get featureAdoption => 'Использование функций';
+
+  @override
+  String get featureCatalogSubtitle =>
+      'Все модули с постоянным id, зависимостями и использованием.';
+
+  @override
+  String get fundGovernment => 'Государственная';
+
+  @override
+  String get fundMixed => 'Смешанная';
+
+  @override
+  String get fundNonprofit => 'Некоммерческая';
+
+  @override
+  String get fundOther => 'Другое';
+
+  @override
+  String get fundPrivate => 'Частная';
+
+  @override
+  String get fundingNote =>
+      'Тип финансирования сам по себе не включает платежи; функции задаются явно.';
+
+  @override
+  String get graceDays => 'Льготный период (дней)';
+
+  @override
+  String get haveInvitation => 'Есть приглашение администратора?';
+
+  @override
+  String get healthDaily => 'ежедневно';
+
+  @override
+  String get healthJobGated => 'пропускает организации, где функция выключена';
+
+  @override
+  String get healthJobs => 'Плановые задачи';
+
+  @override
+  String get inPackage => 'В пакете';
+
+  @override
+  String get initialFeatures => 'Начальные функции';
+
+  @override
+  String get invAccepted => 'Принято';
+
+  @override
+  String get invExpired => 'Истекло';
+
+  @override
+  String get invPending => 'Ожидает';
+
+  @override
+  String get invRejected => 'Отклонено';
+
+  @override
+  String get invRevoked => 'Отозвано';
+
+  @override
+  String get invitationAcceptButton => 'Принять';
+
+  @override
+  String get invitationAcceptedSnack =>
+      'Приглашение принято. Теперь вы администратор.';
+
+  @override
+  String get invitationCreated => 'Приглашение создано';
+
+  @override
+  String get invitationLinkNote =>
+      'Отправьте эту ссылку администратору. Она показывается один раз и действует 7 дней.';
+
+  @override
+  String get invitationNote =>
+      'Администратор получит приглашение на 7 дней. Он входит с этим телефоном или email и принимает его.';
+
+  @override
+  String get invitationRejectButton => 'Отклонить';
+
+  @override
+  String get invitationRejectedSnack => 'Приглашение отклонено.';
+
+  @override
+  String get invitationTokenLabel => 'Код приглашения';
+
+  @override
+  String get inviteAdmin => 'Пригласить администратора';
+
+  @override
+  String get inviteExpires => 'Истекает';
+
+  @override
+  String get inviteRecipient => 'Получатель';
+
+  @override
+  String get inviteResend => 'Отправить снова';
+
+  @override
+  String get lastChange => 'Последнее изменение';
+
+  @override
+  String get limitNotifications => 'Уведомления за месяц';
+
+  @override
+  String get limitSms => 'SMS за месяц';
+
+  @override
+  String get limitStorage => 'Хранилище (МБ)';
+
+  @override
+  String get membersPrivacyNote =>
+      'Здесь показаны только количества и названия групп; личные данные остаются в организации.';
+
+  @override
+  String missingDependencies(String features) {
+    return 'Не хватает нужных функций для: $features';
+  }
+
+  @override
+  String get noAlerts => 'Нет предупреждений';
+
+  @override
+  String get noChanges => 'Изменений нет';
+
+  @override
+  String get operationalAlerts => 'Оперативные предупреждения';
+
+  @override
+  String get orgCity => 'Город';
+
+  @override
+  String get orgCreateButton => 'Создать организацию';
+
+  @override
+  String get orgFunding => 'Финансирование';
+
+  @override
+  String get orgLegalName => 'Юридическое название';
+
+  @override
+  String get orgProvisioned => 'Организация создана';
+
+  @override
+  String get orgRegistrationId => 'Регистрационный номер';
+
+  @override
+  String get orgTypeAcademy => 'Детская академия';
+
+  @override
+  String get orgTypeClub => 'Спортивный клуб';
+
+  @override
+  String get orgTypeIndependent => 'Независимый тренер';
+
+  @override
+  String get orgTypeLabel => 'Тип организации';
+
+  @override
+  String get orgTypeOther => 'Другое';
+
+  @override
+  String get orgTypeSchool => 'Спортивная школа';
+
+  @override
+  String get packageLabel => 'Пакет';
+
+  @override
+  String get packageNew => 'Новый пакет';
+
+  @override
+  String get packagesSubtitle =>
+      'Наборы функций, лимиты и ориентировочные цены. Платёжная система не подключена.';
+
+  @override
+  String get platformOverview => 'Обзор платформы';
+
+  @override
+  String get platformOverviewSubtitle =>
+      'Все организации, подписки и использование функций.';
+
+  @override
+  String get priceLabel => 'Цена';
+
+  @override
+  String get recentAdminActions => 'Последние действия администраторов';
+
+  @override
+  String refreshDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Обновлено $count организаций',
+      few: 'Обновлены $count организации',
+      one: 'Обновлена $count организация',
+      zero: 'Ни одна организация не изменилась',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get requiresLabel => 'Требует';
+
+  @override
+  String get restore => 'Восстановить';
+
+  @override
+  String get restrictedLabel => 'Ограничено';
+
+  @override
+  String get rolloutDisabled => 'Выключено';
+
+  @override
+  String get rolloutEnabled => 'Включено';
+
+  @override
+  String get rolloutFrom => 'с';
+
+  @override
+  String get rolloutScheduled => 'Запланировано';
+
+  @override
+  String get rolloutTrial => 'Пробно';
+
+  @override
+  String get rolloutUntil => 'до';
+
+  @override
+  String get runEntitlementRefresh => 'Обновить права';
+
+  @override
+  String get statOrganizations => 'Организации';
+
+  @override
+  String get statParents => 'Родители';
+
+  @override
+  String get statStudents => 'Ученики';
+
+  @override
+  String get statUsers => 'Пользователи';
+
+  @override
+  String get subActive => 'Активна';
+
+  @override
+  String get subCancelled => 'Отменена';
+
+  @override
+  String get subExpired => 'Истекла';
+
+  @override
+  String get subPastDue => 'Просрочена';
+
+  @override
+  String get subSuspended => 'Приостановлена';
+
+  @override
+  String get subTrial => 'Пробная';
+
+  @override
+  String get subscriptionEnds => 'Заканчивается';
+
+  @override
+  String get subscriptionLabel => 'Подписка';
+
+  @override
+  String get subscriptionPolicyNote =>
+      'В режиме чтения все записи сохраняются; ничего не удаляется. Управляется вручную — списаний нет.';
+
+  @override
+  String get subscriptionsSubtitle =>
+      'Статус, дата окончания и доступ каждой организации.';
+
+  @override
+  String get subscriptionsTitle => 'Подписки';
+
+  @override
+  String get syntheticData => 'Демо-данные';
+
+  @override
+  String get tabAdmins => 'Админы и участники';
+
+  @override
+  String get tabAudit => 'История аудита';
+
+  @override
+  String get tabBranding => 'Брендинг';
+
+  @override
+  String get tabFeatures => 'Функции';
+
+  @override
+  String get tabSettings => 'Настройки';
+
+  @override
+  String get tabSubscription => 'Подписка';
+
+  @override
+  String get tabUsage => 'Лимиты и использование';
+
+  @override
+  String get templateLabel => 'Шаблон';
+
+  @override
+  String get templateNew => 'Новый шаблон';
+
+  @override
+  String get unsavedChanges => 'Есть несохранённые изменения';
+
+  @override
+  String get usageSyntheticNote =>
+      'Объём хранилища и число сообщений в демо-режиме приблизительны.';
+
+  @override
+  String get adminNavActivity => 'Активность';
 }

@@ -5124,4 +5124,547 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgRoleStudent => 'Student';
+
+  @override
+  String get accessFull => 'Full access';
+
+  @override
+  String get accessGrace => 'Grace period';
+
+  @override
+  String get accessLabel => 'Access';
+
+  @override
+  String get accessReadOnly => 'Read-only';
+
+  @override
+  String get addDependencies => 'Enable required features';
+
+  @override
+  String addDependenciesConfirm(String features) {
+    return 'These features will also be enabled: $features';
+  }
+
+  @override
+  String get adminEmailLabel => 'Administrator email';
+
+  @override
+  String get adminNavFeatureCatalog => 'Feature catalog';
+
+  @override
+  String get adminNavHealth => 'System health';
+
+  @override
+  String get adminNavInvitations => 'Invitations';
+
+  @override
+  String get adminNavMembers => 'Members';
+
+  @override
+  String get adminNavPackages => 'Packages';
+
+  @override
+  String get adminNavTemplates => 'Organization templates';
+
+  @override
+  String get adminNavOverview => 'Overview';
+
+  @override
+  String get adminNavPlatformUsers => 'Platform users';
+
+  @override
+  String get adminPhoneLabel => 'Administrator phone';
+
+  @override
+  String get alertInvitationExpiring => 'Invitation expiring';
+
+  @override
+  String get alertOverLimit => 'Over package limit';
+
+  @override
+  String get alertPastDue => 'Payment past due';
+
+  @override
+  String get alertProvisioning => 'Provisioning not finished';
+
+  @override
+  String get alertReadOnly => 'Organization is read-only';
+
+  @override
+  String get alertTrialEnding => 'Trial ending soon';
+
+  @override
+  String get applyTemplate => 'Apply template';
+
+  @override
+  String get applyTemplateNote =>
+      'Applying a template to an existing organization shows a preview first. Historical data is never deleted.';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get brandingManagedByOrg =>
+      'Branding is edited by the organization administrator in Organization settings.';
+
+  @override
+  String get bulkPresets => 'Presets';
+
+  @override
+  String get changePreview => 'Changes';
+
+  @override
+  String get changeReasonHint => 'Why is this changing? (required)';
+
+  @override
+  String get changeReasonTitle => 'Reason for the change';
+
+  @override
+  String configConflict(int version) {
+    return 'Someone else saved a newer version ($version). Reload and apply your changes again.';
+  }
+
+  @override
+  String get configConflictTitle => 'Configuration changed';
+
+  @override
+  String get configHistory => 'Configuration history';
+
+  @override
+  String contrastRatio(String ratio) {
+    return 'Contrast with white text: $ratio:1 (minimum 4.5:1)';
+  }
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get customLabel => 'Custom';
+
+  @override
+  String get customPackageNote =>
+      'Every feature is available; entitlements are set per organization.';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get durationDays => 'Duration (days)';
+
+  @override
+  String get effDependencyMissing => 'Dependency off';
+
+  @override
+  String get effDisabledByOrg => 'Off by organization';
+
+  @override
+  String get effNotEntitled => 'Not entitled';
+
+  @override
+  String get effNotInPackage => 'Not in package';
+
+  @override
+  String get effOn => 'Active';
+
+  @override
+  String get effOrgInactive => 'Organization inactive';
+
+  @override
+  String get effProvisioning => 'Provisioning';
+
+  @override
+  String get effReadOnly => 'Read-only subscription';
+
+  @override
+  String get effRolloutOff => 'Rollout inactive';
+
+  @override
+  String get errBrandContrast =>
+      'This color is not readable with white text. Choose a darker color.';
+
+  @override
+  String get errChangeReason => 'Enter a reason for the change.';
+
+  @override
+  String get errFeatureDependencies =>
+      'Some features need other features that are off.';
+
+  @override
+  String get errInvitationClosed => 'This invitation is no longer valid.';
+
+  @override
+  String get errInvitationExpired =>
+      'This invitation has expired. Ask for a new one.';
+
+  @override
+  String get errLimitReached => 'The package limit has been reached.';
+
+  @override
+  String get errNotInPackage =>
+      'A selected feature is not included in the package.';
+
+  @override
+  String get errOrgAddress => 'Enter the address and city.';
+
+  @override
+  String get errOrgAdmin => 'Enter the initial administrator phone or email.';
+
+  @override
+  String get errOrgEmail => 'Enter a valid contact email.';
+
+  @override
+  String get errOrgName => 'Enter the organization name and legal name.';
+
+  @override
+  String get errOrgPhone => 'Enter a valid contact phone.';
+
+  @override
+  String get errOrgSports => 'Select at least one sport.';
+
+  @override
+  String get errRolloutDate =>
+      'Choose a date for the trial or scheduled rollout.';
+
+  @override
+  String get featCatAdministration => 'Administration';
+
+  @override
+  String get featCatCommunication => 'Communication';
+
+  @override
+  String get featCatCore => 'Core';
+
+  @override
+  String get featCatFacilities => 'Facilities';
+
+  @override
+  String get featCatFinance => 'Finance';
+
+  @override
+  String get featCatLearning => 'Learning';
+
+  @override
+  String get featCategory => 'Category';
+
+  @override
+  String get featureAdoption => 'Feature adoption';
+
+  @override
+  String get featureCatalogSubtitle =>
+      'Every module with its stable id, dependencies and adoption.';
+
+  @override
+  String get fundGovernment => 'Government';
+
+  @override
+  String get fundMixed => 'Mixed';
+
+  @override
+  String get fundNonprofit => 'Nonprofit';
+
+  @override
+  String get fundOther => 'Other';
+
+  @override
+  String get fundPrivate => 'Private';
+
+  @override
+  String get fundingNote =>
+      'Funding type does not switch payments on or off by itself; features are set explicitly.';
+
+  @override
+  String get graceDays => 'Grace period (days)';
+
+  @override
+  String get haveInvitation => 'Have an administrator invitation?';
+
+  @override
+  String get healthDaily => 'daily';
+
+  @override
+  String get healthJobGated => 'skips organizations where the feature is off';
+
+  @override
+  String get healthJobs => 'Scheduled jobs';
+
+  @override
+  String get inPackage => 'In package';
+
+  @override
+  String get initialFeatures => 'Initial features';
+
+  @override
+  String get invAccepted => 'Accepted';
+
+  @override
+  String get invExpired => 'Expired';
+
+  @override
+  String get invPending => 'Pending';
+
+  @override
+  String get invRejected => 'Rejected';
+
+  @override
+  String get invRevoked => 'Revoked';
+
+  @override
+  String get invitationAcceptButton => 'Accept';
+
+  @override
+  String get invitationAcceptedSnack =>
+      'Invitation accepted. You are now an administrator.';
+
+  @override
+  String get invitationCreated => 'Invitation created';
+
+  @override
+  String get invitationLinkNote =>
+      'Send this link to the administrator. It is shown only once and is valid for 7 days.';
+
+  @override
+  String get invitationNote =>
+      'The administrator receives an invitation that expires in 7 days. They sign in with this phone or email and accept it.';
+
+  @override
+  String get invitationRejectButton => 'Decline';
+
+  @override
+  String get invitationRejectedSnack => 'Invitation declined.';
+
+  @override
+  String get invitationTokenLabel => 'Invitation code';
+
+  @override
+  String get inviteAdmin => 'Invite administrator';
+
+  @override
+  String get inviteExpires => 'Expires';
+
+  @override
+  String get inviteRecipient => 'Recipient';
+
+  @override
+  String get inviteResend => 'Resend';
+
+  @override
+  String get lastChange => 'Last change';
+
+  @override
+  String get limitNotifications => 'Notifications this month';
+
+  @override
+  String get limitSms => 'SMS this month';
+
+  @override
+  String get limitStorage => 'Storage (MB)';
+
+  @override
+  String get membersPrivacyNote =>
+      'Only counts and group names are shown here; personal details stay in the organization.';
+
+  @override
+  String missingDependencies(String features) {
+    return 'Missing required features for: $features';
+  }
+
+  @override
+  String get noAlerts => 'No alerts';
+
+  @override
+  String get noChanges => 'No changes';
+
+  @override
+  String get operationalAlerts => 'Operational alerts';
+
+  @override
+  String get orgCity => 'City';
+
+  @override
+  String get orgCreateButton => 'Create organization';
+
+  @override
+  String get orgFunding => 'Funding';
+
+  @override
+  String get orgLegalName => 'Legal name';
+
+  @override
+  String get orgProvisioned => 'Organization created';
+
+  @override
+  String get orgRegistrationId => 'Registration number';
+
+  @override
+  String get orgTypeAcademy => 'Children\'s academy';
+
+  @override
+  String get orgTypeClub => 'Sports club';
+
+  @override
+  String get orgTypeIndependent => 'Independent coach';
+
+  @override
+  String get orgTypeLabel => 'Organization type';
+
+  @override
+  String get orgTypeOther => 'Other';
+
+  @override
+  String get orgTypeSchool => 'Sports school';
+
+  @override
+  String get packageLabel => 'Package';
+
+  @override
+  String get packageNew => 'New package';
+
+  @override
+  String get packagesSubtitle =>
+      'Feature sets, limits and indicative pricing. No billing provider is connected.';
+
+  @override
+  String get platformOverview => 'Platform overview';
+
+  @override
+  String get platformOverviewSubtitle =>
+      'All organizations, subscriptions and feature adoption.';
+
+  @override
+  String get priceLabel => 'Price';
+
+  @override
+  String get recentAdminActions => 'Recent administrator actions';
+
+  @override
+  String refreshDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count organizations updated',
+      one: '1 organization updated',
+      zero: 'No organization changed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get requiresLabel => 'Requires';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String get restrictedLabel => 'Restricted';
+
+  @override
+  String get rolloutDisabled => 'Disabled';
+
+  @override
+  String get rolloutEnabled => 'Enabled';
+
+  @override
+  String get rolloutFrom => 'from';
+
+  @override
+  String get rolloutScheduled => 'Scheduled';
+
+  @override
+  String get rolloutTrial => 'Trial';
+
+  @override
+  String get rolloutUntil => 'until';
+
+  @override
+  String get runEntitlementRefresh => 'Run entitlement refresh';
+
+  @override
+  String get statOrganizations => 'Organizations';
+
+  @override
+  String get statParents => 'Parents';
+
+  @override
+  String get statStudents => 'Students';
+
+  @override
+  String get statUsers => 'Users';
+
+  @override
+  String get subActive => 'Active';
+
+  @override
+  String get subCancelled => 'Cancelled';
+
+  @override
+  String get subExpired => 'Expired';
+
+  @override
+  String get subPastDue => 'Past due';
+
+  @override
+  String get subSuspended => 'Suspended';
+
+  @override
+  String get subTrial => 'Trial';
+
+  @override
+  String get subscriptionEnds => 'Ends';
+
+  @override
+  String get subscriptionLabel => 'Subscription';
+
+  @override
+  String get subscriptionPolicyNote =>
+      'Read-only keeps every record; nothing is deleted. Managed manually — no charges are made.';
+
+  @override
+  String get subscriptionsSubtitle =>
+      'Status, end date and access for every organization.';
+
+  @override
+  String get subscriptionsTitle => 'Subscriptions';
+
+  @override
+  String get syntheticData => 'Demo data';
+
+  @override
+  String get tabAdmins => 'Admins & members';
+
+  @override
+  String get tabAudit => 'Audit history';
+
+  @override
+  String get tabBranding => 'Branding';
+
+  @override
+  String get tabFeatures => 'Features';
+
+  @override
+  String get tabSettings => 'Settings';
+
+  @override
+  String get tabSubscription => 'Subscription';
+
+  @override
+  String get tabUsage => 'Limits & usage';
+
+  @override
+  String get templateLabel => 'Template';
+
+  @override
+  String get templateNew => 'New template';
+
+  @override
+  String get unsavedChanges => 'You have unsaved changes';
+
+  @override
+  String get usageSyntheticNote =>
+      'Storage and message counts in Demo Mode are estimates.';
+
+  @override
+  String get adminNavActivity => 'Activity';
 }
