@@ -637,6 +637,7 @@ class _Setup extends StatelessWidget {
                       children: [
                         IconButton(
                           key: const Key('level-down'),
+                          tooltip: l.m191LevelDown,
                           iconSize: 32,
                           onPressed: level > 1 ? () => onLevel(level - 1) : null,
                           icon: const Icon(Icons.remove_circle_rounded),
@@ -651,6 +652,7 @@ class _Setup extends StatelessWidget {
                         ),
                         IconButton(
                           key: const Key('level-up'),
+                          tooltip: l.m191LevelUp,
                           iconSize: 32,
                           onPressed: level < unlocked ? () => onLevel(level + 1) : null,
                           icon: const Icon(Icons.add_circle_rounded),

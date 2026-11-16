@@ -13,6 +13,7 @@ import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/form_fields.dart';
+import '../../../core/widgets/unsaved_changes_guard.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../groups/domain/group.dart';
 import '../../groups/presentation/groups_providers.dart';
@@ -47,10 +48,29 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
   bool _saving = false;
   List<String> _errors = const [];
 
+  // v1.9.1 (M25): dirty = any field differs from its initial value.
+  bool _saved = false;
+  String? _initialSnap;
+  late final Listenable _texts = Listenable.merge([_title, _description]);
+
+  String _snap() => [
+    _title.text,
+    _description.text,
+    _type.name,
+    (_groups.toList()..sort()).join(','),
+    _start,
+    _end,
+    _exercises.map(identityHashCode).join(','),
+    (_files.keys.toList()..sort()).join(','),
+  ].join('|');
+
+  bool get _dirty => !_saved && _initialSnap != null && _snap() != _initialSnap;
+
   @override
   void initState() {
     super.initState();
     if (widget.groupId != null) _groups.add(widget.groupId!);
+    _initialSnap = _snap();
   }
 
   @override
@@ -72,6 +92,7 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
     _start = p.startDate.toDateTime();
     _end = p.endDate?.toDateTime();
     _exercises.addAll(p.exercises);
+    _initialSnap = _snap();
   }
 
   PlanDraft _draft() => PlanDraft(
@@ -97,6 +118,7 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
       final plan = await repo.save(d, planId: widget.planId);
       if (publish) await repo.setStatus(plan.id, PlanStatus.published);
       if (!mounted) return;
+      setState(() => _saved = true);
       showAppSnack(context, publish ? l.planPublished : l.planSaved);
       context.pushReplacement(Routes.plan(plan.id));
     } catch (e) {
@@ -151,162 +173,166 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
         .where((g) => g.hasCoach(me?.id ?? ''))
         .toList();
     final now = ref.watch(clockProvider)();
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.planId == null ? l.planNew : l.planEdit)),
-      body: ConstrainedContent(
-        maxWidth: Breakpoints.readable,
-        child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          children: [
-            TextField(
-              key: const Key('plan-title'),
-              controller: _title,
-              maxLength: 120,
-              decoration: InputDecoration(labelText: l.planTitleLabel),
-            ),
-            TextField(
-              key: const Key('plan-description'),
-              controller: _description,
-              maxLength: 4000,
-              minLines: 2,
-              maxLines: 6,
-              decoration: InputDecoration(labelText: l.planDescription),
-            ),
-            SectionHeader(l.planType),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final t in PlanType.values)
-                  ChoiceChip(
-                    key: Key('plan-type-${t.name}'),
-                    label: Text(planTypeLabel(context, t)),
-                    selected: _type == t,
-                    onSelected: (_) => setState(() => _type = t),
-                  ),
-              ],
-            ),
-            SectionHeader(l.planGroups),
-            for (final g in groups)
-              CheckboxListTile(
-                key: Key('plan-group-${g.id}'),
-                contentPadding: EdgeInsets.zero,
-                value: _groups.contains(g.id),
-                onChanged: (v) => setState(() => v == true ? _groups.add(g.id) : _groups.remove(g.id)),
-                title: Text(g.name),
+    return ListenableBuilder(
+      listenable: _texts,
+      builder: (context, child) => UnsavedChangesGuard(dirty: _dirty, child: child!),
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.planId == null ? l.planNew : l.planEdit)),
+        body: ConstrainedContent(
+          maxWidth: Breakpoints.readable,
+          child: ListView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            children: [
+              TextField(
+                key: const Key('plan-title'),
+                controller: _title,
+                maxLength: 120,
+                decoration: InputDecoration(labelText: l.planTitleLabel),
               ),
-            Row(
-              children: [
-                Expanded(
-                  child: PickerField(
-                    key: const Key('plan-start'),
-                    icon: Icons.event_rounded,
-                    label: '${l.planStart}: ${f.dayMonthShort(_start ?? now)}',
-                    filled: true,
-                    onTap: () async {
-                      final d = await showDatePicker(
-                        context: context,
-                        initialDate: _start ?? now,
-                        firstDate: now.subtract(const Duration(days: 365)),
-                        lastDate: now.add(const Duration(days: 730)),
-                      );
-                      if (d != null) setState(() => _start = d);
-                    },
-                  ),
+              TextField(
+                key: const Key('plan-description'),
+                controller: _description,
+                maxLength: 4000,
+                minLines: 2,
+                maxLines: 6,
+                decoration: InputDecoration(labelText: l.planDescription),
+              ),
+              SectionHeader(l.planType),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final t in PlanType.values)
+                    ChoiceChip(
+                      key: Key('plan-type-${t.name}'),
+                      label: Text(planTypeLabel(context, t)),
+                      selected: _type == t,
+                      onSelected: (_) => setState(() => _type = t),
+                    ),
+                ],
+              ),
+              SectionHeader(l.planGroups),
+              for (final g in groups)
+                CheckboxListTile(
+                  key: Key('plan-group-${g.id}'),
+                  contentPadding: EdgeInsets.zero,
+                  value: _groups.contains(g.id),
+                  onChanged: (v) => setState(() => v == true ? _groups.add(g.id) : _groups.remove(g.id)),
+                  title: Text(g.name),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: PickerField(
-                    key: const Key('plan-end'),
-                    icon: Icons.event_busy_rounded,
-                    label: _end == null ? l.planEnd : '${l.planEnd}: ${f.dayMonthShort(_end!)}',
-                    filled: _end != null,
-                    onTap: () async {
-                      final d = await showDatePicker(
-                        context: context,
-                        initialDate: _end ?? (_start ?? now).add(const Duration(days: 30)),
-                        firstDate: _start ?? now.subtract(const Duration(days: 365)),
-                        lastDate: now.add(const Duration(days: 730)),
-                      );
-                      setState(() => _end = d);
-                    },
+              Row(
+                children: [
+                  Expanded(
+                    child: PickerField(
+                      key: const Key('plan-start'),
+                      icon: Icons.event_rounded,
+                      label: '${l.planStart}: ${f.dayMonthShort(_start ?? now)}',
+                      filled: true,
+                      onTap: () async {
+                        final d = await showDatePicker(
+                          context: context,
+                          initialDate: _start ?? now,
+                          firstDate: now.subtract(const Duration(days: 365)),
+                          lastDate: now.add(const Duration(days: 730)),
+                        );
+                        if (d != null) setState(() => _start = d);
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SectionHeader(l.planExercises, actionLabel: l.planAddExercise, onAction: () => _editExercise()),
-            if (_exercises.isEmpty) Text(l.planNoExercises, style: Theme.of(context).textTheme.bodySmall),
-            for (var i = 0; i < _exercises.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                child: AppCard(
-                  key: Key('plan-ex-$i'),
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text('${i + 1}')),
-                    title: Text(_exercises[i].name),
-                    subtitle: Text('${_exercises[i].media.length} · ${l.exerciseMedia}'),
-                    onTap: () => _editExercise(existing: _exercises[i], index: i),
-                    trailing: Wrap(
-                      children: [
-                        IconButton(
-                          key: Key('plan-ex-up-$i'),
-                          tooltip: l.exerciseMoveUp,
-                          onPressed: i == 0
-                              ? null
-                              : () => setState(() => _exercises.insert(i - 1, _exercises.removeAt(i))),
-                          icon: const Icon(Icons.arrow_upward_rounded),
-                        ),
-                        IconButton(
-                          tooltip: l.exerciseMoveDown,
-                          onPressed: i == _exercises.length - 1
-                              ? null
-                              : () => setState(() => _exercises.insert(i + 1, _exercises.removeAt(i))),
-                          icon: const Icon(Icons.arrow_downward_rounded),
-                        ),
-                        IconButton(
-                          tooltip: l.exerciseRemove,
-                          onPressed: () => setState(() => _exercises.removeAt(i)),
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
-                        ),
-                      ],
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: PickerField(
+                      key: const Key('plan-end'),
+                      icon: Icons.event_busy_rounded,
+                      label: _end == null ? l.planEnd : '${l.planEnd}: ${f.dayMonthShort(_end!)}',
+                      filled: _end != null,
+                      onTap: () async {
+                        final d = await showDatePicker(
+                          context: context,
+                          initialDate: _end ?? (_start ?? now).add(const Duration(days: 30)),
+                          firstDate: _start ?? now.subtract(const Duration(days: 365)),
+                          lastDate: now.add(const Duration(days: 730)),
+                        );
+                        setState(() => _end = d);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SectionHeader(l.planExercises, actionLabel: l.planAddExercise, onAction: () => _editExercise()),
+              if (_exercises.isEmpty) Text(l.planNoExercises, style: Theme.of(context).textTheme.bodySmall),
+              for (var i = 0; i < _exercises.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                  child: AppCard(
+                    key: Key('plan-ex-$i'),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: ListTile(
+                      leading: CircleAvatar(child: Text('${i + 1}')),
+                      title: Text(_exercises[i].name),
+                      subtitle: Text('${_exercises[i].media.length} · ${l.exerciseMedia}'),
+                      onTap: () => _editExercise(existing: _exercises[i], index: i),
+                      trailing: Wrap(
+                        children: [
+                          IconButton(
+                            key: Key('plan-ex-up-$i'),
+                            tooltip: l.exerciseMoveUp,
+                            onPressed: i == 0
+                                ? null
+                                : () => setState(() => _exercises.insert(i - 1, _exercises.removeAt(i))),
+                            icon: const Icon(Icons.arrow_upward_rounded),
+                          ),
+                          IconButton(
+                            tooltip: l.exerciseMoveDown,
+                            onPressed: i == _exercises.length - 1
+                                ? null
+                                : () => setState(() => _exercises.insert(i + 1, _exercises.removeAt(i))),
+                            icon: const Icon(Icons.arrow_downward_rounded),
+                          ),
+                          IconButton(
+                            tooltip: l.exerciseRemove,
+                            onPressed: () => setState(() => _exercises.removeAt(i)),
+                            icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                key: const Key('plan-add-exercise'),
-                onPressed: () => _editExercise(),
-                icon: const Icon(Icons.add_rounded),
-                label: Text(l.planAddExercise),
-              ),
-            ),
-            FormErrors(errors: _errors.map(_toValidation).toList()),
-            const SizedBox(height: AppSpacing.md),
-            Text(l.planDraftsOnlyCoach, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    key: const Key('plan-save-draft'),
-                    onPressed: _saving ? null : () => _save(publish: false),
-                    child: Text(l.planSaveDraft),
-                  ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  key: const Key('plan-add-exercise'),
+                  onPressed: () => _editExercise(),
+                  icon: const Icon(Icons.add_rounded),
+                  label: Text(l.planAddExercise),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: FilledButton(
-                    key: const Key('plan-publish'),
-                    onPressed: _saving ? null : () => _save(publish: true),
-                    child: Text(l.planPublish),
+              ),
+              FormErrors(errors: _errors.map(_toValidation).toList()),
+              const SizedBox(height: AppSpacing.md),
+              Text(l.planDraftsOnlyCoach, style: Theme.of(context).textTheme.bodySmall),
+              const SizedBox(height: AppSpacing.xs),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      key: const Key('plan-save-draft'),
+                      onPressed: _saving ? null : () => _save(publish: false),
+                      child: Text(l.planSaveDraft),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: FilledButton(
+                      key: const Key('plan-publish'),
+                      onPressed: _saving ? null : () => _save(publish: true),
+                      child: Text(l.planPublish),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

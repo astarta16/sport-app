@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
+import '../../features/trainings/domain/training.dart' show PhotoUpload;
 import '../l10n/l10n.dart';
 import '../theme/app_theme.dart';
+import 'app_widgets.dart';
 
 /// Tappable read-only field that opens a picker (date, time, …).
 class PickerField extends StatelessWidget {
@@ -41,6 +45,11 @@ class PickerField extends StatelessWidget {
   }
 }
 
+/// v1.9.1 (M21): the localized text for a validation code; an unknown code
+/// is never shown raw but as a generic "please check this field" message.
+String fieldErrorText(BuildContext context, String code) =>
+    validationText(context, code) ?? context.l10n.m191FieldGenericError;
+
 /// Localized validation errors shown under a form.
 class FormErrors extends StatelessWidget {
   const FormErrors({super.key, required this.errors});
@@ -69,7 +78,7 @@ class FormErrors extends StatelessWidget {
                 children: [
                   const Icon(Icons.error_outline_rounded, size: 16, color: AppColors.danger),
                   const SizedBox(width: 6),
-                  Expanded(child: Text(validationText(context, e) ?? e)),
+                  Expanded(child: Text(fieldErrorText(context, e))),
                 ],
               ),
             ),
@@ -140,6 +149,138 @@ class DateTimeRow extends StatelessWidget {
             },
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// Where a picked file comes from (v1.9.1, M20/M22).
+enum FileSource { camera, gallery, file }
+
+/// The picked file, shown right under the picker buttons (v1.9.1, M20/M22):
+/// thumbnail for an image or a PDF icon, name, size, Replace and Remove.
+class PickedFileCard extends StatelessWidget {
+  const PickedFileCard({
+    super.key,
+    required this.file,
+    required this.onRemove,
+    this.onReplace,
+    this.keyPrefix = 'file',
+  });
+
+  final PhotoUpload file;
+  final VoidCallback? onRemove;
+
+  /// Shows a Replace menu with the three sources when given.
+  final ValueChanged<FileSource>? onReplace;
+  final String keyPrefix;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final isImage = file.mimeType.startsWith('image/');
+    final thumb = isImage && file.bytes.length > 100
+        ? ClipRRect(
+            key: Key('$keyPrefix-thumb'),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            child: Image.memory(
+              Uint8List.fromList(file.bytes),
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => const Icon(Icons.image_rounded, size: 40),
+            ),
+          )
+        : SizedBox(
+            width: 56,
+            height: 56,
+            child: Icon(
+              isImage ? Icons.image_rounded : Icons.picture_as_pdf_rounded,
+              size: 40,
+              color: isImage ? scheme.primary : AppColors.danger,
+            ),
+          );
+    return AppCard(
+      key: Key('$keyPrefix-card'),
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      child: Row(
+        children: [
+          thumb,
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  file.fileName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Text(l.m191FileSize((file.bytes.length / 1024).ceil()), style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+          if (onReplace != null)
+            PopupMenuButton<FileSource>(
+              key: Key('$keyPrefix-replace'),
+              tooltip: l.m191ReplaceFile,
+              enabled: onRemove != null,
+              onSelected: onReplace,
+              icon: const Icon(Icons.swap_horiz_rounded),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: FileSource.camera,
+                  child: ListTile(leading: const Icon(Icons.photo_camera_rounded), title: Text(l.takePhoto)),
+                ),
+                PopupMenuItem(
+                  value: FileSource.gallery,
+                  child: ListTile(leading: const Icon(Icons.photo_library_rounded), title: Text(l.m191PhotoLibrary)),
+                ),
+                PopupMenuItem(
+                  value: FileSource.file,
+                  child: ListTile(leading: const Icon(Icons.picture_as_pdf_rounded), title: Text(l.m191PdfFile)),
+                ),
+              ],
+            ),
+          IconButton(
+            key: Key('$keyPrefix-remove'),
+            tooltip: l.m191RemoveFile,
+            onPressed: onRemove,
+            icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Camera / Photo library / PDF file buttons (v1.9.1, M20/M22).
+class FileSourceButtons extends StatelessWidget {
+  const FileSourceButtons({super.key, required this.onPick, this.keyPrefix = 'file', this.extra = const []});
+
+  final ValueChanged<FileSource>? onPick;
+  final String keyPrefix;
+  final List<Widget> extra;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    Widget b(FileSource s, IconData icon, String label) => OutlinedButton.icon(
+      key: Key('$keyPrefix-pick-${s.name}'),
+      onPressed: onPick == null ? null : () => onPick!(s),
+      icon: Icon(icon, size: 18),
+      label: Text(label),
+    );
+    return Wrap(
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
+      children: [
+        b(FileSource.camera, Icons.photo_camera_rounded, l.takePhoto),
+        b(FileSource.gallery, Icons.photo_library_rounded, l.m191PhotoLibrary),
+        b(FileSource.file, Icons.picture_as_pdf_rounded, l.m191PdfFile),
+        ...extra,
       ],
     );
   }

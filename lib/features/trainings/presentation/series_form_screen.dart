@@ -9,6 +9,7 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/form_fields.dart';
+import '../../../core/widgets/unsaved_changes_guard.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../clubs/presentation/venue_picker.dart';
@@ -48,10 +49,30 @@ class _SeriesFormScreenState extends ConsumerState<SeriesFormScreen> {
   bool _saving = false;
   List<String> _errors = const [];
 
+  // v1.9.1 (M25): dirty = any field differs from its initial value.
+  bool _groupPicked = false;
+  bool _saved = false;
+  String? _initialSnap;
+
+  String _snap() => [
+    _groupPicked ? _groupId : '',
+    (_weekdays.toList()..sort()).join(','),
+    _time,
+    _duration,
+    _venueId,
+    (_focus.map((f) => f.name).toList()..sort()).join(','),
+    _description.text,
+    _start,
+    _end,
+  ].join('|');
+
+  bool get _dirty => !_saved && _initialSnap != null && _snap() != _initialSnap;
+
   @override
   void initState() {
     super.initState();
     _groupId = widget.groupId;
+    _initialSnap = _snap();
   }
 
   @override
@@ -73,6 +94,7 @@ class _SeriesFormScreenState extends ConsumerState<SeriesFormScreen> {
     final from = widget.fromDate == null ? null : LocalDate.parse(widget.fromDate!);
     _start = (from ?? s.startDate).toDateTime();
     _end = s.endDate?.toDateTime();
+    _initialSnap = _snap();
   }
 
   Future<void> _save() async {
@@ -101,7 +123,10 @@ class _SeriesFormScreenState extends ConsumerState<SeriesFormScreen> {
       success: l.seriesSaved,
     );
     if (!mounted) return;
-    setState(() => _saving = false);
+    setState(() {
+      _saving = false;
+      _saved = ok;
+    });
     if (ok) context.popOrHome();
   }
 
@@ -136,148 +161,158 @@ class _SeriesFormScreenState extends ConsumerState<SeriesFormScreen> {
     _groupId ??= group?.id;
     final now = ref.watch(clockProvider)();
     final f = Fmt.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.isEdit ? l.seriesEdit : l.seriesNew)),
-      body: SafeArea(
-        child: ConstrainedContent(
-          maxWidth: Breakpoints.readable,
-          child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            children: [
-              if (widget.isEdit) DemoBanner(text: '${l.editScopeFuture} · ${f.dayMonth(_start ?? now)}'),
-              if (!widget.isEdit && groups.length > 1) ...[
-                SectionHeader(l.groupLabel),
-                DropdownButtonFormField<String>(
-                  key: const Key('series-group'),
-                  initialValue: _groupId,
-                  isExpanded: true,
-                  items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
-                  onChanged: (v) => setState(() {
-                    _groupId = v;
-                    _venueId = null;
-                  }),
+    return ListenableBuilder(
+      listenable: _description,
+      builder: (context, child) => UnsavedChangesGuard(dirty: _dirty, child: child!),
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.isEdit ? l.seriesEdit : l.seriesNew)),
+        body: SafeArea(
+          child: ConstrainedContent(
+            maxWidth: Breakpoints.readable,
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              children: [
+                if (widget.isEdit) DemoBanner(text: '${l.editScopeFuture} · ${f.dayMonth(_start ?? now)}'),
+                if (!widget.isEdit && groups.length > 1) ...[
+                  SectionHeader(l.groupLabel),
+                  DropdownButtonFormField<String>(
+                    key: const Key('series-group'),
+                    initialValue: _groupId,
+                    isExpanded: true,
+                    items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
+                    onChanged: (v) => setState(() {
+                      _groupId = v;
+                      _groupPicked = true;
+                      _venueId = null;
+                    }),
+                  ),
+                ],
+                SectionHeader(l.seriesWeekdays),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (var d = 1; d <= 7; d++)
+                      FilterChip(
+                        key: Key('series-day-$d'),
+                        label: Text(weekdayShortName(context, d)),
+                        selected: _weekdays.contains(d),
+                        onSelected: (v) => setState(() => v ? _weekdays.add(d) : _weekdays.remove(d)),
+                      ),
+                  ],
+                ),
+                SectionHeader(l.seriesStartTime),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PickerField(
+                        key: const Key('series-time'),
+                        icon: Icons.schedule_rounded,
+                        label: _time.format(context),
+                        filled: true,
+                        onTap: () async {
+                          final t = await showTimePicker(context: context, initialTime: _time);
+                          if (t != null) setState(() => _time = t);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        isExpanded: true,
+                        initialValue: _duration,
+                        items: [
+                          for (final d in const [45, 60, 75, 90, 120])
+                            DropdownMenuItem(value: d, child: Text(l.durationMinutes(d))),
+                        ],
+                        onChanged: (v) => setState(() => _duration = v ?? 90),
+                      ),
+                    ),
+                  ],
+                ),
+                SectionHeader(l.venueLabel),
+                VenuePicker(
+                  fieldKey: const Key('series-venue'),
+                  group: group,
+                  value: _venueId,
+                  onChanged: (v) => setState(() => _venueId = v),
+                ),
+                SectionHeader(l.trainingFocus),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final fo in TrainingFocus.values)
+                      FilterChip(
+                        key: Key('series-focus-${fo.name}'),
+                        avatar: Icon(focusIcon(fo), size: 18),
+                        label: Text(focusLabel(context, fo)),
+                        selected: _focus.contains(fo),
+                        onSelected: (v) => setState(() => v ? _focus.add(fo) : _focus.remove(fo)),
+                      ),
+                  ],
+                ),
+                SectionHeader(l.seriesStartDate),
+                PickerField(
+                  key: const Key('series-start'),
+                  icon: Icons.event_rounded,
+                  label: f.weekdayDayMonth(_start ?? now),
+                  filled: true,
+                  onTap: widget.isEdit
+                      ? () {}
+                      : () async {
+                          final d = await showDatePicker(
+                            context: context,
+                            initialDate: _start ?? now,
+                            firstDate: DateUtils.dateOnly(now),
+                            lastDate: now.add(const Duration(days: 365)),
+                          );
+                          if (d != null) setState(() => _start = d);
+                        },
+                ),
+                SectionHeader(l.seriesEndDate),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PickerField(
+                        key: const Key('series-end'),
+                        icon: Icons.event_busy_rounded,
+                        label: _end == null ? l.seriesNoEnd : f.weekdayDayMonth(_end!),
+                        filled: _end != null,
+                        onTap: () async {
+                          final d = await showDatePicker(
+                            context: context,
+                            initialDate: _end ?? (_start ?? now).add(const Duration(days: 90)),
+                            firstDate: _start ?? DateUtils.dateOnly(now),
+                            lastDate: now.add(const Duration(days: 366)),
+                          );
+                          if (d != null) setState(() => _end = d);
+                        },
+                      ),
+                    ),
+                    if (_end != null)
+                      IconButton(
+                        key: const Key('series-clear-end'),
+                        tooltip: l.m191ClearEndDate,
+                        onPressed: () => setState(() => _end = null),
+                        icon: const Icon(Icons.clear_rounded),
+                      ),
+                  ],
+                ),
+                SectionHeader(l.trainingDescription),
+                TextField(controller: _description, maxLength: 1000, minLines: 2, maxLines: 4),
+                Text(l.seriesHorizonNote, style: Theme.of(context).textTheme.bodySmall),
+                FormErrors(errors: _errors),
+                const SizedBox(height: AppSpacing.md),
+                LoadingButton(
+                  key: const Key('series-save'),
+                  label: l.save,
+                  loading: _saving,
+                  onPressed: _save,
+                  icon: Icons.event_repeat_rounded,
                 ),
               ],
-              SectionHeader(l.seriesWeekdays),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  for (var d = 1; d <= 7; d++)
-                    FilterChip(
-                      key: Key('series-day-$d'),
-                      label: Text(weekdayShortName(context, d)),
-                      selected: _weekdays.contains(d),
-                      onSelected: (v) => setState(() => v ? _weekdays.add(d) : _weekdays.remove(d)),
-                    ),
-                ],
-              ),
-              SectionHeader(l.seriesStartTime),
-              Row(
-                children: [
-                  Expanded(
-                    child: PickerField(
-                      key: const Key('series-time'),
-                      icon: Icons.schedule_rounded,
-                      label: _time.format(context),
-                      filled: true,
-                      onTap: () async {
-                        final t = await showTimePicker(context: context, initialTime: _time);
-                        if (t != null) setState(() => _time = t);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: DropdownButtonFormField<int>(
-                      isExpanded: true,
-                      initialValue: _duration,
-                      items: [
-                        for (final d in const [45, 60, 75, 90, 120])
-                          DropdownMenuItem(value: d, child: Text(l.durationMinutes(d))),
-                      ],
-                      onChanged: (v) => setState(() => _duration = v ?? 90),
-                    ),
-                  ),
-                ],
-              ),
-              SectionHeader(l.venueLabel),
-              VenuePicker(
-                fieldKey: const Key('series-venue'),
-                group: group,
-                value: _venueId,
-                onChanged: (v) => setState(() => _venueId = v),
-              ),
-              SectionHeader(l.trainingFocus),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final fo in TrainingFocus.values)
-                    FilterChip(
-                      key: Key('series-focus-${fo.name}'),
-                      avatar: Icon(focusIcon(fo), size: 18),
-                      label: Text(focusLabel(context, fo)),
-                      selected: _focus.contains(fo),
-                      onSelected: (v) => setState(() => v ? _focus.add(fo) : _focus.remove(fo)),
-                    ),
-                ],
-              ),
-              SectionHeader(l.seriesStartDate),
-              PickerField(
-                key: const Key('series-start'),
-                icon: Icons.event_rounded,
-                label: f.weekdayDayMonth(_start ?? now),
-                filled: true,
-                onTap: widget.isEdit
-                    ? () {}
-                    : () async {
-                        final d = await showDatePicker(
-                          context: context,
-                          initialDate: _start ?? now,
-                          firstDate: DateUtils.dateOnly(now),
-                          lastDate: now.add(const Duration(days: 365)),
-                        );
-                        if (d != null) setState(() => _start = d);
-                      },
-              ),
-              SectionHeader(l.seriesEndDate),
-              Row(
-                children: [
-                  Expanded(
-                    child: PickerField(
-                      key: const Key('series-end'),
-                      icon: Icons.event_busy_rounded,
-                      label: _end == null ? l.seriesNoEnd : f.weekdayDayMonth(_end!),
-                      filled: _end != null,
-                      onTap: () async {
-                        final d = await showDatePicker(
-                          context: context,
-                          initialDate: _end ?? (_start ?? now).add(const Duration(days: 90)),
-                          firstDate: _start ?? DateUtils.dateOnly(now),
-                          lastDate: now.add(const Duration(days: 366)),
-                        );
-                        if (d != null) setState(() => _end = d);
-                      },
-                    ),
-                  ),
-                  if (_end != null)
-                    IconButton(onPressed: () => setState(() => _end = null), icon: const Icon(Icons.clear_rounded)),
-                ],
-              ),
-              SectionHeader(l.trainingDescription),
-              TextField(controller: _description, maxLength: 1000, minLines: 2, maxLines: 4),
-              Text(l.seriesHorizonNote, style: Theme.of(context).textTheme.bodySmall),
-              FormErrors(errors: _errors),
-              const SizedBox(height: AppSpacing.md),
-              LoadingButton(
-                key: const Key('series-save'),
-                label: l.save,
-                loading: _saving,
-                onPressed: _save,
-                icon: Icons.event_repeat_rounded,
-              ),
-            ],
+            ),
           ),
         ),
       ),

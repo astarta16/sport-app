@@ -150,6 +150,7 @@ class ExerciseMediaTile extends ConsumerWidget {
             top: 0,
             child: IconButton(
               key: Key('remove-media-${media.id}'),
+              tooltip: context.l10n.m191RemoveAttachment,
               visualDensity: VisualDensity.compact,
               onPressed: onRemove,
               icon: const Icon(Icons.cancel_rounded, color: AppColors.danger),

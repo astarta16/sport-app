@@ -11,6 +11,8 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/form_fields.dart';
+import '../../../core/widgets/unsaved_changes_guard.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../clubs/domain/club.dart';
@@ -50,10 +52,30 @@ class _TrainingFormScreenState extends ConsumerState<TrainingFormScreen> {
   bool _initialized = false;
   List<String> _errors = const [];
 
+  // v1.9.1 (M25): dirty = any field differs from its initial value.
+  bool _groupPicked = false;
+  bool _saved = false;
+  String? _initialSnap;
+
+  String _snap() => [
+    _groupPicked ? _groupId : '',
+    _date,
+    _time,
+    _venueId,
+    _duration,
+    (_focus.map((f) => f.name).toList()..sort()).join(','),
+    _description.text,
+    _photos.length,
+    _consentConfirmed,
+  ].join('|');
+
+  bool get _dirty => !_saved && _initialSnap != null && _snap() != _initialSnap;
+
   @override
   void initState() {
     super.initState();
     _groupId = widget.groupId;
+    _initialSnap = _snap();
   }
 
   @override
@@ -72,6 +94,7 @@ class _TrainingFormScreenState extends ConsumerState<TrainingFormScreen> {
     _duration = t.durationMin;
     _focus.addAll(t.focus);
     _description.text = t.description;
+    _initialSnap = _snap();
   }
 
   DateTime? get _start => _date == null || _time == null
@@ -106,7 +129,10 @@ class _TrainingFormScreenState extends ConsumerState<TrainingFormScreen> {
       success: l.trainingSaved,
     );
     if (!mounted) return;
-    setState(() => _saving = false);
+    setState(() {
+      _saving = false;
+      _saved = ok;
+    });
     if (ok) context.popOrHome();
   }
 
@@ -141,231 +167,236 @@ class _TrainingFormScreenState extends ConsumerState<TrainingFormScreen> {
     final t = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.isEdit ? l.editTraining : l.newTraining)),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, c) {
-            final left = <Widget>[
-              if (!widget.isEdit && groups.length > 1) ...[
-                SectionHeader(l.groupLabel),
-                DropdownButtonFormField<String>(
-                  initialValue: _groupId,
-                  isExpanded: true,
-                  items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
-                  onChanged: (v) => setState(() {
-                    _groupId = v;
-                    _venueId = null;
-                  }),
-                ),
-              ],
-              SectionHeader(l.dateLabel),
-              Row(
-                children: [
-                  Expanded(
-                    child: _PickerField(
-                      key: const Key('training-date'),
-                      icon: Icons.calendar_today_rounded,
-                      label: _date == null ? l.dateLabel : f.weekdayDayMonth(_date!),
-                      filled: _date != null,
-                      onTap: () async {
-                        final now = ref.read(clockProvider)();
-                        final d = await showDatePicker(
-                          context: context,
-                          initialDate: _date ?? now,
-                          firstDate: widget.isEdit ? now.subtract(const Duration(days: 60)) : DateUtils.dateOnly(now),
-                          lastDate: now.add(const Duration(days: 365)),
-                        );
-                        if (d != null) setState(() => _date = d);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  SizedBox(
-                    width: 120,
-                    child: _PickerField(
-                      key: const Key('training-time'),
-                      icon: Icons.schedule_rounded,
-                      label: _time == null ? l.timeLabel : _time!.format(context),
-                      filled: _time != null,
-                      onTap: () async {
-                        final tm = await showTimePicker(
-                          context: context,
-                          initialTime: _time ?? const TimeOfDay(hour: 17, minute: 0),
-                        );
-                        if (tm != null) setState(() => _time = tm);
-                      },
-                    ),
+    return ListenableBuilder(
+      listenable: _description,
+      builder: (context, child) => UnsavedChangesGuard(dirty: _dirty, child: child!),
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.isEdit ? l.editTraining : l.newTraining)),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final left = <Widget>[
+                if (!widget.isEdit && groups.length > 1) ...[
+                  SectionHeader(l.groupLabel),
+                  DropdownButtonFormField<String>(
+                    initialValue: _groupId,
+                    isExpanded: true,
+                    items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
+                    onChanged: (v) => setState(() {
+                      _groupId = v;
+                      _groupPicked = true;
+                      _venueId = null;
+                    }),
                   ),
                 ],
-              ),
-              SectionHeader(l.venueLabel),
-              DropdownButtonFormField<String>(
-                key: const Key('training-venue'),
-                initialValue: groupVenues.any((v) => v.id == _venueId) ? _venueId : null,
-                isExpanded: true,
-                hint: Text(l.selectVenue),
-                items: [
-                  for (final v in groupVenues)
-                    DropdownMenuItem(
-                      value: v.id,
+                SectionHeader(l.dateLabel),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _PickerField(
+                        key: const Key('training-date'),
+                        icon: Icons.calendar_today_rounded,
+                        label: _date == null ? l.dateLabel : f.weekdayDayMonth(_date!),
+                        filled: _date != null,
+                        onTap: () async {
+                          final now = ref.read(clockProvider)();
+                          final d = await showDatePicker(
+                            context: context,
+                            initialDate: _date ?? now,
+                            firstDate: widget.isEdit ? now.subtract(const Duration(days: 60)) : DateUtils.dateOnly(now),
+                            lastDate: now.add(const Duration(days: 365)),
+                          );
+                          if (d != null) setState(() => _date = d);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    SizedBox(
+                      width: 120,
+                      child: _PickerField(
+                        key: const Key('training-time'),
+                        icon: Icons.schedule_rounded,
+                        label: _time == null ? l.timeLabel : _time!.format(context),
+                        filled: _time != null,
+                        onTap: () async {
+                          final tm = await showTimePicker(
+                            context: context,
+                            initialTime: _time ?? const TimeOfDay(hour: 17, minute: 0),
+                          );
+                          if (tm != null) setState(() => _time = tm);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SectionHeader(l.venueLabel),
+                DropdownButtonFormField<String>(
+                  key: const Key('training-venue'),
+                  initialValue: groupVenues.any((v) => v.id == _venueId) ? _venueId : null,
+                  isExpanded: true,
+                  hint: Text(l.selectVenue),
+                  items: [
+                    for (final v in groupVenues)
+                      DropdownMenuItem(
+                        value: v.id,
+                        child: Row(
+                          children: [
+                            Icon(venueTypeIcon(v.type), size: 18, color: scheme.onSurfaceVariant),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(v.name, overflow: TextOverflow.ellipsis)),
+                          ],
+                        ),
+                      ),
+                  ],
+                  onChanged: (v) => setState(() => _venueId = v),
+                ),
+                SectionHeader(l.durationLabel),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final d in _durations)
+                      ChoiceChip(
+                        label: Text(l.durationMinutes(d)),
+                        selected: _duration == d,
+                        onSelected: (_) => setState(() => _duration = d),
+                      ),
+                  ],
+                ),
+                Slider(
+                  value: _duration.toDouble().clamp(15, 180),
+                  min: 15,
+                  max: 180,
+                  divisions: 33,
+                  label: l.durationMinutes(_duration),
+                  onChanged: (v) => setState(() => _duration = v.round()),
+                ),
+              ];
+              final right = <Widget>[
+                SectionHeader(l.trainingFocus),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final fo in TrainingFocus.values)
+                      FilterChip(
+                        key: Key('focus-${fo.name}'),
+                        avatar: Icon(focusIcon(fo), size: 18),
+                        label: Text(focusLabel(context, fo)),
+                        selected: _focus.contains(fo),
+                        onSelected: (v) => setState(() => v ? _focus.add(fo) : _focus.remove(fo)),
+                      ),
+                  ],
+                ),
+                SectionHeader(l.trainingDescription),
+                TextField(
+                  key: const Key('training-description'),
+                  controller: _description,
+                  minLines: 3,
+                  maxLines: 6,
+                  maxLength: 1000,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(hintText: l.descriptionHint),
+                ),
+                SectionHeader(
+                  l.trainingPhotos,
+                  actionLabel: l.addPhotos,
+                  onAction: () async {
+                    final picked = await MediaPicker.pickPhotos();
+                    if (picked.isNotEmpty) setState(() => _photos.addAll(picked));
+                  },
+                ),
+                if (_photos.isNotEmpty) ...[
+                  SizedBox(
+                    height: 84,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _photos.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 6),
+                      itemBuilder: (_, i) => Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.memory(
+                              Uint8List.fromList(_photos[i].bytes),
+                              width: 84,
+                              height: 84,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            right: 2,
+                            top: 2,
+                            child: InkWell(
+                              onTap: () => setState(() => _photos.removeAt(i)),
+                              child: const CircleAvatar(radius: 11, child: Icon(Icons.close, size: 14)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (group != null) _ConsentPanel(groupId: group.id),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: _consentConfirmed,
+                    onChanged: (v) => setState(() => _consentConfirmed = v ?? false),
+                    title: Text(l.photoConsentConfirm, style: t.bodyMedium),
+                  ),
+                ],
+                if (_errors.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  for (final e in _errors.toSet())
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
                       child: Row(
                         children: [
-                          Icon(venueTypeIcon(v.type), size: 18, color: scheme.onSurfaceVariant),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(v.name, overflow: TextOverflow.ellipsis)),
+                          const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 18),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(fieldErrorText(context, e), style: const TextStyle(color: AppColors.danger)),
+                          ),
                         ],
                       ),
                     ),
                 ],
-                onChanged: (v) => setState(() => _venueId = v),
-              ),
-              SectionHeader(l.durationLabel),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final d in _durations)
-                    ChoiceChip(
-                      label: Text(l.durationMinutes(d)),
-                      selected: _duration == d,
-                      onSelected: (_) => setState(() => _duration = d),
-                    ),
-                ],
-              ),
-              Slider(
-                value: _duration.toDouble().clamp(15, 180),
-                min: 15,
-                max: 180,
-                divisions: 33,
-                label: l.durationMinutes(_duration),
-                onChanged: (v) => setState(() => _duration = v.round()),
-              ),
-            ];
-            final right = <Widget>[
-              SectionHeader(l.trainingFocus),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final fo in TrainingFocus.values)
-                    FilterChip(
-                      key: Key('focus-${fo.name}'),
-                      avatar: Icon(focusIcon(fo), size: 18),
-                      label: Text(focusLabel(context, fo)),
-                      selected: _focus.contains(fo),
-                      onSelected: (v) => setState(() => v ? _focus.add(fo) : _focus.remove(fo)),
-                    ),
-                ],
-              ),
-              SectionHeader(l.trainingDescription),
-              TextField(
-                key: const Key('training-description'),
-                controller: _description,
-                minLines: 3,
-                maxLines: 6,
-                maxLength: 1000,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(hintText: l.descriptionHint),
-              ),
-              SectionHeader(
-                l.trainingPhotos,
-                actionLabel: l.addPhotos,
-                onAction: () async {
-                  final picked = await MediaPicker.pickPhotos();
-                  if (picked.isNotEmpty) setState(() => _photos.addAll(picked));
-                },
-              ),
-              if (_photos.isNotEmpty) ...[
-                SizedBox(
-                  height: 84,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _photos.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 6),
-                    itemBuilder: (_, i) => Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.memory(
-                            Uint8List.fromList(_photos[i].bytes),
-                            width: 84,
-                            height: 84,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          right: 2,
-                          top: 2,
-                          child: InkWell(
-                            onTap: () => setState(() => _photos.removeAt(i)),
-                            child: const CircleAvatar(radius: 11, child: Icon(Icons.close, size: 14)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                const SizedBox(height: AppSpacing.lg),
+                LoadingButton(
+                  key: const Key('save-training'),
+                  label: l.saveTraining,
+                  icon: Icons.check_rounded,
+                  loading: _saving,
+                  onPressed: _save,
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                if (group != null) _ConsentPanel(groupId: group.id),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  value: _consentConfirmed,
-                  onChanged: (v) => setState(() => _consentConfirmed = v ?? false),
-                  title: Text(l.photoConsentConfirm, style: t.bodyMedium),
-                ),
-              ],
-              if (_errors.isNotEmpty) ...[
-                const SizedBox(height: AppSpacing.sm),
-                for (final e in _errors.toSet())
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+              ];
+              const pad = EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl);
+              // Phone: single column. Tablet: when/where | what + photos.
+              if (c.maxWidth < Breakpoints.expanded) {
+                return ListView(padding: pad, children: [...left, ...right]);
+              }
+              return SingleChildScrollView(
+                padding: pad,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: Breakpoints.dashboard),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 18),
-                        const SizedBox(width: 6),
                         Expanded(
-                          child: Text(validationText(context, e) ?? e, style: const TextStyle(color: AppColors.danger)),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: left),
+                        ),
+                        const SizedBox(width: AppSpacing.xl),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: right),
                         ),
                       ],
                     ),
                   ),
-              ],
-              const SizedBox(height: AppSpacing.lg),
-              LoadingButton(
-                key: const Key('save-training'),
-                label: l.saveTraining,
-                icon: Icons.check_rounded,
-                loading: _saving,
-                onPressed: _save,
-              ),
-            ];
-            const pad = EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl);
-            // Phone: single column. Tablet: when/where | what + photos.
-            if (c.maxWidth < Breakpoints.expanded) {
-              return ListView(padding: pad, children: [...left, ...right]);
-            }
-            return SingleChildScrollView(
-              padding: pad,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: Breakpoints.dashboard),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: left),
-                      ),
-                      const SizedBox(width: AppSpacing.xl),
-                      Expanded(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: right),
-                      ),
-                    ],
-                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

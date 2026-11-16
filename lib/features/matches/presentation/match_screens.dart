@@ -11,6 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/cancel_reason_dialog.dart';
 import '../../../core/widgets/form_fields.dart';
+import '../../../core/widgets/unsaved_changes_guard.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../clubs/presentation/clubs_providers.dart';
@@ -51,10 +52,30 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
   bool _saving = false;
   List<String> _errors = const [];
 
+  // v1.9.1 (M25): dirty = any field differs from its initial value.
+  bool _groupPicked = false;
+  bool _saved = false;
+  String? _initialSnap;
+  late final Listenable _texts = Listenable.merge([_opponent, _comment]);
+
+  String _snap() => [
+    _groupPicked ? _groupId : '',
+    _date,
+    _time,
+    _venueId,
+    _opponent.text,
+    _comment.text,
+    _type.name,
+    _homeAway.name,
+  ].join('|');
+
+  bool get _dirty => !_saved && _initialSnap != null && _snap() != _initialSnap;
+
   @override
   void initState() {
     super.initState();
     _groupId = widget.groupId;
+    _initialSnap = _snap();
   }
 
   @override
@@ -75,6 +96,7 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
     _comment.text = m.description ?? '';
     _type = m.matchType;
     _homeAway = m.homeAway;
+    _initialSnap = _snap();
   }
 
   Future<void> _save() async {
@@ -105,7 +127,10 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
       success: l.matchSaved,
     );
     if (!mounted) return;
-    setState(() => _saving = false);
+    setState(() {
+      _saving = false;
+      _saved = ok;
+    });
     if (ok) context.popOrHome();
   }
 
@@ -134,79 +159,84 @@ class _MatchFormScreenState extends ConsumerState<MatchFormScreen> {
     final group = groups.where((g) => g.id == _groupId).firstOrNull ?? (groups.length == 1 ? groups.first : null);
     _groupId ??= group?.id;
     final now = ref.watch(clockProvider)();
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.isEdit ? l.editMatch : l.newMatch)),
-      body: SafeArea(
-        child: ConstrainedContent(
-          maxWidth: Breakpoints.readable,
-          child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            children: [
-              if (!widget.isEdit && groups.length > 1) ...[
-                SectionHeader(l.groupLabel),
-                DropdownButtonFormField<String>(
-                  key: const Key('match-group'),
-                  initialValue: _groupId,
-                  isExpanded: true,
-                  items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
-                  onChanged: (v) => setState(() {
-                    _groupId = v;
-                    _venueId = null;
-                  }),
+    return ListenableBuilder(
+      listenable: _texts,
+      builder: (context, child) => UnsavedChangesGuard(dirty: _dirty, child: child!),
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.isEdit ? l.editMatch : l.newMatch)),
+        body: SafeArea(
+          child: ConstrainedContent(
+            maxWidth: Breakpoints.readable,
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              children: [
+                if (!widget.isEdit && groups.length > 1) ...[
+                  SectionHeader(l.groupLabel),
+                  DropdownButtonFormField<String>(
+                    key: const Key('match-group'),
+                    initialValue: _groupId,
+                    isExpanded: true,
+                    items: [for (final g in groups) DropdownMenuItem(value: g.id, child: Text(g.name))],
+                    onChanged: (v) => setState(() {
+                      _groupId = v;
+                      _groupPicked = true;
+                      _venueId = null;
+                    }),
+                  ),
+                ],
+                SectionHeader(l.matchOpponent),
+                TextField(
+                  key: const Key('match-opponent'),
+                  controller: _opponent,
+                  maxLength: 80,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(hintText: l.matchOpponent),
+                ),
+                SectionHeader(l.dateLabel),
+                DateTimeRow(
+                  keyPrefix: 'match',
+                  date: _date,
+                  time: _time,
+                  firstDate: widget.isEdit ? now.subtract(const Duration(days: 30)) : DateUtils.dateOnly(now),
+                  onDate: (d) => setState(() => _date = d),
+                  onTime: (t) => setState(() => _time = t),
+                ),
+                SectionHeader(l.venueLabel),
+                VenuePicker(
+                  fieldKey: const Key('match-venue'),
+                  group: group,
+                  value: _venueId,
+                  onChanged: (v) => setState(() => _venueId = v),
+                ),
+                SectionHeader(l.matchType),
+                SegmentedButton<MatchType>(
+                  segments: [
+                    for (final t in MatchType.values) ButtonSegment(value: t, label: Text(matchTypeLabel(context, t))),
+                  ],
+                  selected: {_type},
+                  onSelectionChanged: (s) => setState(() => _type = s.first),
+                ),
+                SectionHeader(l.matchHomeAway),
+                SegmentedButton<HomeAway>(
+                  segments: [
+                    for (final h in HomeAway.values) ButtonSegment(value: h, label: Text(homeAwayLabel(context, h))),
+                  ],
+                  selected: {_homeAway},
+                  onSelectionChanged: (s) => setState(() => _homeAway = s.first),
+                ),
+                SectionHeader(l.matchComment),
+                TextField(controller: _comment, maxLength: 1000, minLines: 2, maxLines: 5),
+                FormErrors(errors: _errors),
+                const SizedBox(height: AppSpacing.md),
+                LoadingButton(
+                  key: const Key('match-save'),
+                  label: l.save,
+                  loading: _saving,
+                  onPressed: _save,
+                  icon: Icons.check_rounded,
                 ),
               ],
-              SectionHeader(l.matchOpponent),
-              TextField(
-                key: const Key('match-opponent'),
-                controller: _opponent,
-                maxLength: 80,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: l.matchOpponent),
-              ),
-              SectionHeader(l.dateLabel),
-              DateTimeRow(
-                keyPrefix: 'match',
-                date: _date,
-                time: _time,
-                firstDate: widget.isEdit ? now.subtract(const Duration(days: 30)) : DateUtils.dateOnly(now),
-                onDate: (d) => setState(() => _date = d),
-                onTime: (t) => setState(() => _time = t),
-              ),
-              SectionHeader(l.venueLabel),
-              VenuePicker(
-                fieldKey: const Key('match-venue'),
-                group: group,
-                value: _venueId,
-                onChanged: (v) => setState(() => _venueId = v),
-              ),
-              SectionHeader(l.matchType),
-              SegmentedButton<MatchType>(
-                segments: [
-                  for (final t in MatchType.values) ButtonSegment(value: t, label: Text(matchTypeLabel(context, t))),
-                ],
-                selected: {_type},
-                onSelectionChanged: (s) => setState(() => _type = s.first),
-              ),
-              SectionHeader(l.matchHomeAway),
-              SegmentedButton<HomeAway>(
-                segments: [
-                  for (final h in HomeAway.values) ButtonSegment(value: h, label: Text(homeAwayLabel(context, h))),
-                ],
-                selected: {_homeAway},
-                onSelectionChanged: (s) => setState(() => _homeAway = s.first),
-              ),
-              SectionHeader(l.matchComment),
-              TextField(controller: _comment, maxLength: 1000, minLines: 2, maxLines: 5),
-              FormErrors(errors: _errors),
-              const SizedBox(height: AppSpacing.md),
-              LoadingButton(
-                key: const Key('match-save'),
-                label: l.save,
-                loading: _saving,
-                onPressed: _save,
-                icon: Icons.check_rounded,
-              ),
-            ],
+            ),
           ),
         ),
       ),

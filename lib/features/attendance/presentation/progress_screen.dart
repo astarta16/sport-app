@@ -323,7 +323,7 @@ Future<void> showFeedbackSheet(
                   for (var i = 1; i <= 5; i++)
                     IconButton(
                       key: Key('fb-${c.name}-$i'),
-                      visualDensity: VisualDensity.compact,
+                      tooltip: l.m191RatingStars(feedbackLabel(context, c), i),
                       onPressed: () => setState(() => ratings[c] == i ? ratings.remove(c) : ratings[c] = i),
                       icon: Icon(
                         (ratings[c] ?? 0) >= i ? Icons.star_rounded : Icons.star_border_rounded,

@@ -85,6 +85,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           suffixIcon: _query.isEmpty
               ? null
               : IconButton(
+                  tooltip: l.m191ClearSearch,
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () {
                     _search.clear();

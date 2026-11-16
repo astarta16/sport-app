@@ -178,6 +178,7 @@ class _ChildThreadScreenState extends ConsumerState<ChildThreadScreen> {
                   const SizedBox(width: AppSpacing.xs),
                   IconButton.filled(
                     key: const Key('thread-send'),
+                    tooltip: l.send,
                     onPressed: _sending ? null : _send,
                     icon: const Icon(Icons.send_rounded),
                   ),

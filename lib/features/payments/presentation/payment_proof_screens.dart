@@ -16,7 +16,9 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/services/media_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
+import '../../../core/widgets/app_feedback.dart';
 import '../../../core/widgets/form_fields.dart';
+import '../../../core/widgets/unsaved_changes_guard.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/presentation/session_providers.dart';
 import '../../children/presentation/children_providers.dart';
@@ -118,6 +120,12 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
   double? _progress;
   List<String> _errors = const [];
 
+  // v1.9.1 (M24/M25): failed submit shown inline with a retry; dirty guard.
+  Object? _submitError;
+  late final Listenable _texts = Listenable.merge([_ref, _note]);
+
+  bool get _dirty => _paidOn != null || _receipt != null || _ref.text.isNotEmpty || _note.text.isNotEmpty;
+
   @override
   void dispose() {
     _ref.dispose();
@@ -125,10 +133,14 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
     super.dispose();
   }
 
-  Future<void> _pick(Future<PhotoUpload?> Function() p) async {
+  Future<void> _pick(FileSource source) async {
     // v1.9: a denied permission or picker failure is explained (M23).
     try {
-      final f = await p();
+      final f = await switch (source) {
+        FileSource.camera => MediaPicker.takePhoto(),
+        FileSource.gallery => MediaPicker.pickOnePhoto(),
+        FileSource.file => MediaPicker.pickDocument(),
+      };
       if (f != null && mounted) setState(() => _receipt = f);
     } catch (e) {
       if (mounted) showAppSnack(context, errorText(context, e), error: true);
@@ -146,7 +158,10 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
       note: _note.text,
     );
     final errors = PaymentProofDraft.validate(d, now: now);
-    setState(() => _errors = errors);
+    setState(() {
+      _errors = errors;
+      _submitError = null;
+    });
     if (errors.isNotEmpty) return;
     setState(() => _progress = 0);
     try {
@@ -162,11 +177,13 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
       showAppSnack(context, l.payProofSubmitted);
       setState(() {
         _receipt = null;
+        _paidOn = null;
         _ref.clear();
         _note.clear();
       });
     } catch (e) {
-      if (mounted) showAppSnack(context, errorText(context, e), error: true);
+      // Inline (not a snackbar): the receipt and fields stay for a retry.
+      if (mounted) setState(() => _submitError = e);
     }
     if (mounted) setState(() => _progress = null);
   }
@@ -194,153 +211,158 @@ class _PaymentProofScreenState extends ConsumerState<PaymentProofScreen> {
     final open = proofs.where((p) => p.status.isOpen).firstOrNull;
     final canSubmit = payment.status == PaymentStatus.pending && open == null;
     final child = ref.watch(childProvider(payment.childId)).value;
-    return Scaffold(
-      appBar: AppBar(title: Text(l.payProofTitle)),
-      body: ConstrainedContent(
-        maxWidth: Breakpoints.readable,
-        child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          children: [
-            AppCard(
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.payments_rounded),
-                title: Text(
-                  l.payProofFor(child?.firstName ?? '', f.money(payment.amount), f.dayMonth(payment.dueDate)),
+    return ListenableBuilder(
+      listenable: _texts,
+      builder: (context, child) => UnsavedChangesGuard(dirty: canSubmit && _dirty, child: child!),
+      child: Scaffold(
+        appBar: AppBar(title: Text(l.payProofTitle)),
+        body: ConstrainedContent(
+          maxWidth: Breakpoints.readable,
+          child: ListView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            children: [
+              AppCard(
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.payments_rounded),
+                  title: Text(
+                    l.payProofFor(child?.firstName ?? '', f.money(payment.amount), f.dayMonth(payment.dueDate)),
+                  ),
+                  subtitle: Text(switch (displayStateOf(payment)) {
+                    PaymentDisplayState.paid => l.payStatePaid,
+                    PaymentDisplayState.proofSubmitted => l.payStateAwaiting,
+                    PaymentDisplayState.underReview => l.payStateUnderReview,
+                    PaymentDisplayState.rejected => l.payRejectedReason(payment.verification.rejectionReason ?? ''),
+                    _ => l.paymentPending,
+                  }, key: const Key('proof-state')),
                 ),
-                subtitle: Text(switch (displayStateOf(payment)) {
-                  PaymentDisplayState.paid => l.payStatePaid,
-                  PaymentDisplayState.proofSubmitted => l.payStateAwaiting,
-                  PaymentDisplayState.underReview => l.payStateUnderReview,
-                  PaymentDisplayState.rejected => l.payRejectedReason(payment.verification.rejectionReason ?? ''),
-                  _ => l.paymentPending,
-                }, key: const Key('proof-state')),
               ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            DemoBanner(text: l.payProofHint),
-            if (canSubmit) ...[
-              SectionHeader(l.payProofAction),
-              PickerField(
-                key: const Key('proof-date'),
-                icon: Icons.event_rounded,
-                label: '${l.payProofDate}: ${f.fullDate(_paidOn ?? now)}',
-                filled: true,
-                onTap: () async {
-                  final d = await showDatePicker(
-                    context: context,
-                    initialDate: _paidOn ?? now,
-                    firstDate: now.subtract(const Duration(days: 365)),
-                    lastDate: now,
-                  );
-                  if (d != null) setState(() => _paidOn = d);
-                },
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              TextField(
-                key: const Key('proof-reference'),
-                controller: _ref,
-                maxLength: 60,
-                decoration: InputDecoration(labelText: l.payProofReference),
-              ),
-              TextField(
-                key: const Key('proof-note'),
-                controller: _note,
-                maxLength: 300,
-                maxLines: 3,
-                minLines: 1,
-                decoration: InputDecoration(labelText: l.payProofNote),
-              ),
-              Text(l.payProofReceipt, style: Theme.of(context).textTheme.labelMedium),
-              const SizedBox(height: AppSpacing.xs),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  ActionChip(
-                    avatar: const Icon(Icons.photo_camera_rounded, size: 18),
-                    label: Text(l.certTakePhoto),
-                    onPressed: () => _pick(MediaPicker.takePhoto),
-                  ),
-                  ActionChip(
-                    avatar: const Icon(Icons.attach_file_rounded, size: 18),
-                    label: Text(l.certChooseFile),
-                    onPressed: () => _pick(MediaPicker.pickDocument),
-                  ),
-                  if (AppConfig.isDemo)
-                    ActionChip(
-                      key: const Key('proof-demo-receipt'),
-                      avatar: const Icon(Icons.science_rounded, size: 18),
-                      label: Text(l.demoBadge),
-                      onPressed: () => setState(
-                        () => _receipt = PhotoUpload(
-                          bytes: Uint8List.fromList(List.filled(4096, 1)),
-                          fileName: 'qvitari.pdf',
-                          mimeType: 'application/pdf',
+              const SizedBox(height: AppSpacing.sm),
+              DemoBanner(text: l.payProofHint),
+              if (canSubmit) ...[
+                SectionHeader(l.payProofAction),
+                PickerField(
+                  key: const Key('proof-date'),
+                  icon: Icons.event_rounded,
+                  label: '${l.payProofDate}: ${f.fullDate(_paidOn ?? now)}',
+                  filled: true,
+                  onTap: () async {
+                    final d = await showDatePicker(
+                      context: context,
+                      initialDate: _paidOn ?? now,
+                      firstDate: now.subtract(const Duration(days: 365)),
+                      lastDate: now,
+                    );
+                    if (d != null) setState(() => _paidOn = d);
+                  },
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                TextField(
+                  key: const Key('proof-reference'),
+                  controller: _ref,
+                  maxLength: 60,
+                  decoration: InputDecoration(labelText: l.payProofReference),
+                ),
+                TextField(
+                  key: const Key('proof-note'),
+                  controller: _note,
+                  maxLength: 300,
+                  maxLines: 3,
+                  minLines: 1,
+                  decoration: InputDecoration(labelText: l.payProofNote),
+                ),
+                Text(l.payProofReceipt, style: Theme.of(context).textTheme.labelMedium),
+                const SizedBox(height: AppSpacing.xs),
+                if (_receipt == null)
+                  FileSourceButtons(
+                    keyPrefix: 'proof',
+                    onPick: _progress != null ? null : _pick,
+                    extra: [
+                      if (AppConfig.isDemo)
+                        OutlinedButton.icon(
+                          key: const Key('proof-demo-receipt'),
+                          icon: const Icon(Icons.science_rounded, size: 18),
+                          label: Text(l.demoBadge),
+                          onPressed: () => setState(
+                            () => _receipt = PhotoUpload(
+                              bytes: Uint8List.fromList(List.filled(4096, 1)),
+                              fileName: 'qvitari.pdf',
+                              mimeType: 'application/pdf',
+                            ),
+                          ),
                         ),
+                    ],
+                  )
+                else
+                  PickedFileCard(
+                    key: const Key('proof-file'),
+                    keyPrefix: 'proof-file',
+                    file: _receipt!,
+                    onRemove: _progress != null ? null : () => setState(() => _receipt = null),
+                    onReplace: _pick,
+                  ),
+                if (_progress != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  LinearProgressIndicator(value: _progress),
+                  Text(l.payProofUploading((_progress! * 100).round())),
+                ],
+                if (_submitError != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  AppFeedbackBanner(
+                    key: const Key('proof-error'),
+                    tone: FeedbackTone.error,
+                    title: l.m191ReceiptNotSentTitle,
+                    message: l.m191InputsKept(errorText(context, _submitError!)),
+                    actionLabel: l.retry,
+                    onAction: _submit,
+                  ),
+                ],
+                FormErrors(errors: _errors),
+                const SizedBox(height: AppSpacing.md),
+                LoadingButton(
+                  key: const Key('proof-submit'),
+                  label: l.payProofSubmit,
+                  icon: Icons.send_rounded,
+                  loading: _progress != null,
+                  onPressed: _submit,
+                ),
+              ],
+              if (proofs.isNotEmpty) ...[
+                SectionHeader(l.payHistory),
+                for (final p in proofs)
+                  AppCard(
+                    key: Key('my-proof-${p.id}'),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: ListTile(
+                      leading: const Icon(Icons.receipt_long_rounded),
+                      title: Text(l.paySubmittedOn(f.dateTime(p.submittedAt))),
+                      subtitle: Text(
+                        [
+                          if (p.reference != null) p.reference!,
+                          if (p.status == ProofStatus.rejected && p.rejectionReason != null)
+                            l.payRejectedReason(p.rejectionReason!),
+                          if (p.status == ProofStatus.approved && p.decidedAt != null)
+                            l.payVerifiedBy(p.decidedByName ?? '', f.dateTime(p.decidedAt!)),
+                        ].join('\n'),
+                      ),
+                      trailing: IconButton(
+                        tooltip: l.payViewReceipt,
+                        onPressed: () => openReceipt(context, ref, p),
+                        icon: const Icon(Icons.visibility_rounded),
                       ),
                     ),
-                ],
-              ),
-              if (_receipt != null)
-                ListTile(
-                  key: const Key('proof-file'),
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(
-                    _receipt!.mimeType == 'application/pdf' ? Icons.picture_as_pdf_rounded : Icons.image_rounded,
                   ),
-                  title: Text(_receipt!.fileName),
-                  subtitle: Text('${(_receipt!.bytes.length / 1024).ceil()} KB'),
-                ),
-              if (_progress != null) ...[
-                LinearProgressIndicator(value: _progress),
-                Text(l.payProofUploading((_progress! * 100).round())),
               ],
-              FormErrors(errors: _errors),
-              const SizedBox(height: AppSpacing.md),
-              LoadingButton(
-                key: const Key('proof-submit'),
-                label: l.payProofSubmit,
-                icon: Icons.send_rounded,
-                loading: _progress != null,
-                onPressed: _submit,
-              ),
-            ],
-            if (proofs.isNotEmpty) ...[
-              SectionHeader(l.payHistory),
-              for (final p in proofs)
-                AppCard(
-                  key: Key('my-proof-${p.id}'),
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: ListTile(
-                    leading: const Icon(Icons.receipt_long_rounded),
-                    title: Text(l.paySubmittedOn(f.dateTime(p.submittedAt))),
-                    subtitle: Text(
-                      [
-                        if (p.reference != null) p.reference!,
-                        if (p.status == ProofStatus.rejected && p.rejectionReason != null)
-                          l.payRejectedReason(p.rejectionReason!),
-                        if (p.status == ProofStatus.approved && p.decidedAt != null)
-                          l.payVerifiedBy(p.decidedByName ?? '', f.dateTime(p.decidedAt!)),
-                      ].join('\n'),
-                    ),
-                    trailing: IconButton(
-                      tooltip: l.payViewReceipt,
-                      onPressed: () => openReceipt(context, ref, p),
-                      icon: const Icon(Icons.visibility_rounded),
-                    ),
+              if (events.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                for (final e in events)
+                  Text(
+                    '${f.dateTime(e.at)} · ${eventLabel(context, e.action)} · ${e.actorName}',
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                ),
+              ],
             ],
-            if (events.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
-              for (final e in events)
-                Text(
-                  '${f.dateTime(e.at)} · ${eventLabel(context, e.action)} · ${e.actorName}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-            ],
-          ],
+          ),
         ),
       ),
     );

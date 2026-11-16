@@ -82,7 +82,7 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                     style: t.titleMedium,
                     decoration: InputDecoration(
                       labelText: l.phoneLabel,
-                      hintText: '5XX XX XX XX',
+                      hintText: l.m191PhoneHint,
                       prefixIcon: Padding(
                         padding: const EdgeInsets.only(left: 16, right: 8),
                         child: Text('🇬🇪  +995', style: t.titleMedium),

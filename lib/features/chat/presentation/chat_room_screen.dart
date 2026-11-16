@@ -366,6 +366,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     const SizedBox(width: AppSpacing.xs),
                     IconButton.filled(
                       key: const Key('chat-send'),
+                      tooltip: l.send,
                       onPressed: _sending ? null : () => _send(),
                       icon: const Icon(Icons.send_rounded),
                     ),
@@ -729,7 +730,12 @@ class _FailedBubble extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(l.chatSendFailed, style: Theme.of(context).textTheme.labelSmall),
                 TextButton(key: const Key('chat-retry'), onPressed: onRetry, child: Text(l.chatRetry)),
-                IconButton(onPressed: onDiscard, icon: const Icon(Icons.close_rounded, size: 18)),
+                IconButton(
+                  key: const Key('chat-discard'),
+                  tooltip: l.m191DiscardMessage,
+                  onPressed: onDiscard,
+                  icon: const Icon(Icons.close_rounded, size: 18),
+                ),
               ],
             ),
           ],
