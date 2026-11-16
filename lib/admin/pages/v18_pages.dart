@@ -197,30 +197,57 @@ Future<bool> runPlatform(BuildContext context, Future<void> Function() action, {
   }
 }
 
-Future<String?> askChangeReason(BuildContext context, {String? title}) async {
-  final l = context.l10n;
-  final c = TextEditingController();
-  return showDialog<String>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title ?? l.changeReasonTitle),
+Future<String?> askChangeReason(BuildContext context, {String? title}) => showDialog<String>(
+  context: context,
+  builder: (_) => _ChangeReasonDialog(title: title),
+);
+
+class _ChangeReasonDialog extends StatefulWidget {
+  const _ChangeReasonDialog({this.title});
+
+  final String? title;
+
+  @override
+  State<_ChangeReasonDialog> createState() => _ChangeReasonDialogState();
+}
+
+class _ChangeReasonDialogState extends State<_ChangeReasonDialog> {
+  final _c = TextEditingController();
+  String? _error;
+
+  void _submit() {
+    final v = _c.text.trim();
+    // v1.9: explain why nothing happens instead of ignoring the tap.
+    if (v.length < 3) return setState(() => _error = context.l10n.errChangeReason);
+    Navigator.pop(context, v);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return AlertDialog(
+      title: Text(widget.title ?? l.changeReasonTitle),
       content: TextField(
         key: const Key('change-reason'),
-        controller: c,
+        controller: _c,
         autofocus: true,
         maxLength: 300,
-        decoration: InputDecoration(hintText: l.changeReasonHint),
+        textInputAction: TextInputAction.done,
+        onSubmitted: (_) => _submit(),
+        decoration: InputDecoration(hintText: l.changeReasonHint, errorText: _error),
       ),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-        FilledButton(
-          key: const Key('change-reason-ok'),
-          onPressed: () => c.text.trim().length >= 3 ? Navigator.pop(context, c.text.trim()) : null,
-          child: Text(l.save),
-        ),
+        FilledButton(key: const Key('change-reason-ok'), onPressed: _submit, child: Text(l.save)),
       ],
-    ),
-  );
+    );
+  }
 }
 
 // ───────────────────────────────────────────────────────────── overview
@@ -967,18 +994,34 @@ class _OverviewTab extends ConsumerWidget {
   }
 }
 
-class _AdminsTab extends ConsumerWidget {
+class _AdminsTab extends ConsumerStatefulWidget {
   const _AdminsTab({required this.cfg});
 
   final OrgConfig cfg;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_AdminsTab> createState() => _AdminsTabState();
+}
+
+class _AdminsTabState extends ConsumerState<_AdminsTab> {
+  // v1.9: kept in state — typed input survives stream rebuilds.
+  final phone = TextEditingController();
+  final email = TextEditingController();
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    phone.dispose();
+    email.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = widget.cfg;
     final l = context.l10n;
     final club = ref.watch(clubsByIdProvider)[cfg.orgId];
     final invites = ref.watch(invitationsProvider(cfg.orgId)).value ?? const <OrgInvitation>[];
-    final phone = TextEditingController();
-    final email = TextEditingController();
     return _pad([
       Text(l.orgAdmins, style: Theme.of(context).textTheme.titleMedium),
       for (final a in club?.adminIds ?? const <String>[])
@@ -988,11 +1031,21 @@ class _AdminsTab extends ConsumerWidget {
           title: Consumer(builder: (context, ref, _) => Text(ref.watch(publicProfileProvider(a)).value?.fullName ?? a)),
           trailing: TextButton(
             key: Key('org-admin-remove-$a'),
-            onPressed: () => runPlatform(
-              context,
-              () => ref.read(organizationsRepositoryProvider).setOrgAdmin(cfg.orgId, a, admin: false),
-              success: l.orgSaved,
-            ),
+            onPressed: () async {
+              final ok = await confirmDialog(
+                context,
+                title: l.orgRemoveAdmin,
+                message: l.confirmRemoveAdminBody,
+                confirmLabel: l.orgRemoveAdmin,
+                destructive: true,
+              );
+              if (!ok || !context.mounted) return;
+              await runPlatform(
+                context,
+                () => ref.read(organizationsRepositoryProvider).setOrgAdmin(cfg.orgId, a, admin: false),
+                success: l.adminRemovedSnack,
+              );
+            },
             child: Text(l.orgRemoveAdmin),
           ),
         ),
@@ -1020,20 +1073,31 @@ class _AdminsTab extends ConsumerWidget {
           ),
           FilledButton.icon(
             key: const Key('invite-send'),
-            onPressed: () async {
-              try {
-                final r = await ref
-                    .read(platformRepositoryProvider)
-                    .inviteAdmin(
-                      cfg.orgId,
-                      phone: phone.text.trim().isEmpty ? null : phone.text.trim(),
-                      email: email.text.trim().isEmpty ? null : email.text.trim(),
-                    );
-                if (context.mounted) await showInvitationTokenDialog(context, r.token);
-              } catch (e) {
-                if (context.mounted) showAppSnack(context, platformErrorText(context, e), error: true);
-              }
-            },
+            onPressed: _busy
+                ? null
+                : () async {
+                    if (phone.text.trim().isEmpty && email.text.trim().isEmpty) {
+                      showAppSnack(context, l.errOrgAdmin, error: true);
+                      return;
+                    }
+                    setState(() => _busy = true);
+                    try {
+                      final r = await ref
+                          .read(platformRepositoryProvider)
+                          .inviteAdmin(
+                            cfg.orgId,
+                            phone: phone.text.trim().isEmpty ? null : phone.text.trim(),
+                            email: email.text.trim().isEmpty ? null : email.text.trim(),
+                          );
+                      phone.clear();
+                      email.clear();
+                      if (context.mounted) await showInvitationTokenDialog(context, r.token);
+                    } catch (e) {
+                      if (context.mounted) showAppSnack(context, platformErrorText(context, e), error: true);
+                    } finally {
+                      if (mounted) setState(() => _busy = false);
+                    }
+                  },
             icon: const Icon(Icons.send_rounded),
             label: Text(l.inviteAdmin),
           ),
@@ -1659,11 +1723,25 @@ class _SettingsTab extends ConsumerWidget {
               key: Key('org-set-status-${s.name}'),
               label: Text(orgStatusLabel(context, s)),
               selected: cfg.status == s,
-              onSelected: (_) => runPlatform(
-                context,
-                () => ref.read(organizationsRepositoryProvider).updatePlatformSettings(cfg.orgId, status: s),
-                success: l.orgSaved,
-              ),
+              onSelected: cfg.status == s
+                  ? null
+                  : (_) async {
+                      // v1.9: suspending / deactivating locks a whole tenant —
+                      // always explained and confirmed first.
+                      final ok = await confirmDialog(
+                        context,
+                        title: l.confirmOrgStatusTitle(orgStatusLabel(context, s)),
+                        message: s == OrgStatus.active ? l.confirmOrgActivateBody : l.confirmOrgSuspendBody,
+                        confirmLabel: orgStatusLabel(context, s),
+                        destructive: s != OrgStatus.active,
+                      );
+                      if (!ok || !context.mounted) return;
+                      await runPlatform(
+                        context,
+                        () => ref.read(organizationsRepositoryProvider).updatePlatformSettings(cfg.orgId, status: s),
+                        success: l.orgSaved,
+                      );
+                    },
             ),
         ],
       ),
@@ -2242,17 +2320,7 @@ class SystemHealthPage extends ConsumerWidget {
     final stats = ref.watch(platformStatsProvider).value;
     return AdminSection(
       title: l.adminNavHealth,
-      actions: [
-        FilledButton.tonalIcon(
-          key: const Key('health-refresh'),
-          onPressed: () async {
-            final changed = await ref.read(platformRepositoryProvider).refreshEntitlements();
-            if (context.mounted) showAppSnack(context, l.refreshDone(changed.length));
-          },
-          icon: const Icon(Icons.sync_rounded),
-          label: Text(l.runEntitlementRefresh),
-        ),
-      ],
+      actions: [const _RefreshButton()],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -2409,6 +2477,41 @@ class _InvitationAcceptCardState extends ConsumerState<InvitationAcceptCard> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RefreshButton extends ConsumerStatefulWidget {
+  const _RefreshButton();
+
+  @override
+  ConsumerState<_RefreshButton> createState() => _RefreshButtonState();
+}
+
+class _RefreshButtonState extends ConsumerState<_RefreshButton> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return FilledButton.tonalIcon(
+      key: const Key('health-refresh'),
+      onPressed: _busy
+          ? null
+          : () async {
+              setState(() => _busy = true);
+              List<String> changed = const [];
+              final ok = await runPlatform(context, () async {
+                changed = await ref.read(platformRepositoryProvider).refreshEntitlements();
+              });
+              if (!mounted) return;
+              setState(() => _busy = false);
+              if (ok) showAppSnack(context, l.refreshDone(changed.length));
+            },
+      icon: _busy
+          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+          : const Icon(Icons.sync_rounded),
+      label: Text(l.runEntitlementRefresh),
     );
   }
 }

@@ -1,0 +1,244 @@
+{
+ "pickerSearchHint": {
+  "en": "Search…",
+  "ka": "ძიება…",
+  "ru": "Поиск…"
+ },
+ "pickerClearSearch": {
+  "en": "Clear search",
+  "ka": "ძიების გასუფთავება",
+  "ru": "Очистить поиск"
+ },
+ "pickerSelectedCount": {
+  "en": "{count, plural, =0{Nothing selected} =1{1 selected} other{{count} selected}}",
+  "ka": "{count, plural, =0{არაფერია არჩეული} other{არჩეულია {count}}}",
+  "ru": "{count, plural, =0{Ничего не выбрано} one{Выбран {count}} few{Выбрано {count}} other{Выбрано {count}}}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "pickerSelectAll": {
+  "en": "Select all",
+  "ka": "ყველას მონიშვნა",
+  "ru": "Выбрать все"
+ },
+ "pickerClearAll": {
+  "en": "Clear all",
+  "ka": "ყველას მოხსნა",
+  "ru": "Снять все"
+ },
+ "pickerRemove": {
+  "en": "Remove",
+  "ka": "მოხსნა",
+  "ru": "Убрать"
+ },
+ "pickerNoOptions": {
+  "en": "Nothing to choose from yet.",
+  "ka": "ასარჩევი ჯერ არაფერია.",
+  "ru": "Пока не из чего выбрать."
+ },
+ "pickerNoResults": {
+  "en": "No results for “{query}”. Try another spelling.",
+  "ka": "„{query}“ ვერ მოიძებნა. სცადეთ სხვა ჩანაწერი.",
+  "ru": "По запросу «{query}» ничего нет. Попробуйте иначе."
+ },
+ "pickerDone": {
+  "en": "{count, plural, =0{Done} other{Done ({count})}}",
+  "ka": "{count, plural, =0{მზადაა} other{მზადაა ({count})}}",
+  "ru": "{count, plural, =0{Готово} other{Готово ({count})}}",
+  "ph": {
+   "count": "int"
+  }
+ },
+ "pickerChoose": {
+  "en": "Choose…",
+  "ka": "აირჩიეთ…",
+  "ru": "Выберите…"
+ },
+ "pickerGroupFree": {
+  "en": "Free at this time",
+  "ka": "ამ დროს თავისუფალია",
+  "ru": "Свободны в это время"
+ },
+ "pickerGroupBusy": {
+  "en": "Busy at this time",
+  "ka": "ამ დროს დაკავებულია",
+  "ru": "Заняты в это время"
+ },
+ "wizardStepOf": {
+  "en": "Step {step} of {total}: {name}",
+  "ka": "ნაბიჯი {step} / {total}: {name}",
+  "ru": "Шаг {step} из {total}: {name}",
+  "ph": {
+   "step": "int",
+   "total": "int",
+   "name": "String"
+  }
+ },
+ "adminNavSecCatalog": {
+  "en": "Catalog & content",
+  "ka": "კატალოგი და კონტენტი",
+  "ru": "Каталог и контент"
+ },
+ "adminNavSecPeople": {
+  "en": "People",
+  "ka": "ადამიანები",
+  "ru": "Люди"
+ },
+ "adminNavSecPrograms": {
+  "en": "Sports & programs",
+  "ka": "სპორტი და პროგრამები",
+  "ru": "Спорт и программы"
+ },
+ "adminNavSecCalendar": {
+  "en": "Calendar & facilities",
+  "ka": "კალენდარი და ობიექტები",
+  "ru": "Календарь и помещения"
+ },
+ "adminNavSecCommunication": {
+  "en": "Communication",
+  "ka": "კომუნიკაცია",
+  "ru": "Коммуникация"
+ },
+ "adminNavSecFinanceReports": {
+  "en": "Payments & reports",
+  "ka": "გადახდები და ანგარიშები",
+  "ru": "Платежи и отчёты"
+ },
+ "adminNavSecOrganization": {
+  "en": "Organization",
+  "ka": "ორგანიზაცია",
+  "ru": "Организация"
+ },
+ "adminOrgContext": {
+  "en": "Pages below work on this organization",
+  "ka": "ქვემოთ მოცემული გვერდები ამ ორგანიზაციას ეხება",
+  "ru": "Разделы ниже относятся к этой организации"
+ },
+ "adminSwitchOrg": {
+  "en": "Switch organization",
+  "ka": "ორგანიზაციის შეცვლა",
+  "ru": "Сменить организацию"
+ },
+ "featureOffTitle": {
+  "en": "{feature} is off for this organization",
+  "ka": "{feature} ამ ორგანიზაციისთვის გამორთულია",
+  "ru": "{feature}: выключено для этой организации",
+  "ph": {
+   "feature": "String"
+  }
+ },
+ "featureOffBodyOrg": {
+  "en": "Nothing is lost — existing records are kept. Switch the feature on in Organization settings if your package includes it; otherwise ask the platform administrator.",
+  "ka": "არაფერი იკარგება — არსებული ჩანაწერები ინახება. ჩართეთ ფუნქცია ორგანიზაციის პარამეტრებში, თუ თქვენი პაკეტი მას მოიცავს; სხვა შემთხვევაში მიმართეთ პლატფორმის ადმინისტრატორს.",
+  "ru": "Ничего не потеряно — записи сохранены. Включите функцию в настройках организации, если она входит в пакет; иначе обратитесь к администратору платформы."
+ },
+ "featureOffBodyPlatform": {
+  "en": "Existing records are kept. You can allow the feature in this organization's Features tab.",
+  "ka": "არსებული ჩანაწერები ინახება. ფუნქციის დაშვება შეგიძლიათ ამ ორგანიზაციის „ფუნქციების“ ჩანართში.",
+  "ru": "Записи сохранены. Разрешить функцию можно на вкладке «Функции» этой организации."
+ },
+ "featureOffOpenSettings": {
+  "en": "Open organization settings",
+  "ka": "ორგანიზაციის პარამეტრები",
+  "ru": "Настройки организации"
+ },
+ "featureOffOpenOrg": {
+  "en": "Open the organization's features",
+  "ka": "ორგანიზაციის ფუნქციების გახსნა",
+  "ru": "Открыть функции организации"
+ },
+ "errRequiredField": {
+  "en": "Required",
+  "ka": "სავალდებულოა",
+  "ru": "Обязательное поле"
+ },
+ "errCapacity": {
+  "en": "Enter a number from 1 to 2000",
+  "ka": "შეიყვანეთ რიცხვი 1-დან 2000-მდე",
+  "ru": "Введите число от 1 до 2000"
+ },
+ "roomOpensAt": {
+  "en": "Opens at",
+  "ka": "იხსნება",
+  "ru": "Открывается"
+ },
+ "roomClosesAt": {
+  "en": "Closes at",
+  "ka": "იკეტება",
+  "ru": "Закрывается"
+ },
+ "roomClosed": {
+  "en": "Closed",
+  "ka": "დაკეტილია",
+  "ru": "Закрыто"
+ },
+ "roomSameHours": {
+  "en": "Same hours every day",
+  "ka": "ყოველდღე ერთნაირი საათები",
+  "ru": "Одинаковые часы каждый день"
+ },
+ "roomCapacityHint": {
+  "en": "How many people the room safely holds",
+  "ka": "რამდენ ადამიანს იტევს ოთახი უსაფრთხოდ",
+  "ru": "Сколько человек помещение вмещает безопасно"
+ },
+ "roomSportsHint": {
+  "en": "Bookings for other sports show a warning",
+  "ka": "სხვა სპორტის ჯავშნისას გამოჩნდება გაფრთხილება",
+  "ru": "Для других видов спорта будет предупреждение"
+ },
+ "roomCreated": {
+  "en": "Room added",
+  "ka": "ოთახი დაემატა",
+  "ru": "Помещение добавлено"
+ },
+ "roomCreate": {
+  "en": "Add room",
+  "ka": "ოთახის დამატება",
+  "ru": "Добавить помещение"
+ },
+ "roomEdit": {
+  "en": "Edit room",
+  "ka": "ოთახის რედაქტირება",
+  "ru": "Изменить помещение"
+ },
+ "formBasics": {
+  "en": "Basics",
+  "ka": "ძირითადი",
+  "ru": "Основное"
+ },
+ "saveChanges": {
+  "en": "Save changes",
+  "ka": "ცვლილებების შენახვა",
+  "ru": "Сохранить изменения"
+ },
+ "confirmRemoveAdminBody": {
+  "en": "They will lose access to this organization's administration immediately. Their other roles stay.",
+  "ka": "ის მაშინვე დაკარგავს ამ ორგანიზაციის მართვის წვდომას. სხვა როლები შენარჩუნდება.",
+  "ru": "Доступ к управлению этой организацией будет сразу закрыт. Другие роли сохранятся."
+ },
+ "adminRemovedSnack": {
+  "en": "Administrator removed",
+  "ka": "ადმინისტრატორი მოიხსნა",
+  "ru": "Администратор удалён"
+ },
+ "confirmOrgStatusTitle": {
+  "en": "Change status to “{status}”?",
+  "ka": "შეიცვალოს სტატუსი „{status}“-ით?",
+  "ru": "Изменить статус на «{status}»?",
+  "ph": {
+   "status": "String"
+  }
+ },
+ "confirmOrgSuspendBody": {
+  "en": "Everyone in this organization immediately loses the ability to create or change anything. Data is kept and can be reactivated later.",
+  "ka": "ამ ორგანიზაციის ყველა წევრი მაშინვე დაკარგავს შექმნისა და ცვლილების შესაძლებლობას. მონაცემები ინახება და მოგვიანებით შეიძლება გააქტიურდეს.",
+  "ru": "Все участники организации сразу теряют возможность что-либо создавать или менять. Данные сохраняются, организацию можно активировать снова."
+ },
+ "confirmOrgActivateBody": {
+  "en": "Members regain access to the organization's enabled features.",
+  "ka": "წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.",
+  "ru": "Участники снова получат доступ к включённым функциям."
+ }
+}

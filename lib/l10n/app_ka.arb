@@ -3119,5 +3119,98 @@
   "templateNew": "ახალი შაბლონი",
   "unsavedChanges": "გაქვთ შეუნახავი ცვლილებები",
   "usageSyntheticNote": "საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.",
-  "adminNavActivity": "აქტივობა"
+  "adminNavActivity": "აქტივობა",
+  "pickerSearchHint": "ძიება…",
+  "pickerClearSearch": "ძიების გასუფთავება",
+  "pickerSelectedCount": "{count, plural, =0{არაფერია არჩეული} other{არჩეულია {count}}}",
+  "@pickerSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickerSelectAll": "ყველას მონიშვნა",
+  "pickerClearAll": "ყველას მოხსნა",
+  "pickerRemove": "მოხსნა",
+  "pickerNoOptions": "ასარჩევი ჯერ არაფერია.",
+  "pickerNoResults": "„{query}“ ვერ მოიძებნა. სცადეთ სხვა ჩანაწერი.",
+  "@pickerNoResults": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "pickerDone": "{count, plural, =0{მზადაა} other{მზადაა ({count})}}",
+  "@pickerDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickerChoose": "აირჩიეთ…",
+  "pickerGroupFree": "ამ დროს თავისუფალია",
+  "pickerGroupBusy": "ამ დროს დაკავებულია",
+  "wizardStepOf": "ნაბიჯი {step} / {total}: {name}",
+  "@wizardStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminNavSecCatalog": "კატალოგი და კონტენტი",
+  "adminNavSecPeople": "ადამიანები",
+  "adminNavSecPrograms": "სპორტი და პროგრამები",
+  "adminNavSecCalendar": "კალენდარი და ობიექტები",
+  "adminNavSecCommunication": "კომუნიკაცია",
+  "adminNavSecFinanceReports": "გადახდები და ანგარიშები",
+  "adminNavSecOrganization": "ორგანიზაცია",
+  "adminOrgContext": "ქვემოთ მოცემული გვერდები ამ ორგანიზაციას ეხება",
+  "adminSwitchOrg": "ორგანიზაციის შეცვლა",
+  "featureOffTitle": "{feature} ამ ორგანიზაციისთვის გამორთულია",
+  "@featureOffTitle": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "featureOffBodyOrg": "არაფერი იკარგება — არსებული ჩანაწერები ინახება. ჩართეთ ფუნქცია ორგანიზაციის პარამეტრებში, თუ თქვენი პაკეტი მას მოიცავს; სხვა შემთხვევაში მიმართეთ პლატფორმის ადმინისტრატორს.",
+  "featureOffBodyPlatform": "არსებული ჩანაწერები ინახება. ფუნქციის დაშვება შეგიძლიათ ამ ორგანიზაციის „ფუნქციების“ ჩანართში.",
+  "featureOffOpenSettings": "ორგანიზაციის პარამეტრები",
+  "featureOffOpenOrg": "ორგანიზაციის ფუნქციების გახსნა",
+  "errRequiredField": "სავალდებულოა",
+  "errCapacity": "შეიყვანეთ რიცხვი 1-დან 2000-მდე",
+  "roomOpensAt": "იხსნება",
+  "roomClosesAt": "იკეტება",
+  "roomClosed": "დაკეტილია",
+  "roomSameHours": "ყოველდღე ერთნაირი საათები",
+  "roomCapacityHint": "რამდენ ადამიანს იტევს ოთახი უსაფრთხოდ",
+  "roomSportsHint": "სხვა სპორტის ჯავშნისას გამოჩნდება გაფრთხილება",
+  "roomCreated": "ოთახი დაემატა",
+  "roomCreate": "ოთახის დამატება",
+  "roomEdit": "ოთახის რედაქტირება",
+  "formBasics": "ძირითადი",
+  "saveChanges": "ცვლილებების შენახვა",
+  "confirmRemoveAdminBody": "ის მაშინვე დაკარგავს ამ ორგანიზაციის მართვის წვდომას. სხვა როლები შენარჩუნდება.",
+  "adminRemovedSnack": "ადმინისტრატორი მოიხსნა",
+  "confirmOrgStatusTitle": "შეიცვალოს სტატუსი „{status}“-ით?",
+  "@confirmOrgStatusTitle": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmOrgSuspendBody": "ამ ორგანიზაციის ყველა წევრი მაშინვე დაკარგავს შექმნისა და ცვლილების შესაძლებლობას. მონაცემები ინახება და მოგვიანებით შეიძლება გააქტიურდეს.",
+  "confirmOrgActivateBody": "წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე."
 }

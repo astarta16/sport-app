@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/di.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/app_picker.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../core/widgets/visuals.dart';
+import '../../core/widgets/app_feedback.dart';
 import '../../core/widgets/language_selector.dart';
 import '../../features/admin/domain/admin_models.dart';
 import '../../features/attendance/domain/attendance.dart';
@@ -81,16 +84,39 @@ class AdminOrgPicker extends ConsumerWidget {
     if (ids.isEmpty || current == null) return const SizedBox.shrink();
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 320),
-      child: DropdownButtonFormField<String>(
+      child: OutlinedButton.icon(
         key: const Key('admin-org-picker'),
-        isExpanded: true,
-        initialValue: ids.contains(current) ? current : ids.first,
-        decoration: InputDecoration(labelText: context.l10n.orgLabel, isDense: true),
-        items: [for (final id in ids) DropdownMenuItem(value: id, child: Text(orgName(context, ref, id)))],
-        onChanged: (v) => v == null ? null : ref.read(adminOrgProvider.notifier).select(v),
+        onPressed: ids.length < 2 ? null : () => pickAdminOrg(context, ref),
+        icon: const Icon(Icons.apartment_rounded),
+        label: Text(orgName(context, ref, current), overflow: TextOverflow.ellipsis),
       ),
     );
   }
+}
+
+/// Searchable organization switch for every organization-scoped admin page.
+Future<void> pickAdminOrg(BuildContext context, WidgetRef ref) async {
+  final ids = ref.read(adminOrgIdsProvider);
+  final current = ref.read(adminOrgProvider);
+  final v = await showAppPicker<String>(
+    context,
+    title: context.l10n.adminSwitchOrg,
+    selected: current,
+    recentsId: 'admin-org',
+    options: [
+      for (final id in ids)
+        AppPickerOption(
+          value: id,
+          label: orgName(context, ref, id),
+          leading: CircleAvatar(
+            radius: 12,
+            backgroundColor: Color(ref.read(orgConfigProvider(id)).value?.branding.primaryColor ?? 0xFF2F6BFF),
+          ),
+          searchText: id,
+        ),
+    ],
+  );
+  if (v != null) ref.read(adminOrgProvider.notifier).select(v);
 }
 
 Widget _needsOrg(BuildContext context) =>
@@ -835,7 +861,8 @@ class _OrgSettingsFormState extends ConsumerState<_OrgSettingsForm> {
                 initialValue: _buffer,
                 decoration: InputDecoration(labelText: l.orgBookingBuffer),
                 items: [
-                  for (final m in const [0, 5, 10, 15, 30]) DropdownMenuItem(value: m, child: Text(l.minutesShort(m))),
+                  for (final m in ({0, 5, 10, 15, 30, _buffer}.toList()..sort()))
+                    DropdownMenuItem(value: m, child: Text(l.minutesShort(m))),
                 ],
                 onChanged: (v) => setState(() => _buffer = v ?? _buffer),
               ),
@@ -896,7 +923,8 @@ class _OrgSettingsFormState extends ConsumerState<_OrgSettingsForm> {
               DropdownButton<int>(
                 value: _lb.minParticipants,
                 items: [
-                  for (final n in const [2, 3, 5, 8, 10]) DropdownMenuItem(value: n, child: Text('$n')),
+                  for (final n in ({2, 3, 5, 8, 10, _lb.minParticipants}.toList()..sort()))
+                    DropdownMenuItem(value: n, child: Text('$n')),
                 ],
                 onChanged: (v) => setState(() => _lb = _lb.copyWith(minParticipants: v)),
               ),
@@ -1313,117 +1341,217 @@ String roomStatusLabel(BuildContext context, RoomStatus s) => switch (s) {
   RoomStatus.archived => context.l10n.adminArchived,
 };
 
-Future<void> showRoomDialog(BuildContext context, WidgetRef ref, String orgId, {Room? existing}) async {
-  final l = context.l10n;
-  final club = ref.read(clubsByIdProvider)[orgId];
-  final sports = ref.read(sportsByIdProvider);
-  final name = TextEditingController(text: existing?.name ?? '');
-  final note = TextEditingController(text: existing?.note ?? '');
-  var capacity = existing?.capacity ?? 30;
-  var status = existing?.status ?? RoomStatus.active;
-  final sel = {...?existing?.sportIds};
-  final first = existing?.hours.byWeekday.values.firstOrNull ?? (480, 1320);
-  var open = first.$1;
-  var close = first.$2;
-  await showDialog<void>(
-    context: context,
-    builder: (context) => StatefulBuilder(
-      builder: (context, set) => AlertDialog(
-        title: Text(existing == null ? l.roomNew : l.edit),
-        content: SizedBox(
-          width: 480,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  key: const Key('room-name'),
-                  controller: name,
-                  decoration: InputDecoration(labelText: l.adminColName),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text('${l.roomCapacity}: $capacity'),
-                Slider(
-                  key: const Key('room-capacity'),
-                  min: 1,
-                  max: 200,
-                  divisions: 199,
-                  value: capacity.toDouble(),
-                  onChanged: (v) => set(() => capacity = v.round()),
-                ),
-                Text('${l.roomHours}: ${_hm(open)}–${_hm(close)}'),
-                RangeSlider(
-                  min: 0,
-                  max: 1440,
-                  divisions: 48,
-                  values: RangeValues(open.toDouble(), close.toDouble()),
-                  onChanged: (v) => set(() {
-                    open = v.start.round();
-                    close = v.end.round();
-                  }),
-                ),
-                DropdownButtonFormField<RoomStatus>(
-                  isExpanded: true,
-                  key: const Key('room-status'),
-                  initialValue: status,
-                  decoration: InputDecoration(labelText: l.adminColStatus),
-                  items: [
-                    for (final s in RoomStatus.values)
-                      DropdownMenuItem(value: s, child: Text(roomStatusLabel(context, s))),
-                  ],
-                  onChanged: (v) => set(() => status = v ?? status),
-                ),
-                TextField(
-                  controller: note,
-                  decoration: InputDecoration(labelText: l.roomNote),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(l.roomSports, style: Theme.of(context).textTheme.titleSmall),
-                Wrap(
-                  spacing: 6,
-                  children: [
-                    for (final s in club?.sportIds ?? const <String>[])
-                      FilterChip(
-                        label: Text(sports[s]?.label(context) ?? s),
-                        selected: sel.contains(s),
-                        onSelected: (v) => set(() => v ? sel.add(s) : sel.remove(s)),
+Future<void> showRoomDialog(BuildContext context, WidgetRef ref, String orgId, {Room? existing}) => showDialog<void>(
+  context: context,
+  builder: (_) => _RoomDialog(orgId: orgId, existing: existing),
+);
+
+class _RoomDialog extends ConsumerStatefulWidget {
+  const _RoomDialog({required this.orgId, this.existing});
+
+  final String orgId;
+  final Room? existing;
+
+  @override
+  ConsumerState<_RoomDialog> createState() => _RoomDialogState();
+}
+
+class _RoomDialogState extends ConsumerState<_RoomDialog> {
+  late final _name = TextEditingController(text: widget.existing?.name ?? '');
+  late final _note = TextEditingController(text: widget.existing?.note ?? '');
+  late final _capacity = TextEditingController(text: '${widget.existing?.capacity ?? 30}');
+  late var _status = widget.existing?.status ?? RoomStatus.active;
+  late final _sel = {...?widget.existing?.sportIds};
+  // Per-weekday hours are kept as they are; only days the admin edits
+  // change (v1.8 wrote the first day's hours to all seven days).
+  late final Map<int, (int, int)?> _hours = {
+    for (var d = 1; d <= 7; d++) d: (widget.existing?.hours ?? OperatingHours.standard).byWeekday[d],
+  };
+  late bool _same = _hours.values.toSet().length <= 1;
+  bool _busy = false;
+  bool _tried = false;
+
+  String? get _nameError => _tried && _name.text.trim().isEmpty ? context.l10n.errRequiredField : null;
+  int? get _cap => int.tryParse(_capacity.text.trim());
+  String? get _capError => _tried && (_cap == null || _cap! < 1 || _cap! > 2000) ? context.l10n.errCapacity : null;
+
+  Future<void> _editHours(int? day) async {
+    final cur = (day == null ? _hours.values.whereType<(int, int)>().firstOrNull : _hours[day]) ?? (480, 1320);
+    final from = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: cur.$1 ~/ 60, minute: cur.$1 % 60),
+      helpText: context.l10n.roomOpensAt,
+    );
+    if (from == null || !mounted) return;
+    final to = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: cur.$2 ~/ 60 % 24, minute: cur.$2 % 60),
+      helpText: context.l10n.roomClosesAt,
+    );
+    if (to == null) return;
+    var range = (from.hour * 60 + from.minute, to.hour * 60 + to.minute);
+    if (range.$2 <= range.$1) range = (range.$1, 1440);
+    setState(() {
+      if (day == null) {
+        for (var d = 1; d <= 7; d++) {
+          if (_hours[d] != null || _same) _hours[d] = range;
+        }
+      } else {
+        _hours[day] = range;
+      }
+    });
+  }
+
+  Future<void> _save() async {
+    final l = context.l10n;
+    setState(() => _tried = true);
+    if (_nameError != null || _capError != null) return;
+    setState(() => _busy = true);
+    final r = Room(
+      id: widget.existing?.id ?? '',
+      orgId: widget.orgId,
+      name: _name.text.trim(),
+      capacity: _cap!,
+      sportIds: _sel.toList(),
+      hours: OperatingHours({
+        for (final e in _hours.entries)
+          if (e.value != null) e.key: e.value!,
+      }),
+      status: _status,
+      venueId: widget.existing?.venueId,
+      note: _note.text.trim().isEmpty ? null : _note.text.trim(),
+    );
+    final ok = await runGuarded(
+      context,
+      () => ref.read(schedulingRepositoryProvider).upsertRoom(r),
+      success: widget.existing == null ? l.roomCreated : l.orgSaved,
+    );
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (ok) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final club = ref.watch(clubsByIdProvider)[widget.orgId];
+    final sports = ref.watch(sportsByIdProvider);
+    String range((int, int)? h) => h == null ? l.roomClosed : '${_hm(h.$1)}–${_hm(h.$2 % 1440)}';
+    return AlertDialog(
+      title: Text(widget.existing == null ? l.roomNew : l.roomEdit),
+      content: SizedBox(
+        width: 520,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppFormSection(
+                title: l.formBasics,
+                children: [
+                  TextField(
+                    key: const Key('room-name'),
+                    controller: _name,
+                    autofocus: widget.existing == null,
+                    onChanged: (_) => _tried ? setState(() {}) : null,
+                    decoration: InputDecoration(labelText: '${l.adminColName} *', errorText: _nameError),
+                  ),
+                  TextField(
+                    key: const Key('room-capacity'),
+                    controller: _capacity,
+                    keyboardType: TextInputType.number,
+                    onChanged: (_) => _tried ? setState(() {}) : null,
+                    decoration: InputDecoration(
+                      labelText: '${l.roomCapacity} *',
+                      helperText: l.roomCapacityHint,
+                      errorText: _capError,
+                    ),
+                  ),
+                  AppChoiceGroup<RoomStatus>(
+                    label: l.adminColStatus,
+                    keyPrefix: 'room-status',
+                    value: _status,
+                    choices: [for (final s in RoomStatus.values) (s, roomStatusLabel(context, s), null)],
+                    onChanged: (v) => setState(() => _status = v),
+                  ),
+                ],
+              ),
+              AppFormSection(
+                title: l.roomHours,
+                children: [
+                  SwitchListTile(
+                    key: const Key('room-same-hours'),
+                    contentPadding: EdgeInsets.zero,
+                    value: _same,
+                    title: Text(l.roomSameHours),
+                    onChanged: (v) => setState(() => _same = v),
+                  ),
+                  if (_same)
+                    OutlinedButton.icon(
+                      key: const Key('room-hours-all'),
+                      onPressed: () => _editHours(null),
+                      icon: const Icon(Icons.schedule_rounded),
+                      label: Text(range(_hours.values.whereType<(int, int)>().firstOrNull)),
+                    )
+                  else
+                    for (var d = 1; d <= 7; d++)
+                      Row(
+                        children: [
+                          SizedBox(width: 56, child: Text(weekdayShortName(context, d))),
+                          Checkbox(
+                            value: _hours[d] != null,
+                            onChanged: (v) => setState(() => _hours[d] = v! ? (480, 1320) : null),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              key: Key('room-hours-$d'),
+                              onPressed: _hours[d] == null ? null : () => _editHours(d),
+                              child: Align(alignment: Alignment.centerLeft, child: Text(range(_hours[d]))),
+                            ),
+                          ),
+                        ],
                       ),
-                  ],
-                ),
-              ],
-            ),
+                ],
+              ),
+              AppFormSection(
+                title: l.roomSports,
+                hint: l.roomSportsHint,
+                children: [
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final s in club?.sportIds ?? const <String>[])
+                        FilterChip(
+                          avatar: Icon(SportVisuals.icon(sports[s]?.icon ?? s), size: 16),
+                          label: Text(sports[s]?.label(context) ?? s),
+                          selected: _sel.contains(s),
+                          onSelected: (v) => setState(() => v ? _sel.add(s) : _sel.remove(s)),
+                        ),
+                    ],
+                  ),
+                  TextField(
+                    controller: _note,
+                    decoration: InputDecoration(labelText: l.roomNote),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
-          FilledButton(
-            key: const Key('room-save'),
-            onPressed: () async {
-              final r = Room(
-                id: existing?.id ?? '',
-                orgId: orgId,
-                name: name.text.trim(),
-                capacity: capacity,
-                sportIds: sel.toList(),
-                hours: OperatingHours({for (var d = 1; d <= 7; d++) d: (open, close)}),
-                status: status,
-                venueId: existing?.venueId,
-                note: note.text.trim().isEmpty ? null : note.text.trim(),
-              );
-              final ok = await runGuarded(
-                context,
-                () => ref.read(schedulingRepositoryProvider).upsertRoom(r),
-                success: l.orgSaved,
-              );
-              if (ok && context.mounted) Navigator.pop(context);
-            },
-            child: Text(l.save),
-          ),
-        ],
       ),
-    ),
-  );
+      actions: [
+        TextButton(onPressed: _busy ? null : () => Navigator.pop(context), child: Text(l.cancel)),
+        FilledButton(
+          key: const Key('room-save'),
+          onPressed: _busy ? null : _save,
+          child: _busy
+              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+              : Text(widget.existing == null ? l.roomCreate : l.saveChanges),
+        ),
+      ],
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────── calendar
@@ -2208,7 +2336,10 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                     key: const Key('booking-start'),
                     value: _startMin,
                     items: [
-                      for (var m = 6 * 60; m <= 23 * 60; m += 15) DropdownMenuItem(value: m, child: Text(_hm(m))),
+                      // The current value is always listed (an existing booking may start
+                      // off the 15-minute grid or before 06:00).
+                      for (final m in ({for (var m = 6 * 60; m <= 23 * 60; m += 15) m, _startMin}.toList()..sort()))
+                        DropdownMenuItem(value: m, child: Text(_hm(m))),
                     ],
                     onChanged: (v) => _changed(() => _startMin = v ?? _startMin),
                   ),
@@ -2216,7 +2347,7 @@ class _BookingDialogState extends ConsumerState<_BookingDialog> {
                     key: const Key('booking-duration'),
                     value: _duration,
                     items: [
-                      for (final m in const [30, 45, 60, 75, 90, 105, 120, 150, 180, 240])
+                      for (final m in ({30, 45, 60, 75, 90, 105, 120, 150, 180, 240, _duration}.toList()..sort()))
                         DropdownMenuItem(value: m, child: Text(l.minutesShort(m))),
                     ],
                     onChanged: (v) => _changed(() => _duration = v ?? _duration),

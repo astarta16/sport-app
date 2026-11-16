@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:sport_parent_app/admin/admin_app.dart';
 import 'package:sport_parent_app/features/attendance/domain/attendance.dart';
@@ -340,7 +341,11 @@ void main() {
     testWidgets('legacy club without room scheduling shows the locked module', (tester) async {
       await bootAdmin(tester);
       await adminSignIn(tester, DemoIds.clubAdmin);
-      await tapKey(tester, 'admin-nav-/rooms');
+      // v1.9: no dead navigation — the Rooms entry is not listed at all…
+      expect(find.byKey(const Key('admin-nav-/rooms')), findsNothing);
+      // …and a direct link explains the locked feature instead of a blank page.
+      GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/rooms');
+      await pumpFrames(tester);
       expect(find.byKey(const Key('room-new')), findsNothing);
       expect(find.byIcon(Icons.lock_rounded), findsWidgets);
       expectNoLayoutErrors();

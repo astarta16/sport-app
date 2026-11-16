@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -10227,10 +10220,279 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'აქტივობა'**
   String get adminNavActivity;
+
+  /// No description provided for @pickerSearchHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიება…'**
+  String get pickerSearchHint;
+
+  /// No description provided for @pickerClearSearch.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძიების გასუფთავება'**
+  String get pickerClearSearch;
+
+  /// No description provided for @pickerSelectedCount.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count, plural, =0{არაფერია არჩეული} other{არჩეულია {count}}}'**
+  String pickerSelectedCount(int count);
+
+  /// No description provided for @pickerSelectAll.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველას მონიშვნა'**
+  String get pickerSelectAll;
+
+  /// No description provided for @pickerClearAll.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველას მოხსნა'**
+  String get pickerClearAll;
+
+  /// No description provided for @pickerRemove.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოხსნა'**
+  String get pickerRemove;
+
+  /// No description provided for @pickerNoOptions.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასარჩევი ჯერ არაფერია.'**
+  String get pickerNoOptions;
+
+  /// No description provided for @pickerNoResults.
+  ///
+  /// In ka, this message translates to:
+  /// **'„{query}“ ვერ მოიძებნა. სცადეთ სხვა ჩანაწერი.'**
+  String pickerNoResults(String query);
+
+  /// No description provided for @pickerDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count, plural, =0{მზადაა} other{მზადაა ({count})}}'**
+  String pickerDone(int count);
+
+  /// No description provided for @pickerChoose.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ…'**
+  String get pickerChoose;
+
+  /// No description provided for @pickerGroupFree.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ დროს თავისუფალია'**
+  String get pickerGroupFree;
+
+  /// No description provided for @pickerGroupBusy.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ დროს დაკავებულია'**
+  String get pickerGroupBusy;
+
+  /// No description provided for @wizardStepOf.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნაბიჯი {step} / {total}: {name}'**
+  String wizardStepOf(int step, int total, String name);
+
+  /// No description provided for @adminNavSecCatalog.
+  ///
+  /// In ka, this message translates to:
+  /// **'კატალოგი და კონტენტი'**
+  String get adminNavSecCatalog;
+
+  /// No description provided for @adminNavSecPeople.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადამიანები'**
+  String get adminNavSecPeople;
+
+  /// No description provided for @adminNavSecPrograms.
+  ///
+  /// In ka, this message translates to:
+  /// **'სპორტი და პროგრამები'**
+  String get adminNavSecPrograms;
+
+  /// No description provided for @adminNavSecCalendar.
+  ///
+  /// In ka, this message translates to:
+  /// **'კალენდარი და ობიექტები'**
+  String get adminNavSecCalendar;
+
+  /// No description provided for @adminNavSecCommunication.
+  ///
+  /// In ka, this message translates to:
+  /// **'კომუნიკაცია'**
+  String get adminNavSecCommunication;
+
+  /// No description provided for @adminNavSecFinanceReports.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადახდები და ანგარიშები'**
+  String get adminNavSecFinanceReports;
+
+  /// No description provided for @adminNavSecOrganization.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაცია'**
+  String get adminNavSecOrganization;
+
+  /// No description provided for @adminOrgContext.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქვემოთ მოცემული გვერდები ამ ორგანიზაციას ეხება'**
+  String get adminOrgContext;
+
+  /// No description provided for @adminSwitchOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის შეცვლა'**
+  String get adminSwitchOrg;
+
+  /// No description provided for @featureOffTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'{feature} ამ ორგანიზაციისთვის გამორთულია'**
+  String featureOffTitle(String feature);
+
+  /// No description provided for @featureOffBodyOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'არაფერი იკარგება — არსებული ჩანაწერები ინახება. ჩართეთ ფუნქცია ორგანიზაციის პარამეტრებში, თუ თქვენი პაკეტი მას მოიცავს; სხვა შემთხვევაში მიმართეთ პლატფორმის ადმინისტრატორს.'**
+  String get featureOffBodyOrg;
+
+  /// No description provided for @featureOffBodyPlatform.
+  ///
+  /// In ka, this message translates to:
+  /// **'არსებული ჩანაწერები ინახება. ფუნქციის დაშვება შეგიძლიათ ამ ორგანიზაციის „ფუნქციების“ ჩანართში.'**
+  String get featureOffBodyPlatform;
+
+  /// No description provided for @featureOffOpenSettings.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის პარამეტრები'**
+  String get featureOffOpenSettings;
+
+  /// No description provided for @featureOffOpenOrg.
+  ///
+  /// In ka, this message translates to:
+  /// **'ორგანიზაციის ფუნქციების გახსნა'**
+  String get featureOffOpenOrg;
+
+  /// No description provided for @errRequiredField.
+  ///
+  /// In ka, this message translates to:
+  /// **'სავალდებულოა'**
+  String get errRequiredField;
+
+  /// No description provided for @errCapacity.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიყვანეთ რიცხვი 1-დან 2000-მდე'**
+  String get errCapacity;
+
+  /// No description provided for @roomOpensAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'იხსნება'**
+  String get roomOpensAt;
+
+  /// No description provided for @roomClosesAt.
+  ///
+  /// In ka, this message translates to:
+  /// **'იკეტება'**
+  String get roomClosesAt;
+
+  /// No description provided for @roomClosed.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაკეტილია'**
+  String get roomClosed;
+
+  /// No description provided for @roomSameHours.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყოველდღე ერთნაირი საათები'**
+  String get roomSameHours;
+
+  /// No description provided for @roomCapacityHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'რამდენ ადამიანს იტევს ოთახი უსაფრთხოდ'**
+  String get roomCapacityHint;
+
+  /// No description provided for @roomSportsHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა სპორტის ჯავშნისას გამოჩნდება გაფრთხილება'**
+  String get roomSportsHint;
+
+  /// No description provided for @roomCreated.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოთახი დაემატა'**
+  String get roomCreated;
+
+  /// No description provided for @roomCreate.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოთახის დამატება'**
+  String get roomCreate;
+
+  /// No description provided for @roomEdit.
+  ///
+  /// In ka, this message translates to:
+  /// **'ოთახის რედაქტირება'**
+  String get roomEdit;
+
+  /// No description provided for @formBasics.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძირითადი'**
+  String get formBasics;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In ka, this message translates to:
+  /// **'ცვლილებების შენახვა'**
+  String get saveChanges;
+
+  /// No description provided for @confirmRemoveAdminBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ის მაშინვე დაკარგავს ამ ორგანიზაციის მართვის წვდომას. სხვა როლები შენარჩუნდება.'**
+  String get confirmRemoveAdminBody;
+
+  /// No description provided for @adminRemovedSnack.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადმინისტრატორი მოიხსნა'**
+  String get adminRemovedSnack;
+
+  /// No description provided for @confirmOrgStatusTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'შეიცვალოს სტატუსი „{status}“-ით?'**
+  String confirmOrgStatusTitle(String status);
+
+  /// No description provided for @confirmOrgSuspendBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ ორგანიზაციის ყველა წევრი მაშინვე დაკარგავს შექმნისა და ცვლილების შესაძლებლობას. მონაცემები ინახება და მოგვიანებით შეიძლება გააქტიურდეს.'**
+  String get confirmOrgSuspendBody;
+
+  /// No description provided for @confirmOrgActivateBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.'**
+  String get confirmOrgActivateBody;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -10239,8 +10501,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

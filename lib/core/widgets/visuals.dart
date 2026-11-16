@@ -32,6 +32,11 @@ class SportVisuals {
     'judo' => Icons.sports_martial_arts_rounded,
     'rugby' => Icons.sports_rugby_rounded,
     'gymnastics' => Icons.sports_gymnastics_rounded,
+    'volleyball' => Icons.sports_volleyball_rounded,
+    'badminton' => Icons.sports_tennis_rounded,
+    'mma' => Icons.sports_mma_rounded,
+    'taekwondo' => Icons.sports_martial_arts_rounded,
+    'fitness' => Icons.fitness_center_rounded,
     _ => Icons.sports_rounded,
   };
 
@@ -44,6 +49,11 @@ class SportVisuals {
     'judo' => const Color(0xFF7C3AED),
     'rugby' => const Color(0xFF92400E),
     'gymnastics' => const Color(0xFFDB2777),
+    'volleyball' => const Color(0xFFCA8A04),
+    'badminton' => const Color(0xFF0D9488),
+    'mma' => const Color(0xFF991B1B),
+    'taekwondo' => const Color(0xFF4F46E5),
+    'fitness' => const Color(0xFF475569),
     _ => AppColors.blue,
   };
 

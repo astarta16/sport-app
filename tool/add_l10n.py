@@ -14,7 +14,9 @@ for lang in ('en', 'ka', 'ru'):
     for key, v in src.items():
         arb[key] = v[lang]
         if lang == 'ka':
-            names = re.findall(r'\{(\w+)\}', v['en'])
+            # Explicit placeholders win (ICU plural branches like `=0{Done}`
+            # would otherwise be mistaken for placeholders).
+            names = list(v['ph']) if 'ph' in v else re.findall(r'\{(\w+)\}', v['en'])
             if names:
                 ph = v.get('ph', {})
                 arb['@' + key] = {'placeholders': {n: {'type': ph.get(n, 'String')} for n in names}}

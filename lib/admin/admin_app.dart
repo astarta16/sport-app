@@ -8,6 +8,7 @@ import '../core/l10n/l10n.dart';
 import '../core/theme/app_theme.dart';
 import '../features/authentication/domain/app_user.dart';
 import '../features/authentication/presentation/session_providers.dart';
+import '../features/organizations/domain/organization.dart';
 import 'admin_shell.dart';
 import 'pages/admin_login_page.dart';
 import 'pages/audit_page.dart';
@@ -22,6 +23,7 @@ import 'pages/v13_pages.dart';
 import 'pages/v14_pages.dart';
 import 'pages/v17_pages.dart';
 import 'pages/v18_pages.dart';
+import 'widgets.dart';
 
 class AdminRoutes {
   AdminRoutes._();
@@ -114,11 +116,29 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.moderation, pageBuilder: (_, _) => page(const ModerationPage())),
           GoRoute(path: AdminRoutes.audit, pageBuilder: (_, _) => page(const AuditPage())),
           GoRoute(path: AdminRoutes.admins, pageBuilder: (_, _) => page(const AdminsPage())),
-          GoRoute(path: AdminRoutes.compliance, pageBuilder: (_, _) => page(const CompliancePage())),
-          GoRoute(path: AdminRoutes.attendance, pageBuilder: (_, _) => page(const AttendanceReportPage())),
-          GoRoute(path: AdminRoutes.plans, pageBuilder: (_, _) => page(const PlansOversightPage())),
-          GoRoute(path: AdminRoutes.payments, pageBuilder: (_, _) => page(const PaymentQueuePage())),
-          GoRoute(path: AdminRoutes.mediaDownloads, pageBuilder: (_, _) => page(const MediaDownloadsPage())),
+          GoRoute(
+            path: AdminRoutes.compliance,
+            pageBuilder: (_, _) =>
+                page(const AdminFeatureGate(module: OrgModule.medicalCertificates, child: CompliancePage())),
+          ),
+          GoRoute(
+            path: AdminRoutes.attendance,
+            pageBuilder: (_, _) =>
+                page(const AdminFeatureGate(module: OrgModule.attendance, child: AttendanceReportPage())),
+          ),
+          GoRoute(
+            path: AdminRoutes.plans,
+            pageBuilder: (_, _) =>
+                page(const AdminFeatureGate(module: OrgModule.trainingPlans, child: PlansOversightPage())),
+          ),
+          GoRoute(
+            path: AdminRoutes.payments,
+            pageBuilder: (_, _) => page(const AdminFeatureGate(module: OrgModule.payments, child: PaymentQueuePage())),
+          ),
+          GoRoute(
+            path: AdminRoutes.mediaDownloads,
+            pageBuilder: (_, _) => page(const AdminFeatureGate(module: OrgModule.media, child: MediaDownloadsPage())),
+          ),
           GoRoute(path: AdminRoutes.settings, pageBuilder: (_, _) => page(const AdminSettingsPage())),
           GoRoute(path: AdminRoutes.organizations, pageBuilder: (_, _) => page(const OrgDirectoryPage())),
           GoRoute(
@@ -137,7 +157,10 @@ final adminRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: AdminRoutes.programs, pageBuilder: (_, _) => page(const ProgramsPage())),
           GoRoute(path: AdminRoutes.rooms, pageBuilder: (_, _) => page(const RoomsPage())),
           GoRoute(path: AdminRoutes.schedule, pageBuilder: (_, _) => page(const SchedulePage())),
-          GoRoute(path: AdminRoutes.reports, pageBuilder: (_, _) => page(const OrgReportsPage())),
+          GoRoute(
+            path: AdminRoutes.reports,
+            pageBuilder: (_, _) => page(const AdminFeatureGate(module: OrgModule.reports, child: OrgReportsPage())),
+          ),
         ],
       ),
     ],

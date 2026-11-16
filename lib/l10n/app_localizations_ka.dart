@@ -82,8 +82,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationRequired => 'სავალდებულო ველი';
 
   @override
-  String get validationInvalidPhone =>
-      'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
+  String get validationInvalidPhone => 'შეიყვანეთ სწორი მობილურის ნომერი (5XX XXX XXX)';
 
   @override
   String get validationInvalidOtp => 'კოდი უნდა იყოს 6 ციფრი';
@@ -131,8 +130,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationStartInPast => 'დრო უკვე გასულია';
 
   @override
-  String get validationPhotoConsentRequired =>
-      'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
+  String get validationPhotoConsentRequired => 'დაადასტურეთ ფოტოებზე თანხმობის პირობა';
 
   @override
   String get validationFileType => 'დასაშვებია მხოლოდ JPG, PNG ან PDF';
@@ -171,22 +169,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get onboardingTitle1 => 'ყველა ვარჯიში ერთ კალენდარში';
 
   @override
-  String get onboardingBody1 =>
-      'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
+  String get onboardingBody1 => 'დრო, ადგილი და მწვრთნელი — ყოველთვის ხელთ. ცვლილებებს მაშინვე გაიგებთ.';
 
   @override
   String get onboardingTitle2 => 'პირდაპირი კავშირი მწვრთნელთან';
 
   @override
-  String get onboardingBody2 =>
-      'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
+  String get onboardingBody2 => 'ჯგუფის ჩატი მშობლებისა და მწვრთნელებისთვის, ფოტოები ვარჯიშებიდან.';
 
   @override
   String get onboardingTitle3 => 'ცნობები და გადახდები უსაფრთხოდ';
 
   @override
-  String get onboardingBody3 =>
-      'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
+  String get onboardingBody3 => 'ჯანმრთელობის ცნობები დაცულ საცავში, შეხსენებები ვადებზე და გადასახადებზე.';
 
   @override
   String get onboardingStart => 'დავიწყოთ';
@@ -198,8 +193,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get phoneTitle => 'შესვლა ტელეფონით';
 
   @override
-  String get phoneSubtitle =>
-      'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
+  String get phoneSubtitle => 'გამოგიგზავნით ერთჯერად SMS კოდს. პაროლი არ გჭირდებათ.';
 
   @override
   String get phoneLabel => 'მობილურის ნომერი';
@@ -243,8 +237,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get guestBrowse => 'კლუბების ნახვა შესვლის გარეშე';
 
   @override
-  String get termsNote =>
-      'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
+  String get termsNote => 'გაგრძელებით ეთანხმებით მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას.';
 
   @override
   String get registerTitle => 'პროფილის შექმნა';
@@ -256,22 +249,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roleParent => 'მშობელი';
 
   @override
-  String get roleParentDesc =>
-      'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
+  String get roleParentDesc => 'ბავშვების ვარჯიშები, ჩატი მწვრთნელთან, ცნობები და გადახდები';
 
   @override
   String get roleCoach => 'მწვრთნელი';
 
   @override
-  String get roleCoachDesc =>
-      'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
+  String get roleCoachDesc => 'ჯგუფების მართვა, ვარჯიშების დაგეგმვა. საჭიროებს კლუბის დადასტურებას.';
 
   @override
   String get roleChild => 'ბავშვი';
 
   @override
-  String get roleChildDesc =>
-      '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
+  String get roleChildDesc => '14 წლამდე ბავშვის პროფილს მშობელი ქმნის. 14–17 წლის ანგარიშები მალე დაემატება.';
 
   @override
   String get soon => 'მალე';
@@ -314,8 +304,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'კლუბის ადმინისტრატორი ადასტურებს მწვრთნელის როლს. დადასტურებამდე ბავშვების მონაცემები არ ჩანს — ეს იცავს ბავშვებს.';
 
   @override
-  String get coachPendingDemoApprove =>
-      'დემო: დადასტურება ადმინისტრატორის სახელით';
+  String get coachPendingDemoApprove => 'დემო: დადასტურება ადმინისტრატორის სახელით';
 
   @override
   String get coachRejectedTitle => 'მოთხოვნა უარყოფილია';
@@ -394,8 +383,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get noChildrenTitle => 'დაამატეთ პირველი ბავშვი';
 
   @override
-  String get noChildrenBody =>
-      'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
+  String get noChildrenBody => 'შექმენით ბავშვის პროფილი და აირჩიეთ სპორტი — დანარჩენს ჩვენ მივხედავთ.';
 
   @override
   String get addChild => 'ბავშვის დამატება';
@@ -406,32 +394,20 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get noGroupBody =>
-      'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
+  String get noGroupBody => 'იპოვეთ კლუბი რუკაზე და გაგზავნეთ გაწევრიანების მოთხოვნა.';
 
   @override
   String get findClub => 'კლუბის პოვნა';
 
   @override
   String inDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count დღეში',
-      one: 'ხვალ',
-      zero: 'დღეს',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count დღეში', one: 'ხვალ', zero: 'დღეს');
     return '$_temp0';
   }
 
   @override
   String startsInHours(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count საათში',
-      zero: 'იწყება მალე',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count საათში', zero: 'იწყება მალე');
     return '$_temp0';
   }
 
@@ -511,8 +487,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get cancelTraining => 'გაუქმება';
 
   @override
-  String get cancelTrainingConfirm =>
-      'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
+  String get cancelTrainingConfirm => 'გავაუქმოთ ვარჯიში? ჯგუფის მშობლები მიიღებენ შეტყობინებას.';
 
   @override
   String get keepTraining => 'არა, დავტოვოთ';
@@ -556,12 +531,10 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get photoConsentAllGiven =>
-      'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
+  String get photoConsentAllGiven => 'ჯგუფის ყველა ბავშვს აქვს მშობლის თანხმობა ფოტოებზე.';
 
   @override
-  String get photoConsentConfirm =>
-      'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
+  String get photoConsentConfirm => 'ვადასტურებ, რომ ფოტოებზე არ ჩანან ბავშვები თანხმობის გარეშე';
 
   @override
   String get selectVenue => 'აირჩიეთ ადგილი';
@@ -610,8 +583,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get roster => 'ჯგუფის წევრები';
 
   @override
-  String get noGroupsCoach =>
-      'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
+  String get noGroupsCoach => 'ჯგუფები ჯერ არ გაქვთ მინიჭებული. მიმართეთ კლუბის ადმინისტრატორს.';
 
   @override
   String get membershipRequests => 'გაწევრიანების მოთხოვნები';
@@ -680,8 +652,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chatGroups => 'ჯგუფის ჩატები';
 
   @override
-  String get chatNotAllowed =>
-      'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
+  String get chatNotAllowed => 'ჩატი ხელმისაწვდომია მხოლოდ მშობლებისა და მწვრთნელებისთვის.';
 
   @override
   String get chatPrivacyNote =>
@@ -807,8 +778,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'ნებისმიერ დროს შეგიძლიათ წაშლა. ანგარიშის წაშლისას ყველა ცნობა სრულად იშლება. ჯგუფიდან გასვლისას მწვრთნელის წვდომა წყდება.';
 
   @override
-  String get certConsentAgree =>
-      'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
+  String get certConsentAgree => 'ვეთანხმები ჯანმრთელობის ცნობის დამუშავებას ზემოთ აღწერილი პირობებით';
 
   @override
   String get takePhoto => 'კამერა';
@@ -835,8 +805,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteCertificate => 'ცნობის წაშლა';
 
   @override
-  String get deleteCertificateConfirm =>
-      'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
+  String get deleteCertificateConfirm => 'წავშალოთ ცნობა? ფაილი საცავიდან სრულად წაიშლება.';
 
   @override
   String get certDeleted => 'ცნობა წაიშალა';
@@ -898,8 +867,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get certRemindersNote =>
-      'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
+  String get certRemindersNote => 'შეხსენებას მიიღებთ ვადის გასვლამდე 14 და 3 დღით ადრე და ვადის დღეს.';
 
   @override
   String fileSelected(String name) {
@@ -963,12 +931,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get notificationSettings => 'შეტყობინებების პარამეტრები';
 
   @override
-  String get notificationSettingsHint =>
-      'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
+  String get notificationSettingsHint => 'აირჩიეთ, რა ტიპის შეტყობინებები მიიღოთ.';
 
   @override
-  String get pushDemoNote =>
-      'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
+  String get pushDemoNote => 'დემო რეჟიმში push შეტყობინებები არ იგზავნება — ისინი ჩნდება აპის შიგნით.';
 
   @override
   String get paymentsTitle => 'გადახდები';
@@ -1011,8 +977,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get chargeGroup => 'ერთჯერადი გადასახადი';
 
   @override
-  String get chargeGroupHint =>
-      'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
+  String get chargeGroupHint => 'გადასახადი შეიქმნება ჯგუფის ყველა ბავშვისთვის.';
 
   @override
   String get recurringPlans => 'ყოველთვიური გადასახადი';
@@ -1051,8 +1016,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get smsLog => 'SMS ჟურნალი';
 
   @override
-  String get smsMockNote =>
-      'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
+  String get smsMockNote => 'დემო: გამოიყენება იმიტირებული SMS პროვაიდერი. რეალური SMS არ იგზავნება.';
 
   @override
   String get noPayments => 'გადასახადები ჯერ არ არის';
@@ -1074,8 +1038,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get reminderSchedule =>
-      'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
+  String get reminderSchedule => 'SMS: 5 დღით ადრე და წინა დღეს, 10:00 (თბილისი)';
 
   @override
   String get myChildren => 'ჩემი ბავშვები';
@@ -1108,8 +1071,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get deleteAccount => 'ანგარიშის წაშლა';
 
   @override
-  String get deleteAccountConfirm =>
-      'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
+  String get deleteAccountConfirm => 'ანგარიში და ყველა ცნობა სამუდამოდ წაიშლება. ამის გაუქმება შეუძლებელია.';
 
   @override
   String get privacyTitle => 'კონფიდენციალურობა';
@@ -1128,15 +1090,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get ownAccountTitle => 'საკუთარი ანგარიში (14+)';
 
   @override
-  String get ownAccountDisabled =>
-      'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
+  String get ownAccountDisabled => 'ჩაირთვება ასაკისა და თანხმობის პოლიტიკის იურიდიული დადასტურების შემდეგ.';
 
   @override
   String get photoConsentLabel => 'თანხმობა ვარჯიშის ფოტოებზე';
 
   @override
-  String get photoConsentHelp =>
-      'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
+  String get photoConsentHelp => 'თანხმობის გარეშე ბავშვი მწვრთნელის ფოტოებზე არ უნდა ჩანდეს.';
 
   @override
   String get removeChild => 'ბავშვის წაშლა';
@@ -1248,8 +1208,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get statusLabel => 'სტატუსი';
 
   @override
-  String get offlineBanner =>
-      'კავშირი არ არის — ნაჩვენებია შენახული მონაცემები. ცვლილებები ვერ შეინახება.';
+  String get offlineBanner => 'კავშირი არ არის — ნაჩვენებია შენახული მონაცემები. ცვლილებები ვერ შეინახება.';
 
   @override
   String get backOnline => 'კავშირი აღდგა';
@@ -1264,8 +1223,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationCancelReasonRequired => 'აირჩიეთ გაუქმების მიზეზი';
 
   @override
-  String get validationCancelReasonTooShort =>
-      'მიზეზი უნდა იყოს მინიმუმ 5 სიმბოლო';
+  String get validationCancelReasonTooShort => 'მიზეზი უნდა იყოს მინიმუმ 5 სიმბოლო';
 
   @override
   String get validationWeekdaysRequired => 'აირჩიეთ მინიმუმ ერთი დღე';
@@ -1277,8 +1235,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationSeriesTooLong => 'განრიგი მაქსიმუმ 1 წლით';
 
   @override
-  String get validationSeriesOverlap =>
-      'ამ ჯგუფს ამ დღეებსა და დროს უკვე აქვს განრიგი';
+  String get validationSeriesOverlap => 'ამ ჯგუფს ამ დღეებსა და დროს უკვე აქვს განრიგი';
 
   @override
   String get validationOpponentRequired => 'მიუთითეთ მეტოქე გუნდი';
@@ -1290,8 +1247,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationGroupAgeRange => 'ასაკი 3–18, მინიმუმი ≤ მაქსიმუმი';
 
   @override
-  String get validationInvalidGroupCode =>
-      'კოდი არასწორია ან ჯგუფი არ არის აქტიური';
+  String get validationInvalidGroupCode => 'კოდი არასწორია ან ჯგუფი არ არის აქტიური';
 
   @override
   String get validationInviteExists => 'მოწვევა უკვე გაგზავნილია';
@@ -1306,19 +1262,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationNotMember => 'ბავშვი ამ ჯგუფში არ არის';
 
   @override
-  String get validationRsvpClosed =>
-      'ვარჯიში უკვე დაიწყო — პასუხის შეცვლა აღარ შეიძლება';
+  String get validationRsvpClosed => 'ვარჯიში უკვე დაიწყო — პასუხის შეცვლა აღარ შეიძლება';
 
   @override
   String get validationTrainingCancelled => 'ვარჯიში გაუქმებულია';
 
   @override
-  String get validationAttendanceTooEarly =>
-      'დასწრებას ვარჯიშამდე ერთი საათით ადრე მონიშნავთ';
+  String get validationAttendanceTooEarly => 'დასწრებას ვარჯიშამდე ერთი საათით ადრე მონიშნავთ';
 
   @override
-  String get validationFeedbackEmpty =>
-      'შეაფასეთ მინიმუმ ერთი კატეგორია ან დაწერეთ კომენტარი';
+  String get validationFeedbackEmpty => 'შეაფასეთ მინიმუმ ერთი კატეგორია ან დაწერეთ კომენტარი';
 
   @override
   String get validationFeedbackRating => 'შეფასება 1–5';
@@ -1336,8 +1289,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationAvatarTooLarge => 'ფოტო 1 MB-ზე დიდია';
 
   @override
-  String get validationRateLimited =>
-      'ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.';
+  String get validationRateLimited => 'ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.';
 
   @override
   String get validationAlreadyReported => 'უკვე გაასაჩივრეთ';
@@ -1346,8 +1298,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationReasonRequired => 'მიუთითეთ მიზეზი (მინიმუმ 5 სიმბოლო)';
 
   @override
-  String get validationLocationOutsideGeorgia =>
-      'ლოკაცია საქართველოს ფარგლებს გარეთაა';
+  String get validationLocationOutsideGeorgia => 'ლოკაცია საქართველოს ფარგლებს გარეთაა';
 
   @override
   String get validationClubArchived => 'კლუბი დაარქივებულია';
@@ -1374,8 +1325,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get cancelReasonTitle => 'გაუქმების მიზეზი';
 
   @override
-  String get cancelReasonHint =>
-      'მიზეზი სავალდებულოა — მშობლები მას ნახავენ კალენდარსა და ჩატში.';
+  String get cancelReasonHint => 'მიზეზი სავალდებულოა — მშობლები მას ნახავენ კალენდარსა და ჩატში.';
 
   @override
   String get cancelReasonIllness => 'ავადმყოფობა';
@@ -1532,8 +1482,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get editScopeFuture => 'ეს და შემდეგი ვარჯიშები';
 
   @override
-  String get seriesHorizonNote =>
-      'ვარჯიშები იქმნება 8 კვირით წინ და ავტომატურად გრძელდება.';
+  String get seriesHorizonNote => 'ვარჯიშები იქმნება 8 კვირით წინ და ავტომატურად გრძელდება.';
 
   @override
   String seriesConflicts(int count) {
@@ -1562,8 +1511,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get rsvpClosedNote => 'ვარჯიში დაიწყო — პასუხი აღარ იცვლება.';
 
   @override
-  String get rsvpNotice =>
-      'პასუხი დასწრებად არ ითვლება — დასწრებას მწვრთნელი აღნიშნავს.';
+  String get rsvpNotice => 'პასუხი დასწრებად არ ითვლება — დასწრებას მწვრთნელი აღნიშნავს.';
 
   @override
   String get attendanceTitle => 'დასწრება';
@@ -1652,8 +1600,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get progressAchievements => 'მიღწევები';
 
   @override
-  String get progressPrivacyNote =>
-      'პროგრესს ხედავთ მხოლოდ თქვენ და ბავშვის მწვრთნელები. რეიტინგები არ ქვეყნდება.';
+  String get progressPrivacyNote => 'პროგრესს ხედავთ მხოლოდ თქვენ და ბავშვის მწვრთნელები. რეიტინგები არ ქვეყნდება.';
 
   @override
   String get feedbackTechnique => 'ტექნიკა';
@@ -1677,8 +1624,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get feedbackComment => 'კომენტარი მშობლისთვის';
 
   @override
-  String get feedbackCommentHint =>
-      'დაწერეთ კონსტრუქციულად და ბავშვის ასაკის შესაბამისად';
+  String get feedbackCommentHint => 'დაწერეთ კონსტრუქციულად და ბავშვის ასაკის შესაბამისად';
 
   @override
   String get feedbackSaved => 'შეფასება გაეგზავნა მშობელს';
@@ -1715,8 +1661,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get inviteLinkTitle => 'რომელ ბავშვს ეხება მოწვევა?';
 
   @override
-  String get inviteLinkHint =>
-      'თუ ბავშვი უკვე დარეგისტრირებულია, აირჩიეთ ის — ასე დუბლიკატი არ შეიქმნება.';
+  String get inviteLinkHint => 'თუ ბავშვი უკვე დარეგისტრირებულია, აირჩიეთ ის — ასე დუბლიკატი არ შეიქმნება.';
 
   @override
   String inviteAsNew(String name) {
@@ -1724,8 +1669,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get inviteMediaConsent =>
-      'ვეთანხმები, რომ ბავშვი გამოჩნდეს გუნდის ფოტოებსა და ვიდეოებში';
+  String get inviteMediaConsent => 'ვეთანხმები, რომ ბავშვი გამოჩნდეს გუნდის ფოტოებსა და ვიდეოებში';
 
   @override
   String get inviteAccepted => 'ბავშვი დაემატა ჯგუფს';
@@ -1757,8 +1701,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get groupCode => 'ჯგუფის კოდი';
 
   @override
-  String get groupCodeHint =>
-      'მშობელი კოდს შეიყვანს ბავშვის პროფილში — თქვენ დაადასტურებთ.';
+  String get groupCodeHint => 'მშობელი კოდს შეიყვანს ბავშვის პროფილში — თქვენ დაადასტურებთ.';
 
   @override
   String groupCodeShareText(String group, String code) {
@@ -1829,12 +1772,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get addChildSearchHint => 'ბავშვის სახელი ან გვარი';
 
   @override
-  String get addChildSearchNote =>
-      'მოწვევა მიდის მშობელთან. ბავშვი ჯგუფში მხოლოდ მშობლის დადასტურების შემდეგ ჩანს.';
+  String get addChildSearchNote => 'მოწვევა მიდის მშობელთან. ბავშვი ჯგუფში მხოლოდ მშობლის დადასტურების შემდეგ ჩანს.';
 
   @override
-  String get addChildManualNote =>
-      'მშობელი მიიღებს მოწვევას. დადასტურებამდე ხედავთ მხოლოდ სახელს და გვარს.';
+  String get addChildManualNote => 'მშობელი მიიღებს მოწვევას. დადასტურებამდე ხედავთ მხოლოდ სახელს და გვარს.';
 
   @override
   String get parentPhone => 'მშობლის ტელეფონი';
@@ -1881,8 +1822,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get mediaGroups => 'ვის გამოუჩნდეს';
 
   @override
-  String get mediaConsentConfirm =>
-      'ვადასტურებ: ბავშვები, რომელთა მშობლებს თანხმობა არ აქვთ, მედიაში არ ჩანან';
+  String get mediaConsentConfirm => 'ვადასტურებ: ბავშვები, რომელთა მშობლებს თანხმობა არ აქვთ, მედიაში არ ჩანან';
 
   @override
   String get mediaPublish => 'გამოქვეყნება';
@@ -1899,8 +1839,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get mediaNoDownload =>
-      'ჩამოტვირთვა გამორთულია ბავშვების კონფიდენციალურობისთვის.';
+  String get mediaNoDownload => 'ჩამოტვირთვა გამორთულია ბავშვების კონფიდენციალურობისთვის.';
 
   @override
   String get mediaDelete => 'მედიის წაშლა';
@@ -2079,8 +2018,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get paymentsReminderPrefs => 'შეხსენების პარამეტრები';
 
   @override
-  String get paymentsNoOnline =>
-      'ონლაინ გადახდა ჯერ არ არის — გადაიხადეთ კლუბის მითითებით.';
+  String get paymentsNoOnline => 'ონლაინ გადახდა ჯერ არ არის — გადაიხადეთ კლუბის მითითებით.';
 
   @override
   String get paymentCancelReason => 'გაუქმების მიზეზი';
@@ -2125,12 +2063,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get privacySettingsTitle => 'კონფიდენციალურობა';
 
   @override
-  String get privacyPhotoVisible =>
-      'ჩემი ფოტო ჩანდეს ჯგუფის მწვრთნელებისთვის/მშობლებისთვის';
+  String get privacyPhotoVisible => 'ჩემი ფოტო ჩანდეს ჯგუფის მწვრთნელებისთვის/მშობლებისთვის';
 
   @override
-  String get privacyAnalytics =>
-      'ანონიმური დიაგნოსტიკა (შეცდომების ანგარიშები)';
+  String get privacyAnalytics => 'ანონიმური დიაგნოსტიკა (შეცდომების ანგარიშები)';
 
   @override
   String get consentsTitle => 'თანხმობები';
@@ -2190,8 +2126,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get deleteImpactPayments =>
-      'გადახდების ისტორია ანონიმურად შეინახება კლუბის აღრიცხვისთვის.';
+  String get deleteImpactPayments => 'გადახდების ისტორია ანონიმურად შეინახება კლუბის აღრიცხვისთვის.';
 
   @override
   String get retentionTitle => 'შენახვა და წაშლა';
@@ -2298,8 +2233,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get demoOffline => 'ოფლაინ რეჟიმის სიმულაცია';
 
   @override
-  String get demoOfflineHint =>
-      'ჩანაწერები ვერ შეინახება — აპი სწორ შეცდომას აჩვენებს.';
+  String get demoOfflineHint => 'ჩანაწერები ვერ შეინახება — აპი სწორ შეცდომას აჩვენებს.';
 
   @override
   String aboutVersion(String version, String env) {
@@ -2307,8 +2241,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get adminUseWeb =>
-      'ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში.';
+  String get adminUseWeb => 'ადმინისტრატორის პანელი ხელმისაწვდომია ვებ-ვერსიაში.';
 
   @override
   String get adminTitle => 'გუნდი · ადმინისტრირება';
@@ -2317,15 +2250,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminSignInTitle => 'ადმინისტრატორის პანელი';
 
   @override
-  String get adminSignInBody =>
-      'შესვლა მხოლოდ ადმინისტრატორებისთვის. უფლებები მოწმდება სერვერზე.';
+  String get adminSignInBody => 'შესვლა მხოლოდ ადმინისტრატორებისთვის. უფლებები მოწმდება სერვერზე.';
 
   @override
   String get adminDemoAccounts => 'დემო ანგარიშები';
 
   @override
-  String get adminDemoTryParent =>
-      'შემოწმება: მშობლის ანგარიში (წვდომა აკრძალულია)';
+  String get adminDemoTryParent => 'შემოწმება: მშობლის ანგარიში (წვდომა აკრძალულია)';
 
   @override
   String get adminPhoneSignIn => 'შესვლა ტელეფონით';
@@ -2570,8 +2501,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminSportOrder => 'რიგი';
 
   @override
-  String get adminReadOnly =>
-      'მხოლოდ ნახვა — რედაქტირება პლატფორმის ადმინისტრატორს შეუძლია.';
+  String get adminReadOnly => 'მხოლოდ ნახვა — რედაქტირება პლატფორმის ადმინისტრატორს შეუძლია.';
 
   @override
   String get adminHide => 'დამალვა';
@@ -2612,8 +2542,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminNotAdminTitle => 'ადმინისტრატორის უფლება არ გაქვთ';
 
   @override
-  String get adminNotAdminBody =>
-      'ეს ანგარიში ვერ გამოიყენებს ადმინისტრატორის პანელს. გამოიყენეთ მობილური აპი.';
+  String get adminNotAdminBody => 'ეს ანგარიში ვერ გამოიყენებს ადმინისტრატორის პანელს. გამოიყენეთ მობილური აპი.';
 
   @override
   String get adminChildDataNote =>
@@ -2635,8 +2564,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get languageChanged => 'ენა შეიცვალა';
 
   @override
-  String get languageHint =>
-      'ენა არ არის დამოკიდებული ტელეფონის ენაზე. ტრენერის მიერ დაწერილი ტექსტი არ ითარგმნება.';
+  String get languageHint => 'ენა არ არის დამოკიდებული ტელეფონის ენაზე. ტრენერის მიერ დაწერილი ტექსტი არ ითარგმნება.';
 
   @override
   String get certCurrent => 'მოქმედი ცნობა';
@@ -2702,12 +2630,10 @@ class AppLocalizationsKa extends AppLocalizations {
   String get certPdfPreview => 'PDF დოკუმენტი';
 
   @override
-  String get certSavedTemp =>
-      'ფაილი დროებით შენახულია. გაზიარების შემდეგ ის აპიდან წაიშლება.';
+  String get certSavedTemp => 'ფაილი დროებით შენახულია. გაზიარების შემდეგ ის აპიდან წაიშლება.';
 
   @override
-  String get certNoAdminAccess =>
-      'ადმინისტრატორები სამედიცინო დოკუმენტებს ვერ ხედავენ — მხოლოდ სტატუსებს.';
+  String get certNoAdminAccess => 'ადმინისტრატორები სამედიცინო დოკუმენტებს ვერ ხედავენ — მხოლოდ სტატუსებს.';
 
   @override
   String get rosterTitle => 'მოსწავლეები';
@@ -2770,8 +2696,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get attendanceDiscard => 'გაუქმება';
 
   @override
-  String get attendanceEditNote =>
-      'უკვე აღრიცხული დასწრება შეგიძლიათ შეცვალოთ — ყოველი ცვლილება ინახება.';
+  String get attendanceEditNote => 'უკვე აღრიცხული დასწრება შეგიძლიათ შეცვალოთ — ყოველი ცვლილება ინახება.';
 
   @override
   String get attendanceByStudent => 'მოსწავლეების მიხედვით';
@@ -2806,8 +2731,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get exportFormat => 'ფორმატი';
 
   @override
-  String get exportIncludeCompliance =>
-      'ცნობის სტატუსის ჩართვა (მხოლოდ საჭიროების შემთხვევაში)';
+  String get exportIncludeCompliance => 'ცნობის სტატუსის ჩართვა (მხოლოდ საჭიროების შემთხვევაში)';
 
   @override
   String get exportWarning =>
@@ -2854,8 +2778,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get exportConfidential =>
-      'კონფიდენციალური — მხოლოდ შიდა გამოყენებისთვის';
+  String get exportConfidential => 'კონფიდენციალური — მხოლოდ შიდა გამოყენებისთვის';
 
   @override
   String exportPage(int n) {
@@ -2957,8 +2880,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get planSelfReported =>
-      'შესრულებას მშობელი აღნიშნავს — მწვრთნელი არ ამოწმებს.';
+  String get planSelfReported => 'შესრულებას მშობელი აღნიშნავს — მწვრთნელი არ ამოწმებს.';
 
   @override
   String planPeriod(String start, String end) {
@@ -3016,8 +2938,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get exerciseOpenLink => 'ბმულის გახსნა';
 
   @override
-  String get exerciseExternalWarning =>
-      'ბმული გაიხსნება ბრაუზერში. აპი მას თქვენს მონაცემებს არ უზიარებს.';
+  String get exerciseExternalWarning => 'ბმული გაიხსნება ბრაუზერში. აპი მას თქვენს მონაცემებს არ უზიარებს.';
 
   @override
   String get exerciseMoveUp => 'ზემოთ';
@@ -3082,8 +3003,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationTooManyMedia => 'მაქსიმუმ 10 მასალა სავარჯიშოზე';
 
   @override
-  String get validationPlanNotDraft =>
-      'მხოლოდ მონახაზის რედაქტირებაა შესაძლებელი გამოქვეყნებამდე';
+  String get validationPlanNotDraft => 'მხოლოდ მონახაზის რედაქტირებაა შესაძლებელი გამოქვეყნებამდე';
 
   @override
   String get payProofAction => 'გადახდის დადასტურება';
@@ -3221,8 +3141,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationDateFuture => 'თარიღი მომავალშია';
 
   @override
-  String get notifPaymentProofSubmitted =>
-      'გადახდის დადასტურება შემოწმებისთვის';
+  String get notifPaymentProofSubmitted => 'გადახდის დადასტურება შემოწმებისთვის';
 
   @override
   String get notifPaymentProofApproved => 'გადახდა დადასტურდა';
@@ -3315,8 +3234,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminNavSettings => 'პარამეტრები';
 
   @override
-  String get adminComplianceNote =>
-      'მხოლოდ სტატუსების რაოდენობა — დოკუმენტები და ბავშვების სახელები არ ჩანს.';
+  String get adminComplianceNote => 'მხოლოდ სტატუსების რაოდენობა — დოკუმენტები და ბავშვების სახელები არ ჩანს.';
 
   @override
   String get adminColValid => 'მოქმედი';
@@ -3352,8 +3270,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminColReviewers => 'დამდასტურებლები';
 
   @override
-  String get adminPaymentQueueNote =>
-      'ქვითარი იხსნება დროებითი ბმულით და მისი ნახვა აღირიცხება.';
+  String get adminPaymentQueueNote => 'ქვითარი იხსნება დროებითი ბმულით და მისი ნახვა აღირიცხება.';
 
   @override
   String get adminSetReviewers => 'დამდასტურებლების მინიჭება';
@@ -3362,8 +3279,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminLanguage => 'ინტერფეისის ენა';
 
   @override
-  String get adminRosterNote =>
-      'მოსწავლეთა რაოდენობა ჯგუფების მიხედვით — სახელების გარეშე.';
+  String get adminRosterNote => 'მოსწავლეთა რაოდენობა ჯგუფების მიხედვით — სახელების გარეშე.';
 
   @override
   String get adminMonth => 'თვე';
@@ -3405,8 +3321,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'ამ ნომრებს მხოლოდ ამ ჯგუფის მწვრთნელები ხედავენ. გამოიყენეთ ისინი მხოლოდ გუნდის საკითხებისთვის.';
 
   @override
-  String get contactPrivacyParent =>
-      'თქვენი შვილის ჯგუფის მწვრთნელის კონტაქტი. სხვა მშობლების ნომრები არ ჩანს.';
+  String get contactPrivacyParent => 'თქვენი შვილის ჯგუფის მწვრთნელის კონტაქტი. სხვა მშობლების ნომრები არ ჩანს.';
 
   @override
   String contactParentOf(String names) {
@@ -3547,8 +3462,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get downloadCancelled => 'ჩამოტვირთვა გაუქმდა';
 
   @override
-  String get downloadFailed =>
-      'ჩამოტვირთვა ვერ მოხერხდა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.';
+  String get downloadFailed => 'ჩამოტვირთვა ვერ მოხერხდა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.';
 
   @override
   String downloadDone(String name) {
@@ -3559,8 +3473,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get downloadDenied => 'ამ ფაილზე წვდომა აღარ გაქვთ.';
 
   @override
-  String get downloadStorageError =>
-      'ფაილის შენახვა ამ მოწყობილობაზე ვერ მოხერხდა.';
+  String get downloadStorageError => 'ფაილის შენახვა ამ მოწყობილობაზე ვერ მოხერხდა.';
 
   @override
   String get downloadPolicyOff => 'ამ ჯგუფისთვის ჩამოტვირთვა გამორთულია.';
@@ -3569,8 +3482,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminNavMediaDownloads => 'მედიის ჩამოტვირთვები';
 
   @override
-  String get adminMediaPolicy =>
-      'მშობლებს შეუძლიათ ფოტოებისა და ვიდეოების ჩამოტვირთვა';
+  String get adminMediaPolicy => 'მშობლებს შეუძლიათ ფოტოებისა და ვიდეოების ჩამოტვირთვა';
 
   @override
   String get adminMediaDownloadsNote =>
@@ -3640,8 +3552,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get profileEmpty => 'ჯერ არაფერია';
 
   @override
-  String get profileCoachScope =>
-      'ნაჩვენებია მხოლოდ თქვენი ჯგუფების მონაცემები.';
+  String get profileCoachScope => 'ნაჩვენებია მხოლოდ თქვენი ჯგუფების მონაცემები.';
 
   @override
   String contactCoachAbout(String child) {
@@ -3715,8 +3626,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get matchResultLatest => 'ბოლო შედეგი';
 
   @override
-  String get matchResultNotice =>
-      'მშობლები შეტყობინებას პირველი შედეგის შენახვისას მიიღებენ. შესწორებები აღირიცხება.';
+  String get matchResultNotice => 'მშობლები შეტყობინებას პირველი შედეგის შენახვისას მიიღებენ. შესწორებები აღირიცხება.';
 
   @override
   String get notifMatchResult => 'მატჩის შედეგი';
@@ -3730,15 +3640,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get validationResultScore => 'შეიყვანეთ ანგარიში 0-დან 999-მდე.';
 
   @override
-  String get validationResultNotStarted =>
-      'შედეგის შეყვანა შესაძლებელია მატჩის დაწყების შემდეგ.';
+  String get validationResultNotStarted => 'შედეგის შეყვანა შესაძლებელია მატჩის დაწყების შემდეგ.';
 
   @override
   String get validationResultCancelled => 'გაუქმებულ მატჩს შედეგი არ აქვს.';
 
   @override
-  String get validationResultCompletedAt =>
-      'დასრულების დრო უნდა იყოს მატჩის დაწყებასა და ახლანდელ დროს შორის.';
+  String get validationResultCompletedAt => 'დასრულების დრო უნდა იყოს მატჩის დაწყებასა და ახლანდელ დროს შორის.';
 
   @override
   String get payDownloadReceipt => 'ქვითრის ჩამოტვირთვა';
@@ -3756,8 +3664,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get continueAsStudent => 'გაგრძელება მოსწავლედ';
 
   @override
-  String get studentDemoNote =>
-      'მოსწავლის შესვლა მხოლოდ დემო რეჟიმშია ხელმისაწვდომი.';
+  String get studentDemoNote => 'მოსწავლის შესვლა მხოლოდ დემო რეჟიმშია ხელმისაწვდომი.';
 
   @override
   String studentWelcome(String name) {
@@ -3835,8 +3742,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get brainTagline => 'ავარჯიშე გონება, როგორც ნამდვილმა სპორტსმენმა';
 
   @override
-  String get brainNotIq =>
-      'ქულები სავარჯიშოდ და გასართობადაა — ეს IQ-ის ტესტი არ არის.';
+  String get brainNotIq => 'ქულები სავარჯიშოდ და გასართობადაა — ეს IQ-ის ტესტი არ არის.';
 
   @override
   String get gameMemoryMatch => 'მეხსიერების წყვილები';
@@ -3879,24 +3785,20 @@ class AppLocalizationsKa extends AppLocalizations {
       'შეეხე ორ ბარათს. თუ ერთნაირია, დარჩება ღია. იპოვე ყველა წყვილი რაც შეიძლება ნაკლები ცდით.';
 
   @override
-  String get gameHowToLogic =>
-      'შეხედე რიგს და აირჩიე ფიგურა, რომელიც „?“-ის ადგილას უნდა იყოს.';
+  String get gameHowToLogic => 'შეხედე რიგს და აირჩიე ფიგურა, რომელიც „?“-ის ადგილას უნდა იყოს.';
 
   @override
-  String get gameHowToSmart =>
-      'ბურთი შენთანაა (ყვითელი რგოლი). აირჩიე საუკეთესო პასი ან მოძრაობა და წაიკითხე ახსნა.';
+  String get gameHowToSmart => 'ბურთი შენთანაა (ყვითელი რგოლი). აირჩიე საუკეთესო პასი ან მოძრაობა და წაიკითხე ახსნა.';
 
   @override
-  String get gameHowToQuick =>
-      'ზემოთ ნაჩვენებია მიზანი. შეეხე იმავე ფიგურას იმავე ფერში, სანამ დრო ამოიწურება.';
+  String get gameHowToQuick => 'ზემოთ ნაჩვენებია მიზანი. შეეხე იმავე ფიგურას იმავე ფერში, სანამ დრო ამოიწურება.';
 
   @override
   String get gameHowToSequence =>
       'უყურე, როგორ ინთება ფერები, შემდეგ შეეხე მათ იმავე რიგით. ყოველ რაუნდში რიგი გრძელდება.';
 
   @override
-  String get gameHowToPath =>
-      'ისრებით ან გადასმით გადაადგილე ბურთი კარამდე. კედლები და კონუსები გზას კეტავს.';
+  String get gameHowToPath => 'ისრებით ან გადასმით გადაადგილე ბურთი კარამდე. კედლები და კონუსები გზას კეტავს.';
 
   @override
   String get diffEasy => 'მარტივი';
@@ -4041,38 +3943,31 @@ class AppLocalizationsKa extends AppLocalizations {
   String get spNext => 'შემდეგი';
 
   @override
-  String get spExplain1 =>
-      '№7 თავისუფალია ფლანგზე — მცველი შენ წინაა, ამიტომ გარბენა სარისკოა.';
+  String get spExplain1 => '№7 თავისუფალია ფლანგზე — მცველი შენ წინაა, ამიტომ გარბენა სარისკოა.';
 
   @override
   String get spExplain2 => 'კართან ახლოს ხარ და გზა თავისუფალია — დაარტყი!';
 
   @override
-  String get spExplain3 =>
-      'ორი მეტოქე გიტევს — უსაფრთხო პასი უკან №4-ს ბურთს შეინარჩუნებს.';
+  String get spExplain3 => 'ორი მეტოქე გიტევს — უსაფრთხო პასი უკან №4-ს ბურთს შეინარჩუნებს.';
 
   @override
   String get spExplain4 => '№10 მეურვეობის ქვეშაა, №11 კი თავისუფალ სივრცეშია.';
 
   @override
-  String get spExplain5 =>
-      '№9-მდე პასს მცველი გადაჭრის; №10 თავისუფალია და შეუძლია შემობრუნება.';
+  String get spExplain5 => '№9-მდე პასს მცველი გადაჭრის; №10 თავისუფალია და შეუძლია შემობრუნება.';
 
   @override
-  String get spExplain6 =>
-      'მარცხნივ მეტოქე №5-ს ფარავს — პასი მარჯვნივ №6-ს უსაფრთხოა.';
+  String get spExplain6 => 'მარცხნივ მეტოქე №5-ს ფარავს — პასი მარჯვნივ №6-ს უსაფრთხოა.';
 
   @override
-  String get spExplain7 =>
-      'ცენტრი ჩაკეტილია ორი მცველით; №7 ფლანგზე თავისუფალია.';
+  String get spExplain7 => 'ცენტრი ჩაკეტილია ორი მცველით; №7 ფლანგზე თავისუფალია.';
 
   @override
-  String get spExplain8 =>
-      'კუთხე ძალიან ვიწროა დასარტყმელად და №9 დაფარულია; №10 უკეთეს პოზიციაშია.';
+  String get spExplain8 => 'კუთხე ძალიან ვიწროა დასარტყმელად და №9 დაფარულია; №10 უკეთეს პოზიციაშია.';
 
   @override
-  String get spExplain9 =>
-      'სამი მეტოქე ცენტრშია — მოედნის გაშლა №2-ზე სივრცეს ქმნის.';
+  String get spExplain9 => 'სამი მეტოქე ცენტრშია — მოედნის გაშლა №2-ზე სივრცეს ქმნის.';
 
   @override
   String get mazeGoal => 'კარი';
@@ -4228,8 +4123,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get resultFailTitle => 'ცოტაც და გამოგივა!';
 
   @override
-  String get resultFailEncourage =>
-      'ყოველი ცდა გონებას აძლიერებს. კიდევ სცადე?';
+  String get resultFailEncourage => 'ყოველი ცდა გონებას აძლიერებს. კიდევ სცადე?';
 
   @override
   String resultStars(int n) {
@@ -4289,8 +4183,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get logicWhyGrow => 'ყოველ ნაბიჯზე იგივე ფიგურა მატულობს.';
 
   @override
-  String get logicWhyMissing =>
-      'შეხედე ფიგურებს „?“-მდე და მის შემდეგ — რიგი მეორდება.';
+  String get logicWhyMissing => 'შეხედე ფიგურებს „?“-მდე და მის შემდეგ — რიგი მეორდება.';
 
   @override
   String get logicCorrectWas => 'სწორი პასუხი მწვანედაა მონიშნული.';
@@ -4356,8 +4249,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get ackIsNotRsvp =>
-      '„გავეცანი“ მხოლოდ ადასტურებს, რომ ცვლილებას გაეცანით — ეს არ ნიშნავს, რომ ბავშვი მოვა.';
+  String get ackIsNotRsvp => '„გავეცანი“ მხოლოდ ადასტურებს, რომ ცვლილებას გაეცანით — ეს არ ნიშნავს, რომ ბავშვი მოვა.';
 
   @override
   String get ackButton => 'გავეცანი';
@@ -4374,8 +4266,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get rsvpGuardiansDisagree =>
-      'მეურვეებმა სხვადასხვა პასუხი გასცეს — მოქმედებს ბოლო პასუხი.';
+  String get rsvpGuardiansDisagree => 'მეურვეებმა სხვადასხვა პასუხი გასცეს — მოქმედებს ბოლო პასუხი.';
 
   @override
   String get guardianLabel => 'მეურვე';
@@ -4468,16 +4359,14 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get leaderboardDisabled =>
-      'ლიდერბორდი ახლა მიუწვდომელია. შენი პროგრესი ზემოთ ჩანს.';
+  String get leaderboardDisabled => 'ლიდერბორდი ახლა მიუწვდომელია. შენი პროგრესი ზემოთ ჩანს.';
 
   @override
   String get leaderboardNoConsent =>
       'ლიდერბორდზე მხოლოდ მშობლის ნებართვით გამოჩნდები. შენი პირადი პროგრესი ზემოთ ჩანს.';
 
   @override
-  String get leaderboardTooFew =>
-      'შენს ასაკობრივ ჯგუფში ჯერ საკმარისი მოთამაშე არ არის. შენი პროგრესი ზემოთ ჩანს.';
+  String get leaderboardTooFew => 'შენს ასაკობრივ ჯგუფში ჯერ საკმარისი მოთამაშე არ არის. შენი პროგრესი ზემოთ ჩანს.';
 
   @override
   String get leaderboardPrivacyNote =>
@@ -4580,8 +4469,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get adminNavSectionTenant => 'აკადემია';
 
   @override
-  String get bookingAllowGroupOverlap =>
-      'ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა';
+  String get bookingAllowGroupOverlap => 'ჯგუფს ნამდვილად ორი სესია აქვს ერთდროულად — მაინც დაჯავშნა';
 
   @override
   String bookingAlternatives(String times) {
@@ -4760,8 +4648,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get orgAdminAssigned => 'ადმინისტრატორი დაინიშნა';
 
   @override
-  String get orgAdminHelp =>
-      'პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.';
+  String get orgAdminHelp => 'პირს შეეძლება ადმინ პანელში შესვლა და მხოლოდ ამ ორგანიზაციის მართვა.';
 
   @override
   String get orgAdmins => 'ადმინები';
@@ -4817,8 +4704,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get orgLabel => 'ორგანიზაცია';
 
   @override
-  String get orgLeaderboardByAge =>
-      'რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით';
+  String get orgLeaderboardByAge => 'რეიტინგი მხოლოდ ერთი ასაკობრივი ჯგუფის შიგნით';
 
   @override
   String get orgLeaderboardEnable => 'Brain Academy-ის ლიდერბორდის ჩართვა';
@@ -4827,8 +4713,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get orgLeaderboardMin => 'მინიმალური მონაწილე ერთ ცხრილში';
 
   @override
-  String get orgLeaderboardNotAllowed =>
-      'პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.';
+  String get orgLeaderboardNotAllowed => 'პლატფორმა ამ ორგანიზაციისთვის ლიდერბორდებს არ უშვებს.';
 
   @override
   String get orgLeaderboardPrivacy =>
@@ -4862,8 +4747,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get orgModules => 'ჩართული მოდულები';
 
   @override
-  String get orgModulesHelp =>
-      'დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.';
+  String get orgModulesHelp => 'დაბლოკილი მოდულები ჯერ პლატფორმის ადმინისტრატორმა უნდა დაუშვას.';
 
   @override
   String get orgModulesOn => 'ჩართული მოდულები';
@@ -4893,8 +4777,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get orgPlan => 'გეგმა';
 
   @override
-  String get orgPlatformSubtitle =>
-      'თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.';
+  String get orgPlatformSubtitle => 'თითოეული სპორტსკოლა დამოუკიდებლად მუშაობს საკუთარი დახურული მონაცემებით.';
 
   @override
   String get orgRemoveAdmin => 'ადმინისტრატორის მოხსნა';
@@ -5041,8 +4924,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get sysEventRescheduledNoTime =>
-      'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.';
+  String get sysEventRescheduledNoTime => 'განრიგი შეიცვალა. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.';
 
   @override
   String get moduleParentRsvp => 'მშობლის დადასტურება';
@@ -5162,8 +5044,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get back => 'უკან';
 
   @override
-  String get brandingManagedByOrg =>
-      'ბრენდინგს არედაქტირებს ორგანიზაციის ადმინისტრატორი ორგანიზაციის პარამეტრებში.';
+  String get brandingManagedByOrg => 'ბრენდინგს არედაქტირებს ორგანიზაციის ადმინისტრატორი ორგანიზაციის პარამეტრებში.';
 
   @override
   String get bulkPresets => 'შაბლონური ნაკრებები';
@@ -5200,8 +5081,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get customLabel => 'ინდივიდუალური';
 
   @override
-  String get customPackageNote =>
-      'ყველა ფუნქცია ხელმისაწვდომია; უფლებები ორგანიზაციის მიხედვით დგინდება.';
+  String get customPackageNote => 'ყველა ფუნქცია ხელმისაწვდომია; უფლებები ორგანიზაციის მიხედვით დგინდება.';
 
   @override
   String get duplicate => 'დუბლირება';
@@ -5237,15 +5117,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get effRolloutOff => 'გაშვება არააქტიურია';
 
   @override
-  String get errBrandContrast =>
-      'ეს ფერი თეთრ ტექსტთან არ იკითხება. აირჩიეთ უფრო მუქი.';
+  String get errBrandContrast => 'ეს ფერი თეთრ ტექსტთან არ იკითხება. აირჩიეთ უფრო მუქი.';
 
   @override
   String get errChangeReason => 'მიუთითეთ ცვლილების მიზეზი.';
 
   @override
-  String get errFeatureDependencies =>
-      'ზოგი ფუნქცია საჭიროებს გამორთულ ფუნქციებს.';
+  String get errFeatureDependencies => 'ზოგი ფუნქცია საჭიროებს გამორთულ ფუნქციებს.';
 
   @override
   String get errInvitationClosed => 'ეს მოწვევა აღარ მოქმედებს.';
@@ -5263,8 +5141,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get errOrgAddress => 'მიუთითეთ მისამართი და ქალაქი.';
 
   @override
-  String get errOrgAdmin =>
-      'მიუთითეთ პირველი ადმინისტრატორის ტელეფონი ან ელფოსტა.';
+  String get errOrgAdmin => 'მიუთითეთ პირველი ადმინისტრატორის ტელეფონი ან ელფოსტა.';
 
   @override
   String get errOrgEmail => 'მიუთითეთ სწორი ელფოსტა.';
@@ -5279,8 +5156,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get errOrgSports => 'აირჩიეთ ერთი სპორტი მაინც.';
 
   @override
-  String get errRolloutDate =>
-      'აირჩიეთ თარიღი საცდელი ან დაგეგმილი გაშვებისთვის.';
+  String get errRolloutDate => 'აირჩიეთ თარიღი საცდელი ან დაგეგმილი გაშვებისთვის.';
 
   @override
   String get featCatAdministration => 'ადმინისტრირება';
@@ -5307,8 +5183,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get featureAdoption => 'ფუნქციების გამოყენება';
 
   @override
-  String get featureCatalogSubtitle =>
-      'ყველა მოდული მუდმივი იდენტიფიკატორით, დამოკიდებულებებითა და გამოყენებით.';
+  String get featureCatalogSubtitle => 'ყველა მოდული მუდმივი იდენტიფიკატორით, დამოკიდებულებებითა და გამოყენებით.';
 
   @override
   String get fundGovernment => 'სახელმწიფო';
@@ -5326,8 +5201,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get fundPrivate => 'კერძო';
 
   @override
-  String get fundingNote =>
-      'დაფინანსების ტიპი თავისით არ რთავს გადახდებს; ფუნქციები ცალ-ცალკე ირთვება.';
+  String get fundingNote => 'დაფინანსების ტიპი თავისით არ რთავს გადახდებს; ფუნქციები ცალ-ცალკე ირთვება.';
 
   @override
   String get graceDays => 'საშეღავათო პერიოდი (დღე)';
@@ -5339,8 +5213,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get healthDaily => 'ყოველდღე';
 
   @override
-  String get healthJobGated =>
-      'გამოტოვებს ორგანიზაციებს, სადაც ფუნქცია გამორთულია';
+  String get healthJobGated => 'გამოტოვებს ორგანიზაციებს, სადაც ფუნქცია გამორთულია';
 
   @override
   String get healthJobs => 'დაგეგმილი ამოცანები';
@@ -5370,15 +5243,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get invitationAcceptButton => 'მიღება';
 
   @override
-  String get invitationAcceptedSnack =>
-      'მოწვევა მიღებულია. ახლა ადმინისტრატორი ხართ.';
+  String get invitationAcceptedSnack => 'მოწვევა მიღებულია. ახლა ადმინისტრატორი ხართ.';
 
   @override
   String get invitationCreated => 'მოწვევა შეიქმნა';
 
   @override
-  String get invitationLinkNote =>
-      'გაუგზავნეთ ეს ბმული ადმინისტრატორს. ის მხოლოდ ერთხელ ჩანს და 7 დღე მოქმედებს.';
+  String get invitationLinkNote => 'გაუგზავნეთ ეს ბმული ადმინისტრატორს. ის მხოლოდ ერთხელ ჩანს და 7 დღე მოქმედებს.';
 
   @override
   String get invitationNote =>
@@ -5478,15 +5349,13 @@ class AppLocalizationsKa extends AppLocalizations {
   String get packageNew => 'ახალი პაკეტი';
 
   @override
-  String get packagesSubtitle =>
-      'ფუნქციები, ლიმიტები და საორიენტაციო ფასი. გადახდის სისტემა არ არის დაკავშირებული.';
+  String get packagesSubtitle => 'ფუნქციები, ლიმიტები და საორიენტაციო ფასი. გადახდის სისტემა არ არის დაკავშირებული.';
 
   @override
   String get platformOverview => 'პლატფორმის მიმოხილვა';
 
   @override
-  String get platformOverviewSubtitle =>
-      'ყველა ორგანიზაცია, გამოწერა და ფუნქციების გამოყენება.';
+  String get platformOverviewSubtitle => 'ყველა ორგანიზაცია, გამოწერა და ფუნქციების გამოყენება.';
 
   @override
   String get priceLabel => 'ფასი';
@@ -5576,8 +5445,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'მხოლოდ ნახვის რეჟიმში ყველა ჩანაწერი რჩება; არაფერი იშლება. იმართება ხელით — თანხა არ ჩამოიჭრება.';
 
   @override
-  String get subscriptionsSubtitle =>
-      'სტატუსი, დასრულების თარიღი და წვდომა ყველა ორგანიზაციისთვის.';
+  String get subscriptionsSubtitle => 'სტატუსი, დასრულების თარიღი და წვდომა ყველა ორგანიზაციისთვის.';
 
   @override
   String get subscriptionsTitle => 'გამოწერები';
@@ -5616,9 +5484,166 @@ class AppLocalizationsKa extends AppLocalizations {
   String get unsavedChanges => 'გაქვთ შეუნახავი ცვლილებები';
 
   @override
-  String get usageSyntheticNote =>
-      'საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.';
+  String get usageSyntheticNote => 'საცავი და შეტყობინებების რაოდენობა სადემო რეჟიმში მიახლოებითია.';
 
   @override
   String get adminNavActivity => 'აქტივობა';
+
+  @override
+  String get pickerSearchHint => 'ძიება…';
+
+  @override
+  String get pickerClearSearch => 'ძიების გასუფთავება';
+
+  @override
+  String pickerSelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'არჩეულია $count',
+      zero: 'არაფერია არჩეული',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickerSelectAll => 'ყველას მონიშვნა';
+
+  @override
+  String get pickerClearAll => 'ყველას მოხსნა';
+
+  @override
+  String get pickerRemove => 'მოხსნა';
+
+  @override
+  String get pickerNoOptions => 'ასარჩევი ჯერ არაფერია.';
+
+  @override
+  String pickerNoResults(String query) {
+    return '„$query“ ვერ მოიძებნა. სცადეთ სხვა ჩანაწერი.';
+  }
+
+  @override
+  String pickerDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'მზადაა ($count)', zero: 'მზადაა');
+    return '$_temp0';
+  }
+
+  @override
+  String get pickerChoose => 'აირჩიეთ…';
+
+  @override
+  String get pickerGroupFree => 'ამ დროს თავისუფალია';
+
+  @override
+  String get pickerGroupBusy => 'ამ დროს დაკავებულია';
+
+  @override
+  String wizardStepOf(int step, int total, String name) {
+    return 'ნაბიჯი $step / $total: $name';
+  }
+
+  @override
+  String get adminNavSecCatalog => 'კატალოგი და კონტენტი';
+
+  @override
+  String get adminNavSecPeople => 'ადამიანები';
+
+  @override
+  String get adminNavSecPrograms => 'სპორტი და პროგრამები';
+
+  @override
+  String get adminNavSecCalendar => 'კალენდარი და ობიექტები';
+
+  @override
+  String get adminNavSecCommunication => 'კომუნიკაცია';
+
+  @override
+  String get adminNavSecFinanceReports => 'გადახდები და ანგარიშები';
+
+  @override
+  String get adminNavSecOrganization => 'ორგანიზაცია';
+
+  @override
+  String get adminOrgContext => 'ქვემოთ მოცემული გვერდები ამ ორგანიზაციას ეხება';
+
+  @override
+  String get adminSwitchOrg => 'ორგანიზაციის შეცვლა';
+
+  @override
+  String featureOffTitle(String feature) {
+    return '$feature ამ ორგანიზაციისთვის გამორთულია';
+  }
+
+  @override
+  String get featureOffBodyOrg =>
+      'არაფერი იკარგება — არსებული ჩანაწერები ინახება. ჩართეთ ფუნქცია ორგანიზაციის პარამეტრებში, თუ თქვენი პაკეტი მას მოიცავს; სხვა შემთხვევაში მიმართეთ პლატფორმის ადმინისტრატორს.';
+
+  @override
+  String get featureOffBodyPlatform =>
+      'არსებული ჩანაწერები ინახება. ფუნქციის დაშვება შეგიძლიათ ამ ორგანიზაციის „ფუნქციების“ ჩანართში.';
+
+  @override
+  String get featureOffOpenSettings => 'ორგანიზაციის პარამეტრები';
+
+  @override
+  String get featureOffOpenOrg => 'ორგანიზაციის ფუნქციების გახსნა';
+
+  @override
+  String get errRequiredField => 'სავალდებულოა';
+
+  @override
+  String get errCapacity => 'შეიყვანეთ რიცხვი 1-დან 2000-მდე';
+
+  @override
+  String get roomOpensAt => 'იხსნება';
+
+  @override
+  String get roomClosesAt => 'იკეტება';
+
+  @override
+  String get roomClosed => 'დაკეტილია';
+
+  @override
+  String get roomSameHours => 'ყოველდღე ერთნაირი საათები';
+
+  @override
+  String get roomCapacityHint => 'რამდენ ადამიანს იტევს ოთახი უსაფრთხოდ';
+
+  @override
+  String get roomSportsHint => 'სხვა სპორტის ჯავშნისას გამოჩნდება გაფრთხილება';
+
+  @override
+  String get roomCreated => 'ოთახი დაემატა';
+
+  @override
+  String get roomCreate => 'ოთახის დამატება';
+
+  @override
+  String get roomEdit => 'ოთახის რედაქტირება';
+
+  @override
+  String get formBasics => 'ძირითადი';
+
+  @override
+  String get saveChanges => 'ცვლილებების შენახვა';
+
+  @override
+  String get confirmRemoveAdminBody =>
+      'ის მაშინვე დაკარგავს ამ ორგანიზაციის მართვის წვდომას. სხვა როლები შენარჩუნდება.';
+
+  @override
+  String get adminRemovedSnack => 'ადმინისტრატორი მოიხსნა';
+
+  @override
+  String confirmOrgStatusTitle(String status) {
+    return 'შეიცვალოს სტატუსი „$status“-ით?';
+  }
+
+  @override
+  String get confirmOrgSuspendBody =>
+      'ამ ორგანიზაციის ყველა წევრი მაშინვე დაკარგავს შექმნისა და ცვლილების შესაძლებლობას. მონაცემები ინახება და მოგვიანებით შეიძლება გააქტიურდეს.';
+
+  @override
+  String get confirmOrgActivateBody => 'წევრები დაიბრუნებენ წვდომას ორგანიზაციის ჩართულ ფუნქციებზე.';
 }

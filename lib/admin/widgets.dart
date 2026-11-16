@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../features/authentication/presentation/session_providers.dart';
+import '../features/organizations/domain/organization.dart';
+import '../features/organizations/presentation/org_providers.dart';
+import 'pages/v17_pages.dart';
 
 import '../core/l10n/l10n.dart';
 import '../core/theme/app_theme.dart';
@@ -337,6 +344,35 @@ class StatCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// v1.9: an organization page whose feature is off for the selected
+/// organization explains why (and where to change it) instead of showing an
+/// empty or broken page — also for direct links and old bookmarks.
+class AdminFeatureGate extends ConsumerWidget {
+  const AdminFeatureGate({super.key, required this.module, required this.child});
+
+  final OrgModule module;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final orgId = ref.watch(adminOrgProvider);
+    final cfg = orgId == null ? null : ref.watch(orgConfigProvider(orgId)).value;
+    if (cfg == null || cfg.isEnabled(module, now: DateTime.now())) return child;
+    final me = ref.watch(currentUserProvider);
+    return Center(
+      child: EmptyState(
+        key: Key('feature-off-${module.name}'),
+        icon: Icons.lock_rounded,
+        title: l.featureOffTitle(moduleLabel(context, module)),
+        body: me?.isPlatformAdmin ?? false ? l.featureOffBodyPlatform : l.featureOffBodyOrg,
+        actionLabel: me?.isPlatformAdmin ?? false ? l.featureOffOpenOrg : l.featureOffOpenSettings,
+        onAction: () => context.go(me?.isPlatformAdmin ?? false ? '/organizations/${cfg.orgId}' : '/org-settings'),
       ),
     );
   }
