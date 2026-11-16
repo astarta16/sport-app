@@ -3525,5 +3525,35 @@
   "a191InviteDeclined": "უარი",
   "a191InviteRevoked": "გაუქმებული",
   "birthDate": "დაბადების თარიღი",
-  "a191Members": "წევრები"
+  "a191Members": "წევრები",
+  "a191SetupTitle": "{org}-ის მომზადება",
+  "@a191SetupTitle": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "a191SetupProgress": "შესრულებულია {done} ნაბიჯი {total}-დან — შენახული მონაცემების მიხედვით",
+  "@a191SetupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "a191SetupSports": "აირჩიეთ სპორტის სახეობები",
+  "a191SetupCoaches": "დაამატეთ მწვრთნელები",
+  "a191SetupRooms": "დაამატეთ ოთახები და დარბაზები",
+  "a191SetupPrograms": "შექმენით პროგრამები",
+  "a191SetupGroups": "შექმენით ჯგუფები",
+  "a191SetupSessions": "დაგეგმეთ ვარჯიშები",
+  "a191SetupStudents": "მოიწვიეთ მშობლები ბავშვების ჩასარიცხად",
+  "a191SetupDone": "შესრულებულია",
+  "a191SetupTodo": "შესასრულებელია",
+  "a191SetupStart": "დაწყება",
+  "a191SetupOpen": "გახსნა"
 }

@@ -10,6 +10,7 @@ import '../../features/admin/domain/admin_models.dart';
 import '../admin_app.dart';
 import '../widgets.dart';
 import 'admin_providers.dart';
+import 'v191_setup_checklist.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -27,6 +28,8 @@ class DashboardPage extends ConsumerWidget {
         data: (s) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // v1.9.1: first-time setup from saved data (hidden when complete).
+            const OrgSetupChecklist(),
             ResponsiveGrid(
               key: const Key('admin-stats'),
               minItemWidth: 200,

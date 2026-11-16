@@ -1881,5 +1881,18 @@
   "a191InviteDeclined": "Declined",
   "a191InviteRevoked": "Withdrawn",
   "birthDate": "Birth date",
-  "a191Members": "Members"
+  "a191Members": "Members",
+  "a191SetupTitle": "Set up {org}",
+  "a191SetupProgress": "{done} of {total} steps done — based on what is saved",
+  "a191SetupSports": "Choose the sports you offer",
+  "a191SetupCoaches": "Add coaches",
+  "a191SetupRooms": "Add rooms and halls",
+  "a191SetupPrograms": "Create programs",
+  "a191SetupGroups": "Create groups",
+  "a191SetupSessions": "Schedule sessions",
+  "a191SetupStudents": "Invite guardians to enroll children",
+  "a191SetupDone": "Done",
+  "a191SetupTodo": "To do",
+  "a191SetupStart": "Start",
+  "a191SetupOpen": "Open"
 }

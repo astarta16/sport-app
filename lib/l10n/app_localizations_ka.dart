@@ -6312,4 +6312,47 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get a191Members => 'წევრები';
+
+  @override
+  String a191SetupTitle(String org) {
+    return '$org-ის მომზადება';
+  }
+
+  @override
+  String a191SetupProgress(int done, int total) {
+    return 'შესრულებულია $done ნაბიჯი $total-დან — შენახული მონაცემების მიხედვით';
+  }
+
+  @override
+  String get a191SetupSports => 'აირჩიეთ სპორტის სახეობები';
+
+  @override
+  String get a191SetupCoaches => 'დაამატეთ მწვრთნელები';
+
+  @override
+  String get a191SetupRooms => 'დაამატეთ ოთახები და დარბაზები';
+
+  @override
+  String get a191SetupPrograms => 'შექმენით პროგრამები';
+
+  @override
+  String get a191SetupGroups => 'შექმენით ჯგუფები';
+
+  @override
+  String get a191SetupSessions => 'დაგეგმეთ ვარჯიშები';
+
+  @override
+  String get a191SetupStudents => 'მოიწვიეთ მშობლები ბავშვების ჩასარიცხად';
+
+  @override
+  String get a191SetupDone => 'შესრულებულია';
+
+  @override
+  String get a191SetupTodo => 'შესასრულებელია';
+
+  @override
+  String get a191SetupStart => 'დაწყება';
+
+  @override
+  String get a191SetupOpen => 'გახსნა';
 }

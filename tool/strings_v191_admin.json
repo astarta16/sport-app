@@ -261,5 +261,77 @@
   "en": "Members",
   "ka": "წევრები",
   "ru": "Участники"
+ },
+ "a191SetupTitle": {
+  "en": "Set up {org}",
+  "ka": "{org}-ის მომზადება",
+  "ru": "Настройка: {org}",
+  "ph": {
+   "org": "String"
+  }
+ },
+ "a191SetupProgress": {
+  "en": "{done} of {total} steps done — based on what is saved",
+  "ka": "შესრულებულია {done} ნაბიჯი {total}-დან — შენახული მონაცემების მიხედვით",
+  "ru": "Выполнено {done} из {total} шагов — по сохранённым данным",
+  "ph": {
+   "done": "int",
+   "total": "int"
+  }
+ },
+ "a191SetupSports": {
+  "en": "Choose the sports you offer",
+  "ka": "აირჩიეთ სპორტის სახეობები",
+  "ru": "Выберите виды спорта"
+ },
+ "a191SetupCoaches": {
+  "en": "Add coaches",
+  "ka": "დაამატეთ მწვრთნელები",
+  "ru": "Добавьте тренеров"
+ },
+ "a191SetupRooms": {
+  "en": "Add rooms and halls",
+  "ka": "დაამატეთ ოთახები და დარბაზები",
+  "ru": "Добавьте помещения и залы"
+ },
+ "a191SetupPrograms": {
+  "en": "Create programs",
+  "ka": "შექმენით პროგრამები",
+  "ru": "Создайте программы"
+ },
+ "a191SetupGroups": {
+  "en": "Create groups",
+  "ka": "შექმენით ჯგუფები",
+  "ru": "Создайте группы"
+ },
+ "a191SetupSessions": {
+  "en": "Schedule sessions",
+  "ka": "დაგეგმეთ ვარჯიშები",
+  "ru": "Запланируйте занятия"
+ },
+ "a191SetupStudents": {
+  "en": "Invite guardians to enroll children",
+  "ka": "მოიწვიეთ მშობლები ბავშვების ჩასარიცხად",
+  "ru": "Пригласите родителей записать детей"
+ },
+ "a191SetupDone": {
+  "en": "Done",
+  "ka": "შესრულებულია",
+  "ru": "Готово"
+ },
+ "a191SetupTodo": {
+  "en": "To do",
+  "ka": "შესასრულებელია",
+  "ru": "Нужно сделать"
+ },
+ "a191SetupStart": {
+  "en": "Start",
+  "ka": "დაწყება",
+  "ru": "Начать"
+ },
+ "a191SetupOpen": {
+  "en": "Open",
+  "ka": "გახსნა",
+  "ru": "Открыть"
  }
 }

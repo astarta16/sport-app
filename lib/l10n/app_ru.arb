@@ -1881,5 +1881,18 @@
   "a191InviteDeclined": "Отказ",
   "a191InviteRevoked": "Отозвано",
   "birthDate": "Дата рождения",
-  "a191Members": "Участники"
+  "a191Members": "Участники",
+  "a191SetupTitle": "Настройка: {org}",
+  "a191SetupProgress": "Выполнено {done} из {total} шагов — по сохранённым данным",
+  "a191SetupSports": "Выберите виды спорта",
+  "a191SetupCoaches": "Добавьте тренеров",
+  "a191SetupRooms": "Добавьте помещения и залы",
+  "a191SetupPrograms": "Создайте программы",
+  "a191SetupGroups": "Создайте группы",
+  "a191SetupSessions": "Запланируйте занятия",
+  "a191SetupStudents": "Пригласите родителей записать детей",
+  "a191SetupDone": "Готово",
+  "a191SetupTodo": "Нужно сделать",
+  "a191SetupStart": "Начать",
+  "a191SetupOpen": "Открыть"
 }

@@ -11391,6 +11391,84 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'წევრები'**
   String get a191Members;
+
+  /// No description provided for @a191SetupTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'{org}-ის მომზადება'**
+  String a191SetupTitle(String org);
+
+  /// No description provided for @a191SetupProgress.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებულია {done} ნაბიჯი {total}-დან — შენახული მონაცემების მიხედვით'**
+  String a191SetupProgress(int done, int total);
+
+  /// No description provided for @a191SetupSports.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ სპორტის სახეობები'**
+  String get a191SetupSports;
+
+  /// No description provided for @a191SetupCoaches.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაამატეთ მწვრთნელები'**
+  String get a191SetupCoaches;
+
+  /// No description provided for @a191SetupRooms.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაამატეთ ოთახები და დარბაზები'**
+  String get a191SetupRooms;
+
+  /// No description provided for @a191SetupPrograms.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმენით პროგრამები'**
+  String get a191SetupPrograms;
+
+  /// No description provided for @a191SetupGroups.
+  ///
+  /// In ka, this message translates to:
+  /// **'შექმენით ჯგუფები'**
+  String get a191SetupGroups;
+
+  /// No description provided for @a191SetupSessions.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაგეგმეთ ვარჯიშები'**
+  String get a191SetupSessions;
+
+  /// No description provided for @a191SetupStudents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოიწვიეთ მშობლები ბავშვების ჩასარიცხად'**
+  String get a191SetupStudents;
+
+  /// No description provided for @a191SetupDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულებულია'**
+  String get a191SetupDone;
+
+  /// No description provided for @a191SetupTodo.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესასრულებელია'**
+  String get a191SetupTodo;
+
+  /// No description provided for @a191SetupStart.
+  ///
+  /// In ka, this message translates to:
+  /// **'დაწყება'**
+  String get a191SetupStart;
+
+  /// No description provided for @a191SetupOpen.
+  ///
+  /// In ka, this message translates to:
+  /// **'გახსნა'**
+  String get a191SetupOpen;
 }
 
 class _AppLocalizationsDelegate

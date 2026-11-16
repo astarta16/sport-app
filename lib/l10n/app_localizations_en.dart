@@ -6359,4 +6359,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a191Members => 'Members';
+
+  @override
+  String a191SetupTitle(String org) {
+    return 'Set up $org';
+  }
+
+  @override
+  String a191SetupProgress(int done, int total) {
+    return '$done of $total steps done — based on what is saved';
+  }
+
+  @override
+  String get a191SetupSports => 'Choose the sports you offer';
+
+  @override
+  String get a191SetupCoaches => 'Add coaches';
+
+  @override
+  String get a191SetupRooms => 'Add rooms and halls';
+
+  @override
+  String get a191SetupPrograms => 'Create programs';
+
+  @override
+  String get a191SetupGroups => 'Create groups';
+
+  @override
+  String get a191SetupSessions => 'Schedule sessions';
+
+  @override
+  String get a191SetupStudents => 'Invite guardians to enroll children';
+
+  @override
+  String get a191SetupDone => 'Done';
+
+  @override
+  String get a191SetupTodo => 'To do';
+
+  @override
+  String get a191SetupStart => 'Start';
+
+  @override
+  String get a191SetupOpen => 'Open';
 }

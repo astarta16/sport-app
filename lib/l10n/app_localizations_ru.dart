@@ -6391,4 +6391,47 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get a191Members => 'Участники';
+
+  @override
+  String a191SetupTitle(String org) {
+    return 'Настройка: $org';
+  }
+
+  @override
+  String a191SetupProgress(int done, int total) {
+    return 'Выполнено $done из $total шагов — по сохранённым данным';
+  }
+
+  @override
+  String get a191SetupSports => 'Выберите виды спорта';
+
+  @override
+  String get a191SetupCoaches => 'Добавьте тренеров';
+
+  @override
+  String get a191SetupRooms => 'Добавьте помещения и залы';
+
+  @override
+  String get a191SetupPrograms => 'Создайте программы';
+
+  @override
+  String get a191SetupGroups => 'Создайте группы';
+
+  @override
+  String get a191SetupSessions => 'Запланируйте занятия';
+
+  @override
+  String get a191SetupStudents => 'Пригласите родителей записать детей';
+
+  @override
+  String get a191SetupDone => 'Готово';
+
+  @override
+  String get a191SetupTodo => 'Нужно сделать';
+
+  @override
+  String get a191SetupStart => 'Начать';
+
+  @override
+  String get a191SetupOpen => 'Открыть';
 }

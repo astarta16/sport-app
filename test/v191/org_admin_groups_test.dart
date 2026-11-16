@@ -11,6 +11,10 @@ import 'package:sport_parent_app/features/groups/data/demo_groups_repository.dar
 import 'package:sport_parent_app/features/groups/domain/group.dart';
 
 import '../responsive/responsive_screens_test.dart' show pumpFrames, expectNoLayoutErrors;
+
+import 'package:sport_parent_app/admin/pages/v191_setup_checklist.dart';
+import 'package:sport_parent_app/features/admin/domain/admin_models.dart';
+
 import '../v17/v17_ui_test.dart' show tapKey, bootAdmin, adminSignIn;
 
 final denied = throwsA(isA<PermissionDeniedException>());
@@ -142,6 +146,74 @@ void main() {
       );
       as('parent-2');
       expect(groups.respondInvite(inv2.id, accept: true), invalid('groupFull'));
+    });
+  });
+
+  group('setup checklist reflects saved data', () {
+    const labels = AppLocalizationsLike(
+      sports: 's',
+      coaches: 'c',
+      rooms: 'r',
+      programs: 'p',
+      groups: 'g',
+      sessions: 'x',
+      students: 'k',
+    );
+    GroupOverview ov(Group g, {int upcoming = 0}) => GroupOverview(
+      group: g,
+      coachNames: const [],
+      memberCount: g.memberChildIds.length,
+      scheduleSummary: '',
+      pendingRequests: 0,
+      upcomingTrainings: upcoming,
+    );
+    test('empty organization: every step to do; rooms only when Facilities is on', () {
+      final steps = computeSetupSteps(
+        l: labels,
+        orgId: 'o',
+        clubSports: const [],
+        coaches: 0,
+        rooms: 0,
+        roomsOn: false,
+        programs: 0,
+        groups: const [],
+      );
+      expect(steps.map((s) => s.id), ['sports', 'coaches', 'programs', 'groups', 'sessions', 'students']);
+      expect(steps.every((s) => !s.done), isTrue);
+    });
+    test('groups of other organizations never count', () {
+      const other = Group(
+        id: 'x',
+        clubId: 'other',
+        sportId: 'f',
+        coachIds: [],
+        name: 'n',
+        ageMin: 6,
+        ageMax: 9,
+        memberChildIds: ['c'],
+      );
+      final steps = computeSetupSteps(
+        l: labels,
+        orgId: 'o',
+        clubSports: const ['f'],
+        coaches: 1,
+        rooms: 1,
+        roomsOn: true,
+        programs: 1,
+        groups: [ov(other, upcoming: 3)],
+      );
+      expect(
+        {for (final s in steps) s.id: s.done},
+        {
+          'sports': true,
+          'coaches': true,
+          'rooms': true,
+          'programs': true,
+          'groups': false,
+          'sessions': false,
+          'students': false,
+        },
+      );
     });
   });
 
