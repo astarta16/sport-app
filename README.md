@@ -83,11 +83,25 @@ What it covers:
 
 ```bash
 flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true \
-  --build-name=1.9.0 --build-number=22
+  --build-name=1.9.1 --build-number=23
 ```
 
 Release builds refuse demo mode unless `ALLOW_DEMO_IN_RELEASE=true` is passed. The release
 build is signed with the debug key (no release keystore configured) — fine for testing, not for Google Play.
+
+## What's new in v1.9.1: organization admin independence and UX audit closure
+
+- **Organization admins run their own school:** create, edit and archive groups (wizard: sport/program → name and ages → coaches → places → review); change coaches; set capacity; see a minimal roster; remove children; enroll children through guardian invitations; follow a setup checklist built from saved data. Enforced server-side and tested on the emulators. See [organization-admin-workflows](docs/organization-admin-workflows.md).
+- **Remaining v1.9 audit items** were re-verified one by one ([closure report](docs/ux-v1.9.1-closure.md)): 48 of 81 fixed and verified overall, the rest documented.
+  - unsaved-changes protection
+  - certificate upload redesign
+  - calendar match markers and child selector
+  - side-by-side overlapping bookings and a date picker
+  - plain-language feature descriptions
+  - validated admin dialogs
+  - linkable student tabs
+  - and more
+- Docs: [progress](docs/ux-v1.9.1-progress.md) · [accessibility](docs/ux-v1.9.1-accessibility.md) · [regression](docs/ux-v1.9.1-regression.md). Screenshots: `docs/screenshots/v1.9.1`.
 
 ## What's new in v1.9: UX/UI redesign for all five roles
 
@@ -289,13 +303,13 @@ docs/             assumptions, implementation progress, backend
 ```bash
 dart format lib test --line-length 120
 flutter analyze
-flutter test                                   # 444 tests (… v1.3–v1.9 flows, games, scheduling, tenants, platform, UX)
-cd functions && npm install && npm run build && npm test      # 235 tests
-cd rules-tests && npm install && npm run test:emulator        # 201 rules tests (Java 17+)
+flutter test                                   # 490 tests (… v1.3–v1.9.1 flows, games, scheduling, tenants, platform, UX)
+cd functions && npm install && npm run build && npm test      # 239 tests
+cd rules-tests && npm install && npm run test:emulator        # 209 rules tests (Java 17+)
 cd rules-tests && npm run smoke:functions                     # 43 end-to-end steps
 # v1.7 / v1.8 callables (from rules-tests/): npx firebase emulators:exec --config ../firebase.json \
 #   --only functions,firestore,auth --project demo-sport-parent \
-#   "node ../functions/test-integration/v17.integration.mjs && node ../functions/test-integration/v18.integration.mjs"
+#   "node ../functions/test-integration/v17.integration.mjs && node ../functions/test-integration/v18.integration.mjs && node ../functions/test-integration/v191.integration.mjs"
 ```
 
 ## Security model (summary)
