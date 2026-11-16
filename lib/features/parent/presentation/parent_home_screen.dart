@@ -41,6 +41,7 @@ import '../../trainings/presentation/trainings_providers.dart';
 import 'parent_context.dart';
 import '../../chat/presentation/chat_providers.dart';
 import '../../sports/presentation/sport_label.dart';
+import '../../organizations/presentation/org_widgets.dart';
 import '../../matches/presentation/match_result_widgets.dart';
 
 /// Sports dashboard for the selected child and sport (spec §6.1).
@@ -167,6 +168,7 @@ class ParentHomeScreen extends ConsumerWidget {
                   children: [
                     const _InvitesBanner(),
                     const _PendingAcksBanner(),
+                    const ParentContactRequestsBanner(),
                     const SizedBox(height: AppSpacing.md),
                     if (group == null) noGroup else _NextTrainingSection(group: group),
                     if (group != null) _MatchesBlock(groupIds: {group.id}),
@@ -202,6 +204,7 @@ class ParentHomeScreen extends ConsumerWidget {
                         children: [
                           const _InvitesBanner(),
                           const _PendingAcksBanner(),
+                          const ParentContactRequestsBanner(),
                           if (group == null) noGroup else _NextTrainingSection(group: group),
                           if (group != null) ...[
                             _MatchesBlock(groupIds: {group.id}),
@@ -286,6 +289,7 @@ class _Header extends ConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                const OrgSwitcherChip(),
               ],
             ),
           ),

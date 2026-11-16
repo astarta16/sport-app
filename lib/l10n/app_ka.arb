@@ -2543,5 +2543,138 @@
         "type": "int"
       }
     }
-  }
+  },
+  "rsvpTitleMatch": "მოვა თამაშზე?",
+  "scheduleChangedTitle": "განრიგი შეიცვალა",
+  "scheduleChangedBody": "ახალი დრო: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.",
+  "@scheduleChangedBody": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "ackIsNotRsvp": "„გავეცანი“ მხოლოდ ადასტურებს, რომ ცვლილებას გაეცანით — ეს არ ნიშნავს, რომ ბავშვი მოვა.",
+  "ackButton": "გავეცანი",
+  "ackDone": "მონიშნულია, რომ გაეცანით",
+  "rsvpNeedsReconfirm": "საჭიროა ხელახლა დადასტურება",
+  "rsvpPreviousAnswer": "თქვენი პასუხი წინა განრიგზე: {answer}",
+  "@rsvpPreviousAnswer": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "rsvpGuardiansDisagree": "მეურვეებმა სხვადასხვა პასუხი გასცეს — მოქმედებს ბოლო პასუხი.",
+  "guardianLabel": "მეურვე",
+  "rsvpOldSchedule": "ძველი განრიგი",
+  "rsvpStateConfirmed": "დადასტურებული",
+  "rsvpStateDeclined": "ვერ მოვა",
+  "rsvpStateUncertain": "ჯერ უცნობია",
+  "rsvpStateNotResponded": "უპასუხოდ",
+  "contactCoach": "მწვრთნელთან კონტაქტი",
+  "contactCoachTitle": "კონტაქტი: {coach}",
+  "@contactCoachTitle": {
+    "placeholders": {
+      "coach": {
+        "type": "String"
+      }
+    }
+  },
+  "contactCoachExplain": "შენს მშობელს მიუვა მოთხოვნა და ის მისწერს ან დაურეკავს მწვრთნელს. მწვრთნელთან პირდაპირ არ წერ.",
+  "contactCoachSent": "მშობელს ეცნობა, რომ დაუკავშირდეს მწვრთნელს",
+  "contactCoachPending": "მოთხოვნა გაეგზავნა მშობელს",
+  "contactTopicQuestion": "მაქვს შეკითხვა",
+  "contactTopicAbsence": "ვერ მოვალ",
+  "contactTopicTraining": "ვარჯიშის შესახებ",
+  "contactTopicOther": "სხვა",
+  "eventRescheduled": "გადატანილია",
+  "eventLocationChanged": "ადგილი შეიცვალა",
+  "eventShowMap": "რუკა",
+  "studentUpcomingEvents": "მომავალი ვარჯიშები და თამაშები",
+  "leaderboardTitle": "ლიდერბორდი · {org}",
+  "@leaderboardTitle": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "leaderboardAllGames": "ყველა თამაში",
+  "leaderboardWeek": "ეს კვირა",
+  "leaderboardMonth": "ეს თვე",
+  "leaderboardAllTime": "სულ",
+  "leaderboardAgeBand": "ასაკობრივი ჯგუფი {band}",
+  "@leaderboardAgeBand": {
+    "placeholders": {
+      "band": {
+        "type": "String"
+      }
+    }
+  },
+  "leaderboardYou": "შენ",
+  "leaderboardBadges": "{count} ნიშანი",
+  "@leaderboardBadges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "leaderboardDisabled": "ლიდერბორდი ახლა მიუწვდომელია. შენი პროგრესი ზემოთ ჩანს.",
+  "leaderboardNoConsent": "ლიდერბორდზე მხოლოდ მშობლის ნებართვით გამოჩნდები. შენი პირადი პროგრესი ზემოთ ჩანს.",
+  "leaderboardTooFew": "შენს ასაკობრივ ჯგუფში ჯერ საკმარისი მოთამაშე არ არის. შენი პროგრესი ზემოთ ჩანს.",
+  "leaderboardPrivacyNote": "ჩანს მხოლოდ ფსევდონიმი ან სახელი და ინიციალი. ქულები გართობისა და ვარჯიშისთვისაა — ისინი ინტელექტს არ ზომავს.",
+  "pointsTotal": "ქულა",
+  "pointsGamesCompleted": "დასრულებული თამაში",
+  "pointsThisWeek": "ამ კვირაში",
+  "pointsWeekly": "ქულები ბოლო 7 დღეში",
+  "pointsByGame": "ქულები თამაშების მიხედვით",
+  "pointsRecent": "ბოლო თამაშები",
+  "pointsValue": "{points} ქ.",
+  "@pointsValue": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "pointsAccuracy": "სიზუსტე {percent}%",
+  "@pointsAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "pointsBest": "საუკეთესო {score}",
+  "@pointsBest": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "contactDone": "შესრულდა",
+  "contactOpenChat": "მწვრთნელთან ჩატი",
+  "contactRequestFromChild": "{child} გთხოვთ, დაუკავშირდეთ მწვრთნელს: {coach}",
+  "@contactRequestFromChild": {
+    "placeholders": {
+      "child": {
+        "type": "String"
+      },
+      "coach": {
+        "type": "String"
+      }
+    }
+  },
+  "leaderboardConsentTitle": "Brain Academy-ის ლიდერბორდი",
+  "leaderboardConsentExplain": "ნაგულისხმევად გამორთულია. თუ დართავთ ნებას, ბავშვი გამოჩნდება მხოლოდ ამ აკადემიის დახურულ ლიდერბორდზე ფსევდონიმით ან სახელითა და ინიციალით — არასოდეს სრული სახელით, ტელეფონით, დაბადების თარიღით ან ჯანმრთელობის მონაცემებით. თანხმობის გაუქმება ნებისმიერ დროს შეგიძლიათ.",
+  "leaderboardConsentOn": "თანხმობა შენახულია",
+  "leaderboardConsentOff": "თანხმობა გაუქმდა — ბავშვი აღარ ჩანს",
+  "leaderboardConsentOffHint": "ლიდერბორდზე არ ჩანს",
+  "leaderboardModePseudonym": "ფსევდონიმი",
+  "leaderboardModeInitial": "სახელი + ინიციალი",
+  "orgSwitchTitle": "აირჩიეთ აკადემია"
 }

@@ -86,8 +86,11 @@ class MyMarks {
 
 /// An outstanding acknowledgment request (dashboard: group only, no content).
 class PendingAck {
-  const PendingAck({required this.groupId, required this.messageId});
+  const PendingAck({required this.groupId, required this.messageId, this.eventId});
 
   final String groupId;
   final String messageId;
+
+  /// v1.7: set when the acknowledgment is for a training/match schedule change.
+  final String? eventId;
 }

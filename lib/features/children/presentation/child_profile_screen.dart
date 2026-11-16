@@ -23,6 +23,7 @@ import '../../trainings/presentation/training_widgets.dart';
 import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/child.dart';
 import '../../sports/presentation/sport_label.dart';
+import '../../organizations/presentation/org_widgets.dart';
 import 'children_providers.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
@@ -211,6 +212,7 @@ class _Body extends ConsumerWidget {
             ],
           ),
         ),
+        if (canEdit) LeaderboardConsentSection(child: child),
         if (canEdit) ...[
           SectionHeader(l.privacyTitle),
           AppCard(

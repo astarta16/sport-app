@@ -278,7 +278,7 @@ class DemoChatRepository implements ChatRepository {
               (db.msgRecipients[m.id]?.contains(me.id) ?? false) &&
               (db.groups[e.key]?.hasParent(me.id) ?? false) &&
               !(db.msgAcks[m.id]?.containsKey(me.id) ?? false))
-            PendingAck(groupId: e.key, messageId: m.id),
+            PendingAck(groupId: e.key, messageId: m.id, eventId: m.systemArgs['eventId']),
     ];
   });
 }

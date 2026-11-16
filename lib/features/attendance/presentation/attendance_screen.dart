@@ -12,9 +12,8 @@ import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../groups/presentation/groups_providers.dart';
 import '../../roster/presentation/export_sheet.dart';
-import '../../trainings/domain/training.dart';
-import '../../trainings/presentation/trainings_providers.dart';
 import '../domain/attendance.dart';
+import '../domain/scheduled_event.dart';
 import 'attendance_providers.dart';
 import 'attendance_widgets.dart';
 
@@ -61,7 +60,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final training = ref.watch(trainingProvider(widget.trainingId));
+    final training = ref.watch(scheduledEventProvider(widget.trainingId));
     final group = training.value == null ? null : ref.watch(groupsByIdProvider)[training.value!.groupId];
     return PopScope(
       canPop: _draft.isEmpty,
@@ -116,7 +115,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                   ),
                 ),
               ),
-        body: AsyncView<Training?>(
+        body: AsyncView<ScheduledEvent?>(
           value: training,
           data: (t) {
             if (t == null) return EmptyState(icon: Icons.search_off_rounded, title: l.errorNotFound);
@@ -127,7 +126,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
     );
   }
 
-  Widget _body(BuildContext context, Training training) {
+  Widget _body(BuildContext context, ScheduledEvent training) {
     final l = context.l10n;
     final f = Fmt.of(context);
     final group = ref.watch(groupsByIdProvider)[training.groupId];

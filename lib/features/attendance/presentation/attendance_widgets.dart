@@ -11,36 +11,49 @@ import '../../../core/widgets/visuals.dart';
 import '../../children/domain/child.dart';
 import '../../children/presentation/children_providers.dart';
 import '../../groups/domain/group.dart';
-import '../../trainings/domain/training.dart';
+import '../../chat/domain/receipts.dart';
+import '../../chat/presentation/chat_providers.dart';
+import '../../clubs/presentation/clubs_providers.dart';
+import '../../authentication/presentation/session_providers.dart';
+import '../domain/scheduled_event.dart';
 import '../domain/attendance.dart';
+import '../../organizations/presentation/org_widgets.dart';
+import '../../organizations/domain/organization.dart';
 import 'attendance_providers.dart';
 
-/// Parent: "Coming to training?" per own child in the group, plus the
-/// coach-recorded attendance once it exists. RSVP ≠ attendance.
+/// Parent: "Will your child attend?" per own child in the group, the
+/// current schedule, reconfirmation after a change, a separate
+/// acknowledgment of the change ("გავეცანი") and the coach-recorded
+/// attendance once it exists. RSVP ≠ acknowledgment ≠ attendance.
 class RsvpSection extends ConsumerWidget {
-  const RsvpSection({super.key, required this.training, required this.group});
+  const RsvpSection({super.key, required this.event, required this.group});
 
-  final Training training;
+  final ScheduledEvent event;
   final Group group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    if (!ref.watch(moduleOnForGroupProvider((group.id, OrgModule.attendance)))) return const SizedBox.shrink();
     final kids = (ref.watch(myChildrenProvider).value ?? const <Child>[]).where((c) => group.hasChild(c.id)).toList();
     if (kids.isEmpty) return const SizedBox.shrink();
-    final rsvps = ref.watch(rsvpsForTrainingProvider(training.id)).value ?? const <Rsvp>[];
-    final records = ref.watch(attendanceForTrainingProvider(training.id)).value ?? const <AttendanceRecord>[];
+    final rsvps = ref.watch(rsvpsForTrainingProvider(event.id)).value ?? const <Rsvp>[];
+    final records = ref.watch(attendanceForTrainingProvider(event.id)).value ?? const <AttendanceRecord>[];
     final now = ref.watch(clockProvider)();
-    final open = training.status.isActive && now.isBefore(training.startAt);
+    final open = event.active && now.isBefore(event.startAt);
+    final ack = (ref.watch(pendingAcksProvider).value ?? const <PendingAck>[])
+        .where((p) => p.eventId == event.id)
+        .firstOrNull;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(open ? l.rsvpTitle : l.attendanceRecorded),
+        SectionHeader(open ? (event.type == EventType.match ? l.rsvpTitleMatch : l.rsvpTitle) : l.attendanceRecorded),
+        if (ack != null) ...[_ScheduleChangeAck(event: event, ack: ack), const SizedBox(height: AppSpacing.xs)],
         for (final c in kids)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.xs),
             child: _ChildRsvpCard(
-              training: training,
+              event: event,
               child: c,
               rsvp: rsvps.where((r) => r.childId == c.id).firstOrNull,
               record: records.where((r) => r.childId == c.id).firstOrNull,
@@ -53,16 +66,64 @@ class RsvpSection extends ConsumerWidget {
   }
 }
 
+/// "The schedule changed — I have read it" (reuses the chat acknowledgment
+/// record). Acknowledging never answers the attendance question.
+class _ScheduleChangeAck extends ConsumerWidget {
+  const _ScheduleChangeAck({required this.event, required this.ack});
+
+  final ScheduledEvent event;
+  final PendingAck ack;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final f = Fmt.of(context);
+    return AppCard(
+      key: const Key('schedule-change-ack'),
+      color: const Color(0xFFFFF7ED),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.update_rounded, color: AppColors.warning),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(child: Text(l.scheduleChangedTitle, style: Theme.of(context).textTheme.titleSmall)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(l.scheduleChangedBody('${f.weekdayDayMonth(event.startAt)} ${f.time(event.startAt)}')),
+          const SizedBox(height: AppSpacing.xs),
+          Text(l.ackIsNotRsvp, style: Theme.of(context).textTheme.bodySmall),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.tonalIcon(
+              key: const Key('schedule-ack-button'),
+              onPressed: () => runGuarded(
+                context,
+                () => ref.read(chatRepositoryProvider).acknowledge(ack.groupId, ack.messageId),
+                success: l.ackDone,
+              ),
+              icon: const Icon(Icons.done_rounded),
+              label: Text(l.ackButton),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ChildRsvpCard extends ConsumerStatefulWidget {
   const _ChildRsvpCard({
-    required this.training,
+    required this.event,
     required this.child,
     required this.rsvp,
     required this.record,
     required this.open,
   });
 
-  final Training training;
+  final ScheduledEvent event;
   final Child child;
   final Rsvp? rsvp;
   final AttendanceRecord? record;
@@ -94,7 +155,7 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
       context,
       () => ref
           .read(attendanceRepositoryProvider)
-          .respond(trainingId: widget.training.id, childId: widget.child.id, response: r, reason: _reason.text),
+          .respond(trainingId: widget.event.id, childId: widget.child.id, response: r, reason: _reason.text),
       success: context.l10n.rsvpSaved,
     );
     if (mounted) setState(() => _pending = null);
@@ -103,8 +164,13 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final current = _pending ?? widget.rsvp?.response;
+    final f = Fmt.of(context);
+    final rsvp = widget.rsvp;
+    final needsReconfirm = rsvp != null && rsvp.needsReconfirmation(widget.event.version);
+    // An answer for an older schedule is shown, but not pre-selected.
+    final current = _pending ?? (needsReconfirm ? null : rsvp?.response);
     final rec = widget.record;
+    final venue = ref.watch(venuesByIdProvider)[widget.event.venueId];
     return AppCard(
       key: Key('rsvp-${widget.child.id}'),
       child: Column(
@@ -121,11 +187,35 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
                   label: attendanceLabel(context, rec.status),
                   color: attendanceColor(rec.status),
                 )
-              else if (!widget.open && widget.rsvp != null)
-                StatusPill(label: rsvpLabel(context, widget.rsvp!.response), color: rsvpColor(widget.rsvp!.response)),
+              else if (needsReconfirm)
+                StatusPill(
+                  key: Key('reconfirm-${widget.child.id}'),
+                  label: l.rsvpNeedsReconfirm,
+                  color: AppColors.warning,
+                  icon: Icons.priority_high_rounded,
+                )
+              else if (!widget.open && rsvp != null)
+                StatusPill(label: rsvpLabel(context, rsvp.response), color: rsvpColor(rsvp.response)),
             ],
           ),
           if (widget.open) ...[
+            const SizedBox(height: AppSpacing.xs),
+            // The current schedule, shown before the parent answers.
+            Text(
+              '${f.weekdayDayMonth(widget.event.startAt)} · ${f.time(widget.event.startAt)}–${f.time(widget.event.endAt)}'
+              '${venue == null ? '' : ' · ${venue.name}'}',
+              key: Key('rsvp-schedule-${widget.child.id}'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            if (needsReconfirm)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  l.rsvpPreviousAnswer(rsvpLabel(context, rsvp.response)),
+                  key: Key('rsvp-previous-${widget.child.id}'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
             const SizedBox(height: AppSpacing.sm),
             SegmentedButton<RsvpResponse>(
               key: Key('rsvp-buttons-${widget.child.id}'),
@@ -154,7 +244,7 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
                 onSubmitted: (_) => _respond(current!),
               ),
             ],
-          ] else if (rec == null && widget.training.status.isActive)
+          ] else if (rec == null && widget.event.active)
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.xs),
               child: Text(l.rsvpClosedNote, style: Theme.of(context).textTheme.bodySmall),
@@ -165,19 +255,22 @@ class _ChildRsvpCardState extends ConsumerState<_ChildRsvpCard> {
   }
 }
 
-/// Coach: summary of parent responses + entry to the attendance roster.
+/// Coach: child-level RSVP counters (each child once), per-child answers
+/// with every guardian's response, and the entry to the attendance roster.
 class CoachAttendanceSummary extends ConsumerWidget {
-  const CoachAttendanceSummary({super.key, required this.training, required this.group});
+  const CoachAttendanceSummary({super.key, required this.event, required this.group});
 
-  final Training training;
+  final ScheduledEvent event;
   final Group group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final rsvps = ref.watch(rsvpsForTrainingProvider(training.id)).value ?? const <Rsvp>[];
-    final records = ref.watch(attendanceForTrainingProvider(training.id)).value ?? const <AttendanceRecord>[];
-    int n(RsvpResponse r) => rsvps.where((x) => x.response == r).length;
+    if (!ref.watch(moduleOnForGroupProvider((group.id, OrgModule.attendance)))) return const SizedBox.shrink();
+    final rsvps = ref.watch(rsvpsForTrainingProvider(event.id)).value ?? const <Rsvp>[];
+    final records = ref.watch(attendanceForTrainingProvider(event.id)).value ?? const <AttendanceRecord>[];
+    final kids = ref.watch(groupMembersProvider(group.id)).value ?? const <Child>[];
+    final summary = RsvpSummary.compute(group.memberChildIds, rsvps, event.version);
     int a(AttendanceStatus s) => records.where((x) => x.status == s).length;
     final total = group.memberChildIds.length;
     return Column(
@@ -186,14 +279,31 @@ class CoachAttendanceSummary extends ConsumerWidget {
         SectionHeader(l.attendanceTitle),
         AppCard(
           key: const Key('coach-attendance-summary'),
-          onTap: training.status == TrainingStatus.cancelled
-              ? null
-              : () => context.push(Routes.attendance(training.id)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(l.responsesTitle, style: Theme.of(context).textTheme.labelMedium),
-              Text(l.responsesCount(n(RsvpResponse.yes), n(RsvpResponse.no), n(RsvpResponse.maybe))),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
+                children: [
+                  for (final st in RsvpState.values)
+                    StatusPill(
+                      key: Key('rsvp-count-${st.name}'),
+                      label: '${rsvpStateLabel(context, st)}: ${summary.count(st)}',
+                      color: rsvpStateColor(st),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              for (final c in kids)
+                _ChildResponseRow(
+                  child: c,
+                  rsvp: rsvps.where((r) => r.childId == c.id).firstOrNull,
+                  state: summary.byChild[c.id] ?? RsvpState.notResponded,
+                  version: event.version,
+                ),
               if (records.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(l.attendanceRecorded, style: Theme.of(context).textTheme.labelMedium),
@@ -206,13 +316,13 @@ class CoachAttendanceSummary extends ConsumerWidget {
                   ),
                 ),
               ],
-              if (training.status != TrainingStatus.cancelled) ...[
+              if (!event.cancelled) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Align(
                   alignment: Alignment.centerRight,
                   child: FilledButton.tonalIcon(
                     key: const Key('open-attendance'),
-                    onPressed: () => context.push(Routes.attendance(training.id)),
+                    onPressed: () => context.push(Routes.attendance(event.id)),
                     icon: const Icon(Icons.fact_check_rounded),
                     label: Text(l.attendanceOpen),
                   ),
@@ -225,6 +335,69 @@ class CoachAttendanceSummary extends ConsumerWidget {
     );
   }
 }
+
+class _ChildResponseRow extends ConsumerWidget {
+  const _ChildResponseRow({required this.child, required this.rsvp, required this.state, required this.version});
+
+  final Child child;
+  final Rsvp? rsvp;
+  final RsvpState state;
+  final int version;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final r = rsvp;
+    final answers = r?.guardianResponses.entries.toList() ?? const [];
+    return Padding(
+      key: Key('coach-rsvp-${child.id}'),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(child.fullName, style: Theme.of(context).textTheme.bodyMedium)),
+              StatusPill(label: rsvpStateLabel(context, state), color: rsvpStateColor(state)),
+            ],
+          ),
+          if (r != null && r.conflictingFor(version))
+            Text(
+              l.rsvpGuardiansDisagree,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+            ),
+          for (final e in answers)
+            Text(
+              '${ref.watch(publicProfileProvider(e.key)).value?.firstName ?? l.guardianLabel}: '
+              '${rsvpLabel(context, e.value.response)}'
+              '${e.value.version < version ? ' (${l.rsvpOldSchedule})' : ''}'
+              '${(e.value.reason ?? '').isEmpty ? '' : ' — ${e.value.reason}'}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+String rsvpStateLabel(BuildContext context, RsvpState s) {
+  final l = context.l10n;
+  return switch (s) {
+    RsvpState.confirmed => l.rsvpStateConfirmed,
+    RsvpState.declined => l.rsvpStateDeclined,
+    RsvpState.uncertain => l.rsvpStateUncertain,
+    RsvpState.notResponded => l.rsvpStateNotResponded,
+    RsvpState.needsReconfirmation => l.rsvpNeedsReconfirm,
+  };
+}
+
+Color rsvpStateColor(RsvpState s) => switch (s) {
+  RsvpState.confirmed => AppColors.success,
+  RsvpState.declined => AppColors.danger,
+  RsvpState.uncertain => AppColors.warning,
+  RsvpState.notResponded => AppColors.neutral,
+  RsvpState.needsReconfirmation => const Color(0xFFB45309),
+};
 
 /// Small pill row: "92% this month" etc.
 class AttendanceRateBar extends StatelessWidget {

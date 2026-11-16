@@ -12,6 +12,7 @@ import '../../matches/domain/match.dart';
 import '../../training_plans/domain/training_plan.dart';
 import '../../trainings/domain/training.dart';
 import '../domain/brain_models.dart';
+import '../../clubs/domain/club.dart';
 import '../domain/student_view.dart';
 
 /// `brainResults` (create-only by the linked student, readable by the
@@ -116,6 +117,19 @@ class FirebaseStudentRepository implements StudentRepository {
   final FirebaseAuth auth;
   final FirebaseFirestore db;
 
+  /// Public venue documents of the student's own events (read once each).
+  Future<void> _loadVenues(Iterable<String> ids, Map<String, Venue> into) async {
+    for (final id in ids.toSet()) {
+      if (id.isEmpty || into.containsKey(id)) continue;
+      try {
+        final d = await db.collection('venues').doc(id).get();
+        if (d.exists) into[id] = Venue.fromMap(d.id, d.data()!);
+      } catch (_) {
+        // A venue that cannot be read is simply not shown.
+      }
+    }
+  }
+
   @override
   Stream<StudentView> watchMyView() async* {
     final uid = auth.currentUser?.uid ?? (throw const AuthException('not-signed-in'));
@@ -155,9 +169,11 @@ class FirebaseStudentRepository implements StudentRepository {
     var matches = <SportMatch>[];
     var plans = <TrainingPlan>[];
     var attendance = <AttendanceRecord>[];
+    final venues = <String, Venue>{};
     final out = StreamController<StudentView>();
     void emit() => out.add(
       StudentView(
+        venues: Map.of(venues),
         child: child,
         groups: groups,
         coachNames: coachNames,
@@ -171,10 +187,12 @@ class FirebaseStudentRepository implements StudentRepository {
       db.collection('trainings').where('groupId', whereIn: groupIds).snapshots().listen((s) {
         trainings = [for (final d in s.docs) Training.fromMap(d.id, d.data())];
         emit();
+        _loadVenues(trainings.map((t) => t.venueId), venues).then((_) => emit());
       }, onError: (Object e) => out.addError(mapFirebaseError(e))),
       db.collection('matches').where('groupId', whereIn: groupIds).snapshots().listen((s) {
         matches = [for (final d in s.docs) SportMatch.fromMap(d.id, d.data())];
         emit();
+        _loadVenues(matches.map((m) => m.venueId), venues).then((_) => emit());
       }, onError: (Object e) => out.addError(mapFirebaseError(e))),
       db
           .collection('trainingPlans')

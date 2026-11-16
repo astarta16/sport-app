@@ -4,6 +4,7 @@ import '../../matches/domain/match.dart';
 import '../../training_plans/domain/training_plan.dart';
 import '../../trainings/domain/training.dart';
 import '../../attendance/domain/attendance.dart';
+import '../../clubs/domain/club.dart';
 
 /// Everything a student may see about themselves (v1.6). Deliberately has
 /// no payments, certificates, chat, phone numbers or other children.
@@ -16,6 +17,7 @@ class StudentView {
     required this.matches,
     required this.plans,
     required this.attendance,
+    this.venues = const {},
   });
 
   final Child child;
@@ -31,6 +33,10 @@ class StudentView {
 
   /// Coach-recorded attendance of this child only.
   final List<AttendanceRecord> attendance;
+
+  /// v1.7: public venue data of the student's own events only (name,
+  /// address, map pin) — never other venues or private data.
+  final Map<String, Venue> venues;
 }
 
 abstract interface class StudentRepository {

@@ -20,6 +20,8 @@ import '../../groups/presentation/groups_providers.dart';
 import '../domain/match.dart';
 import 'matches_providers.dart';
 import '../../calendar/presentation/add_to_calendar.dart';
+import '../../attendance/domain/scheduled_event.dart';
+import '../../attendance/presentation/attendance_widgets.dart';
 import 'match_result_widgets.dart';
 
 /// Coach adds / edits a match (v1.1 §8): group, date & time, venue,
@@ -385,6 +387,9 @@ class _MatchBody extends ConsumerWidget {
               ],
             ),
           ],
+          // v1.7: matches have the same RSVP and attendance workflow as trainings.
+          if (isCoach) CoachAttendanceSummary(event: ScheduledEvent.match(match), group: group),
+          if (me != null && me.isParent && group != null) RsvpSection(event: ScheduledEvent.match(match), group: group),
         ],
       ),
     );

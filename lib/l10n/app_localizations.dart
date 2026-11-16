@@ -63,7 +63,8 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +72,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,15 +85,20 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ka'),
+    Locale('ru'),
+  ];
 
   /// No description provided for @appName.
   ///
@@ -7850,9 +7857,370 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'კომბო ×{n}!'**
   String comboLabel(int n);
+
+  /// No description provided for @rsvpTitleMatch.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოვა თამაშზე?'**
+  String get rsvpTitleMatch;
+
+  /// No description provided for @scheduleChangedTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'განრიგი შეიცვალა'**
+  String get scheduleChangedTitle;
+
+  /// No description provided for @scheduleChangedBody.
+  ///
+  /// In ka, this message translates to:
+  /// **'ახალი დრო: {when}. გთხოვთ, ხელახლა დაადასტუროთ დასწრება.'**
+  String scheduleChangedBody(String when);
+
+  /// No description provided for @ackIsNotRsvp.
+  ///
+  /// In ka, this message translates to:
+  /// **'„გავეცანი“ მხოლოდ ადასტურებს, რომ ცვლილებას გაეცანით — ეს არ ნიშნავს, რომ ბავშვი მოვა.'**
+  String get ackIsNotRsvp;
+
+  /// No description provided for @ackButton.
+  ///
+  /// In ka, this message translates to:
+  /// **'გავეცანი'**
+  String get ackButton;
+
+  /// No description provided for @ackDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'მონიშნულია, რომ გაეცანით'**
+  String get ackDone;
+
+  /// No description provided for @rsvpNeedsReconfirm.
+  ///
+  /// In ka, this message translates to:
+  /// **'საჭიროა ხელახლა დადასტურება'**
+  String get rsvpNeedsReconfirm;
+
+  /// No description provided for @rsvpPreviousAnswer.
+  ///
+  /// In ka, this message translates to:
+  /// **'თქვენი პასუხი წინა განრიგზე: {answer}'**
+  String rsvpPreviousAnswer(String answer);
+
+  /// No description provided for @rsvpGuardiansDisagree.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეურვეებმა სხვადასხვა პასუხი გასცეს — მოქმედებს ბოლო პასუხი.'**
+  String get rsvpGuardiansDisagree;
+
+  /// No description provided for @guardianLabel.
+  ///
+  /// In ka, this message translates to:
+  /// **'მეურვე'**
+  String get guardianLabel;
+
+  /// No description provided for @rsvpOldSchedule.
+  ///
+  /// In ka, this message translates to:
+  /// **'ძველი განრიგი'**
+  String get rsvpOldSchedule;
+
+  /// No description provided for @rsvpStateConfirmed.
+  ///
+  /// In ka, this message translates to:
+  /// **'დადასტურებული'**
+  String get rsvpStateConfirmed;
+
+  /// No description provided for @rsvpStateDeclined.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვერ მოვა'**
+  String get rsvpStateDeclined;
+
+  /// No description provided for @rsvpStateUncertain.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჯერ უცნობია'**
+  String get rsvpStateUncertain;
+
+  /// No description provided for @rsvpStateNotResponded.
+  ///
+  /// In ka, this message translates to:
+  /// **'უპასუხოდ'**
+  String get rsvpStateNotResponded;
+
+  /// No description provided for @contactCoach.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელთან კონტაქტი'**
+  String get contactCoach;
+
+  /// No description provided for @contactCoachTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'კონტაქტი: {coach}'**
+  String contactCoachTitle(String coach);
+
+  /// No description provided for @contactCoachExplain.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენს მშობელს მიუვა მოთხოვნა და ის მისწერს ან დაურეკავს მწვრთნელს. მწვრთნელთან პირდაპირ არ წერ.'**
+  String get contactCoachExplain;
+
+  /// No description provided for @contactCoachSent.
+  ///
+  /// In ka, this message translates to:
+  /// **'მშობელს ეცნობა, რომ დაუკავშირდეს მწვრთნელს'**
+  String get contactCoachSent;
+
+  /// No description provided for @contactCoachPending.
+  ///
+  /// In ka, this message translates to:
+  /// **'მოთხოვნა გაეგზავნა მშობელს'**
+  String get contactCoachPending;
+
+  /// No description provided for @contactTopicQuestion.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაქვს შეკითხვა'**
+  String get contactTopicQuestion;
+
+  /// No description provided for @contactTopicAbsence.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვერ მოვალ'**
+  String get contactTopicAbsence;
+
+  /// No description provided for @contactTopicTraining.
+  ///
+  /// In ka, this message translates to:
+  /// **'ვარჯიშის შესახებ'**
+  String get contactTopicTraining;
+
+  /// No description provided for @contactTopicOther.
+  ///
+  /// In ka, this message translates to:
+  /// **'სხვა'**
+  String get contactTopicOther;
+
+  /// No description provided for @eventRescheduled.
+  ///
+  /// In ka, this message translates to:
+  /// **'გადატანილია'**
+  String get eventRescheduled;
+
+  /// No description provided for @eventLocationChanged.
+  ///
+  /// In ka, this message translates to:
+  /// **'ადგილი შეიცვალა'**
+  String get eventLocationChanged;
+
+  /// No description provided for @eventShowMap.
+  ///
+  /// In ka, this message translates to:
+  /// **'რუკა'**
+  String get eventShowMap;
+
+  /// No description provided for @studentUpcomingEvents.
+  ///
+  /// In ka, this message translates to:
+  /// **'მომავალი ვარჯიშები და თამაშები'**
+  String get studentUpcomingEvents;
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდი · {org}'**
+  String leaderboardTitle(String org);
+
+  /// No description provided for @leaderboardAllGames.
+  ///
+  /// In ka, this message translates to:
+  /// **'ყველა თამაში'**
+  String get leaderboardAllGames;
+
+  /// No description provided for @leaderboardWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს კვირა'**
+  String get leaderboardWeek;
+
+  /// No description provided for @leaderboardMonth.
+  ///
+  /// In ka, this message translates to:
+  /// **'ეს თვე'**
+  String get leaderboardMonth;
+
+  /// No description provided for @leaderboardAllTime.
+  ///
+  /// In ka, this message translates to:
+  /// **'სულ'**
+  String get leaderboardAllTime;
+
+  /// No description provided for @leaderboardAgeBand.
+  ///
+  /// In ka, this message translates to:
+  /// **'ასაკობრივი ჯგუფი {band}'**
+  String leaderboardAgeBand(String band);
+
+  /// No description provided for @leaderboardYou.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენ'**
+  String get leaderboardYou;
+
+  /// No description provided for @leaderboardBadges.
+  ///
+  /// In ka, this message translates to:
+  /// **'{count} ნიშანი'**
+  String leaderboardBadges(int count);
+
+  /// No description provided for @leaderboardDisabled.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდი ახლა მიუწვდომელია. შენი პროგრესი ზემოთ ჩანს.'**
+  String get leaderboardDisabled;
+
+  /// No description provided for @leaderboardNoConsent.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდზე მხოლოდ მშობლის ნებართვით გამოჩნდები. შენი პირადი პროგრესი ზემოთ ჩანს.'**
+  String get leaderboardNoConsent;
+
+  /// No description provided for @leaderboardTooFew.
+  ///
+  /// In ka, this message translates to:
+  /// **'შენს ასაკობრივ ჯგუფში ჯერ საკმარისი მოთამაშე არ არის. შენი პროგრესი ზემოთ ჩანს.'**
+  String get leaderboardTooFew;
+
+  /// No description provided for @leaderboardPrivacyNote.
+  ///
+  /// In ka, this message translates to:
+  /// **'ჩანს მხოლოდ ფსევდონიმი ან სახელი და ინიციალი. ქულები გართობისა და ვარჯიშისთვისაა — ისინი ინტელექტს არ ზომავს.'**
+  String get leaderboardPrivacyNote;
+
+  /// No description provided for @pointsTotal.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულა'**
+  String get pointsTotal;
+
+  /// No description provided for @pointsGamesCompleted.
+  ///
+  /// In ka, this message translates to:
+  /// **'დასრულებული თამაში'**
+  String get pointsGamesCompleted;
+
+  /// No description provided for @pointsThisWeek.
+  ///
+  /// In ka, this message translates to:
+  /// **'ამ კვირაში'**
+  String get pointsThisWeek;
+
+  /// No description provided for @pointsWeekly.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულები ბოლო 7 დღეში'**
+  String get pointsWeekly;
+
+  /// No description provided for @pointsByGame.
+  ///
+  /// In ka, this message translates to:
+  /// **'ქულები თამაშების მიხედვით'**
+  String get pointsByGame;
+
+  /// No description provided for @pointsRecent.
+  ///
+  /// In ka, this message translates to:
+  /// **'ბოლო თამაშები'**
+  String get pointsRecent;
+
+  /// No description provided for @pointsValue.
+  ///
+  /// In ka, this message translates to:
+  /// **'{points} ქ.'**
+  String pointsValue(int points);
+
+  /// No description provided for @pointsAccuracy.
+  ///
+  /// In ka, this message translates to:
+  /// **'სიზუსტე {percent}%'**
+  String pointsAccuracy(int percent);
+
+  /// No description provided for @pointsBest.
+  ///
+  /// In ka, this message translates to:
+  /// **'საუკეთესო {score}'**
+  String pointsBest(int score);
+
+  /// No description provided for @contactDone.
+  ///
+  /// In ka, this message translates to:
+  /// **'შესრულდა'**
+  String get contactDone;
+
+  /// No description provided for @contactOpenChat.
+  ///
+  /// In ka, this message translates to:
+  /// **'მწვრთნელთან ჩატი'**
+  String get contactOpenChat;
+
+  /// No description provided for @contactRequestFromChild.
+  ///
+  /// In ka, this message translates to:
+  /// **'{child} გთხოვთ, დაუკავშირდეთ მწვრთნელს: {coach}'**
+  String contactRequestFromChild(String child, String coach);
+
+  /// No description provided for @leaderboardConsentTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'Brain Academy-ის ლიდერბორდი'**
+  String get leaderboardConsentTitle;
+
+  /// No description provided for @leaderboardConsentExplain.
+  ///
+  /// In ka, this message translates to:
+  /// **'ნაგულისხმევად გამორთულია. თუ დართავთ ნებას, ბავშვი გამოჩნდება მხოლოდ ამ აკადემიის დახურულ ლიდერბორდზე ფსევდონიმით ან სახელითა და ინიციალით — არასოდეს სრული სახელით, ტელეფონით, დაბადების თარიღით ან ჯანმრთელობის მონაცემებით. თანხმობის გაუქმება ნებისმიერ დროს შეგიძლიათ.'**
+  String get leaderboardConsentExplain;
+
+  /// No description provided for @leaderboardConsentOn.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანხმობა შენახულია'**
+  String get leaderboardConsentOn;
+
+  /// No description provided for @leaderboardConsentOff.
+  ///
+  /// In ka, this message translates to:
+  /// **'თანხმობა გაუქმდა — ბავშვი აღარ ჩანს'**
+  String get leaderboardConsentOff;
+
+  /// No description provided for @leaderboardConsentOffHint.
+  ///
+  /// In ka, this message translates to:
+  /// **'ლიდერბორდზე არ ჩანს'**
+  String get leaderboardConsentOffHint;
+
+  /// No description provided for @leaderboardModePseudonym.
+  ///
+  /// In ka, this message translates to:
+  /// **'ფსევდონიმი'**
+  String get leaderboardModePseudonym;
+
+  /// No description provided for @leaderboardModeInitial.
+  ///
+  /// In ka, this message translates to:
+  /// **'სახელი + ინიციალი'**
+  String get leaderboardModeInitial;
+
+  /// No description provided for @orgSwitchTitle.
+  ///
+  /// In ka, this message translates to:
+  /// **'აირჩიეთ აკადემია'**
+  String get orgSwitchTitle;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -7861,7 +8229,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

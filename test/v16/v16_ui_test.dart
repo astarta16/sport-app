@@ -85,6 +85,15 @@ void main() {
     }
     expect(find.byKey(const Key('challenge-play-challenge-seed-1')), findsOneWidget, reason: 'coach challenge');
     await tap(tester, 'student-nav-progress');
+    // v1.7: the points dashboard comes first; the badge/game cards follow.
+    expect(find.byKey(const Key('points-total')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('brain-progress-child-1')),
+      300,
+      scrollable: find
+          .descendant(of: find.byKey(const Key('student-progress')), matching: find.byType(Scrollable))
+          .first,
+    );
     expect(find.byKey(const Key('brain-progress-child-1')), findsOneWidget);
     expectNoLayoutErrors();
     expect(db.session?.uid, DemoIds.student);

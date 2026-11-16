@@ -24,6 +24,7 @@ import '../domain/brain_models.dart';
 import '../domain/student_view.dart';
 import '../../sports/presentation/sport_label.dart';
 import 'brain_providers.dart';
+import 'student_v17_widgets.dart';
 
 /// `/kid/home` — v1.6 student experience (demo mode only): Home, Brain
 /// Academy and Progress. No payments, certificates, chat, phone numbers,
@@ -95,7 +96,11 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
           children: [
             _HomeTab(view: v, openBrain: () => setState(() => _tab = 1)),
             BrainHub(childId: v.child.id),
-            _page(const Key('student-progress'), [BrainProgressView(childId: v.child.id)]),
+            _page(const Key('student-progress'), [
+              BrainPointsDashboard(childId: v.child.id),
+              StudentLeaderboards(view: v),
+              BrainProgressView(childId: v.child.id),
+            ]),
           ],
         ),
       ),
@@ -199,15 +204,7 @@ class _HomeTab extends ConsumerWidget {
             ),
         ],
       ),
-      SectionHeader(l.studentMyCoach),
-      if (view.coachNames.isEmpty) _nothing(context),
-      for (final name in view.coachNames.values)
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: InitialsAvatar(name: name, size: 40),
-          title: Text(name),
-          subtitle: Text(l.roleCoach),
-        ),
+      StudentCoachesSection(view: view),
       SectionHeader(l.studentNextTraining),
       if (next == null)
         _nothing(context)
@@ -223,6 +220,7 @@ class _HomeTab extends ConsumerWidget {
             ],
           ),
         ),
+      StudentEventsSection(view: view),
       SectionHeader(l.studentUpcomingMatches),
       if (upcoming.isEmpty) _nothing(context),
       for (final m in upcoming) _MatchLine(match: m),

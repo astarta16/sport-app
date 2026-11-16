@@ -339,7 +339,11 @@ class FirebaseChatRepository implements ChatRepository {
                   requested = [
                     for (final d in s.docs)
                       if (d.data()['args'] case final Map a)
-                        PendingAck(groupId: a['groupId'].toString(), messageId: a['messageId'].toString()),
+                        PendingAck(
+                          groupId: a['groupId'].toString(),
+                          messageId: a['messageId'].toString(),
+                          eventId: a['eventId']?.toString(),
+                        ),
                   ];
                   emit();
                 }, onError: fail),

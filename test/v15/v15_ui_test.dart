@@ -138,6 +138,12 @@ void main() {
     await tester.enterText(find.byKey(const Key('result-our')), '3');
     await tap(tester, 'result-save');
     expect(db.matches[m]!.result!.version, 2);
+    // v1.7 adds the attendance section below the coach actions; scroll back up.
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('match-result-history')),
+      -300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.byKey(const Key('match-result-history')), findsOneWidget);
     expectNoLayoutErrors();
 

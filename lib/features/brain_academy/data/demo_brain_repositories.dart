@@ -204,6 +204,13 @@ class DemoStudentRepository implements StudentRepository {
           .where((p) => p.status == PlanStatus.published && p.groupIds.any(ids.contains))
           .toList(),
       attendance: db.attendance.values.where((r) => r.childId == c.id).toList(),
+      venues: {
+        for (final id in {
+          ...db.trainings.values.where((t) => ids.contains(t.groupId)).map((t) => t.venueId),
+          ...db.matches.values.where((m) => ids.contains(m.groupId)).map((m) => m.venueId),
+        })
+          if (db.venues[id] case final v?) id: v,
+      },
     );
   });
 }

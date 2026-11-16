@@ -64,7 +64,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorPermission => 'У вас нет доступа к этому действию.';
 
   @override
-  String get errorNetwork => 'Нет соединения. Проверьте подключение к интернету.';
+  String get errorNetwork =>
+      'Нет соединения. Проверьте подключение к интернету.';
 
   @override
   String get errorNotFound => 'Не найдено.';
@@ -82,7 +83,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationRequired => 'Обязательное поле';
 
   @override
-  String get validationInvalidPhone => 'Введите корректный номер мобильного (5XX XXX XXX)';
+  String get validationInvalidPhone =>
+      'Введите корректный номер мобильного (5XX XXX XXX)';
 
   @override
   String get validationInvalidOtp => 'Код должен состоять из 6 цифр';
@@ -130,7 +132,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationStartInPast => 'Это время уже прошло';
 
   @override
-  String get validationPhotoConsentRequired => 'Подтвердите условие о согласии на фото';
+  String get validationPhotoConsentRequired =>
+      'Подтвердите условие о согласии на фото';
 
   @override
   String get validationFileType => 'Допустимы только JPG, PNG или PDF';
@@ -142,7 +145,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationFileEmpty => 'Выберите файл';
 
   @override
-  String get validationDatesOrder => 'Срок действия должен заканчиваться после даты выдачи';
+  String get validationDatesOrder =>
+      'Срок действия должен заканчиваться после даты выдачи';
 
   @override
   String get validationIssuedInFuture => 'Дата выдачи в будущем';
@@ -169,19 +173,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboardingTitle1 => 'Все тренировки в одном календаре';
 
   @override
-  String get onboardingBody1 => 'Время, место и тренер — всегда под рукой. Об изменениях вы узнаете сразу.';
+  String get onboardingBody1 =>
+      'Время, место и тренер — всегда под рукой. Об изменениях вы узнаете сразу.';
 
   @override
   String get onboardingTitle2 => 'Прямая связь с тренером';
 
   @override
-  String get onboardingBody2 => 'Групповой чат родителей и тренеров, фото с каждой тренировки.';
+  String get onboardingBody2 =>
+      'Групповой чат родителей и тренеров, фото с каждой тренировки.';
 
   @override
   String get onboardingTitle3 => 'Справки и оплата — под защитой';
 
   @override
-  String get onboardingBody3 => 'Медицинские справки в закрытом хранилище, напоминания о сроках действия и оплате.';
+  String get onboardingBody3 =>
+      'Медицинские справки в закрытом хранилище, напоминания о сроках действия и оплате.';
 
   @override
   String get onboardingStart => 'Начать';
@@ -193,7 +200,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get phoneTitle => 'Вход по номеру телефона';
 
   @override
-  String get phoneSubtitle => 'Мы отправим одноразовый код по SMS. Пароль не нужен.';
+  String get phoneSubtitle =>
+      'Мы отправим одноразовый код по SMS. Пароль не нужен.';
 
   @override
   String get phoneLabel => 'Номер мобильного';
@@ -227,7 +235,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get demoAccountsTitle => 'Быстрый вход в демо';
 
   @override
-  String get demoAccountsSubtitle => 'Вымышленные данные — без реальных SMS, платежей и медицинской информации.';
+  String get demoAccountsSubtitle =>
+      'Вымышленные данные — без реальных SMS, платежей и медицинской информации.';
 
   @override
   String get demoPendingCoach => 'Тренер (ожидает одобрения)';
@@ -236,7 +245,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get guestBrowse => 'Смотреть клубы без входа';
 
   @override
-  String get termsNote => 'Продолжая, вы принимаете Условия использования и Политику конфиденциальности.';
+  String get termsNote =>
+      'Продолжая, вы принимаете Условия использования и Политику конфиденциальности.';
 
   @override
   String get registerTitle => 'Создайте профиль';
@@ -248,19 +258,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get roleParent => 'Родитель';
 
   @override
-  String get roleParentDesc => 'Тренировки детей, чат с тренером, справки и оплата';
+  String get roleParentDesc =>
+      'Тренировки детей, чат с тренером, справки и оплата';
 
   @override
   String get roleCoach => 'Тренер';
 
   @override
-  String get roleCoachDesc => 'Управление группами и планирование тренировок. Нужно одобрение клуба.';
+  String get roleCoachDesc =>
+      'Управление группами и планирование тренировок. Нужно одобрение клуба.';
 
   @override
   String get roleChild => 'Ребёнок';
 
   @override
-  String get roleChildDesc => 'Профили детей до 14 лет создают родители. Аккаунты для 14–17 лет скоро появятся.';
+  String get roleChildDesc =>
+      'Профили детей до 14 лет создают родители. Аккаунты для 14–17 лет скоро появятся.';
 
   @override
   String get soon => 'Скоро';
@@ -278,7 +291,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get clubsLabel => 'Клуб';
 
   @override
-  String get consentData => 'Даю согласие на обработку моих персональных данных';
+  String get consentData =>
+      'Даю согласие на обработку моих персональных данных';
 
   @override
   String get consentDataDetails =>
@@ -309,10 +323,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get coachRejectedTitle => 'Заявка отклонена';
 
   @override
-  String get coachRejectedBody => 'Пожалуйста, свяжитесь с администрацией клуба.';
+  String get coachRejectedBody =>
+      'Пожалуйста, свяжитесь с администрацией клуба.';
 
   @override
-  String get childAccountUnsupported => 'Собственные аккаунты для детей пока недоступны. Используйте аккаунт родителя.';
+  String get childAccountUnsupported =>
+      'Собственные аккаунты для детей пока недоступны. Используйте аккаунт родителя.';
 
   @override
   String get signOut => 'Выйти';
@@ -381,7 +397,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noChildrenTitle => 'Добавьте первого ребёнка';
 
   @override
-  String get noChildrenBody => 'Создайте профиль и выберите вид спорта — остальное мы возьмём на себя.';
+  String get noChildrenBody =>
+      'Создайте профиль и выберите вид спорта — остальное мы возьмём на себя.';
 
   @override
   String get addChild => 'Добавить ребёнка';
@@ -392,7 +409,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get noGroupBody => 'Найдите клуб на карте и отправьте заявку на вступление.';
+  String get noGroupBody =>
+      'Найдите клуб на карте и отправьте заявку на вступление.';
 
   @override
   String get findClub => 'Найти клуб';
@@ -509,7 +527,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cancelTraining => 'Отменить тренировку';
 
   @override
-  String get cancelTrainingConfirm => 'Отменить эту тренировку? Родители группы получат уведомление.';
+  String get cancelTrainingConfirm =>
+      'Отменить эту тренировку? Родители группы получат уведомление.';
 
   @override
   String get keepTraining => 'Нет, оставить';
@@ -553,16 +572,19 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get photoConsentAllGiven => 'У всех детей группы есть согласие родителей на фото.';
+  String get photoConsentAllGiven =>
+      'У всех детей группы есть согласие родителей на фото.';
 
   @override
-  String get photoConsentConfirm => 'Подтверждаю, что на фото нет детей без согласия';
+  String get photoConsentConfirm =>
+      'Подтверждаю, что на фото нет детей без согласия';
 
   @override
   String get selectVenue => 'Выберите место';
 
   @override
-  String get descriptionHint => 'Что будете отрабатывать? Например, передачи, удары…';
+  String get descriptionHint =>
+      'Что будете отрабатывать? Например, передачи, удары…';
 
   @override
   String get groupLabel => 'Группа';
@@ -613,7 +635,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get roster => 'Состав группы';
 
   @override
-  String get noGroupsCoach => 'Вам пока не назначены группы. Обратитесь к администратору клуба.';
+  String get noGroupsCoach =>
+      'Вам пока не назначены группы. Обратитесь к администратору клуба.';
 
   @override
   String get membershipRequests => 'Заявки на вступление';
@@ -685,7 +708,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNotAllowed => 'Чат доступен только родителям и тренерам.';
 
   @override
-  String get chatPrivacyNote => 'Здесь только тренеры и родители группы. Номера телефонов скрыты от других родителей.';
+  String get chatPrivacyNote =>
+      'Здесь только тренеры и родители группы. Номера телефонов скрыты от других родителей.';
 
   @override
   String get noChats => 'Чаты появятся, когда ребёнок вступит в группу';
@@ -815,7 +839,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Справку можно удалить в любой момент. При удалении аккаунта удаляются все справки. После выхода из группы тренер теряет доступ.';
 
   @override
-  String get certConsentAgree => 'Даю согласие на обработку справки, как описано выше';
+  String get certConsentAgree =>
+      'Даю согласие на обработку справки, как описано выше';
 
   @override
   String get takePhoto => 'Камера';
@@ -842,7 +867,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteCertificate => 'Удалить справку';
 
   @override
-  String get deleteCertificateConfirm => 'Удалить эту справку? Файл будет безвозвратно удалён из хранилища.';
+  String get deleteCertificateConfirm =>
+      'Удалить эту справку? Файл будет безвозвратно удалён из хранилища.';
 
   @override
   String get certDeleted => 'Справка удалена';
@@ -914,7 +940,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get certRemindersNote => 'Мы напомним за 14 и за 3 дня до окончания срока, а также в последний день.';
+  String get certRemindersNote =>
+      'Мы напомним за 14 и за 3 дня до окончания срока, а также в последний день.';
 
   @override
   String fileSelected(String name) {
@@ -978,10 +1005,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notificationSettings => 'Настройки уведомлений';
 
   @override
-  String get notificationSettingsHint => 'Выберите, какие уведомления получать.';
+  String get notificationSettingsHint =>
+      'Выберите, какие уведомления получать.';
 
   @override
-  String get pushDemoNote => 'В демо-режиме push-уведомления не отправляются — они показываются в приложении.';
+  String get pushDemoNote =>
+      'В демо-режиме push-уведомления не отправляются — они показываются в приложении.';
 
   @override
   String get paymentsTitle => 'Платежи';
@@ -1024,7 +1053,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chargeGroup => 'Разовый платёж';
 
   @override
-  String get chargeGroupHint => 'Платёж будет создан для каждого ребёнка в группе.';
+  String get chargeGroupHint =>
+      'Платёж будет создан для каждого ребёнка в группе.';
 
   @override
   String get recurringPlans => 'Ежемесячная оплата';
@@ -1071,7 +1101,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get smsLog => 'Журнал SMS';
 
   @override
-  String get smsMockNote => 'Демо: используется тестовый SMS-провайдер. Реальные SMS не отправляются.';
+  String get smsMockNote =>
+      'Демо: используется тестовый SMS-провайдер. Реальные SMS не отправляются.';
 
   @override
   String get noPayments => 'Платежей пока нет';
@@ -1101,7 +1132,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get reminderSchedule => 'SMS: за 5 дней и за день до срока, в 10:00 (по Тбилиси)';
+  String get reminderSchedule =>
+      'SMS: за 5 дней и за день до срока, в 10:00 (по Тбилиси)';
 
   @override
   String get myChildren => 'Мои дети';
@@ -1134,13 +1166,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteAccount => 'Удалить аккаунт';
 
   @override
-  String get deleteAccountConfirm => 'Ваш аккаунт и все справки будут удалены навсегда. Это действие нельзя отменить.';
+  String get deleteAccountConfirm =>
+      'Ваш аккаунт и все справки будут удалены навсегда. Это действие нельзя отменить.';
 
   @override
   String get privacyTitle => 'Конфиденциальность';
 
   @override
-  String get privacyBody => 'Данные детей видят только родители и одобренные тренеры их группы.';
+  String get privacyBody =>
+      'Данные детей видят только родители и одобренные тренеры их группы.';
 
   @override
   String get childProfile => 'Профиль ребёнка';
@@ -1152,13 +1186,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ownAccountTitle => 'Собственный аккаунт (14+)';
 
   @override
-  String get ownAccountDisabled => 'Станет доступен после юридического утверждения правил о возрасте и согласии.';
+  String get ownAccountDisabled =>
+      'Станет доступен после юридического утверждения правил о возрасте и согласии.';
 
   @override
   String get photoConsentLabel => 'Согласие на фото с тренировок';
 
   @override
-  String get photoConsentHelp => 'Без согласия ребёнок не должен появляться на фото тренера.';
+  String get photoConsentHelp =>
+      'Без согласия ребёнок не должен появляться на фото тренера.';
 
   @override
   String get removeChild => 'Удалить ребёнка';
@@ -1278,7 +1314,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get statusLabel => 'Статус';
 
   @override
-  String get offlineBanner => 'Нет сети — показаны сохранённые данные. Изменения сохранить нельзя.';
+  String get offlineBanner =>
+      'Нет сети — показаны сохранённые данные. Изменения сохранить нельзя.';
 
   @override
   String get backOnline => 'Снова онлайн';
@@ -1287,13 +1324,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get permissionDeniedTitle => 'Доступ ограничен';
 
   @override
-  String get permissionDeniedBody => 'У вас нет прав для просмотра этой страницы.';
+  String get permissionDeniedBody =>
+      'У вас нет прав для просмотра этой страницы.';
 
   @override
   String get validationCancelReasonRequired => 'Выберите причину отмены';
 
   @override
-  String get validationCancelReasonTooShort => 'Причина должна содержать не менее 5 символов';
+  String get validationCancelReasonTooShort =>
+      'Причина должна содержать не менее 5 символов';
 
   @override
   String get validationWeekdaysRequired => 'Выберите хотя бы один день недели';
@@ -1302,10 +1341,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationEndBeforeStart => 'Дата окончания раньше даты начала';
 
   @override
-  String get validationSeriesTooLong => 'Расписание может действовать не более 1 года';
+  String get validationSeriesTooLong =>
+      'Расписание может действовать не более 1 года';
 
   @override
-  String get validationSeriesOverlap => 'У этой группы уже есть расписание в эти дни и в это время';
+  String get validationSeriesOverlap =>
+      'У этой группы уже есть расписание в эти дни и в это время';
 
   @override
   String get validationOpponentRequired => 'Укажите команду соперника';
@@ -1320,7 +1361,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationInvalidGroupCode => 'Неверный код или группа неактивна';
 
   @override
-  String get validationInviteExists => 'Приглашение уже отправлено и ждёт ответа';
+  String get validationInviteExists =>
+      'Приглашение уже отправлено и ждёт ответа';
 
   @override
   String get validationInviteClosed => 'Это приглашение уже закрыто';
@@ -1332,16 +1374,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationNotMember => 'Ребёнок не состоит в этой группе';
 
   @override
-  String get validationRsvpClosed => 'Тренировка уже началась — ответ изменить нельзя';
+  String get validationRsvpClosed =>
+      'Тренировка уже началась — ответ изменить нельзя';
 
   @override
   String get validationTrainingCancelled => 'Тренировка отменена';
 
   @override
-  String get validationAttendanceTooEarly => 'Посещаемость можно отмечать за час до начала';
+  String get validationAttendanceTooEarly =>
+      'Посещаемость можно отмечать за час до начала';
 
   @override
-  String get validationFeedbackEmpty => 'Оцените хотя бы одну категорию или напишите комментарий';
+  String get validationFeedbackEmpty =>
+      'Оцените хотя бы одну категорию или напишите комментарий';
 
   @override
   String get validationFeedbackRating => 'Оценка должна быть от 1 до 5';
@@ -1359,16 +1404,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationAvatarTooLarge => 'Фото больше 1 МБ';
 
   @override
-  String get validationRateLimited => 'Слишком много попыток. Попробуйте позже.';
+  String get validationRateLimited =>
+      'Слишком много попыток. Попробуйте позже.';
 
   @override
   String get validationAlreadyReported => 'Вы уже отправили жалобу';
 
   @override
-  String get validationReasonRequired => 'Укажите причину (не менее 5 символов)';
+  String get validationReasonRequired =>
+      'Укажите причину (не менее 5 символов)';
 
   @override
-  String get validationLocationOutsideGeorgia => 'Это место за пределами Грузии';
+  String get validationLocationOutsideGeorgia =>
+      'Это место за пределами Грузии';
 
   @override
   String get validationClubArchived => 'Клуб в архиве';
@@ -1386,7 +1434,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationReportClosed => 'Эта жалоба уже рассмотрена';
 
   @override
-  String get validationCannotChangeOwnRole => 'Нельзя изменить собственную роль';
+  String get validationCannotChangeOwnRole =>
+      'Нельзя изменить собственную роль';
 
   @override
   String get validationChildNotFound => 'Ребёнок не найден';
@@ -1395,7 +1444,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cancelReasonTitle => 'Причина отмены';
 
   @override
-  String get cancelReasonHint => 'Причина обязательна — родители увидят её в календаре и чате.';
+  String get cancelReasonHint =>
+      'Причина обязательна — родители увидят её в календаре и чате.';
 
   @override
   String get cancelReasonIllness => 'Болезнь';
@@ -1421,7 +1471,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get trainingCancelledSnack => 'Тренировка отменена, родители уведомлены';
+  String get trainingCancelledSnack =>
+      'Тренировка отменена, родители уведомлены';
 
   @override
   String get matchTitle => 'Матч';
@@ -1524,7 +1575,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get seriesSaved => 'Расписание сохранено — тренировки добавлены в календарь';
+  String get seriesSaved =>
+      'Расписание сохранено — тренировки добавлены в календарь';
 
   @override
   String get seriesEnded => 'Расписание завершено';
@@ -1552,7 +1604,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get editScopeFuture => 'Эту и последующие';
 
   @override
-  String get seriesHorizonNote => 'Тренировки создаются на 8 недель вперёд и продлеваются автоматически.';
+  String get seriesHorizonNote =>
+      'Тренировки создаются на 8 недель вперёд и продлеваются автоматически.';
 
   @override
   String seriesConflicts(int count) {
@@ -1581,7 +1634,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rsvpClosedNote => 'Тренировка уже началась — ответ окончательный.';
 
   @override
-  String get rsvpNotice => 'Ответ — это не посещаемость: фактическое присутствие отмечает тренер.';
+  String get rsvpNotice =>
+      'Ответ — это не посещаемость: фактическое присутствие отмечает тренер.';
 
   @override
   String get attendanceTitle => 'Посещаемость';
@@ -1670,7 +1724,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get progressAchievements => 'Достижения';
 
   @override
-  String get progressPrivacyNote => 'Это видите только вы и тренеры ребёнка. Рейтинги не публикуются.';
+  String get progressPrivacyNote =>
+      'Это видите только вы и тренеры ребёнка. Рейтинги не публикуются.';
 
   @override
   String get feedbackTechnique => 'Техника';
@@ -1731,7 +1786,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get inviteLinkTitle => 'Для какого ребёнка это приглашение?';
 
   @override
-  String get inviteLinkHint => 'Если ребёнок уже зарегистрирован, выберите его — дубликат не будет создан.';
+  String get inviteLinkHint =>
+      'Если ребёнок уже зарегистрирован, выберите его — дубликат не будет создан.';
 
   @override
   String inviteAsNew(String name) {
@@ -1739,7 +1795,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get inviteMediaConsent => 'Согласен(на), что мой ребёнок может появляться на фото и видео команды';
+  String get inviteMediaConsent =>
+      'Согласен(на), что мой ребёнок может появляться на фото и видео команды';
 
   @override
   String get inviteAccepted => 'Ребёнок добавлен в группу';
@@ -1771,7 +1828,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get groupCode => 'Код группы';
 
   @override
-  String get groupCodeHint => 'Родители вводят код в профиле ребёнка — вы одобряете заявку.';
+  String get groupCodeHint =>
+      'Родители вводят код в профиле ребёнка — вы одобряете заявку.';
 
   @override
   String groupCodeShareText(String group, String code) {
@@ -1846,7 +1904,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Приглашение получит родитель. Ребёнок вступит в группу только после его подтверждения.';
 
   @override
-  String get addChildManualNote => 'Родитель получит приглашение. До подтверждения вы видите только имя.';
+  String get addChildManualNote =>
+      'Родитель получит приглашение. До подтверждения вы видите только имя.';
 
   @override
   String get parentPhone => 'Телефон родителя';
@@ -1893,7 +1952,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get mediaGroups => 'Кто увидит';
 
   @override
-  String get mediaConsentConfirm => 'Подтверждаю: в этих материалах нет детей без согласия родителей';
+  String get mediaConsentConfirm =>
+      'Подтверждаю: в этих материалах нет детей без согласия родителей';
 
   @override
   String get mediaPublish => 'Опубликовать';
@@ -1910,7 +1970,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get mediaNoDownload => 'Скачивание отключено для защиты конфиденциальности детей.';
+  String get mediaNoDownload =>
+      'Скачивание отключено для защиты конфиденциальности детей.';
 
   @override
   String get mediaDelete => 'Удалить';
@@ -2089,7 +2150,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get paymentsReminderPrefs => 'Настройки напоминаний';
 
   @override
-  String get paymentsNoOnline => 'Онлайн-оплата пока недоступна — оплачивайте так, как указывает клуб.';
+  String get paymentsNoOnline =>
+      'Онлайн-оплата пока недоступна — оплачивайте так, как указывает клуб.';
 
   @override
   String get paymentCancelReason => 'Причина отмены';
@@ -2134,7 +2196,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get privacySettingsTitle => 'Конфиденциальность';
 
   @override
-  String get privacyPhotoVisible => 'Показывать моё фото тренерам и родителям моих групп';
+  String get privacyPhotoVisible =>
+      'Показывать моё фото тренерам и родителям моих групп';
 
   @override
   String get privacyAnalytics => 'Анонимная диагностика (отчёты о сбоях)';
@@ -2197,7 +2260,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get deleteImpactPayments => 'История платежей сохранится в обезличенном виде для бухгалтерии клуба.';
+  String get deleteImpactPayments =>
+      'История платежей сохранится в обезличенном виде для бухгалтерии клуба.';
 
   @override
   String get retentionTitle => 'Хранение и удаление';
@@ -2304,7 +2368,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get demoOffline => 'Имитировать офлайн';
 
   @override
-  String get demoOfflineHint => 'Запись не проходит — приложение показывает корректную ошибку.';
+  String get demoOfflineHint =>
+      'Запись не проходит — приложение показывает корректную ошибку.';
 
   @override
   String aboutVersion(String version, String env) {
@@ -2321,13 +2386,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adminSignInTitle => 'Панель администратора';
 
   @override
-  String get adminSignInBody => 'Только для администраторов. Права проверяются на сервере.';
+  String get adminSignInBody =>
+      'Только для администраторов. Права проверяются на сервере.';
 
   @override
   String get adminDemoAccounts => 'Демо-аккаунты';
 
   @override
-  String get adminDemoTryParent => 'Проверка: аккаунт родителя (доступ запрещён)';
+  String get adminDemoTryParent =>
+      'Проверка: аккаунт родителя (доступ запрещён)';
 
   @override
   String get adminPhoneSignIn => 'Войти по телефону';
@@ -2572,7 +2639,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adminSportOrder => 'Порядок';
 
   @override
-  String get adminReadOnly => 'Только просмотр — редактировать могут только администраторы платформы.';
+  String get adminReadOnly =>
+      'Только просмотр — редактировать могут только администраторы платформы.';
 
   @override
   String get adminHide => 'Скрыть';
@@ -2617,7 +2685,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Этот аккаунт не может использовать панель администратора. Пожалуйста, пользуйтесь мобильным приложением.';
 
   @override
-  String get adminChildDataNote => 'Администраторы не видят имена детей и медицинские данные — только количество.';
+  String get adminChildDataNote =>
+      'Администраторы не видят имена детей и медицинские данные — только количество.';
 
   @override
   String get adminEmpty => 'Записей нет';
@@ -2635,7 +2704,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get languageChanged => 'Язык изменён';
 
   @override
-  String get languageHint => 'Язык не зависит от языка телефона. Тексты, написанные тренерами, не переводятся.';
+  String get languageHint =>
+      'Язык не зависит от языка телефона. Тексты, написанные тренерами, не переводятся.';
 
   @override
   String get certCurrent => 'Действующая справка';
@@ -2701,10 +2771,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get certPdfPreview => 'PDF-документ';
 
   @override
-  String get certSavedTemp => 'Файл сохранён временно и будет удалён из приложения после отправки.';
+  String get certSavedTemp =>
+      'Файл сохранён временно и будет удалён из приложения после отправки.';
 
   @override
-  String get certNoAdminAccess => 'Администраторы не видят медицинские документы — только статусы.';
+  String get certNoAdminAccess =>
+      'Администраторы не видят медицинские документы — только статусы.';
 
   @override
   String get rosterTitle => 'Ученики';
@@ -2767,7 +2839,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get attendanceDiscard => 'Отменить';
 
   @override
-  String get attendanceEditNote => 'Отмеченную посещаемость можно исправить — каждое изменение сохраняется.';
+  String get attendanceEditNote =>
+      'Отмеченную посещаемость можно исправить — каждое изменение сохраняется.';
 
   @override
   String get attendanceByStudent => 'По ученикам';
@@ -2802,7 +2875,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportFormat => 'Формат';
 
   @override
-  String get exportIncludeCompliance => 'Включить статус справки (только при необходимости)';
+  String get exportIncludeCompliance =>
+      'Включить статус справки (только при необходимости)';
 
   @override
   String get exportWarning =>
@@ -2849,7 +2923,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get exportConfidential => 'Конфиденциально — только для внутреннего использования';
+  String get exportConfidential =>
+      'Конфиденциально — только для внутреннего использования';
 
   @override
   String exportPage(int n) {
@@ -2923,7 +2998,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get planUnpublish => 'Вернуть в черновики';
 
   @override
-  String get planPublished => 'План опубликован — родители получили уведомление';
+  String get planPublished =>
+      'План опубликован — родители получили уведомление';
 
   @override
   String get planSaved => 'План сохранён';
@@ -2951,7 +3027,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get planSelfReported => 'Выполнение отмечают родители — тренер его не проверяет.';
+  String get planSelfReported =>
+      'Выполнение отмечают родители — тренер его не проверяет.';
 
   @override
   String planPeriod(String start, String end) {
@@ -3009,7 +3086,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exerciseOpenLink => 'Открыть ссылку';
 
   @override
-  String get exerciseExternalWarning => 'Ссылка откроется в браузере. Приложение не передаёт ей ваши данные.';
+  String get exerciseExternalWarning =>
+      'Ссылка откроется в браузере. Приложение не передаёт ей ваши данные.';
 
   @override
   String get exerciseMoveUp => 'Выше';
@@ -3074,7 +3152,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationTooManyMedia => 'Не более 10 материалов на упражнение';
 
   @override
-  String get validationPlanNotDraft => 'До публикации можно редактировать только черновик';
+  String get validationPlanNotDraft =>
+      'До публикации можно редактировать только черновик';
 
   @override
   String get payProofAction => 'Подтвердить оплату';
@@ -3155,7 +3234,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get payReject => 'Отклонить';
 
   @override
-  String get payApproved => 'Оплата подтверждена — родитель получил уведомление';
+  String get payApproved =>
+      'Оплата подтверждена — родитель получил уведомление';
 
   @override
   String get payRejectedSnack => 'Отклонено — родителю сообщили причину';
@@ -3164,7 +3244,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get payRejectReasonTitle => 'Причина отказа';
 
   @override
-  String get payNotReviewer => 'Подтверждать оплаты могут только назначенные тренеры и администраторы клуба.';
+  String get payNotReviewer =>
+      'Подтверждать оплаты могут только назначенные тренеры и администраторы клуба.';
 
   @override
   String get payHistory => 'История';
@@ -3196,10 +3277,12 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get validationProofExists => 'Подтверждение по этому платежу уже на проверке';
+  String get validationProofExists =>
+      'Подтверждение по этому платежу уже на проверке';
 
   @override
-  String get validationProofClosed => 'По этому подтверждению уже принято решение';
+  String get validationProofClosed =>
+      'По этому подтверждению уже принято решение';
 
   @override
   String get validationPaymentClosed => 'Этот платёж уже закрыт';
@@ -3304,7 +3387,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adminNavSettings => 'Настройки';
 
   @override
-  String get adminComplianceNote => 'Только количество по статусам — без документов и имён детей.';
+  String get adminComplianceNote =>
+      'Только количество по статусам — без документов и имён детей.';
 
   @override
   String get adminColValid => 'Действует';
@@ -3340,7 +3424,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adminColReviewers => 'Проверяющие';
 
   @override
-  String get adminPaymentQueueNote => 'Квитанции открываются по временной ссылке, каждый просмотр записывается.';
+  String get adminPaymentQueueNote =>
+      'Квитанции открываются по временной ссылке, каждый просмотр записывается.';
 
   @override
   String get adminSetReviewers => 'Назначить проверяющих';
@@ -3361,7 +3446,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportSchedule => 'Экспорт расписания в календарь';
 
   @override
-  String get calendarNothingToExport => 'Нет предстоящих тренировок для экспорта';
+  String get calendarNothingToExport =>
+      'Нет предстоящих тренировок для экспорта';
 
   @override
   String get contactsTitle => 'Контакты';
@@ -3391,7 +3477,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Эти номера видят только тренеры этой группы. Используйте их только по вопросам команды.';
 
   @override
-  String get contactPrivacyParent => 'Тренер группы вашего ребёнка. Номера других родителей не показываются.';
+  String get contactPrivacyParent =>
+      'Тренер группы вашего ребёнка. Номера других родителей не показываются.';
 
   @override
   String contactParentOf(String names) {
@@ -3540,7 +3627,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get downloadCancelled => 'Скачивание отменено';
 
   @override
-  String get downloadFailed => 'Не удалось скачать. Проверьте соединение и повторите попытку.';
+  String get downloadFailed =>
+      'Не удалось скачать. Проверьте соединение и повторите попытку.';
 
   @override
   String downloadDone(String name) {
@@ -3551,7 +3639,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get downloadDenied => 'У вас больше нет доступа к этому файлу.';
 
   @override
-  String get downloadStorageError => 'Не удалось сохранить файл на этом устройстве.';
+  String get downloadStorageError =>
+      'Не удалось сохранить файл на этом устройстве.';
 
   @override
   String get downloadPolicyOff => 'Для этой группы скачивание отключено.';
@@ -3719,13 +3808,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get validationResultScore => 'Введите счёт от 0 до 999.';
 
   @override
-  String get validationResultNotStarted => 'Результат можно ввести после начала матча.';
+  String get validationResultNotStarted =>
+      'Результат можно ввести после начала матча.';
 
   @override
   String get validationResultCancelled => 'У отменённого матча нет результата.';
 
   @override
-  String get validationResultCompletedAt => 'Время окончания должно быть между началом матча и текущим моментом.';
+  String get validationResultCompletedAt =>
+      'Время окончания должно быть между началом матча и текущим моментом.';
 
   @override
   String get payDownloadReceipt => 'Скачать квитанцию';
@@ -3821,7 +3912,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get brainTagline => 'Тренируй ум, как настоящий спортсмен';
 
   @override
-  String get brainNotIq => 'Очки — для тренировки и удовольствия, это не тест IQ.';
+  String get brainNotIq =>
+      'Очки — для тренировки и удовольствия, это не тест IQ.';
 
   @override
   String get gameMemoryMatch => 'Найди пару';
@@ -3864,20 +3956,24 @@ class AppLocalizationsRu extends AppLocalizations {
       'Открой две карточки. Одинаковые остаются открытыми. Найди все пары за меньшее число попыток.';
 
   @override
-  String get gameHowToLogic => 'Посмотри на ряд и выбери фигуру, которая должна стоять на месте «?».';
+  String get gameHowToLogic =>
+      'Посмотри на ряд и выбери фигуру, которая должна стоять на месте «?».';
 
   @override
-  String get gameHowToSmart => 'Мяч у тебя (жёлтое кольцо). Выбери лучший пас или движение и прочитай объяснение.';
+  String get gameHowToSmart =>
+      'Мяч у тебя (жёлтое кольцо). Выбери лучший пас или движение и прочитай объяснение.';
 
   @override
-  String get gameHowToQuick => 'Цель показана сверху. Нажми ту же фигуру того же цвета, пока не вышло время.';
+  String get gameHowToQuick =>
+      'Цель показана сверху. Нажми ту же фигуру того же цвета, пока не вышло время.';
 
   @override
   String get gameHowToSequence =>
       'Смотри, как загораются цвета, затем нажми их в том же порядке. С каждым раундом ряд длиннее.';
 
   @override
-  String get gameHowToPath => 'Двигай мяч к воротам стрелками или свайпом. Стены и конусы мешают пройти.';
+  String get gameHowToPath =>
+      'Двигай мяч к воротам стрелками или свайпом. Стены и конусы мешают пройти.';
 
   @override
   String get diffEasy => 'Лёгкий';
@@ -4022,31 +4118,38 @@ class AppLocalizationsRu extends AppLocalizations {
   String get spNext => 'Далее';
 
   @override
-  String get spExplain1 => '№7 свободен на фланге — защитник прямо перед тобой, обводка рискованна.';
+  String get spExplain1 =>
+      '№7 свободен на фланге — защитник прямо перед тобой, обводка рискованна.';
 
   @override
   String get spExplain2 => 'Ты близко к воротам и путь свободен — бей!';
 
   @override
-  String get spExplain3 => 'Тебя прессингуют двое — безопасный пас назад №4 сохранит мяч.';
+  String get spExplain3 =>
+      'Тебя прессингуют двое — безопасный пас назад №4 сохранит мяч.';
 
   @override
   String get spExplain4 => '№10 под опекой, а №11 в свободной зоне.';
 
   @override
-  String get spExplain5 => 'Пас на №9 перехватят; №10 свободен и может развернуться.';
+  String get spExplain5 =>
+      'Пас на №9 перехватят; №10 свободен и может развернуться.';
 
   @override
-  String get spExplain6 => 'Слева соперник закрывает №5 — пас направо №6 безопасен.';
+  String get spExplain6 =>
+      'Слева соперник закрывает №5 — пас направо №6 безопасен.';
 
   @override
-  String get spExplain7 => 'Центр закрыт двумя защитниками; №7 свободен на фланге.';
+  String get spExplain7 =>
+      'Центр закрыт двумя защитниками; №7 свободен на фланге.';
 
   @override
-  String get spExplain8 => 'Угол слишком острый для удара, №9 закрыт; у №10 позиция лучше.';
+  String get spExplain8 =>
+      'Угол слишком острый для удара, №9 закрыт; у №10 позиция лучше.';
 
   @override
-  String get spExplain9 => 'В центре трое соперников — перевод на №2 открывает пространство.';
+  String get spExplain9 =>
+      'В центре трое соперников — перевод на №2 открывает пространство.';
 
   @override
   String get mazeGoal => 'Ворота';
@@ -4202,7 +4305,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resultFailTitle => 'Почти получилось!';
 
   @override
-  String get resultFailEncourage => 'Каждая попытка тренирует ум. Попробуешь ещё раз?';
+  String get resultFailEncourage =>
+      'Каждая попытка тренирует ум. Попробуешь ещё раз?';
 
   @override
   String resultStars(int n) {
@@ -4262,7 +4366,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get logicWhyGrow => 'С каждым шагом фигур становится больше.';
 
   @override
-  String get logicWhyMissing => 'Посмотри на фигуры до и после «?» — ряд повторяется.';
+  String get logicWhyMissing =>
+      'Посмотри на фигуры до и после «?» — ряд повторяется.';
 
   @override
   String get logicCorrectWas => 'Правильный ответ отмечен зелёным.';
@@ -4315,4 +4420,214 @@ class AppLocalizationsRu extends AppLocalizations {
   String comboLabel(int n) {
     return 'Комбо ×$n!';
   }
+
+  @override
+  String get rsvpTitleMatch => 'Придёт на матч?';
+
+  @override
+  String get scheduleChangedTitle => 'Расписание изменилось';
+
+  @override
+  String scheduleChangedBody(String when) {
+    return 'Новое время: $when. Пожалуйста, подтвердите участие ещё раз.';
+  }
+
+  @override
+  String get ackIsNotRsvp =>
+      '«Ознакомлен(а)» лишь подтверждает, что вы прочитали изменение, — это не ответ об участии ребёнка.';
+
+  @override
+  String get ackButton => 'Ознакомлен(а)';
+
+  @override
+  String get ackDone => 'Отмечено как прочитанное';
+
+  @override
+  String get rsvpNeedsReconfirm => 'Нужно подтвердить снова';
+
+  @override
+  String rsvpPreviousAnswer(String answer) {
+    return 'Ваш ответ на прежнее расписание: $answer';
+  }
+
+  @override
+  String get rsvpGuardiansDisagree =>
+      'Опекуны ответили по-разному — учитывается последний ответ.';
+
+  @override
+  String get guardianLabel => 'Опекун';
+
+  @override
+  String get rsvpOldSchedule => 'старое расписание';
+
+  @override
+  String get rsvpStateConfirmed => 'Подтвердили';
+
+  @override
+  String get rsvpStateDeclined => 'Не придут';
+
+  @override
+  String get rsvpStateUncertain => 'Не уверены';
+
+  @override
+  String get rsvpStateNotResponded => 'Нет ответа';
+
+  @override
+  String get contactCoach => 'Связаться с тренером';
+
+  @override
+  String contactCoachTitle(String coach) {
+    return 'Связаться: $coach';
+  }
+
+  @override
+  String get contactCoachExplain =>
+      'Твой родитель получит запрос и напишет или позвонит тренеру. Ты не переписываешься с тренером напрямую.';
+
+  @override
+  String get contactCoachSent =>
+      'Родителю отправлена просьба связаться с тренером';
+
+  @override
+  String get contactCoachPending => 'Запрос отправлен родителю';
+
+  @override
+  String get contactTopicQuestion => 'У меня вопрос';
+
+  @override
+  String get contactTopicAbsence => 'Я не смогу прийти';
+
+  @override
+  String get contactTopicTraining => 'О тренировке';
+
+  @override
+  String get contactTopicOther => 'Другое';
+
+  @override
+  String get eventRescheduled => 'Перенесено';
+
+  @override
+  String get eventLocationChanged => 'Место изменилось';
+
+  @override
+  String get eventShowMap => 'Карта';
+
+  @override
+  String get studentUpcomingEvents => 'Ближайшие тренировки и матчи';
+
+  @override
+  String leaderboardTitle(String org) {
+    return 'Рейтинг · $org';
+  }
+
+  @override
+  String get leaderboardAllGames => 'Все игры';
+
+  @override
+  String get leaderboardWeek => 'Эта неделя';
+
+  @override
+  String get leaderboardMonth => 'Этот месяц';
+
+  @override
+  String get leaderboardAllTime => 'За всё время';
+
+  @override
+  String leaderboardAgeBand(String band) {
+    return 'Возрастная группа $band';
+  }
+
+  @override
+  String get leaderboardYou => 'ты';
+
+  @override
+  String leaderboardBadges(int count) {
+    return 'Значков: $count';
+  }
+
+  @override
+  String get leaderboardDisabled =>
+      'Рейтинг сейчас недоступен. Твой прогресс показан выше.';
+
+  @override
+  String get leaderboardNoConsent =>
+      'Ты появишься в рейтинге только с разрешения родителя. Твой личный прогресс показан выше.';
+
+  @override
+  String get leaderboardTooFew =>
+      'В твоей возрастной группе пока мало участников. Твой прогресс показан выше.';
+
+  @override
+  String get leaderboardPrivacyNote =>
+      'Показываются только псевдонимы или имя с инициалом. Очки — для игры и тренировки, они не измеряют интеллект.';
+
+  @override
+  String get pointsTotal => 'Очки';
+
+  @override
+  String get pointsGamesCompleted => 'Пройдено игр';
+
+  @override
+  String get pointsThisWeek => 'За неделю';
+
+  @override
+  String get pointsWeekly => 'Очки за последние 7 дней';
+
+  @override
+  String get pointsByGame => 'Очки по играм';
+
+  @override
+  String get pointsRecent => 'Последние игры';
+
+  @override
+  String pointsValue(int points) {
+    return '$points оч.';
+  }
+
+  @override
+  String pointsAccuracy(int percent) {
+    return 'Точность $percent%';
+  }
+
+  @override
+  String pointsBest(int score) {
+    return 'лучший $score';
+  }
+
+  @override
+  String get contactDone => 'Готово';
+
+  @override
+  String get contactOpenChat => 'Открыть чат с тренером';
+
+  @override
+  String contactRequestFromChild(String child, String coach) {
+    return '$child просит связаться с тренером $coach';
+  }
+
+  @override
+  String get leaderboardConsentTitle => 'Рейтинг Brain Academy';
+
+  @override
+  String get leaderboardConsentExplain =>
+      'По умолчанию выключено. Если вы разрешите, ребёнок появится только в закрытом рейтинге этой академии — под псевдонимом или с именем и инициалом, без полного имени, телефона, даты рождения и данных о здоровье. Согласие можно отозвать в любой момент.';
+
+  @override
+  String get leaderboardConsentOn => 'Согласие сохранено';
+
+  @override
+  String get leaderboardConsentOff =>
+      'Согласие отозвано — ребёнок больше не показывается';
+
+  @override
+  String get leaderboardConsentOffHint => 'Не показывается в рейтинге';
+
+  @override
+  String get leaderboardModePseudonym => 'Псевдоним';
+
+  @override
+  String get leaderboardModeInitial => 'Имя + инициал';
+
+  @override
+  String get orgSwitchTitle => 'Выберите академию';
 }

@@ -14,6 +14,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../core/widgets/cancel_reason_dialog.dart';
 import '../../../core/widgets/visuals.dart';
+import '../../attendance/domain/scheduled_event.dart';
 import '../../attendance/presentation/attendance_widgets.dart';
 import '../../authentication/domain/access_policy.dart';
 import '../../authentication/presentation/session_providers.dart';
@@ -157,8 +158,9 @@ class _Body extends ConsumerWidget {
             slug: training.id,
           ),
         if (canManage) _CoachActions(training: training, group: group!),
-        if (canManage) CoachAttendanceSummary(training: training, group: group!),
-        if (user != null && user.isParent && group != null) RsvpSection(training: training, group: group!),
+        if (canManage) CoachAttendanceSummary(event: ScheduledEvent.training(training), group: group!),
+        if (user != null && user.isParent && group != null)
+          RsvpSection(event: ScheduledEvent.training(training), group: group!),
         SectionHeader(l.venueLabel),
         if (venue != null) _VenueCard(venue: venue, sport: sport) else const Text('—'),
         SectionHeader(l.coachLabel),
