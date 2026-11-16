@@ -239,23 +239,40 @@ void main() {
       await adminSignIn(tester, DemoIds.platformAdmin);
       expect(find.byKey(const Key('admin-nav-header-0')), findsOneWidget);
       await tapKey(tester, 'admin-nav-/organizations');
+      // v1.8 seeds more organizations: narrow the directory with the search.
+      final search = find.byKey(const Key('admin-search'));
+      await tester.enterText(search, 'თიანეთ');
+      await pumpFrames(tester);
       expect(find.byKey(const Key('org-row-${DemoSeedV17.tianeti}')), findsOneWidget);
+      await tester.enterText(search, 'მცხეთ');
+      await pumpFrames(tester);
       expect(find.byKey(const Key('org-row-${DemoSeedV17.mtskheta}')), findsOneWidget);
       await tapKey(tester, 'org-manage-${DemoSeedV17.mtskheta}');
       await tapKey(tester, 'org-allow-leaderboards');
       await tapKey(tester, 'org-platform-save');
       expect(db.orgConfig(DemoSeedV17.mtskheta).allowedModules, contains(OrgModule.leaderboards));
-      await tapKey(tester, 'org-health-${DemoSeedV17.tianeti}');
+      await tapKey(tester, 'org-health-${DemoSeedV17.mtskheta}');
       expect(find.byKey(const Key('org-health')), findsOneWidget);
       await tester.tap(find.text('დახურვა').last);
       await pumpFrames(tester);
+      // v1.8: creation goes through the provisioning wizard.
       await tapKey(tester, 'org-new');
-      await tester.enterText(find.byKey(const Key('org-name-ka')), 'გორის სპორტსკოლა');
-      await tester.enterText(find.byKey(const Key('org-name-en')), 'Gori Sports School');
-      await tester.enterText(find.byKey(const Key('org-address')), 'გორი');
-      await tapKey(tester, 'org-sport-volleyball');
-      await tapKey(tester, 'org-create');
+      await tester.enterText(find.byKey(const Key('prov-name-ka')), 'გორის სპორტსკოლა');
+      await tester.enterText(find.byKey(const Key('prov-name-en')), 'Gori Sports School');
+      await tester.enterText(find.byKey(const Key('prov-legal')), 'Gori Sports School (demo)');
+      await tester.enterText(find.byKey(const Key('prov-address')), 'სტალინის ქ. 1');
+      await tester.enterText(find.byKey(const Key('prov-city')), 'გორი');
+      await tester.enterText(find.byKey(const Key('prov-email')), 'info@gori.example');
+      await tester.enterText(find.byKey(const Key('prov-phone')), '+995555300700');
+      await tapKey(tester, 'prov-sport-volleyball');
+      await tapKey(tester, 'provision-next');
+      await tapKey(tester, 'provision-next');
+      await tapKey(tester, 'provision-next');
+      await tester.enterText(find.byKey(const Key('prov-admin-phone')), '+995555300701');
+      await tapKey(tester, 'provision-create');
+      expect(find.byKey(const Key('provision-error')), findsNothing);
       expect(db.clubs.values.any((c) => c.name == 'გორის სპორტსკოლა'), isTrue);
+      expect(find.byKey(const Key('invitation-token')), findsOneWidget);
       expectNoLayoutErrors();
     });
 

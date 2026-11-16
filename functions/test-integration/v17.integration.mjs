@@ -105,9 +105,14 @@ await step('concurrent reservations of the same room slot: exactly one wins', as
 });
 
 await step('adjacent slot is accepted; rejection carries alternatives', async () => {
-  const r = await call('createBooking', draft(new Date(t0.getTime() + 60 * 60_000), 60), adminA);
+  // The previous step's winner is either the 10:00 or the 10:30 booking
+  // (concurrent requests), so the adjacent slot starts where it ends.
+  const [winner] = (await db.collection('clubs/it-org-a/bookings').get()).docs;
+  const start = winner.get('startAt').toDate();
+  const end = winner.get('endAt').toDate();
+  const r = await call('createBooking', draft(end, 60), adminA);
   assert.equal(r.status, 200, JSON.stringify(r.body));
-  const bad = await call('createBooking', draft(new Date(t0.getTime() + 30 * 60_000), 30), adminA);
+  const bad = await call('createBooking', draft(start, 30), adminA);
   assert.equal(bad.status, 400);
   assert.ok(bad.body.error.details.alternatives.length > 0);
 });

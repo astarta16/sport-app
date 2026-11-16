@@ -123,6 +123,9 @@ void main() {
 
     await tap(tester, find.byKey(const Key('admin-nav-/clubs')));
     expect(find.byKey(const Key('admin-page-info')), findsOneWidget);
+    // v1.8 seeds more organizations, so club-1 is found through the search.
+    await tester.enterText(find.byKey(const Key('admin-search')), 'ფეხბურთის აკადემია');
+    await pump(tester);
     await tap(tester, find.byKey(const Key('edit-club-club-1')));
     await tester.enterText(find.byKey(const Key('club-name')), 'საბურთალოს აკადემია');
     await tap(tester, find.byKey(const Key('club-save')));
