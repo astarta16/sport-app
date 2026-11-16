@@ -224,25 +224,41 @@ class _AdminTableState<T> extends State<AdminTable<T>> {
                         for (var i = 0; i < widget.columns.length; i++)
                           Expanded(
                             flex: widget.columns[i].flex,
-                            child: InkWell(
-                              onTap: widget.columns[i].sortKey == null
+                            // v1.9.1: sortable headers announce themselves and
+                            // their order; InkWell is focusable and reacts to
+                            // Enter / Space for keyboard users; sorting resets
+                            // to the first page.
+                            child: Semantics(
+                              button: widget.columns[i].sortKey != null,
+                              label: widget.columns[i].sortKey == null
                                   ? null
-                                  : () => setState(() {
-                                      _asc = _sort == i ? !_asc : true;
-                                      _sort = i;
-                                    }),
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      widget.columns[i].label,
-                                      style: Theme.of(context).textTheme.labelMedium,
-                                      overflow: TextOverflow.ellipsis,
+                                  : l.a191SortBy(widget.columns[i].label) +
+                                        (_sort == i ? ' · ${_asc ? l.a191SortAsc : l.a191SortDesc}' : ''),
+                              excludeSemantics: widget.columns[i].sortKey != null,
+                              child: InkWell(
+                                key: Key('admin-sort-$i'),
+                                onTap: widget.columns[i].sortKey == null
+                                    ? null
+                                    : () => setState(() {
+                                        _asc = _sort == i ? !_asc : true;
+                                        _sort = i;
+                                        _page = 0;
+                                      }),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        widget.columns[i].label,
+                                        style: Theme.of(context).textTheme.labelMedium,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                  ),
-                                  if (_sort == i)
-                                    Icon(_asc ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded, size: 14),
-                                ],
+                                    if (_sort == i)
+                                      Icon(_asc ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded, size: 14)
+                                    else if (widget.columns[i].sortKey != null)
+                                      const Icon(Icons.unfold_more_rounded, size: 14),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

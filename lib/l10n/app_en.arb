@@ -1928,5 +1928,9 @@
   "a191NextWeek": "Next week",
   "a191PrevDay": "Previous day",
   "a191NextDay": "Next day",
-  "a191PickDate": "Go to date"
+  "a191PickDate": "Go to date",
+  "a191SortBy": "Sort by {column}",
+  "a191SortAsc": "ascending",
+  "a191SortDesc": "descending",
+  "a191LimitUploadMb": "Largest upload (MB)"
 }

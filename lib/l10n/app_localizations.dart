@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ka'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ka'), Locale('ru')];
 
   /// No description provided for @appName.
   ///
@@ -11673,10 +11666,33 @@ abstract class AppLocalizations {
   /// In ka, this message translates to:
   /// **'თარიღზე გადასვლა'**
   String get a191PickDate;
+
+  /// No description provided for @a191SortBy.
+  ///
+  /// In ka, this message translates to:
+  /// **'დალაგება: {column}'**
+  String a191SortBy(String column);
+
+  /// No description provided for @a191SortAsc.
+  ///
+  /// In ka, this message translates to:
+  /// **'ზრდადი'**
+  String get a191SortAsc;
+
+  /// No description provided for @a191SortDesc.
+  ///
+  /// In ka, this message translates to:
+  /// **'კლებადი'**
+  String get a191SortDesc;
+
+  /// No description provided for @a191LimitUploadMb.
+  ///
+  /// In ka, this message translates to:
+  /// **'მაქს. ფაილი (MB)'**
+  String get a191LimitUploadMb;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -11685,8 +11701,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ka', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ka', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

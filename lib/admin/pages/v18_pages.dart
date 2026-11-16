@@ -2322,14 +2322,16 @@ Future<void> showPackageDialog(BuildContext context, WidgetRef ref, Subscription
                           key: Key('pkg-${e.key}'),
                           controller: e.value,
                           keyboardType: TextInputType.number,
-                          decoration: InputDecoration(labelText: e.key),
+                          decoration: InputDecoration(labelText: packageLimitLabel(context, e.key)),
                         ),
                       ),
                     SizedBox(
                       width: 160,
                       child: TextField(
                         controller: price,
-                        decoration: InputDecoration(labelText: '${l.priceLabel} (GEL/month)'),
+                        decoration: InputDecoration(
+                          labelText: '${l.priceLabel} (${existing?.price.currency ?? 'GEL'})',
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -2712,4 +2714,20 @@ class _RefreshButtonState extends ConsumerState<_RefreshButton> {
       label: Text(l.runEntitlementRefresh),
     );
   }
+}
+
+/// v1.9.1: readable labels for package limits (no technical keys).
+String packageLimitLabel(BuildContext context, String key) {
+  final l = context.l10n;
+  return switch (key) {
+    'maxCoaches' => l.orgLimitCoaches,
+    'maxStudents' => l.orgLimitStudents,
+    'maxGroups' => l.orgLimitGroups,
+    'maxRooms' => l.orgLimitRooms,
+    'storageMb' => l.limitStorage,
+    'mediaUploadMb' => l.a191LimitUploadMb,
+    'notificationsPerMonth' => l.limitNotifications,
+    'smsPerMonth' => l.limitSms,
+    _ => key,
+  };
 }

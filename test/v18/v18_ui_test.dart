@@ -30,7 +30,20 @@ void adminGo(WidgetTester tester, String location) =>
 /// Taps without ensureVisible(), which would slide a TabBarView page
 /// sideways to align the target with the viewport edge.
 Future<void> tapIn(WidgetTester tester, String key) async {
-  await tester.tap(find.byKey(Key(key)).first);
+  final f = find.byKey(Key(key));
+  // v1.9.1: feature rows carry descriptions (taller), so a row may not be
+  // built yet — scroll the features list vertically (never sideways).
+  if (f.hitTestable().evaluate().isEmpty) {
+    final list = find.descendant(
+      of: find.byKey(const Key('features-editor')),
+      matching: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down),
+    );
+    await tester.scrollUntilVisible(f.hitTestable(), 200, scrollable: list.first);
+    // Keep it clear of the sticky Save / Cancel bar at the bottom.
+    await tester.drag(list.first, const Offset(0, -160));
+    await pumpFrames(tester, 2);
+  }
+  await tester.tap(f.first);
   await pumpFrames(tester);
 }
 

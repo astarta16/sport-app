@@ -3589,5 +3589,16 @@
   "a191NextWeek": "შემდეგი კვირა",
   "a191PrevDay": "წინა დღე",
   "a191NextDay": "შემდეგი დღე",
-  "a191PickDate": "თარიღზე გადასვლა"
+  "a191PickDate": "თარიღზე გადასვლა",
+  "a191SortBy": "დალაგება: {column}",
+  "@a191SortBy": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "a191SortAsc": "ზრდადი",
+  "a191SortDesc": "კლებადი",
+  "a191LimitUploadMb": "მაქს. ფაილი (MB)"
 }

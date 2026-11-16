@@ -15,6 +15,7 @@ import 'package:sport_parent_app/admin/admin_app.dart';
 import 'package:sport_parent_app/core/theme/app_theme.dart';
 import 'package:sport_parent_app/features/demo/data/demo_seed.dart';
 import 'package:sport_parent_app/features/demo/data/demo_seed_v17.dart';
+
 import '../helpers.dart';
 import '../responsive/responsive_screens_test.dart' show boot, signInAs, visit, pumpFrames;
 
@@ -54,8 +55,7 @@ Future<void> _admin(WidgetTester tester, String uid) async {
   await pumpFrames(tester);
 }
 
-void _go(WidgetTester tester, String route) =>
-    GoRouter.of(tester.element(find.byType(Scaffold).first)).go(route);
+void _go(WidgetTester tester, String route) => GoRouter.of(tester.element(find.byType(Scaffold).first)).go(route);
 
 void main() {
   setUpAll(() async {

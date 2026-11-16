@@ -421,6 +421,8 @@ Future<void> showOrgHealthDialog(BuildContext context, WidgetRef ref, OrgConfig 
         future: ref.read(organizationsRepositoryProvider).health(cfg.orgId),
         builder: (context, snap) {
           final h = snap.data;
+          // v1.9.1: an error is shown (it used to spin forever).
+          if (snap.hasError) return ErrorView(error: snap.error!, compact: true);
           if (h == null) return const SizedBox(height: 80, child: Center(child: CircularProgressIndicator()));
           final over = h.overLimits(cfg.limits);
           return Column(
@@ -467,7 +469,7 @@ class OrgSettingsPage extends ConsumerWidget {
           ? _needsOrg(context)
           : AsyncView<OrgConfig>(
               value: ref.watch(orgConfigProvider(org)),
-              data: (cfg) => _OrgSettingsForm(key: ValueKey('${cfg.orgId}-${cfg.updatedAt}'), cfg: cfg),
+              data: (cfg) => _OrgSettingsForm(key: ValueKey(cfg.orgId), cfg: cfg),
             ),
     );
   }

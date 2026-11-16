@@ -503,5 +503,28 @@
   "en": "Go to date",
   "ka": "თარიღზე გადასვლა",
   "ru": "Перейти к дате"
+ },
+ "a191SortBy": {
+  "en": "Sort by {column}",
+  "ka": "დალაგება: {column}",
+  "ru": "Сортировать: {column}",
+  "ph": {
+   "column": "String"
+  }
+ },
+ "a191SortAsc": {
+  "en": "ascending",
+  "ka": "ზრდადი",
+  "ru": "по возрастанию"
+ },
+ "a191SortDesc": {
+  "en": "descending",
+  "ka": "კლებადი",
+  "ru": "по убыванию"
+ },
+ "a191LimitUploadMb": {
+  "en": "Largest upload (MB)",
+  "ka": "მაქს. ფაილი (MB)",
+  "ru": "Макс. файл (МБ)"
  }
 }
