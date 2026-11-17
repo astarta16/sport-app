@@ -14,6 +14,71 @@ primary language; English is wired in for the second phase.
 - **Architecture:** feature-first clean architecture (`lib/features/<feature>/{data,domain,presentation}`); every repository has a **demo** and a **Firebase** implementation behind the same interface.
 - **Demo mode** runs the whole app with fictional in-memory data — no Firebase, no keys, no SMS, no real personal or medical data.
 
+## Local setup
+
+Everything below runs locally. Nothing deploys to Firebase or publishes an app.
+
+**Prerequisites** (versions used for this project):
+
+| Tool | Version | Needed for |
+|---|---|---|
+| Flutter SDK (stable) | 3.47.x (Dart ^3.13) | everything (`flutter doctor` must be green for your targets) |
+| Xcode + CocoaPods | Xcode 26, CocoaPods 1.16 | iOS simulator builds (macOS only) |
+| Android Studio / Android SDK | current stable | Android emulator and APK builds |
+| Node.js | 22 (functions `engines`) | Cloud Functions build and tests |
+| Java (JDK) | 17+ | Firebase emulators (rules and functions tests) |
+
+The Firebase CLI does **not** need a global install. `rules-tests/` pins `firebase-tools` locally (`npx firebase …`).
+
+**1. Demo mode (no Firebase account, no network)**
+```bash
+flutter pub get
+flutter gen-l10n
+flutter run                                   # pick a device; debug builds use demo mode
+```
+
+**2. Admin web (demo)**
+```bash
+flutter run -d chrome -t lib/main_admin.dart
+```
+
+**3. Android**
+```bash
+flutter emulators --launch <emulator-id>      # or connect a device
+flutter run -d <device-id>
+flutter build apk --release --dart-define=APP_MODE=demo --dart-define=ALLOW_DEMO_IN_RELEASE=true
+```
+The release APK is signed with the debug key (side-loading only). No keystore is stored in this repository.
+
+**4. iOS simulator (macOS)**
+```bash
+cd ios && pod install && cd ..
+open -a Simulator
+flutter run -d "iPhone 16 Pro"                # any installed simulator
+flutter build ios --simulator --debug --dart-define=APP_MODE=demo
+```
+
+**5. Firebase emulators (backend tests, no Firebase project needed)**
+```bash
+cd functions && npm install && npm run build && npm test && cd ..
+cd rules-tests && npm install
+npm run test:emulator                         # Firestore and Storage rules
+npm run smoke:functions                       # end-to-end callables
+npx firebase emulators:start --project demo-sport-parent --config ../firebase.json   # UI on :4000
+```
+The emulator ports are auth 9099, functions 5001, firestore 8080, storage 9199 and UI 4000. The `demo-sport-parent` project id never contacts real Firebase.
+
+**6. The app against the emulators.** This needs Firebase client config generated for **your own** dev project with `flutterfire configure`. The generated `lib/firebase_options.dart`, `google-services.json` and `GoogleService-Info.plist` are git-ignored and never committed. Then:
+```bash
+flutter run --dart-define=APP_MODE=firebase --dart-define=USE_FIREBASE_EMULATOR=true
+# Android emulator: add --dart-define=EMULATOR_HOST=10.0.2.2
+```
+
+**Secrets.** No credentials are stored in this repository:
+- Copy `functions/.env.example` to `functions/.env` for local function settings; it is git-ignored.
+- Emulator secret overrides go in `functions/.secret.local`, also git-ignored.
+- SMS sending stays off unless `SMS_SENDING_ENABLED=true` is set explicitly.
+
 ## Quick start (demo mode — no setup needed)
 
 ```bash
